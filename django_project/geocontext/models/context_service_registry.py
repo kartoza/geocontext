@@ -151,6 +151,8 @@ class ContextServiceRegistry(models.Model):
         request = requests.get(url)
         content = request.content
         geometry = parse_gml_geometry(content)
+        if not geometry:
+            return None, None
         if not geometry.srid:
             geometry.srid = self.srid
         value = self.parse_request_value(content)
