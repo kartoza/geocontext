@@ -6,7 +6,8 @@ from datetime import datetime
 
 from django.contrib.gis.geos import Point
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import HttpResponse, Http404
+from django.core.serializers import serialize
 
 from geocontext.utilities import convert_coordinate
 from geocontext.models.context_service_registry import ContextServiceRegistry
@@ -49,7 +50,7 @@ def retrieve_context(x, y, service_registry_name, srid=4326):
     for cache in caches:
         if cache.geometry.contains(point):
             if datetime.utcnow().replace(tzinfo=pytz.UTC) < cache.expired_time:
-                return cache.geometry, cache.value
+                return cache
             else:
                 # No need to check the rest cache, since it always only 1
                 # cache that intersect for a point.
@@ -73,9 +74,19 @@ def get_context(request):
             y = cleaned_data['y']
             srid = cleaned_data.get('srid', 4326)
             service_registry_name = cleaned_data['service_registry_name']
-            geometry, value = retrieve_context(
-                x, y, service_registry_name, srid)
-            return JsonResponse({'value': value})
+            result = retrieve_context(x, y, service_registry_name, srid)
+            fields = ('value', 'name')
+            if result:
+                return HttpResponse(
+                    serialize(
+                        'geojson',
+                        [result],
+                        geometry_field='geometry_multi_polygon',
+                        fields=fields),
+                    content_type='application/json')
+            else:
+                raise Http404(
+                    'Sorry! We could not find context for your point!')
 
     # if a GET (or any other method) we'll create a blank form
     else:

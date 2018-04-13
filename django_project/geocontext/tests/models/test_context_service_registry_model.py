@@ -42,12 +42,12 @@ class TestContextServiceRegistry(TestCase):
 
         service_registry.save()
 
-        geometry, value = service_registry.retrieve_context_value(x, y)
+        result = service_registry.retrieve_context_value(x, y)
         expected_value = '12 - Mzimvubu to Keiskamma'
-        self.assertEqual(value, expected_value)
-        self.assertIsNotNone(geometry)
-        self.assertEqual(geometry.geom_type, 'Polygon')
-        self.assertTrue(geometry.valid)
+        self.assertEqual(result.value, expected_value)
+        self.assertIsNotNone(result.geometry)
+        self.assertEqual(result.geometry.geom_type, 'Polygon')
+        self.assertTrue(result.geometry.valid)
 
         context_caches = ContextCache.objects.filter(
             service_registry=service_registry)
@@ -77,12 +77,12 @@ class TestContextServiceRegistry(TestCase):
 
         service_registry.save()
 
-        geometry, value = service_registry.retrieve_context_value(x, y)
+        result = service_registry.retrieve_context_value(x, y)
         expected_value = 'Eastern Cape'
-        self.assertEqual(value, expected_value)
-        self.assertIsNotNone(value[0])
-        self.assertEqual(geometry.geom_type, 'MultiPolygon')
-        self.assertTrue(geometry.valid)
+        self.assertEqual(result.value, expected_value)
+        self.assertIsNotNone(result.value)
+        self.assertEqual(result.geometry.geom_type, 'MultiPolygon')
+        self.assertTrue(result.geometry.valid)
 
         context_caches = ContextCache.objects.filter(
             service_registry=service_registry)
@@ -113,6 +113,5 @@ class TestContextServiceRegistry(TestCase):
 
         service_registry.save()
 
-        geometry, value = service_registry.retrieve_context_value(x, y)
-        self.assertIsNone(geometry)
-        self.assertIsNone(value)
+        result = service_registry.retrieve_context_value(x, y)
+        self.assertIsNone(result)

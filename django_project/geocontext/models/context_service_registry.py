@@ -146,13 +146,15 @@ class ContextServiceRegistry(models.Model):
 
         :param srid: The srid of the coordinate.
         :type srid: int
+
+        :
         """
         url = self.build_query_url(x, y, srid)
         request = requests.get(url)
         content = request.content
         geometry = parse_gml_geometry(content)
         if not geometry:
-            return None, None
+            return None
         if not geometry.srid:
             geometry.srid = self.srid
         value = self.parse_request_value(content)
@@ -174,7 +176,9 @@ class ContextServiceRegistry(models.Model):
 
         context_cache.save()
 
-        return geometry, value
+        context_cache.refresh_from_db()
+
+        return context_cache
 
     def parse_request_value(self, request_content):
         """Parse request value from request content.
