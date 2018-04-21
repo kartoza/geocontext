@@ -31,11 +31,11 @@ class TestGeoContextView(TestCase):
         service_registry.save()
 
         start_direct = datetime.now()
-        retrieve_context(x, y, service_registry.name)
+        retrieve_context(x, y, service_registry.key)
         end_direct = datetime.now()
 
         start_cache = datetime.now()
-        retrieve_context(x, y, service_registry.name)
+        retrieve_context(x, y, service_registry.key)
         end_cache = datetime.now()
 
         duration_direct = end_direct - start_direct

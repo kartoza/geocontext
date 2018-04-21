@@ -10,6 +10,8 @@ from django.http import HttpResponse, Http404
 from django.core.serializers import serialize
 
 from rest_framework import generics
+from rest_framework import views
+from rest_framework.response import Response
 
 from geocontext.utilities import convert_coordinate
 from geocontext.models.context_service_registry import ContextServiceRegistry
@@ -17,8 +19,8 @@ from geocontext.models.context_cache import ContextCache
 from geocontext.forms import GeoContextForm
 
 from geocontext.serializers.context_service_registry import (
-    ContextServiceRegistrySerializer
-)
+    ContextServiceRegistrySerializer)
+from geocontext.serializers.context_cache import ContextCacheSerializer
 
 
 def retrieve_context(x, y, service_registry_key, srid=4326):
@@ -114,3 +116,30 @@ class ContextServiceRegistryDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = ContextServiceRegistry.objects.all()
     serializer_class = ContextServiceRegistrySerializer
+
+
+class ContextCacheList(generics.ListAPIView):
+    """List all context cache."""
+    queryset = ContextCache.objects.all()
+    serializer_class = ContextCacheSerializer
+
+
+class CustomContextCacheList(views.APIView):
+    """List all context cache based on point."""
+
+    def get(self, request, x, y, csr_keys=None, format=None):
+        # Parse location
+        x = float(x)
+        y = float(y)
+        # List all CSR keys
+        if not csr_keys:
+            context_service_registries = ContextServiceRegistry.objects.all()
+            csr_keys = [o.key for o in context_service_registries]
+        else:
+            csr_keys = csr_keys.split(',')
+        context_caches = []
+        for csr_key in csr_keys:
+            context_cache = retrieve_context(x, y, csr_key)
+            context_caches.append(context_cache)
+        serializer = ContextCacheSerializer(context_caches, many=True)
+        return Response(serializer.data)
