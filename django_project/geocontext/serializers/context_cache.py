@@ -2,17 +2,25 @@
 """Serializer for context cache."""
 
 from rest_framework import serializers
+from rest_framework_gis.serializers import (
+    GeoFeatureModelSerializer, GeometrySerializerMethodField)
 from geocontext.models.context_cache import ContextCache
 
 
-class ContextCacheSerializer(serializers.ModelSerializer):
+class ContextCacheSerializer(GeoFeatureModelSerializer):
     """Serializer class for Context Service Registry."""
 
     key = serializers.ReadOnlyField(source='service_registry.key')
+    # I am not sure why I need to do this to make it work.
+    geometry = GeometrySerializerMethodField()
+
+    def get_geometry(self, obj):
+        return obj.geometry
 
     class Meta:
         model = ContextCache
         fields = (
-            'key'
+            'key',
             'value',
         )
+        geo_field = 'geometry'

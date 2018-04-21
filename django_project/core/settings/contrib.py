@@ -36,6 +36,7 @@ INSTALLED_APPS += (
     'easyaudit',
     'rolepermissions',
     'rest_framework',
+    'rest_framework_gis',
 )
 
 MIDDLEWARE += (
