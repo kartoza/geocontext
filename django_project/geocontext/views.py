@@ -9,10 +9,16 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.core.serializers import serialize
 
+from rest_framework import generics
+
 from geocontext.utilities import convert_coordinate
 from geocontext.models.context_service_registry import ContextServiceRegistry
 from geocontext.models.context_cache import ContextCache
 from geocontext.forms import GeoContextForm
+
+from geocontext.serializers.context_service_registry import (
+    ContextServiceRegistrySerializer
+)
 
 
 def retrieve_context(x, y, service_registry_key, srid=4326):
@@ -93,3 +99,18 @@ def get_context(request):
         form = GeoContextForm(initial={'srid': 4326})
 
     return render(request, 'geocontext/get_context.html', {'form': form})
+
+
+class ContextServiceRegistryList(generics.ListCreateAPIView):
+    """List all service registry or create new one."""
+    queryset = ContextServiceRegistry.objects.all()
+    serializer_class = ContextServiceRegistrySerializer
+
+
+class ContextServiceRegistryDetail(generics.RetrieveUpdateDestroyAPIView):
+    """Retrieve, update, or delete a service registry."""
+
+    lookup_field = 'key'
+
+    queryset = ContextServiceRegistry.objects.all()
+    serializer_class = ContextServiceRegistrySerializer
