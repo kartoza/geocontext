@@ -19,8 +19,8 @@ class TestContextServiceRegistry(TestCase):
         # check if PK exists.
         self.assertTrue(model.pk is not None)
 
-        # check if model name exists.
-        self.assertTrue(model.name is not None)
+        # check if model key exists.
+        self.assertTrue(model.key is not None)
 
     def test_retrieve_context_value1(self):
         """Test retrieving context value from a point with same CRS.

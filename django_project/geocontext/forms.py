@@ -15,8 +15,8 @@ class GeoContextForm(forms.Form):
     x = forms.FloatField(label='X Coordinate', required=True)
     y = forms.FloatField(label='Y Coordinate', required=True)
     srid = forms.IntegerField(label='SRID')
-    service_registry_name = forms.ChoiceField(
-        label='Service Registry Name',
+    service_registry_key = forms.ChoiceField(
+        label='Service Registry key',
         required=True,
         choices=get_context_service_registry
     )

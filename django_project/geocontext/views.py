@@ -15,7 +15,7 @@ from geocontext.models.context_cache import ContextCache
 from geocontext.forms import GeoContextForm
 
 
-def retrieve_context(x, y, service_registry_name, srid=4326):
+def retrieve_context(x, y, service_registry_key, srid=4326):
     """Retrieve context from point x, y.
 
     :param x: X coordinate
@@ -24,8 +24,8 @@ def retrieve_context(x, y, service_registry_name, srid=4326):
     :param y: Y Coordinate
     :type y: float
 
-    :param service_registry_name: The name of service registry.
-    :type service_registry_name: basestring
+    :param service_registry_key: The key of service registry.
+    :type service_registry_key: basestring
 
     :param srid: Spatial Reference ID
     :type srid: int
@@ -40,10 +40,10 @@ def retrieve_context(x, y, service_registry_name, srid=4326):
 
     # Check in cache
     service_registry = ContextServiceRegistry.objects.get(
-        name=service_registry_name)
+        key=service_registry_key)
     if not service_registry:
         raise Exception(
-            'Service Registry is not Found for %s' % service_registry_name)
+            'Service Registry is not Found for %s' % service_registry_key)
     caches = ContextCache.objects.filter(
         service_registry=service_registry)
 
@@ -73,9 +73,9 @@ def get_context(request):
             x = cleaned_data['x']
             y = cleaned_data['y']
             srid = cleaned_data.get('srid', 4326)
-            service_registry_name = cleaned_data['service_registry_name']
-            result = retrieve_context(x, y, service_registry_name, srid)
-            fields = ('value', 'name')
+            service_registry_key = cleaned_data['service_registry_key']
+            result = retrieve_context(x, y, service_registry_key, srid)
+            fields = ('value', 'key')
             if result:
                 return HttpResponse(
                     serialize(

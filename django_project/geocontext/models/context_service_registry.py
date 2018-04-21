@@ -29,8 +29,8 @@ class ContextServiceRegistry(models.Model):
         (WIKIPEDIA, 'Wikipedia'),
     )
 
-    name = models.CharField(
-        help_text=_('Name of Context Service.'),
+    key = models.CharField(
+        help_text=_('Key of Context Service.'),
         blank=False,
         null=False,
         max_length=200,
@@ -133,7 +133,7 @@ class ContextServiceRegistry(models.Model):
     )
 
     def __unicode__(self):
-        return '%s (%s)' % (self.name, self.query_type)
+        return '%s (%s)' % (self.key, self.query_type)
 
     def retrieve_context_value(self, x, y, srid=4326):
         """Retrieve context from a location.
@@ -166,7 +166,7 @@ class ContextServiceRegistry(models.Model):
         expired_time = expired_time.replace(tzinfo=pytz.UTC)
         context_cache = ContextCache(
             service_registry=self,
-            name=self.name,
+            name=self.key,
             source_uri=url,
             value=value,
             expired_time=expired_time

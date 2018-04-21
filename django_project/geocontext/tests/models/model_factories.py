@@ -9,8 +9,8 @@ class ContextServiceRegistryF(factory.DjangoModelFactory):
     class Meta:
         model = ContextServiceRegistry
 
-    name = factory.sequence(
-        lambda n: u'Test CSR name %s' % n)
+    key = factory.sequence(
+        lambda n: u'TestCSRKey%s' % n)
     display_name = factory.sequence(
         lambda n: u'Test CSR display name %s' % n)
     description = factory.sequence(
