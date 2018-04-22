@@ -10,7 +10,7 @@ from geocontext.views import (
     ContextServiceRegistryList,
     ContextServiceRegistryDetail,
     ContextCacheList,
-    CustomContextCacheList,
+    ContextValueGeometryList,
 )
 
 urlpatterns = [
@@ -34,18 +34,18 @@ urlpatterns_api = [
         view=ContextCacheList.as_view(),
         name='context-cache-list'
         ),
-    url(regex=r'^geocontext/cache/list/'
+    url(regex=r'^geocontext/value/list/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/$',
-        view=CustomContextCacheList.as_view(),
-        name='context-cache-custom'
+        view=ContextValueGeometryList.as_view(),
+        name='context-value-list-all'
         ),
-    url(regex=r'^geocontext/cache/list/'
+    url(regex=r'^geocontext/value/list/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<csr_keys>[\w\-,]+)/$',
-        view=CustomContextCacheList.as_view(),
-        name='context-cache-custom-csr'
+        view=ContextValueGeometryList.as_view(),
+        name='context-value-list-csr'
         ),
 ]
 

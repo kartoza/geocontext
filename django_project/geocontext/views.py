@@ -3,6 +3,7 @@
 
 import pytz
 from datetime import datetime
+from distutils.util import strtobool
 
 from django.contrib.gis.geos import Point
 from django.shortcuts import render
@@ -20,7 +21,8 @@ from geocontext.forms import GeoContextForm
 
 from geocontext.serializers.context_service_registry import (
     ContextServiceRegistrySerializer)
-from geocontext.serializers.context_cache import ContextCacheSerializer
+from geocontext.serializers.context_cache import (
+    ContextValueGeoJSONSerializer, ContextValueSerializer)
 
 
 def retrieve_context(x, y, service_registry_key, srid=4326):
@@ -121,10 +123,10 @@ class ContextServiceRegistryDetail(generics.RetrieveUpdateDestroyAPIView):
 class ContextCacheList(generics.ListAPIView):
     """List all context cache."""
     queryset = ContextCache.objects.all()
-    serializer_class = ContextCacheSerializer
+    serializer_class = ContextValueGeoJSONSerializer
 
 
-class CustomContextCacheList(views.APIView):
+class ContextValueGeometryList(views.APIView):
     """List all context cache based on point."""
 
     def get(self, request, x, y, csr_keys=None, format=None):
@@ -141,5 +143,10 @@ class CustomContextCacheList(views.APIView):
         for csr_key in csr_keys:
             context_cache = retrieve_context(x, y, csr_key)
             context_caches.append(context_cache)
-        serializer = ContextCacheSerializer(context_caches, many=True)
+        with_geometry = self.request.query_params.get('with-geometry', 'True')
+        if strtobool(with_geometry):
+            serializer = ContextValueGeoJSONSerializer(
+                context_caches, many=True)
+        else:
+            serializer = ContextValueSerializer(context_caches, many=True)
         return Response(serializer.data)
