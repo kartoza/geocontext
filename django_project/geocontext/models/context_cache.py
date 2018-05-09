@@ -5,9 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.gis.db import models
 
-from geocontext.utilities import convert_2d_to_3d
 from geocontext.models.context_service_registry import ContextServiceRegistry
-
 
 
 class ContextCache(models.Model):
@@ -31,25 +29,53 @@ class ContextCache(models.Model):
         help_text=_('The line geometry of the context.'),
         blank=True,
         null=True,
-        dim=3
+        dim=2
     )
 
     geometry_multi_linestring = models.MultiLineStringField(
         help_text=_('The multi line geometry of the context.'),
         blank=True,
         null=True,
-        dim=3
+        dim=2
     )
 
     geometry_polygon = models.PolygonField(
         help_text=_('The polygon geometry of the context.'),
         blank=True,
         null=True,
-        dim=3
+        dim=2
     )
 
     geometry_multi_polygon = models.MultiPolygonField(
         help_text=_('The multi polygon geometry of the context.'),
+        blank=True,
+        null=True,
+        dim=2
+    )
+
+    geometry_linestring_3d = models.LineStringField(
+        help_text=_('The 3d line geometry of the context.'),
+        blank=True,
+        null=True,
+        dim=3
+    )
+
+    geometry_multi_linestring_3d = models.MultiLineStringField(
+        help_text=_('The 3d multi line geometry of the context.'),
+        blank=True,
+        null=True,
+        dim=3
+    )
+
+    geometry_polygon_3d = models.PolygonField(
+        help_text=_('The 3d polygon geometry of the context.'),
+        blank=True,
+        null=True,
+        dim=3
+    )
+
+    geometry_multi_polygon_3d = models.MultiPolygonField(
+        help_text=_('The 3d multi polygon geometry of the context.'),
         blank=True,
         null=True,
         dim=3
@@ -80,17 +106,26 @@ class ContextCache(models.Model):
         :param geometry: The geometry.
         :type geometry: GEOSGeometry
         """
-        if not geometry.hasz:
-            geometry = convert_2d_to_3d(geometry)
-
         if geometry.geom_type in ['LineString', 'LinearRing']:
-            self.geometry_linestring = geometry
+            if geometry.hasz:
+                self.geometry_linestring_3d = geometry
+            else:
+                self.geometry_linestring = geometry
         elif geometry.geom_type == 'Polygon':
-            self.geometry_polygon = geometry
+            if geometry.hasz:
+                self.geometry_polygon_3d = geometry
+            else:
+                self.geometry_polygon = geometry
         elif geometry.geom_type == 'MultiLineString':
-            self.geometry_multi_linestring = geometry
+            if geometry.hasz:
+                self.geometry_multi_linestring_3d = geometry
+            else:
+                self.geometry_multi_linestring = geometry
         elif geometry.geom_type == 'MultiPolygon':
-            self.geometry_multi_polygon = geometry
+            if geometry.hasz:
+                self.geometry_multi_polygon_3d = geometry
+            else:
+                self.geometry_multi_polygon = geometry
 
     @property
     def geometry(self):
@@ -104,8 +139,16 @@ class ContextCache(models.Model):
         elif self.geometry_polygon:
             return self.geometry_polygon
         elif self.geometry_multi_linestring:
-            return self.geometry_linestring
+            return self.geometry_multi_linestring
         elif self.geometry_multi_polygon:
             return self.geometry_multi_polygon
+        elif self.geometry_linestring_3d:
+            return self.geometry_linestring_3d
+        elif self.geometry_polygon_3d:
+            return self.geometry_polygon_3d
+        elif self.geometry_multi_linestring_3d:
+            return self.geometry_multi_linestring_3d
+        elif self.geometry_multi_polygon_3d:
+            return self.geometry_multi_polygon_3d
         else:
             return None
