@@ -37,9 +37,11 @@ INSTALLED_APPS += (
     'rolepermissions',
     'rest_framework',
     'rest_framework_gis',
+    'corsheaders',
 )
 
 MIDDLEWARE += (
+    'corsheaders.middleware.CorsMiddleware',
     'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
 )
 
