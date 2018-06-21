@@ -41,7 +41,6 @@ INSTALLED_APPS += (
 )
 
 MIDDLEWARE += (
-    'corsheaders.middleware.CorsMiddleware',
     'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
 )
 
