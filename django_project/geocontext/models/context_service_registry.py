@@ -140,8 +140,8 @@ class ContextServiceRegistry(models.Model):
         on_delete=models.SET_NULL
     )
 
-    def __unicode__(self):
-        return '%s (%s)' % (self.key, self.query_type)
+    def __str__(self):
+        return self.display_name
 
     def retrieve_context_value(self, x, y, srid=4326):
         """Retrieve context from a location.

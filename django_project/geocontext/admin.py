@@ -10,7 +10,7 @@ from geocontext.models.context_cache import ContextCache
 
 class ContextServiceRegistryAdmin(admin.ModelAdmin):
     """Context Service Registry admin model."""
-    list_display = ('key', 'display_name', 'query_type', 'url')
+    list_display = ('key', 'display_name', 'query_type', 'parent', 'url')
 
 
 class ContextCacheAdmin(OSMGeoAdmin):

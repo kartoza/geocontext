@@ -139,6 +139,22 @@ class ContextValueGeometryList(views.APIView):
             csr_keys = [o.key for o in context_service_registries]
         else:
             csr_keys = csr_keys.split(',')
+
+        with_parent = self.request.query_params.get(
+            'with-parent', 'False')
+
+        if len(csr_keys) == 1 and strtobool(with_parent):
+            hierarchy_csr_keys = [csr_keys[0]]
+            current_csr = ContextServiceRegistry.objects.get(
+                key=csr_keys[0])
+            while current_csr is not None:
+                current_csr = current_csr.parent
+                if current_csr is not None:
+                    hierarchy_csr_keys.append(current_csr.key)
+                else:
+                    break
+            csr_keys = hierarchy_csr_keys
+
         context_caches = []
         for csr_key in csr_keys:
             context_cache = retrieve_context(x, y, csr_key)
