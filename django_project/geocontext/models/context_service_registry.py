@@ -132,6 +132,14 @@ class ContextServiceRegistry(models.Model):
         max_length=200,
     )
 
+    parent = models.ForeignKey(
+        'self',
+        verbose_name='The parent of this service registry',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+
     def __unicode__(self):
         return '%s (%s)' % (self.key, self.query_type)
 
