@@ -262,6 +262,6 @@ class ContextServiceRegistry(models.Model):
             return url
 
     def save(self, *args, **kwargs):
-        if self.parent.key == self.key:
+        if self.parent and self.parent.key == self.key:
             raise ValidationError('Can not have itself as a parent CSR')
         return super(ContextServiceRegistry, self).save(*args, **kwargs)
