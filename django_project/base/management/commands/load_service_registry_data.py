@@ -63,6 +63,8 @@ class Command(BaseCommand):
                 service_registry, created = ContextServiceRegistry.objects.\
                     get_or_create(key=service_registry_data['key'])
                 for k, v in service_registry_data.items():
+                    if k == 'parent':
+                        continue
                     setattr(service_registry, k, v)
                 service_registry.save()
                 if service_registry:
@@ -74,6 +76,27 @@ class Command(BaseCommand):
                     failed_load += 1
             else:
                 incomplete_item += 1
+        print('Set parent')
+        # Set parent for each item
+        for service_registry_data in data:
+            if not service_registry_data.get('parent'):
+                continue
+            try:
+                service_registry = ContextServiceRegistry.objects.get(
+                    key=service_registry_data['key'])
+                service_registry_parent = ContextServiceRegistry.objects.get(
+                    key=service_registry_data['parent'])
+                service_registry.parent = service_registry_parent
+                service_registry.save()
+                print('Successfully add parent of %s to %s' % (
+                    service_registry.key, service_registry.parent.key))
+            except ContextServiceRegistry.DoesNotExist as e:
+                print('Can not add parent %s to %s because %s' % (
+                    service_registry_data['key'],
+                    service_registry_data.get('parent', 'Missing'),
+                    e
+                ))
+
         print('Total data: %d item' % total_data)
         print('Incomplete items: %d item' % incomplete_item)
         print('Success loading : %d item' % loaded)
