@@ -7,6 +7,7 @@ import pytz
 from xml.dom import minidom
 
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.http import QueryDict
 
@@ -259,3 +260,8 @@ class ContextServiceRegistry(models.Model):
             url += '&BBOX=' + bbox_string
 
             return url
+
+    def save(self, *args, **kwargs):
+        if self.parent.key == self.key:
+            raise ValidationError('Can not have itself as a parent CSR')
+        return super(ContextServiceRegistry, self).save(*args, **kwargs)
