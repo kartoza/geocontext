@@ -95,6 +95,13 @@ load-service-registry-data:
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py load_service_registry_data
 
+delete-context-cache:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Delete context cache."
+	@echo "------------------------------------------------------------------"
+	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py delete_context_cache
+
 update-migrations:
 	@echo
 	@echo "------------------------------------------------------------------"
