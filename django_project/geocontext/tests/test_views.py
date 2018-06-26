@@ -1,10 +1,12 @@
 # coding=utf-8
 """Test views."""
 
-from django.test import TestCase
 from datetime import datetime
 
-from geocontext.tests.models.model_factories import ContextServiceRegistryF
+from django.test import TestCase
+from django.core import management
+from rest_framework.test import APIClient
+
 from geocontext.models.context_service_registry import ContextServiceRegistry
 
 from geocontext.views import retrieve_context
@@ -13,22 +15,23 @@ from geocontext.views import retrieve_context
 class TestGeoContextView(TestCase):
     """Test for geocontext view."""
 
+    def setUp(self):
+        """Setup test data."""
+        management.call_command('load_service_registry_data')
+
+    def tearDown(self):
+        """Delete all service registry data."""
+        service_registries = ContextServiceRegistry.objects.all()
+        for service_registry in service_registries:
+            service_registry.delete()
+
     def test_cache_retrieval(self):
         """Test for retrieving from service registry and cache."""
         x = 27.8
         y = -32.1
 
-        service_registry = ContextServiceRegistryF.create()
-        service_registry.url = (
-            'http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs')
-        service_registry.srid = 4326
-        service_registry.query_type = ContextServiceRegistry.WFS
-        service_registry.layer_typename = 'water_management_area'
-        service_registry.service_version = '1.0.0'
-
-        service_registry.result_regex = 'qgs:name'
-
-        service_registry.save()
+        service_registry = ContextServiceRegistry.objects.get(
+            key='water_management_area')
 
         start_direct = datetime.now()
         retrieve_context(x, y, service_registry.key)
@@ -44,3 +47,18 @@ class TestGeoContextView(TestCase):
             duration_direct.total_seconds(), duration_cache.total_seconds())
         print(message)
         self.assertGreater(duration_direct, duration_cache, message)
+
+    def test_retrieve_with_parent(self):
+        """Test retrieve cache with parent."""
+        client = APIClient()
+        response = client.get(
+            '/geocontext/value/list/27/-31/tertiary_catchment_area/?'
+            'with-geometry=False&with-parent=False')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(len(response.data), 1)
+
+        response = client.get(
+            '/geocontext/value/list/27/-31/tertiary_catchment_area/?'
+            'with-geometry=False&with-parent=True')
+        self.assertEqual(response.status_code, 200)
+        self.assertGreater(len(response.data), 1)
