@@ -95,6 +95,13 @@ load-service-registry-data:
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py load_service_registry_data
 
+export-data:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Exporting GeoContext Data."
+	@echo "------------------------------------------------------------------"
+	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py export_data
+
 delete-context-cache:
 	@echo
 	@echo "------------------------------------------------------------------"

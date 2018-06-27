@@ -15,7 +15,7 @@ class ContextServiceRegistrySerializer(serializers.ModelSerializer):
             'name',
             'description',
             'url',
-            'query_url',
+            # 'query_url',
             'query_type',
             'result_regex',
             'time_to_live',
