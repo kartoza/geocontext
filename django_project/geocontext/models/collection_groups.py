@@ -10,10 +10,13 @@ from geocontext.models.context_group import ContextGroup
 class CollectionGroups(models.Model):
     """Collection Groups"""
 
-    context_group = models.ForeignKey(ContextGroup, on_delete=models.CASCADE)
+    class Meta:
+        unique_together = ('context_collection', 'context_group',)
+
     context_collection = models.ForeignKey(
         ContextCollection, on_delete=models.CASCADE)
-    order = models.IntegerField(
+    context_group = models.ForeignKey(ContextGroup, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField(
         verbose_name='Order',
         null=False,
         blank=True,
