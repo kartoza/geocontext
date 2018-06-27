@@ -13,8 +13,8 @@ class ContextValueSerializer(serializers.ModelSerializer):
     key = serializers.ReadOnlyField(source='service_registry.key')
     parent = serializers.SerializerMethodField(
         source='service_registry.parent.key')
-    display_name = serializers.ReadOnlyField(
-        source='service_registry.display_name')
+    name = serializers.ReadOnlyField(
+        source='service_registry.name')
     description = serializers.ReadOnlyField(
         source='service_registry.description')
     query_type = serializers.ReadOnlyField(
@@ -26,7 +26,7 @@ class ContextValueSerializer(serializers.ModelSerializer):
             'key',
             'parent',
             'value',
-            'display_name',
+            'name',
             'description',
             'query_type',
         )

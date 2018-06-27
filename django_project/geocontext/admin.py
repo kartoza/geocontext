@@ -30,7 +30,7 @@ class CollectionGroupsInLine(admin.TabularInline):
 
 class ContextServiceRegistryAdmin(admin.ModelAdmin):
     """Context Service Registry admin model."""
-    list_display = ('key', 'display_name', 'query_type', 'parent', 'url')
+    list_display = ('key', 'name', 'query_type', 'parent', 'url')
 
 
 class ContextCacheAdmin(OSMGeoAdmin):

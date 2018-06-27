@@ -12,7 +12,7 @@ class ContextServiceRegistrySerializer(serializers.ModelSerializer):
         model = ContextServiceRegistry
         fields = (
             'key',
-            'display_name',
+            'name',
             'description',
             'url',
             'query_url',
