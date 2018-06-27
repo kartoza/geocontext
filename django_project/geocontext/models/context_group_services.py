@@ -17,5 +17,6 @@ class ContextGroupServices(models.Model):
     order = models.IntegerField(
         verbose_name='Order',
         null=False,
-        blank=True
+        blank=True,
+        default=0
     )

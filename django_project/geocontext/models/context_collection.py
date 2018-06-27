@@ -4,6 +4,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from geocontext.models.context_group import ContextGroup
+
 
 class ContextCollection(models.Model):
     """Context Collection"""
@@ -21,6 +23,20 @@ class ContextCollection(models.Model):
         blank=False,
         null=False,
         max_length=200,
+    )
+
+
+    description = models.TextField(
+        null=True,
+        blank=True,
+        help_text='Description of the Context Collection.'
+    )
+
+    context_groups = models.ManyToManyField(
+        ContextGroup,
+        help_text=_('List of context group in this context collection.'),
+        through='CollectionGroups',
+        blank=True,
     )
 
     def __str__(self):
