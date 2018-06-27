@@ -4,6 +4,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from geocontext.models.context_service_registry import ContextServiceRegistry
+
 
 class ContextGroup(models.Model):
     """Context Group"""
@@ -21,6 +23,19 @@ class ContextGroup(models.Model):
         blank=False,
         null=False,
         max_length=200,
+    )
+
+    description = models.TextField(
+        null=True,
+        blank=True,
+        help_text='Description of the Context Group.'
+    )
+
+    context_service_registries = models.ManyToManyField(
+        ContextServiceRegistry,
+        help_text=_('List of context service registry in the context group.'),
+        through='ContextGroupServices',
+        blank=True,
     )
 
     def __str__(self):

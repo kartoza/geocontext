@@ -22,12 +22,12 @@ class ContextCacheAdmin(OSMGeoAdmin):
 
 class ContextGroupAdmin(admin.ModelAdmin):
     """Context Group admin model."""
-    list_display = ('key', 'name')
+    list_display = ('key', 'name', 'description')
 
 
 class ContextCollectionAdmin(admin.ModelAdmin):
     """Context Collection admin model."""
-    list_display = ('key', 'name')
+    list_display = ('key', 'name', 'description')
 
 
 admin.site.register(ContextServiceRegistry, ContextServiceRegistryAdmin)

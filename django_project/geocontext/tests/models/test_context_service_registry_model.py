@@ -1,5 +1,5 @@
 # coding=utf-8
-"""Test for lesson models."""
+"""Test for context service registry model."""
 
 from django.test import TestCase
 
@@ -12,7 +12,7 @@ class TestContextServiceRegistry(TestCase):
     """Test CSR models."""
 
     def test_ContextServiceRegistry_create(self):
-        """Test section model creation."""
+        """Test CSR model creation."""
 
         model = ContextServiceRegistryF.create()
 
