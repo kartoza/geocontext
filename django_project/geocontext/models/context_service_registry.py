@@ -7,6 +7,7 @@ import pytz
 from xml.dom import minidom
 
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.http import QueryDict
 
@@ -132,8 +133,16 @@ class ContextServiceRegistry(models.Model):
         max_length=200,
     )
 
-    def __unicode__(self):
-        return '%s (%s)' % (self.key, self.query_type)
+    parent = models.ForeignKey(
+        'self',
+        verbose_name='The parent of this service registry',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+
+    def __str__(self):
+        return self.display_name
 
     def retrieve_context_value(self, x, y, srid=4326):
         """Retrieve context from a location.
@@ -251,3 +260,8 @@ class ContextServiceRegistry(models.Model):
             url += '&BBOX=' + bbox_string
 
             return url
+
+    def save(self, *args, **kwargs):
+        if self.parent and self.parent.key == self.key:
+            raise ValidationError('Can not have itself as a parent CSR')
+        return super(ContextServiceRegistry, self).save(*args, **kwargs)

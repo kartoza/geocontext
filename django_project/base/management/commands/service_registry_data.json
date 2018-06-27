@@ -7,7 +7,8 @@
     "query_type": "WFS",
     "srid": 3857,
     "result_regex": "qgs:provname",
-    "service_version": "1.0.0"
+    "service_version": "1.0.0",
+    "parent": null
   },
   {
     "key": "water_management_area",
@@ -17,27 +18,52 @@
     "query_type": "WFS",
     "srid": 4326,
     "result_regex": "qgs:name",
-    "service_version": "1.0.0"
+    "service_version": "1.0.0",
+    "parent": null
   },
   {
-    "key": "Primary Catchment",
+    "key": "primary_catchment_area",
+    "display_name": "Primary Catchment Area",
     "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
-    "layer_typename": "Primary_catchment_area"
+    "layer_typename": "primary_catchment_area",
+    "query_type": "WFS",
+    "srid": 3857,
+    "result_regex": "qgs:name",
+    "service_version": "1.0.0",
+    "parent": null
   },
   {
-    "key": "Secondary Catchment",
+    "key": "secondary_catchment_area",
+    "display_name": "Secondary Catchment Area",
     "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
-    "layer_typename": "Secondary_catchment_area"
+    "layer_typename": "secondary_catchment_area",
+    "query_type": "WFS",
+    "srid": 3857,
+    "result_regex": "qgs:name",
+    "service_version": "1.0.0",
+    "parent": "primary_catchment_area"
   },
   {
-    "key": "Tertiary Catchment",
+    "key": "tertiary_catchment_area",
+    "display_name": "Tertiary Catchment Area",
     "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
-    "layer_typename": "Tertiary_catchment_area"
+    "layer_typename": "tertiary_catchment_area",
+    "query_type": "WFS",
+    "srid": 3857,
+    "result_regex": "qgs:name",
+    "service_version": "1.0.0",
+    "parent": "secondary_catchment_area"
   },
   {
-    "key": "Quaternary Catchment",
+    "key": "quaternary_catchment_area",
+    "display_name": "Quaternary Catchment Area",
     "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
-    "layer_typename": "Quaternary_catchment_area"
+    "layer_typename": "quaternary_catchment_area",
+    "query_type": "WFS",
+    "srid": 3857,
+    "result_regex": "qgs:name",
+    "service_version": "1.0.0",
+    "parent": "tertiary_catchment_area"
   },
   {
     "key": "Ecoregion Level I",
