@@ -1,0 +1,74 @@
+[
+    {
+        "key": "provinces",
+        "name": "Provinces",
+        "description": null,
+        "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
+        "query_type": "WFS",
+        "result_regex": "qgs:provname",
+        "time_to_live": 604800,
+        "srid": 3857,
+        "layer_typename": "sa_provinces",
+        "service_version": "1.0.0"
+    },
+    {
+        "key": "water_management_area",
+        "name": "Water Management Area",
+        "description": null,
+        "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
+        "query_type": "WFS",
+        "result_regex": "qgs:name",
+        "time_to_live": 604800,
+        "srid": 4326,
+        "layer_typename": "water_management_area",
+        "service_version": "1.0.0"
+    },
+    {
+        "key": "primary_catchment_area",
+        "name": "Primary Catchment Area",
+        "description": null,
+        "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
+        "query_type": "WFS",
+        "result_regex": "qgs:name",
+        "time_to_live": 604800,
+        "srid": 3857,
+        "layer_typename": "primary_catchment_area",
+        "service_version": "1.0.0"
+    },
+    {
+        "key": "secondary_catchment_area",
+        "name": "Secondary Catchment Area",
+        "description": null,
+        "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
+        "query_type": "WFS",
+        "result_regex": "qgs:name",
+        "time_to_live": 604800,
+        "srid": 3857,
+        "layer_typename": "secondary_catchment_area",
+        "service_version": "1.0.0"
+    },
+    {
+        "key": "tertiary_catchment_area",
+        "name": "Tertiary Catchment Area",
+        "description": null,
+        "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
+        "query_type": "WFS",
+        "result_regex": "qgs:name",
+        "time_to_live": 604800,
+        "srid": 3857,
+        "layer_typename": "tertiary_catchment_area",
+        "service_version": "1.0.0"
+    },
+    {
+        "key": "quaternary_catchment_area",
+        "name": "Quaternary Catchment Area",
+        "description": null,
+        "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
+        "query_type": "WFS",
+        "result_regex": "qgs:name",
+        "time_to_live": 604800,
+        "srid": 3857,
+        "layer_typename": "quaternary_catchment_area",
+        "service_version": "1.0.0"
+    }
+]
