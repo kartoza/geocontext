@@ -1,7 +1,7 @@
 [
   {
     "key": "provinces",
-    "display_name": "Provinces",
+    "name": "Provinces",
     "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
     "layer_typename": "sa_provinces",
     "query_type": "WFS",
@@ -12,7 +12,7 @@
   },
   {
     "key": "water_management_area",
-    "display_name": "Water Management Area",
+    "name": "Water Management Area",
     "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
     "layer_typename": "water_management_area",
     "query_type": "WFS",
@@ -23,7 +23,7 @@
   },
   {
     "key": "primary_catchment_area",
-    "display_name": "Primary Catchment Area",
+    "name": "Primary Catchment Area",
     "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
     "layer_typename": "primary_catchment_area",
     "query_type": "WFS",
@@ -34,7 +34,7 @@
   },
   {
     "key": "secondary_catchment_area",
-    "display_name": "Secondary Catchment Area",
+    "name": "Secondary Catchment Area",
     "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
     "layer_typename": "secondary_catchment_area",
     "query_type": "WFS",
@@ -45,7 +45,7 @@
   },
   {
     "key": "tertiary_catchment_area",
-    "display_name": "Tertiary Catchment Area",
+    "name": "Tertiary Catchment Area",
     "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
     "layer_typename": "tertiary_catchment_area",
     "query_type": "WFS",
@@ -56,7 +56,7 @@
   },
   {
     "key": "quaternary_catchment_area",
-    "display_name": "Quaternary Catchment Area",
+    "name": "Quaternary Catchment Area",
     "url": "http://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
     "layer_typename": "quaternary_catchment_area",
     "query_type": "WFS",

@@ -23,7 +23,7 @@ def is_attribute_complete(service_registry):
     """
     expected_keys = [
         'key',
-        'display_name',
+        'name',
         'url',
         'layer_typename',
         'query_type',

@@ -38,8 +38,8 @@ class ContextServiceRegistry(models.Model):
         unique=True,
     )
 
-    display_name = models.CharField(
-        help_text=_('Display Name of Context Service.'),
+    name = models.CharField(
+        help_text=_('Name of Context Service.'),
         blank=False,
         null=False,
         max_length=200,
@@ -142,7 +142,7 @@ class ContextServiceRegistry(models.Model):
     )
 
     def __str__(self):
-        return self.display_name
+        return self.name
 
     def retrieve_context_value(self, x, y, srid=4326):
         """Retrieve context from a location.

@@ -7,7 +7,7 @@ from geocontext.models.context_service_registry import ContextServiceRegistry
 
 def get_context_service_registry():
     service_registry_choices = [
-        (m.key, m.display_name) for m in ContextServiceRegistry.objects.all()]
+        (m.key, m.name) for m in ContextServiceRegistry.objects.all()]
     return service_registry_choices
 
 
