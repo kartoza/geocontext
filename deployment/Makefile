@@ -102,6 +102,20 @@ export-data:
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py export_data
 
+import-data:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Importing GeoContext Data."
+	@echo "------------------------------------------------------------------"
+	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py import_data
+
+delete-data:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Importing GeoContext Data."
+	@echo "------------------------------------------------------------------"
+	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py delete_data
+
 delete-context-cache:
 	@echo
 	@echo "------------------------------------------------------------------"
