@@ -11,6 +11,7 @@ from geocontext.views import (
     ContextServiceRegistryDetail,
     ContextCacheList,
     ContextValueGeometryList,
+    collection_value_list
 )
 
 urlpatterns = [
@@ -46,6 +47,13 @@ urlpatterns_api = [
               r'(?P<csr_keys>[\w\-,]+)/$',
         view=ContextValueGeometryList.as_view(),
         name='context-value-list-csr'
+        ),
+    url(regex=r'^geocontext/value/collection/'
+              r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
+              r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
+              r'(?P<collection_key>[\w\-,]+)/$',
+        view=collection_value_list,
+        name='context-collection-list'
         ),
 ]
 

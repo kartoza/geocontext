@@ -6,8 +6,8 @@ from datetime import datetime
 from distutils.util import strtobool
 
 from django.contrib.gis.geos import Point
-from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.core.serializers import serialize
 
 from rest_framework import generics
@@ -15,8 +15,13 @@ from rest_framework import views
 from rest_framework.response import Response
 
 from geocontext.utilities import convert_coordinate
-from geocontext.models.context_service_registry import ContextServiceRegistry
+
 from geocontext.models.context_cache import ContextCache
+from geocontext.models.context_collection import ContextCollection
+from geocontext.models.context_service_registry import ContextServiceRegistry
+from geocontext.models.collection_groups import CollectionGroups
+from geocontext.models.context_group_services import ContextGroupServices
+
 from geocontext.forms import GeoContextForm
 
 from geocontext.serializers.context_service_registry import (
@@ -166,3 +171,39 @@ class ContextValueGeometryList(views.APIView):
         else:
             serializer = ContextValueSerializer(context_caches, many=True)
         return Response(serializer.data)
+
+
+def collection_value_list(request, x, y, collection_key):
+    # Parse location
+    x = float(x)
+    y = float(y)
+    data = {}
+    context_collection = get_object_or_404(
+        ContextCollection, key=collection_key)
+    data['key'] = collection_key
+    data['name'] = context_collection.name
+    data['context_groups'] = []
+    collection_groups = CollectionGroups.objects.filter(
+        context_collection=context_collection).order_by('order')
+    for collection_group in collection_groups:
+        context_group = collection_group.context_group
+        context_group_data = {
+            'key': context_group.key,
+            'name': context_group.name,
+        }
+        context_group_services = ContextGroupServices.objects.filter(
+            context_group=context_group).order_by('order')
+        context_caches = []
+        for context_group_service in context_group_services:
+            context_service_registry_key = \
+                context_group_service.context_service_registry.key
+            context_cache = retrieve_context(
+                x, y, context_service_registry_key)
+            context_caches.append(context_cache)
+        context_cache_serializer = ContextValueSerializer(
+            context_caches, many=True)
+        context_group_data['context_service_registries'] = \
+            context_cache_serializer.data
+        data['context_groups'].append(context_group_data)
+
+    return JsonResponse(data)
