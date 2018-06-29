@@ -10,8 +10,8 @@ from geocontext.views import (
     ContextServiceRegistryDetail,
     ContextCacheList,
     ContextValueGeometryList,
-    collection_value_list,
     ContextGroupValueView,
+    ContextCollectionValueView,
     get_context
 )
 
@@ -52,8 +52,8 @@ urlpatterns_api = [
     url(regex=r'^geocontext/value/collection/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
-              r'(?P<collection_key>[\w\-,]+)/$',
-        view=collection_value_list,
+              r'(?P<context_collection_key>[\w\-,]+)/$',
+        view=ContextCollectionValueView.as_view(),
         name='context-collection-list'
         ),
     url(regex=r'^geocontext/value/group/'
