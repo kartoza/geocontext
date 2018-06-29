@@ -6,12 +6,13 @@ from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from geocontext.views import (
-    get_context,
     ContextServiceRegistryList,
     ContextServiceRegistryDetail,
     ContextCacheList,
     ContextValueGeometryList,
-    collection_value_list
+    collection_value_list,
+    ContextGroupValueView,
+    get_context
 )
 
 urlpatterns = [
@@ -54,6 +55,13 @@ urlpatterns_api = [
               r'(?P<collection_key>[\w\-,]+)/$',
         view=collection_value_list,
         name='context-collection-list'
+        ),
+    url(regex=r'^geocontext/value/group/'
+              r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
+              r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
+              r'(?P<context_group_key>[\w\-,]+)/$',
+        view=ContextGroupValueView.as_view(),
+        name='context-group-list'
         ),
 ]
 

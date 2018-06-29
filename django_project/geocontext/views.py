@@ -1,113 +1,31 @@
 # coding=utf-8
 """View definitions."""
 
-import pytz
-from datetime import datetime
 from distutils.util import strtobool
 
-from django.contrib.gis.geos import Point
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404, JsonResponse
 from django.core.serializers import serialize
+from django.shortcuts import get_object_or_404, render
+from django.http import JsonResponse, HttpResponse, Http404
 
 from rest_framework import generics
 from rest_framework import views
 from rest_framework.response import Response
 
-from geocontext.utilities import convert_coordinate
-
+from geocontext.forms import GeoContextForm
 from geocontext.models.context_cache import ContextCache
 from geocontext.models.context_collection import ContextCollection
 from geocontext.models.context_service_registry import ContextServiceRegistry
 from geocontext.models.collection_groups import CollectionGroups
 from geocontext.models.context_group_services import ContextGroupServices
 
-from geocontext.forms import GeoContextForm
-
 from geocontext.serializers.context_service_registry import (
     ContextServiceRegistrySerializer)
 from geocontext.serializers.context_cache import (
     ContextValueGeoJSONSerializer, ContextValueSerializer)
 
-
-def retrieve_context(x, y, service_registry_key, srid=4326):
-    """Retrieve context from point x, y.
-
-    :param x: X coordinate
-    :type x: float
-
-    :param y: Y Coordinate
-    :type y: float
-
-    :param service_registry_key: The key of service registry.
-    :type service_registry_key: basestring
-
-    :param srid: Spatial Reference ID
-    :type srid: int
-
-    :returns: Geometry of the context and the value.
-    :rtype: (GEOSGeometry, basestring)
-    """
-    if srid != 4326:
-        point = Point(*convert_coordinate(x, y, srid, 4326), srid=4326)
-    else:
-        point = Point(x, y, srid=4326)
-
-    # Check in cache
-    service_registry = ContextServiceRegistry.objects.get(
-        key=service_registry_key)
-    if not service_registry:
-        raise Exception(
-            'Service Registry is not Found for %s' % service_registry_key)
-    caches = ContextCache.objects.filter(
-        service_registry=service_registry)
-
-    for cache in caches:
-        if cache.geometry.contains(point):
-            if datetime.utcnow().replace(tzinfo=pytz.UTC) < cache.expired_time:
-                return cache
-            else:
-                # No need to check the rest cache, since it always only 1
-                # cache that intersect for a point.
-                cache.delete()
-                break
-
-    # Can not find in caches, request from context service.
-    return service_registry.retrieve_context_value(x, y, srid)
-
-
-def get_context(request):
-    """Get context view."""
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = GeoContextForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            cleaned_data = form.cleaned_data
-            x = cleaned_data['x']
-            y = cleaned_data['y']
-            srid = cleaned_data.get('srid', 4326)
-            service_registry_key = cleaned_data['service_registry_key']
-            result = retrieve_context(x, y, service_registry_key, srid)
-            fields = ('value', 'key')
-            if result:
-                return HttpResponse(
-                    serialize(
-                        'geojson',
-                        [result],
-                        geometry_field='geometry_multi_polygon',
-                        fields=fields),
-                    content_type='application/json')
-            else:
-                raise Http404(
-                    'Sorry! We could not find context for your point!')
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = GeoContextForm(initial={'srid': 4326})
-
-    return render(request, 'geocontext/get_context.html', {'form': form})
+from geocontext.serializers.context_group import (
+    ContextGroupValueSerializer, ContextGroupValue)
+from geocontext.models.utilities import retrieve_context
 
 
 class ContextServiceRegistryList(generics.ListCreateAPIView):
@@ -173,6 +91,18 @@ class ContextValueGeometryList(views.APIView):
         return Response(serializer.data)
 
 
+class ContextGroupValueView(views.APIView):
+    """API view for Context Group Value."""
+    def get(self, request, x, y, context_group_key):
+        # Parse location
+        x = float(x)
+        y = float(y)
+        context_group_value = ContextGroupValue(x, y, context_group_key)
+        context_group_value_serializer = ContextGroupValueSerializer(
+            context_group_value)
+        return Response(context_group_value_serializer.data)
+
+
 def collection_value_list(request, x, y, collection_key):
     # Parse location
     x = float(x)
@@ -207,3 +137,37 @@ def collection_value_list(request, x, y, collection_key):
         data['context_groups'].append(context_group_data)
 
     return JsonResponse(data)
+
+
+def get_context(request):
+    """Get context view."""
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = GeoContextForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            x = cleaned_data['x']
+            y = cleaned_data['y']
+            srid = cleaned_data.get('srid', 4326)
+            service_registry_key = cleaned_data['service_registry_key']
+            result = retrieve_context(x, y, service_registry_key, srid)
+            fields = ('value', 'key')
+            if result:
+                return HttpResponse(
+                    serialize(
+                        'geojson',
+                        [result],
+                        geometry_field='geometry_multi_polygon',
+                        fields=fields),
+                    content_type='application/json')
+            else:
+                raise Http404(
+                    'Sorry! We could not find context for your point!')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = GeoContextForm(initial={'srid': 4326})
+
+    return render(request, 'geocontext/get_context.html', {'form': form})
