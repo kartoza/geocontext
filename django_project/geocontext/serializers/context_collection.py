@@ -14,7 +14,7 @@ class ContextCollectionSerializer(serializers.ModelSerializer):
     """Serializer class for Context Collection."""
 
     context_group_keys = serializers.SerializerMethodField(
-        source='context_groups.parent.key')
+        source='context_groups.key')
 
     class Meta:
         model = ContextCollection

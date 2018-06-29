@@ -14,7 +14,7 @@ class ContextGroupSerializer(serializers.ModelSerializer):
     """Serializer class for Context Group."""
 
     context_service_registry_keys = serializers.SerializerMethodField(
-        source='service_registry.parent.key')
+        source='service_registry.key')
 
     class Meta:
         model = ContextGroup

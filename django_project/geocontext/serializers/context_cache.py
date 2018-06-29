@@ -11,8 +11,6 @@ class ContextValueSerializer(serializers.ModelSerializer):
     """JSON serializer for context cache.."""
 
     key = serializers.ReadOnlyField(source='service_registry.key')
-    parent = serializers.SerializerMethodField(
-        source='service_registry.parent.key')
     name = serializers.ReadOnlyField(
         source='service_registry.name')
     description = serializers.ReadOnlyField(
@@ -24,18 +22,11 @@ class ContextValueSerializer(serializers.ModelSerializer):
         model = ContextCache
         fields = (
             'key',
-            'parent',
             'value',
             'name',
             'description',
             'query_type',
         )
-
-    def get_parent(self, obj):
-        if obj.service_registry.parent:
-            return obj.service_registry.parent.key
-        else:
-            return None
 
 
 class ContextValueGeoJSONSerializer(
