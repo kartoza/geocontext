@@ -25,6 +25,9 @@ from geocontext.serializers.context_cache import (
 
 from geocontext.serializers.context_group import (
     ContextGroupValueSerializer, ContextGroupValue)
+from geocontext.serializers.context_collection import (
+    ContextCollectionValue, ContextCollectionValueSerializer)
+
 from geocontext.models.utilities import retrieve_context
 
 
@@ -101,6 +104,19 @@ class ContextGroupValueView(views.APIView):
         context_group_value_serializer = ContextGroupValueSerializer(
             context_group_value)
         return Response(context_group_value_serializer.data)
+
+
+class ContextCollectionValueView(views.APIView):
+    """API view for Context Collection Value."""
+    def get(self, request, x, y, context_collection_key):
+        # Parse location
+        x = float(x)
+        y = float(y)
+        context_collection_value = ContextCollectionValue(
+            x, y, context_collection_key)
+        context_collection_value_serializer = ContextCollectionValueSerializer(
+            context_collection_value)
+        return Response(context_collection_value_serializer.data)
 
 
 def collection_value_list(request, x, y, collection_key):

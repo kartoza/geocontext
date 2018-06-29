@@ -44,6 +44,8 @@ class ContextGroupValue(object):
         self.y = y
         self.context_group = get_object_or_404(
             ContextGroup, key=context_group_key)
+        self.key = self.context_group.key
+        self.name = self.context_group.name
         self.srid = srid
         self.service_registry_values = []
 
@@ -64,7 +66,7 @@ class ContextGroupValue(object):
 
 class ContextGroupValueSerializer(serializers.Serializer):
     """Serializer for Context Value Group class."""
-    x = serializers.FloatField()
-    y = serializers.FloatField()
+    key = serializers.CharField()
+    name = serializers.CharField()
     service_registry_values = serializers.ListSerializer(
         child=ContextValueSerializer())
