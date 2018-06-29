@@ -88,13 +88,6 @@ migrate:
 	@# but we want to continue anyway.
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py migrate
 
-load-service-registry-data:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Load service registry data."
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py load_service_registry_data
-
 export-data:
 	@echo
 	@echo "------------------------------------------------------------------"

@@ -5,7 +5,6 @@ from datetime import datetime
 
 from django.test import TestCase
 from django.core import management
-from rest_framework.test import APIClient
 
 from geocontext.models.context_service_registry import ContextServiceRegistry
 
@@ -17,7 +16,8 @@ class TestGeoContextView(TestCase):
 
     def setUp(self):
         """Setup test data."""
-        management.call_command('load_service_registry_data')
+        management.call_command('import_data')
+        pass
 
     def tearDown(self):
         """Delete all service registry data."""
@@ -47,18 +47,3 @@ class TestGeoContextView(TestCase):
             duration_direct.total_seconds(), duration_cache.total_seconds())
         print(message)
         self.assertGreater(duration_direct, duration_cache, message)
-
-    def test_retrieve_with_parent(self):
-        """Test retrieve cache with parent."""
-        client = APIClient()
-        response = client.get(
-            '/geocontext/value/list/27/-31/tertiary_catchment_area/?'
-            'with-geometry=False&with-parent=False')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(len(response.data), 1)
-
-        response = client.get(
-            '/geocontext/value/list/27/-31/tertiary_catchment_area/?'
-            'with-geometry=False&with-parent=True')
-        self.assertEqual(response.status_code, 200)
-        self.assertGreater(len(response.data), 1)
