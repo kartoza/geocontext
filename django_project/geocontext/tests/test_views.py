@@ -9,7 +9,7 @@ from rest_framework.test import APIClient
 
 from geocontext.models.context_service_registry import ContextServiceRegistry
 
-from geocontext.views import retrieve_context
+from geocontext.models.utilities import retrieve_context
 
 
 class TestGeoContextView(TestCase):

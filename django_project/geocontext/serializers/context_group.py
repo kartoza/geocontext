@@ -1,9 +1,13 @@
 # coding=utf-8
 """Serializer for context group."""
 
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from geocontext.models.context_group import ContextGroup
 from geocontext.models.context_group_services import ContextGroupServices
+from geocontext.serializers.context_cache import ContextValueSerializer
+
+from geocontext.models.utilities import retrieve_context
 
 
 class ContextGroupSerializer(serializers.ModelSerializer):
@@ -29,3 +33,38 @@ class ContextGroupSerializer(serializers.ModelSerializer):
             keys.append(context_group_service.context_service_registry.key)
 
         return keys
+
+
+class ContextGroupValue(object):
+    """Class for holding values of context group."""
+
+    def __init__(self, x, y, context_group_key, srid=4326):
+        """Initialize method for context group value."""
+        self.x = x
+        self.y = y
+        self.context_group = get_object_or_404(
+            ContextGroup, key=context_group_key)
+        self.srid = srid
+        self.service_registry_values = []
+
+        self.populate_service_registry_values()
+
+    def populate_service_registry_values(self):
+        """Populate service registry values."""
+        self.service_registry_values = []
+        context_group_services = ContextGroupServices.objects.filter(
+            context_group=self.context_group).order_by('order')
+        for context_group_service in context_group_services:
+            context_service_registry_key = \
+                context_group_service.context_service_registry.key
+            context_cache = retrieve_context(
+                self.x, self.y, context_service_registry_key, self.srid)
+            self.service_registry_values.append(context_cache)
+
+
+class ContextGroupValueSerializer(serializers.Serializer):
+    """Serializer for Context Value Group class."""
+    x = serializers.FloatField()
+    y = serializers.FloatField()
+    service_registry_values = serializers.ListSerializer(
+        child=ContextValueSerializer())
