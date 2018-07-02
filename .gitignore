@@ -125,3 +125,5 @@ deployment/btsync-media.env.PRODUCTION
 deployment/docker/Dockerfile-prod
 deployment/docker/projecta.tar.gz
 
+# GeoContext data backup directory
+django_project/base/management/commands/backups/
