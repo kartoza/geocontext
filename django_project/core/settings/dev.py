@@ -55,5 +55,3 @@ LOGGING = {
         'level': 'WARNING'
     }
 }
-
-CORS_ORIGIN_ALLOW_ALL = True
