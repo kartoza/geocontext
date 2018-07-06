@@ -100,7 +100,7 @@ import-data:
 	@echo "------------------------------------------------------------------"
 	@echo "Importing GeoContext Data."
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py import_data
+	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py import_data $(FILE_URI)
 
 delete-data:
 	@echo

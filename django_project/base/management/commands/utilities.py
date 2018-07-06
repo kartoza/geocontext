@@ -1,7 +1,9 @@
 # coding=utf-8
 """Utilities for commands."""
 
+import os
 import json
+import requests
 
 from geocontext.models.context_service_registry import ContextServiceRegistry
 from geocontext.models.context_group import ContextGroup
@@ -53,17 +55,25 @@ def export_data(file_path):
             ensure_ascii=False)
 
 
-def import_data(file_path):
+def import_data(file_uri):
     """Import context service data from file_path.
 
-    :param file_path: Path to json file.
-    :type file_path: str
+    :param file_uri: Path to json resource.
+    :type file_uri: str
     """
+    print('=========================')
     # Read json file
-    with open(file_path) as f:
-        data = json.load(f)
+    if os.path.exists(file_uri):
+        print('Read from local file')
+        with open(file_uri) as f:
+            data = json.load(f)
+    else:
+        print('Read from URL')
+        r = requests.get(file_uri)
+        data = r.json()
 
     # Load Context Service Registries
+    print('Load Context Service Registry....')
     context_service_registries = data['context_service_registry']
     for csr_data in context_service_registries:
         service_registry, created = ContextServiceRegistry.objects. \
@@ -72,8 +82,10 @@ def import_data(file_path):
         for k, v in csr_data.items():
             setattr(service_registry, k, v)
         service_registry.save()
+        print('   CSR %s is loaded' % service_registry.name)
 
     # Load Context Groups
+    print('Load Context Groups....')
     context_groups = data['context_group']
     for context_group_data in context_groups:
         context_group, created = ContextGroup.objects. \
@@ -95,8 +107,10 @@ def import_data(file_path):
                     i += 1
             setattr(context_group, k, v)
         context_group.save()
+        print('   Context Group %s is loaded' % context_group.name)
 
     # Load Context Collections
+    print('Load Context Collection....')
     context_collections = data['context_collection']
     for context_collection_data in context_collections:
         context_collection, created = ContextCollection.objects. \
@@ -118,20 +132,21 @@ def import_data(file_path):
                     i += 1
             setattr(context_collection, k, v)
         context_collection.save()
+        print('   Context Collection %s is loaded' % context_collection.name)
 
     print('After import data process...')
-    print('Number of CSR %s' % ContextServiceRegistry.objects.count())
-    print('Number of Context Group %s' % ContextGroup.objects.count())
-    print('Number of Context Collection %s' %
+    print('   Number of CSR %s' % ContextServiceRegistry.objects.count())
+    print('   Number of Context Group %s' % ContextGroup.objects.count())
+    print('   Number of Context Collection %s' %
           ContextCollection.objects.count())
 
 
 def delete_data():
     """Delete geocontext data utilities method."""
     print('Before delete process...')
-    print('Number of CSR %s' % ContextServiceRegistry.objects.count())
-    print('Number of Context Group %s' % ContextGroup.objects.count())
-    print('Number of Context Collection %s' %
+    print('   Number of CSR %s' % ContextServiceRegistry.objects.count())
+    print('   Number of Context Group %s' % ContextGroup.objects.count())
+    print('   Number of Context Collection %s' %
           ContextCollection.objects.count())
 
     context_service_registries = ContextServiceRegistry.objects.all()
@@ -147,7 +162,7 @@ def delete_data():
         context_collection.delete()
 
     print('After delete process...')
-    print('Number of CSR %s' % ContextServiceRegistry.objects.count())
-    print('Number of Context Group %s' % ContextGroup.objects.count())
-    print('Number of Context Collection %s' %
+    print('   Number of CSR %s' % ContextServiceRegistry.objects.count())
+    print('   Number of Context Group %s' % ContextGroup.objects.count())
+    print('   Number of Context Collection %s' %
           ContextCollection.objects.count())
