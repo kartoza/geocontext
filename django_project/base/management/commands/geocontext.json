@@ -71,66 +71,6 @@
             "srid": 3857,
             "layer_typename": "quaternary_catchment_area",
             "service_version": "1.0.0"
-        },
-        {
-            "key": "farm_portion",
-            "name": "Farm Portion",
-            "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
-            "query_type": "WFS",
-            "result_regex": "qgs:id",
-            "time_to_live": 604800,
-            "srid": 3857,
-            "layer_typename": "kartoza:farm_portion",
-            "service_version": "1.0.0"
-        },
-        {
-            "key": "erf",
-            "name": "Erven Boundaries",
-            "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
-            "query_type": "WFS",
-            "result_regex": "qgs:id",
-            "time_to_live": 604800,
-            "srid": 4326,
-            "layer_typename": "kartoza:erf",
-            "service_version": "1.0.0"
-        },
-        {
-            "key": "district_municipalities",
-            "name": "District Municipalities",
-            "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
-            "query_type": "WFS",
-            "result_regex": "qgs:district",
-            "time_to_live": 604800,
-            "srid": 3857,
-            "layer_typename": "kartoza:district_municipalities",
-            "service_version": "1.0.0"
-        },
-        {
-            "key": "municipal_ward_boundaries",
-            "name": "Municipal Ward Boundaries",
-            "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
-            "query_type": "WFS",
-            "result_regex": "qgs:mn_name",
-            "time_to_live": 604800,
-            "srid": 3857,
-            "layer_typename": "kartoza:municipal_ward_boundaries",
-            "service_version": "1.0.0"
-        },
-        {
-            "key": "sub_places",
-            "name": "Sub Places",
-            "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
-            "query_type": "WFS",
-            "result_regex": "qgs:sp_name",
-            "time_to_live": 604800,
-            "srid": 4326,
-            "layer_typename": "kartoza:sub_places",
-            "service_version": "1.0.0"
         }
     ],
     "context_group": [
