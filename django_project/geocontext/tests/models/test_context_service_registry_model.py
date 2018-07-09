@@ -93,6 +93,42 @@ class TestContextServiceRegistry(TestCase):
         # Automatically projected to 4326
         self.assertEqual(context_cache.geometry.srid, 4326)
 
+    def test_retrieve_context_value_geoserver(self):
+        """Test retrieving context value from a point with different CRS.
+
+        The CRS is 4326 (query), 3857 (service)
+        """
+        x = 27.8
+        y = -32.1
+
+        service_registry = ContextServiceRegistryF.create()
+        service_registry.url = (
+            'http://maps.kartoza.com/geoserver/wfs')
+        service_registry.srid = 3857
+        service_registry.query_type = ContextServiceRegistry.WFS
+        service_registry.layer_typename = 'kartoza:sa_provinces'
+        service_registry.service_version = '1.0.0'
+
+        service_registry.result_regex = 'kartoza:provname'
+
+        service_registry.save()
+
+        result = service_registry.retrieve_context_value(x, y)
+        expected_value = 'Eastern Cape'
+        self.assertEqual(result.value, expected_value)
+        self.assertIsNotNone(result.value)
+        self.assertEqual(result.geometry.geom_type, 'MultiPolygon')
+        self.assertTrue(result.geometry.valid)
+
+        context_caches = ContextCache.objects.filter(
+            service_registry=service_registry)
+        self.assertIsNotNone(context_caches)
+        context_cache = context_caches[0]
+        self.assertEqual(context_cache.value, expected_value)
+        self.assertEqual(context_cache.geometry.geom_type, 'MultiPolygon')
+        # Automatically projected to 4326
+        self.assertEqual(context_cache.geometry.srid, 4326)
+
     def test_retrieve_context_value_invalid(self):
         """Test retrieving context value from a point with different CRS.
 

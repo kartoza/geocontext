@@ -152,7 +152,11 @@ class ContextServiceRegistry(models.Model):
         url = self.build_query_url(x, y, srid)
         request = requests.get(url)
         content = request.content
-        geometry = parse_gml_geometry(content)
+        if ':' in self.layer_typename:
+            workspace = self.layer_typename.split(':')[0]
+            geometry = parse_gml_geometry(content, workspace)
+        else:
+            geometry = parse_gml_geometry(content)
         if not geometry:
             return None
         if not geometry.srid:
@@ -247,7 +251,9 @@ class ContextServiceRegistry(models.Model):
                 url = self.url + '&' + query_dict.urlencode()
             else:
                 url = self.url + '?' + query_dict.urlencode()
-            url += '&SRSNAME=%s' % self.srid
+            # Only add SRSNAME when there is no workspace
+            if ':' not in self.layer_typename:
+                url += '&SRSNAME=%s' % self.srid
             url += '&BBOX=' + bbox_string
 
             return url
