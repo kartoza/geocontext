@@ -53,7 +53,7 @@ def parse_gml_geometry(gml_string, workspace=None):
         if workspace:
             tag_name = workspace + ':' + 'geom'
             geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
-            geometry_gml_dom = geometry_dom.childNodes[1]
+            geometry_gml_dom = geometry_dom.childNodes[0]
             return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
         else:
             geometry_dom = xmldoc.getElementsByTagName('qgs:geometry')[0]
