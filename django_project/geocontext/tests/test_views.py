@@ -2,13 +2,17 @@
 """Test views."""
 
 from datetime import datetime
+import os
 
 from django.test import TestCase
-from django.core import management
 
 from geocontext.models.context_service_registry import ContextServiceRegistry
 
 from geocontext.models.utilities import retrieve_context
+from base.management.commands.utilities import import_data
+
+test_data_directory = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), 'data')
 
 
 class TestGeoContextView(TestCase):
@@ -16,7 +20,9 @@ class TestGeoContextView(TestCase):
 
     def setUp(self):
         """Setup test data."""
-        management.call_command('import_data')
+        test_geocontext_file = os.path.join(
+            test_data_directory, 'test_geocontext.json')
+        import_data(test_geocontext_file)
         pass
 
     def tearDown(self):
