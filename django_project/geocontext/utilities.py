@@ -38,7 +38,7 @@ def convert_coordinate(x, y, srid_source, srid_target):
     return point.x, point.y
 
 
-def parse_gml_geometry(gml_string):
+def parse_gml_geometry(gml_string, workspace=None):
     """Parse geometry from gml document.
 
     :param gml_string: String that represent full gml document.
@@ -50,9 +50,15 @@ def parse_gml_geometry(gml_string):
     """
     xmldoc = minidom.parseString(gml_string)
     try:
-        geometry_dom = xmldoc.getElementsByTagName('qgs:geometry')[0]
-        geometry_gml_dom = geometry_dom.childNodes[1]
-        return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
+        if workspace:
+            tag_name = workspace + ':' + 'geom'
+            geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
+            geometry_gml_dom = geometry_dom.childNodes[1]
+            return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
+        else:
+            geometry_dom = xmldoc.getElementsByTagName('qgs:geometry')[0]
+            geometry_gml_dom = geometry_dom.childNodes[1]
+            return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
     except IndexError:
         logger.error('No geometry found')
         return None

@@ -23,8 +23,8 @@ class TestUtilities(SimpleTestCase):
         self.assertAlmostEqual(result[0], 111319.49, places=2)
         self.assertAlmostEqual(result[1], 111325.14, places=2)
 
-    def test_parse_geometry_gml(self):
-        """Test parse_gml_geometry"""
+    def test_parse_geometry_gml_qgis(self):
+        """Test parse_gml_geometry for wfs from qgis server."""
         gml_file_path = os.path.join(test_data_directory, 'wfs.xml')
         self.assertTrue(os.path.exists(gml_file_path))
         with open(gml_file_path) as file:
@@ -33,6 +33,18 @@ class TestUtilities(SimpleTestCase):
         self.assertIsNotNone(geom)
         self.assertTrue(geom.valid)
         self.assertEqual(geom.geom_type, 'Polygon')
+
+    def test_parse_geometry_gml_workspace(self):
+        """Test parse_gml_geometry with workspace"""
+        gml_file_path = os.path.join(test_data_directory, 'wfs_geoserver.xml')
+        self.assertTrue(os.path.exists(gml_file_path))
+        with open(gml_file_path) as file:
+            gml_string = file.read()
+        geom = parse_gml_geometry(gml_string, workspace='kartoza')
+        self.assertIsNotNone(geom)
+        self.assertTrue(geom.valid)
+        self.assertEqual(geom.geom_type, 'MultiPolygon')
+
 
     def test_convert_2d_to_3d(self):
         """Test convert_2d_to_3d."""
