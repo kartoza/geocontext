@@ -2,6 +2,7 @@
 """Test for utilities module."""
 
 import os
+import unittest
 
 from django.test import SimpleTestCase
 from geocontext.utilities import (
@@ -46,6 +47,7 @@ class TestUtilities(SimpleTestCase):
         self.assertEqual(geom.geom_type, 'MultiPolygon')
 
 
+    @unittest.skip('No longer needed.')
     def test_convert_2d_to_3d(self):
         """Test convert_2d_to_3d."""
         point = Point(1, 1, srid=4326)
