@@ -73,73 +73,71 @@
             "service_version": "1.0.0"
         },
         {
-            "key": "farm_portion",
-            "name": "Farm Portion",
-            "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
-            "query_type": "WFS",
-            "result_regex": "qgs:id",
-            "time_to_live": 604800,
-            "srid": 3857,
-            "layer_typename": "kartoza:farm_portion",
-            "service_version": "1.0.0"
-        },
-        {
-            "key": "erf",
-            "name": "Erven Boundaries",
-            "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
-            "query_type": "WFS",
-            "result_regex": "qgs:id",
-            "time_to_live": 604800,
-            "srid": 4326,
-            "layer_typename": "kartoza:erf",
-            "service_version": "1.0.0"
-        },
-        {
-            "key": "district_municipalities",
-            "name": "District Municipalities",
-            "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
-            "query_type": "WFS",
-            "result_regex": "qgs:district",
-            "time_to_live": 604800,
-            "srid": 3857,
-            "layer_typename": "kartoza:district_municipalities",
-            "service_version": "1.0.0"
-        },
-        {
-            "key": "municipal_ward_boundaries",
-            "name": "Municipal Ward Boundaries",
-            "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
-            "query_type": "WFS",
-            "result_regex": "qgs:mn_name",
-            "time_to_live": 604800,
-            "srid": 3857,
-            "layer_typename": "kartoza:municipal_ward_boundaries",
-            "service_version": "1.0.0"
-        },
-        {
-            "key": "sub_places",
-            "name": "Sub Places",
-            "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
-            "query_type": "WFS",
-            "result_regex": "qgs:sp_name",
-            "time_to_live": 604800,
-            "srid": 4326,
-            "layer_typename": "kartoza:sub_places",
-            "service_version": "1.0.0"
+            "key": "provinces_geoserver",
+             "name": "Province GeoServer",
+             "description": null,
+             "url": "http://maps.kartoza.com/geoserver/wfs",
+             "query_type": "WFS",
+             "result_regex": "qgs:id",
+             "time_to_live": 604800,
+             "srid": 3857,
+             "layer_typename": "kartoza:sa_provinces",
+             "service_version": "1.0.0"
         }
+
     ],
     "context_group": [
         {
             "key": "river_catchments_group",
             "name": "River Catchments",
             "description": "Layers that relate to freshwater,estuarine and maritime ecosystems",
+            "key": "river_ecosystem_group",
+            "name": "River Catchments",
+            "description": "Layers that relate to freshwater,estuarine and maritime ecosystems",
             "context_service_registry_keys": [
                 "water_management_area",
+                "primary_catchment_area",
+                "secondary_catchment_area",
+                "tertiary_catchment_area",
+                "quaternary_catchment_area",
+                "nfepa_wetlands",
+                "rehabilitated_wetlands",
+                "dams500g",
+                "rivers500k",
+                "dams500g",
+                "nfepa_rivers"
+            ]
+        },
+        {
+            "key": "political_boundary_group",
+            "name": "Administrative Boundary",
+            "description": "A collection of administrative and cadastral boundaries within South Africa",
+            "context_service_registry_keys": [
+                "provinces",
+                "provinces_geoserver",
+                "district_municipalities",
+                "municipal_ward_boundaries",
+                "sub_places"
+            ]
+        }
+      ,
+        {
+            "key": "cadastre_group",
+            "name": "Cadastre",
+            "description": "Land demarcations from Surveyor General",
+            "context_service_registry_keys": [
+                "farm_portion",
+                "erf"
+            ]
+        },
+        {
+            "key": "vegetation_group",
+            "name": "Land Cover and Land Use",
+            "description": "Layers that depict natural/artificial vegetation and also monitors land-use changes",
+            "context_service_registry_keys": [
+                "vegetation_2012",
+                "sa_biomes"
+
                 "primary_catchment_area",
                 "secondary_catchment_area",
                 "tertiary_catchment_area",
