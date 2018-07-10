@@ -20,8 +20,8 @@ class ContextCache(models.Model):
 
     source_uri = models.CharField(
         help_text=_('Source URI of the Context.'),
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
         max_length=1000,
     )
 
