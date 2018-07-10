@@ -1,11 +1,16 @@
 # coding=utf-8
 """Test for context service registry model."""
 
+import os
+
 from django.test import TestCase
 
 from geocontext.models.context_service_registry import ContextServiceRegistry
 from geocontext.models.context_cache import ContextCache
 from geocontext.tests.models.model_factories import ContextServiceRegistryF
+
+test_data_directory = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), '../data')
 
 
 class TestContextServiceRegistry(TestCase):
@@ -94,7 +99,7 @@ class TestContextServiceRegistry(TestCase):
         self.assertEqual(context_cache.geometry.srid, 4326)
 
     def test_retrieve_context_value_geoserver(self):
-        """Test retrieving context value from a point with different CRS.
+        """Test retrieving context value from a geoserver service.
 
         The CRS is 4326 (query), 3857 (service)
         """
@@ -129,6 +134,39 @@ class TestContextServiceRegistry(TestCase):
         # Automatically projected to 4326
         self.assertEqual(context_cache.geometry.srid, 4326)
 
+    def test_retrieve_context_value_wms(self):
+        """Test retrieving context value from a point with WMS source.
+
+        The CRS is 4326 (query), 3857 (service)
+        """
+        x = 27.8
+        y = -32.1
+
+        service_registry = ContextServiceRegistryF.create()
+        service_registry.url = (
+            'http://maps.kartoza.com/geoserver/kartoza/wms')
+        service_registry.srid = 3857
+        service_registry.query_type = ContextServiceRegistry.WMS
+        service_registry.layer_typename = 'kartoza:south_africa'
+        service_registry.service_version = '1.1.1'
+
+        service_registry.result_regex = 'kartoza:GRAY_INDEX'
+
+        service_registry.save()
+
+        result = service_registry.retrieve_context_value(x, y)
+        expected_value = '746.0'
+        self.assertEqual(result.value, expected_value)
+        self.assertIsNotNone(result.value)
+        self.assertIsNone(result.geometry)
+
+        context_caches = ContextCache.objects.filter(
+            service_registry=service_registry)
+        self.assertIsNotNone(context_caches)
+        context_cache = context_caches[0]
+        self.assertEqual(context_cache.value, expected_value)
+        self.assertIsNone(result.geometry)
+
     def test_retrieve_context_value_invalid(self):
         """Test retrieving context value from a point with different CRS.
 
@@ -151,3 +189,24 @@ class TestContextServiceRegistry(TestCase):
 
         result = service_registry.retrieve_context_value(x, y)
         self.assertIsNone(result)
+
+    def test_parse_request_value(self):
+        """Test parse value for WMS response."""
+        service_registry = ContextServiceRegistryF.create()
+        service_registry.url = (
+            'http://maps.kartoza.com/geoserver/kartoza/wms')
+        service_registry.srid = 3857
+        service_registry.query_type = ContextServiceRegistry.WMS
+        service_registry.layer_typename = 'kartoza:south_africa'
+        service_registry.service_version = '1.1.1'
+
+        service_registry.result_regex = 'kartoza:GRAY_INDEX'
+
+        service_registry.save()
+
+        wms_response_file = os.path.join(test_data_directory, 'wms.xml')
+        with open(wms_response_file) as f:
+            response = f.read()
+        value = service_registry.parse_request_value(response)
+        self.assertIsNotNone(value)
+        self.assertEqual('746.0', value)

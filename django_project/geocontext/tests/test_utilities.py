@@ -98,3 +98,9 @@ class TestUtilities(SimpleTestCase):
         """Test get_bbox function."""
         bbox = get_bbox(1, 10, 0.0001)
         self.assertEqual([0.9999, 9.999, 1.0001, 10.001], bbox)
+        self.assertLess(bbox[0], bbox[2])
+        self.assertLess(bbox[1], bbox[3])
+
+        bbox = get_bbox(-1, -10, 0.0001)
+        self.assertLess(bbox[0], bbox[2])
+        self.assertLess(bbox[1], bbox[3])

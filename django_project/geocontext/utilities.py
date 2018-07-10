@@ -115,8 +115,8 @@ def get_bbox(x, y, factor=0.001):
     :return: BBOX as a list [xmin, ymin, xmax, ymax)
     :rtype: list
     """
-    x_diff = x * factor
-    y_diff = y * factor
+    x_diff = abs(x * factor)
+    y_diff = abs(y * factor)
     return [
         x - x_diff,
         y - y_diff,
