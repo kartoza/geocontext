@@ -275,7 +275,7 @@
             "result_regex": "qgs:GRAY_INDEX",
             "time_to_live": 604800,
             "srid": 3857,
-            "layer_typename": "	kartoza:gmednrfl4",
+            "layer_typename": "kartoza:gmednrfl4",
             "service_version": "1.0.0"
         },
         {
