@@ -100,3 +100,26 @@ def convert_2d_to_3d(geometry_2d):
         raise Exception('Not supported geometry')
 
     return geometry_3d
+
+
+def get_bbox(x, y, factor=0.001):
+    """Get small enough bbox to cover point x,y
+
+    :param x: X coordinate
+    :type x: float
+    :param y: Y coordinate
+    :type y: float
+    :param factor: The factor to get the bbox, see the formula.
+    :type factor: float
+
+    :return: BBOX as a list [xmin, ymin, xmax, ymax)
+    :rtype: list
+    """
+    x_diff = x * factor
+    y_diff = y * factor
+    return [
+        x - x_diff,
+        y - y_diff,
+        x + x_diff,
+        y + y_diff
+    ]

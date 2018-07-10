@@ -10,7 +10,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.http import QueryDict
 
-from geocontext.utilities import convert_coordinate, parse_gml_geometry
+from geocontext.utilities import (
+    convert_coordinate, parse_gml_geometry, get_bbox)
 
 
 class ContextServiceRegistry(models.Model):
@@ -220,19 +221,7 @@ class ContextServiceRegistry(models.Model):
             # construct bbox
             if srid != self.srid:
                 x, y = convert_coordinate(x, y, srid, self.srid)
-            x_pair = x * 1.0001
-            y_pair = y * 1.0001
-            if x < x_pair:
-                if y < y_pair:
-                    bbox = [x, y, x_pair, y_pair]
-                else:
-                    bbox = [x, y_pair, x_pair, y]
-            else:
-                if y < y_pair:
-                    bbox = [x_pair, y, x, y_pair]
-                else:
-                    bbox = [x_pair, y_pair, x, y]
-
+            bbox = get_bbox(x, y)
             bbox_string = ','.join([str(i) for i in bbox])
 
             parameters = {
