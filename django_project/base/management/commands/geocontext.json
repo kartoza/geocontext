@@ -88,7 +88,7 @@
             "key": "farm_portion",
             "name": "Farm Portion",
             "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
+            "url": "http://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:id",
             "time_to_live": 604800,
@@ -100,7 +100,7 @@
             "key": "erf",
             "name": "Erven Boundaries",
             "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
+            "url": "http://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:id",
             "time_to_live": 604800,
@@ -112,7 +112,7 @@
             "key": "district_municipalities",
             "name": "District Municipalities",
             "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
+            "url": "http://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:district",
             "time_to_live": 604800,
@@ -124,7 +124,7 @@
             "key": "municipal_ward_boundaries",
             "name": "Municipal Ward Boundaries",
             "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
+            "url": "http://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:mn_name",
             "time_to_live": 604800,
@@ -136,7 +136,7 @@
             "key": "sub_places",
             "name": "Sub Places",
             "description": null,
-            "url": "http://maps.kartoza.com/geoserver",
+            "url": "http://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:sp_name",
             "time_to_live": 604800,
@@ -148,7 +148,7 @@
             "key": "vegetation_2012",
             "name": "2012 Vegetation Map of South Africa, Lesotho and Swaziland",
             "description": null,
-            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "url": "http://lbimsgis.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:bioregion",
             "time_to_live": 604800,
@@ -160,7 +160,7 @@
             "key": "sa_biomes",
             "name": "2012 Biome Map of South Africa, Lesotho and Swaziland",
             "description": null,
-            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "url": "http://lbimsgis.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:biome",
             "time_to_live": 604800,
@@ -172,7 +172,7 @@
             "key": "nfepa_wetlands",
             "name": "NFEPA Wetlands 2011",
             "description": null,
-            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "url": "http://lbimsgis.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:nwcs_l4",
             "time_to_live": 604800,
@@ -184,7 +184,7 @@
             "key": "rehabilitated_wetlands",
             "name": "Rehabilitated Wetlands",
             "description": null,
-            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "url": "http://lbimsgis.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:type",
             "time_to_live": 604800,
@@ -196,7 +196,7 @@
             "key": "wetlandcluster",
             "name": "NFEPA wetland clusters 2011",
             "description": null,
-            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "url": "http://lbimsgis.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:majwetveg",
             "time_to_live": 604800,
@@ -208,7 +208,7 @@
             "key": "dams500g",
             "name": "South Africa Dams Polygon",
             "description": null,
-            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "url": "http://lbimsgis.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:label",
             "time_to_live": 604800,
@@ -220,7 +220,7 @@
             "key": "rivers500k",
             "name": "Rivers of south africa",
             "description": null,
-            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "url": "http://lbimsgis.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:reachcode",
             "time_to_live": 604800,
@@ -232,12 +232,146 @@
             "key": "nfepa_rivers",
             "name": "NFEPA Rivers 2011",
             "description": null,
-            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "url": "http://lbimsgis.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:fepacode",
             "time_to_live": 604800,
             "srid": 4326,
             "layer_typename": "geonode:nfepa_rivers",
+            "service_version": "1.0.0"
+        },
+
+
+        {
+            "key": "mean_annual_temperature",
+            "name": "Mean Annual Temperature (C)",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/",
+            "query_type": "WMS",
+            "result_regex": "qgs:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:mean_annual temperature",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "monthly_rainfall_march",
+            "name": "Monthly Rainfall and its Inter-Annual Variability (March)",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/",
+            "query_type": "WMS",
+            "result_regex": "qgs:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:gmednrfl3",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "monthly_rainfall_april",
+            "name": "Monthly Rainfall and its Inter-Annual Variability (April)",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "	kartoza:gmednrfl4",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "monthly_rainfall_may",
+            "name": "Monthly Rainfall and its Inter-Annual Variability (May)",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:gmednrfl5",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "monthly_rainfall_june",
+            "name": "Monthly Rainfall and its Inter-Annual Variability (June)",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:gmednrfl6",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "monthly_rainfall_july",
+             "name": "Monthly Rainfall and its Inter-Annual Variability (July)",
+             "description": null,
+             "url": "http://maps.kartoza.com/geoserver/wms",
+             "query_type": "WMS",
+             "result_regex": "qgs:GRAY_INDEX",
+             "time_to_live": 604800,
+             "srid": 3857,
+             "layer_typename": "kartoza:gmednrfl7",
+             "service_version": "1.0.0"
+        },
+        {
+            "key": "monthly_rainfall_august",
+            "name": "Monthly Rainfall and its Inter-Annual Variability (August)",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:gmednrfl8",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "monthly_rainfall_september",
+            "name": "Monthly Rainfall and its Inter-Annual Variability (September)",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:gmednrfl9",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "monthly_rainfall_october",
+            "name": "Monthly Rainfall and its Inter-Annual Variability (October)",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:gmednrfl10",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "monthly_rainfall_november",
+            "name": "Monthly Rainfall and its Inter-Annual Variability (November)",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:gmednrfl11",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "monthly_rainfall_november",
+            "name": "Monthly Rainfall and its Inter-Annual Variability (December)",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:gmednrfl12",
             "service_version": "1.0.0"
         }
 
@@ -271,6 +405,24 @@
                 "district_municipalities",
                 "municipal_ward_boundaries",
                 "sub_places"
+            ]
+        }
+      ,
+        {
+            "key": "rainfall_group",
+            "name": "Rainfall Rasters",
+            "description": "A collection of rasters depicting monthly rainfall in South Africa",
+            "context_service_registry_keys": [
+                "monthly_rainfall_march",
+                "monthly_rainfall_april",
+                "monthly_rainfall_may",
+                "monthly_rainfall_june",
+                "monthly_rainfall_july",
+                "monthly_rainfall_august",
+                "monthly_rainfall_september",
+                "monthly_rainfall_october",
+                "monthly_rainfall_november",
+                "monthly_rainfall_december"
             ]
         }
       ,
@@ -310,6 +462,15 @@
             "description": "Collection of rivers layers and their ecosystems",
             "context_group_keys": [
                 "water_group"
+
+            ]
+        },
+        {
+            "key": "Climate",
+            "name": "Climate Collection",
+            "description": "Grouping of layers that depicts climate charasteristics",
+            "context_group_keys": [
+                "rainfall_group"
 
             ]
         }
