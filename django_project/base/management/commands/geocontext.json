@@ -83,15 +83,168 @@
              "srid": 3857,
              "layer_typename": "kartoza:sa_provinces",
              "service_version": "1.0.0"
+        },
+        {
+            "key": "farm_portion",
+            "name": "Farm Portion",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:id",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:farm_portion",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "erf",
+            "name": "Erven Boundaries",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:id",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:erf",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "district_municipalities",
+            "name": "District Municipalities",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:district",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:district_municipalities",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "municipal_ward_boundaries",
+            "name": "Municipal Ward Boundaries",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:mn_name",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:municipal_ward_boundaries",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "sub_places",
+            "name": "Sub Places",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:sp_name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:sub_places",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "vegetation_2012",
+            "name": "2012 Vegetation Map of South Africa, Lesotho and Swaziland",
+            "description": null,
+            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:bioregion",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "geonode:vegetation_map_2012",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "sa_biomes",
+            "name": "2012 Biome Map of South Africa, Lesotho and Swaziland",
+            "description": null,
+            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:biome",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "geonode:vegetation_map_2012",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "nfepa_wetlands",
+            "name": "NFEPA Wetlands 2011",
+            "description": null,
+            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:nwcs_l4",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "geonode:nfepa_wetlands",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "rehabilitated_wetlands",
+            "name": "Rehabilitated Wetlands",
+            "description": null,
+            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:type",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "geonode:rehabilitated_wetlands",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "wetlandcluster",
+            "name": "NFEPA wetland clusters 2011",
+            "description": null,
+            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:majwetveg",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "geonode:wetlandcluster",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "dams500g",
+            "name": "South Africa Dams Polygon",
+            "description": null,
+            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:label",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "geonode:dams500g",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "rivers500k",
+            "name": "Rivers of south africa",
+            "description": null,
+            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:reachcode",
+            "time_to_live": 604800,
+            "srid": 4222,
+            "layer_typename": "geonode:wriall500",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "nfepa_rivers",
+            "name": "NFEPA Rivers 2011",
+            "description": null,
+            "url": "http://lbimsgis.kartoza.com/geoserver",
+            "query_type": "WFS",
+            "result_regex": "qgs:fepacode",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "geonode:nfepa_rivers",
+            "service_version": "1.0.0"
         }
 
     ],
     "context_group": [
         {
-            "key": "river_catchments_group",
-            "name": "River Catchments",
-            "description": "Layers that relate to freshwater,estuarine and maritime ecosystems",
-            "key": "river_ecosystem_group",
+            "key": "water_group",
             "name": "River Catchments",
             "description": "Layers that relate to freshwater,estuarine and maritime ecosystems",
             "context_service_registry_keys": [
@@ -138,31 +291,6 @@
                 "vegetation_2012",
                 "sa_biomes"
 
-                "primary_catchment_area",
-                "secondary_catchment_area",
-                "tertiary_catchment_area",
-                "quaternary_catchment_area"
-            ]
-        },
-        {
-            "key": "political_boundary_group",
-            "name": "Administrative Boundary",
-            "description": "Power Rangers",
-            "context_service_registry_keys": [
-                "provinces",
-                "kartoza:district_municipalities",
-                "kartoza:municipal_ward_boundaries",
-                "kartoza:sub_places"
-            ]
-        }
-      ,
-        {
-            "key": "cadastre_group",
-            "name": "Cadastre",
-            "description": "Land demarcations from Surveyor General",
-            "context_service_registry_keys": [
-                "kartoza:farm_portion",
-                "kartoza:erf"
             ]
         }
     ],
@@ -177,11 +305,11 @@
             ]
         },
         {
-            "key": "Rivers",
+            "key": "River Ecosystem",
             "name": "River Collection",
-            "description": "Collection of rivers and attributes and associated",
+            "description": "Collection of rivers layers and their ecosystems",
             "context_group_keys": [
-                "river_catchments_group"
+                "water_group"
 
             ]
         }
