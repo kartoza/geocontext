@@ -6,7 +6,7 @@ import unittest
 
 from django.test import SimpleTestCase
 from geocontext.utilities import (
-    convert_coordinate, parse_gml_geometry, convert_2d_to_3d)
+    convert_coordinate, parse_gml_geometry, convert_2d_to_3d, get_bbox)
 from django.contrib.gis.geos import (
     Point, LineString, LinearRing, Polygon, MultiPoint,
     MultiLineString, MultiPolygon)
@@ -93,3 +93,8 @@ class TestUtilities(SimpleTestCase):
                 self.assertEqual(sum(zs), 0)
             elif geometry_3d.geom_type in ['LineString', 'LinearRing']:
                 self.assertEqual(sum(geometry_3d.z), 0)
+
+    def test_get_bbox(self):
+        """Test get_bbox function."""
+        bbox = get_bbox(1, 10, 0.0001)
+        self.assertEqual([0.9999, 9.999, 1.0001, 10.001], bbox)
