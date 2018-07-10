@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 import pytz
 from xml.dom import minidom
 
+from owslib.wms import WebMapService
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.http import QueryDict
@@ -150,19 +152,35 @@ class ContextServiceRegistry(models.Model):
 
         :
         """
-        url = self.build_query_url(x, y, srid)
-        request = requests.get(url)
-        content = request.content
-        if ':' in self.layer_typename:
-            workspace = self.layer_typename.split(':')[0]
-            geometry = parse_gml_geometry(content, workspace)
+        if self.query_type == ContextServiceRegistry.WMS:
+            wms = WebMapService(self.url, self.service_version)
+            response = wms.getfeatureinfo(
+                layers=[self.layer_typename],
+                bbox=get_bbox(x, y),
+                size=[101, 101],
+                xy=[50, 50],
+                srs='EPSG:' + str(srid),
+                info_format='application/vnd.ogc.gml'
+            )
+            content = response.read()
+            value = self.parse_request_value(content)
+            # No geometry and url for WMS
+            geometry = None
+            url = response.geturl()
         else:
-            geometry = parse_gml_geometry(content)
-        if not geometry:
-            return None
-        if not geometry.srid:
-            geometry.srid = self.srid
-        value = self.parse_request_value(content)
+            url = self.build_query_url(x, y, srid)
+            request = requests.get(url)
+            content = request.content
+            if ':' in self.layer_typename:
+                workspace = self.layer_typename.split(':')[0]
+                geometry = parse_gml_geometry(content, workspace)
+            else:
+                geometry = parse_gml_geometry(content)
+            if not geometry:
+                return None
+            if not geometry.srid:
+                geometry.srid = self.srid
+            value = self.parse_request_value(content)
 
         # Create cache here.
         from geocontext.models.context_cache import ContextCache
@@ -172,12 +190,15 @@ class ContextServiceRegistry(models.Model):
         context_cache = ContextCache(
             service_registry=self,
             name=self.key,
-            source_uri=url,
             value=value,
             expired_time=expired_time
         )
 
-        context_cache.set_geometry_field(geometry)
+        if url:
+            context_cache.source_uri = url
+
+        if geometry:
+            context_cache.set_geometry_field(geometry)
 
         context_cache.save()
 
@@ -194,7 +215,8 @@ class ContextServiceRegistry(models.Model):
         :returns: The value of the result_regex in the request_content.
         :rtype: unicode
         """
-        if self.query_type == ContextServiceRegistry.WFS:
+        if self.query_type in [
+            ContextServiceRegistry.WFS, ContextServiceRegistry.WMS]:
             xmldoc = minidom.parseString(request_content)
             try:
                 value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
