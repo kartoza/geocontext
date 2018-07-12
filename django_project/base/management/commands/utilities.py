@@ -82,7 +82,8 @@ def import_data(file_uri):
         for k, v in csr_data.items():
             setattr(service_registry, k, v)
         service_registry.save()
-        print('   CSR %s is loaded' % service_registry.name)
+        print('   id = %s, CSR %s is loaded' % (
+            service_registry.id, service_registry.name))
 
     # Load Context Groups
     print('Load Context Groups....')
@@ -96,8 +97,13 @@ def import_data(file_uri):
                 context_service_registry_keys = v
                 i = 0
                 for csr_key in context_service_registry_keys:
-                    context_service_registry = \
-                        ContextServiceRegistry.objects.get(key=csr_key)
+                    try:
+                        context_service_registry = \
+                            ContextServiceRegistry.objects.get(key=csr_key)
+                    except ContextServiceRegistry.DoesNotExist as e:
+                        print('No CSR registered for %s' % csr_key)
+                        raise e
+
                     context_group_service = ContextGroupServices(
                         context_group=context_group,
                         context_service_registry=context_service_registry,

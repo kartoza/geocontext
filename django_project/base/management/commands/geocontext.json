@@ -363,7 +363,7 @@
             "service_version": "1.0.0"
         },
         {
-            "key": "monthly_rainfall_november",
+            "key": "monthly_rainfall_december",
             "name": "Monthly Rainfall and its Inter-Annual Variability (December)",
             "description": null,
             "url": "http://maps.kartoza.com/geoserver/wms",
@@ -539,7 +539,6 @@
                 "rehabilitated_wetlands",
                 "dams500g",
                 "rivers500k",
-                "dams500g",
                 "nfepa_rivers"
             ]
         },
