@@ -3,6 +3,7 @@
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from geocontext.models.validators import key_validator
 
 from geocontext.models.context_service_registry import ContextServiceRegistry
 
@@ -16,6 +17,7 @@ class ContextGroup(models.Model):
         null=False,
         max_length=200,
         unique=True,
+        validators=[key_validator],
     )
 
     name = models.CharField(

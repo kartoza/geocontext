@@ -5,6 +5,8 @@ import os
 import json
 import requests
 
+from django.core.exceptions import ValidationError
+
 from geocontext.models.context_service_registry import ContextServiceRegistry
 from geocontext.models.context_group import ContextGroup
 from geocontext.models.context_collection import ContextCollection
@@ -85,6 +87,16 @@ def import_data(file_uri):
         print('   id = %s, CSR %s is loaded' % (
             service_registry.id, service_registry.name))
 
+        try:
+            service_registry.full_clean()
+            service_registry.save()
+            print('   id = %s, CSR %s is loaded' % (
+                service_registry.id, service_registry.name))
+        except ValidationError as e:
+            print('   >>> CSR %s is not clean because %s ' % (
+                service_registry.name, e))
+            service_registry.delete()
+
     # Load Context Groups
     print('Load Context Groups....')
     context_groups = data['context_group']
@@ -102,7 +114,7 @@ def import_data(file_uri):
                             ContextServiceRegistry.objects.get(key=csr_key)
                     except ContextServiceRegistry.DoesNotExist as e:
                         print('No CSR registered for %s' % csr_key)
-                        raise e
+                        continue
 
                     context_group_service = ContextGroupServices(
                         context_group=context_group,
@@ -112,8 +124,15 @@ def import_data(file_uri):
                     context_group_service.save()
                     i += 1
             setattr(context_group, k, v)
-        context_group.save()
-        print('   Context Group %s is loaded' % context_group.name)
+        try:
+            context_group.full_clean()
+            context_group.save()
+            print(
+                '   Context Group %s is loaded' % context_group.name)
+        except ValidationError as e:
+            print('   >>> Context Group %s is not clean because %s ' % (
+                context_group.name, e))
+            context_group.delete()
 
     # Load Context Collections
     print('Load Context Collection....')
@@ -137,8 +156,15 @@ def import_data(file_uri):
                     collection_group.save()
                     i += 1
             setattr(context_collection, k, v)
-        context_collection.save()
-        print('   Context Collection %s is loaded' % context_collection.name)
+        try:
+            context_collection.full_clean()
+            context_collection.save()
+            print(
+                '   Context Collection %s is loaded' % context_collection.name)
+        except ValidationError as e:
+            print('   >>> Context Collection %s is not clean because %s ' % (
+                context_collection.name, e))
+            context_collection.delete()
 
     print('After import data process...')
     print('   Number of CSR %s' % ContextServiceRegistry.objects.count())

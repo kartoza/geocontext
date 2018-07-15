@@ -14,6 +14,7 @@ from django.http import QueryDict
 
 from geocontext.utilities import (
     convert_coordinate, parse_gml_geometry, get_bbox)
+from geocontext.models.validators import key_validator
 
 
 class ContextServiceRegistry(models.Model):
@@ -38,6 +39,7 @@ class ContextServiceRegistry(models.Model):
         null=False,
         max_length=200,
         unique=True,
+        validators=[key_validator],
     )
 
     name = models.CharField(
