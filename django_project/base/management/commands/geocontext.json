@@ -612,7 +612,7 @@
     ],
     "context_collection": [
         {
-            "key": "Boundary",
+            "key": "boundary",
             "name": "Boundary Collection",
             "description": "Collection of administrative and Cadastre boundaries",
             "context_group_keys": [
@@ -621,7 +621,7 @@
             ]
         },
         {
-            "key": "River Ecosystem",
+            "key": "river_ecosystem",
             "name": "River Collection",
             "description": "Collection of rivers layers and their ecosystems",
             "context_group_keys": [
@@ -630,7 +630,7 @@
             ]
         },
         {
-            "key": "Climate",
+            "key": "climate",
             "name": "Climate Collection",
             "description": "Grouping of layers that depicts climate charasteristics",
             "context_group_keys": [
