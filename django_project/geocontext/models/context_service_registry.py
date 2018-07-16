@@ -154,21 +154,26 @@ class ContextServiceRegistry(models.Model):
 
         :
         """
+        url = None
+        geometry = None
         if self.query_type == ContextServiceRegistry.WMS:
-            wms = WebMapService(self.url, self.service_version)
-            response = wms.getfeatureinfo(
-                layers=[self.layer_typename],
-                bbox=get_bbox(x, y),
-                size=[101, 101],
-                xy=[50, 50],
-                srs='EPSG:' + str(srid),
-                info_format='application/vnd.ogc.gml'
-            )
-            content = response.read()
-            value = self.parse_request_value(content)
-            # No geometry and url for WMS
-            geometry = None
-            url = response.geturl()
+            try:
+                wms = WebMapService(self.url, self.service_version)
+                response = wms.getfeatureinfo(
+                    layers=[self.layer_typename],
+                    bbox=get_bbox(x, y),
+                    size=[101, 101],
+                    xy=[50, 50],
+                    srs='EPSG:' + str(srid),
+                    info_format='application/vnd.ogc.gml'
+                )
+                content = response.read()
+                value = self.parse_request_value(content)
+                # No geometry and url for WMS
+                geometry = None
+                url = response.geturl()
+            except NotImplementedError as e:
+                value = e
         else:
             url = self.build_query_url(x, y, srid)
             request = requests.get(url)
