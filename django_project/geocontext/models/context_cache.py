@@ -89,8 +89,8 @@ class ContextCache(models.Model):
 
     value = models.CharField(
         help_text=_('The value of the context.'),
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
         max_length=200,
     )
 
