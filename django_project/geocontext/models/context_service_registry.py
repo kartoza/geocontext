@@ -137,6 +137,27 @@ class ContextServiceRegistry(models.Model):
         max_length=200,
     )
 
+    provenance = models.CharField(
+        help_text=_('The origin or source of the Context Service Registry.'),
+        blank=True,
+        null=True,
+        max_length=1000,
+    )
+
+    notes = models.TextField(
+        help_text=_('Notes for the Context Service Registry.'),
+        blank=True,
+        null=True,
+    )
+
+    licensing = models.CharField(
+        help_text=_('The licensing scheme for the Context Service Registry.'),
+        blank=True,
+        null=True,
+        max_length=1000,
+    )
+
+
     def __str__(self):
         return self.name
 

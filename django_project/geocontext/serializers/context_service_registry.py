@@ -22,4 +22,7 @@ class ContextServiceRegistrySerializer(serializers.ModelSerializer):
             'srid',
             'layer_typename',
             'service_version',
+            'provenance',
+            'notes',
+            'licensing',
         )
