@@ -42,14 +42,17 @@ def retrieve_context(x, y, service_registry_key, srid=4326):
         service_registry=service_registry)
 
     for cache in caches:
-        if cache.geometry.contains(point):
-            if datetime.utcnow().replace(tzinfo=pytz.UTC) < cache.expired_time:
-                return cache
-            else:
-                # No need to check the rest cache, since it always only 1
-                # cache that intersect for a point.
-                cache.delete()
-                break
+        if cache.geometry:
+            if cache.geometry.contains(point):
+                current_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
+                is_expired = current_time > cache.expired_time
+                if not is_expired:
+                    return cache
+                else:
+                    # No need to check the rest cache, since it always only 1
+                    # cache that intersect for a point.
+                    cache.delete()
+                    break
 
     # Can not find in caches, request from context service.
     return service_registry.retrieve_context_value(x, y, srid)

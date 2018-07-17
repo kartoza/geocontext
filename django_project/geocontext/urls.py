@@ -67,5 +67,3 @@ urlpatterns_api = [
 ]
 
 urlpatterns_api = format_suffix_patterns(urlpatterns_api)
-
-urlpatterns += urlpatterns_api
