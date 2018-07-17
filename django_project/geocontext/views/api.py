@@ -28,13 +28,13 @@ from geocontext.serializers.context_collection import (
 from geocontext.models.utilities import retrieve_context
 
 
-class ContextServiceRegistryList(generics.ListCreateAPIView):
+class ContextServiceRegistryListAPIView(generics.ListAPIView):
     """List all service registry or create new one."""
     queryset = ContextServiceRegistry.objects.all()
     serializer_class = ContextServiceRegistrySerializer
 
 
-class ContextServiceRegistryDetail(generics.RetrieveUpdateDestroyAPIView):
+class ContextServiceRegistryDetailAPIView(generics.RetrieveAPIView):
     """Retrieve, update, or delete a service registry."""
 
     lookup_field = 'key'
@@ -43,13 +43,13 @@ class ContextServiceRegistryDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ContextServiceRegistrySerializer
 
 
-class ContextCacheList(generics.ListAPIView):
+class ContextCacheListAPIView(generics.ListAPIView):
     """List all context cache."""
     queryset = ContextCache.objects.all()
     serializer_class = ContextValueGeoJSONSerializer
 
 
-class ContextValueGeometryList(views.APIView):
+class ContextValueGeometryListAPI(views.APIView):
     """List all context cache based on point."""
 
     def get(self, request, x, y, csr_keys=None, format=None):
@@ -77,7 +77,7 @@ class ContextValueGeometryList(views.APIView):
         return Response(serializer.data)
 
 
-class ContextGroupValueView(views.APIView):
+class ContextGroupValueAPIView(views.APIView):
     """API view for Context Group Value."""
     def get(self, request, x, y, context_group_key):
         # Parse location
@@ -89,7 +89,7 @@ class ContextGroupValueView(views.APIView):
         return Response(context_group_value_serializer.data)
 
 
-class ContextCollectionValueView(views.APIView):
+class ContextCollectionValueAPIView(views.APIView):
     """API view for Context Collection Value."""
     def get(self, request, x, y, context_collection_key):
         # Parse location
