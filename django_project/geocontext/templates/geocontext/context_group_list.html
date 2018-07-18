@@ -1,0 +1,52 @@
+{% extends 'main_base.html' %}
+
+{% block title %}
+    Context Groups
+{% endblock %}
+
+{% block body_content %}
+    <h1>Context Groups</h1>
+    <div class="row">
+      <div class="col-4">
+        <div class="list-group" id="list-tab" role="tablist">
+            {% for context_group in context_group_list %}
+                <a class="list-group-item list-group-item-action
+                    {% if context_group == context_group_list.0 %}active{% endif %}"
+                   id="list-{{ context_group.key }}-list" data-toggle="list"
+                   href="#list-{{ context_group.key }}"
+                   role="tab" aria-controls="home">{{ context_group.name }}</a>
+            {% endfor %}
+        </div>
+      </div>
+      <div class="col-8">
+        <div class="tab-content" id="nav-tabContent">
+            {% for context_group in context_group_list %}
+                <div class="tab-pane fade
+                    {% if context_group == context_group_list.0 %}show active{% endif %}"
+                     id="list-{{ context_group.key }}" role="tabpanel"
+                     aria-labelledby="list-{{ context_group.key }}-list">
+                    <h3>{{ context_group.name }}</h3>
+                    <table class="table table-borderless table-striped">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Key</th>
+                                <td>{{ context_group.key }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Description</th>
+                                {# Create cusstom tag for this #}
+                                {% if context_group.description %}
+                                    <td>{{ context_group.description }}</td>
+                                {% else %}
+                                    <td>-</td>
+                                {% endif %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% include "includes/pagination.html" %}
+{% endblock body_content %}
