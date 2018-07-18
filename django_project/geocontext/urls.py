@@ -15,54 +15,61 @@ from geocontext.views.api import (
     get_context
 )
 
+from geocontext.views.context_service_registry import (
+    ContextServiceRegistryListView
+)
+
 
 urlpatterns = [
     url(regex=r'^geocontext/$',
         view=get_context,
         name='geocontext-retrieve'),
+    url(regex=r'^geocontext/csr/list/$',
+        view=ContextServiceRegistryListView.as_view(),
+        name='csr-list'),
 ]
 
 urlpatterns_api = [
     # Context Service Registry
     url(regex=r'^geocontext/csr/$',
         view=ContextServiceRegistryListAPIView.as_view(),
-        name='context-service-registry-list'
+        name='context-service-registry-list-api'
         ),
     url(regex=r'^geocontext/csr/(?P<key>[\w-]+)/$',
         view=ContextServiceRegistryDetailAPIView.as_view(),
-        name='context-service-registry-detail'
+        name='context-service-registry-detail-api'
         ),
     # Context Cache
     url(regex=r'^geocontext/cache/$',
         view=ContextCacheListAPIView.as_view(),
-        name='context-cache-list'
+        name='context-cache-list-api'
         ),
     url(regex=r'^geocontext/value/list/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/$',
         view=ContextValueGeometryListAPI.as_view(),
-        name='context-value-list-all'
+        name='context-value-list-all-api'
         ),
     url(regex=r'^geocontext/value/list/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<csr_keys>[\w\-,]+)/$',
         view=ContextValueGeometryListAPI.as_view(),
-        name='context-value-list-csr'
+        name='context-value-list-csr-api'
         ),
     url(regex=r'^geocontext/value/collection/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<context_collection_key>[\w\-,]+)/$',
         view=ContextCollectionValueAPIView.as_view(),
-        name='context-collection-list'
+        name='context-collection-list-api'
         ),
     url(regex=r'^geocontext/value/group/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<context_group_key>[\w\-,]+)/$',
         view=ContextGroupValueAPIView.as_view(),
-        name='context-group-list'
+        name='context-group-list-api'
         ),
 ]
 
