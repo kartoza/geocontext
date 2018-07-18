@@ -18,6 +18,8 @@ from geocontext.views.api import (
 from geocontext.views.context_service_registry import (
     ContextServiceRegistryListView
 )
+from geocontext.views.context_group import ContextGroupListView
+from geocontext.views.context_collection import ContextCollectionListView
 
 
 urlpatterns = [
@@ -27,6 +29,12 @@ urlpatterns = [
     url(regex=r'^geocontext/csr/list/$',
         view=ContextServiceRegistryListView.as_view(),
         name='csr-list'),
+    url(regex=r'^geocontext/context-group/list/$',
+        view=ContextGroupListView.as_view(),
+        name='context-group-list'),
+    url(regex=r'^geocontext/context-collection/list/$',
+        view=ContextCollectionListView.as_view(),
+        name='context-collection-list'),
 ]
 
 urlpatterns_api = [
