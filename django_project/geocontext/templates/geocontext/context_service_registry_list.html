@@ -5,9 +5,13 @@
 {% endblock %}
 
 {% block body_content %}
-    <h1>Context Layer Registries</h1>
-    <div class="row">
-      <div class="col-4">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <h1>Context Service Registries</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-3">
         <div class="list-group" id="list-tab" role="tablist">
             {% for csr in csr_list %}
                 <a class="list-group-item list-group-item-action
@@ -19,71 +23,14 @@
             {% endfor %}
         </div>
       </div>
-      <div class="col-8">
+      <div class="col-7">
         <div class="tab-content" id="nav-tabContent">
             {% for csr in csr_list %}
                 <div class="tab-pane fade
                     {% if csr == csr_list.0 %}show active{% endif %}"
                      id="list-{{ csr.key }}" role="tabpanel"
                      aria-labelledby="list-{{ csr.key }}-list">
-                    <h3>{{ csr.name }}</h3>
-                    <table class="table table-borderless table-striped">
-                        <tbody>
-                            <tr>
-                                <th scope="row">Key</th>
-                                <td>{{ csr.key }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Description</th>
-                                {# Create cusstom tag for this #}
-                                {% if csr.description %}
-                                    <td>{{ csr.description }}</td>
-                                {% else %}
-                                    <td>-</td>
-                                {% endif %}
-                            </tr>
-                            <tr>
-                                <th scope="row">URL</th>
-                                <td><a href="{{ csr.url }}">{{ csr.url }}</a></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Query Type</th>
-                                <td>{{ csr.query_type }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Layer typename</th>
-                                <td>{{ csr.layer_typename }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Service version</th>
-                                <td>{{ csr.service_version }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Provenance</th>
-                                {% if csr.provenance %}
-                                    <td>{{ csr.provenance }}</td>
-                                {% else %}
-                                    <td>-</td>
-                                {% endif %}
-                            </tr>
-                            <tr>
-                                <th scope="row">Notes</th>
-                                {% if csr.notes %}
-                                    <td>{{ csr.notes }}</td>
-                                {% else %}
-                                    <td>-</td>
-                                {% endif %}
-                            </tr>
-                            <tr>
-                                <th scope="row">Licensing</th>
-                                {% if csr.licensing %}
-                                    <td>{{ csr.licensing }}</td>
-                                {% else %}
-                                    <td>-</td>
-                                {% endif %}
-                            </tr>
-                        </tbody>
-                    </table>
+                    {% include "geocontext/includes/context_service_registry_content.html" %}
                 </div>
             {% endfor %}
         </div>

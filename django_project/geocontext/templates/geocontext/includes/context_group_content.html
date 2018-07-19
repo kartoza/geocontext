@@ -1,0 +1,36 @@
+<h3>{{ context_group.name }}</h3>
+<table class="table table-borderless table-striped">
+    <tbody>
+        <tr>
+            <th scope="row">Key</th>
+            <td>{{ context_group.key }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Description</th>
+            {# Create cusstom tag for this #}
+            {% if context_group.description %}
+                <td>{{ context_group.description }}</td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th scope="row">Context Service Registries</th>
+            {% if context_group.get_ordered_context_service_registries %}
+                <td>
+                    <ol>
+                        {% for context_group_service in context_group.get_ordered_context_service_registries %}
+                        <li>
+                            <a href="{% url "csr-detail" context_group_service.context_service_registry.key %}">
+                                {{ context_group_service.context_service_registry.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+    </tbody>
+</table>

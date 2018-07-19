@@ -1,0 +1,36 @@
+<h3>{{ context_collection.name }}</h3>
+<table class="table table-borderless table-striped">
+    <tbody>
+        <tr>
+            <th scope="row">Key</th>
+            <td>{{ context_collection.key }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Description</th>
+            {# Create cusstom tag for this #}
+            {% if context_collection.description %}
+                <td>{{ context_collection.description }}</td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th scope="row">Context Groups</th>
+            {% if context_collection.get_ordered_context_groups %}
+                <td>
+                    <ol>
+                        {% for collection_group_service in context_collection.get_ordered_context_groups %}
+                            <li>
+                                <a href="{% url "context-group-detail" collection_group_service.context_group.key %}">
+                                    {{ collection_group_service.context_group.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+    </tbody>
+</table>
