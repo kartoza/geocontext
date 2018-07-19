@@ -16,25 +16,40 @@ from geocontext.views.api import (
 )
 
 from geocontext.views.context_service_registry import (
-    ContextServiceRegistryListView
+    ContextServiceRegistryListView,
+    ContextServiceRegistryDetailView,
 )
-from geocontext.views.context_group import ContextGroupListView
-from geocontext.views.context_collection import ContextCollectionListView
+from geocontext.views.context_group import (
+    ContextGroupListView, ContextGroupDetailView)
+from geocontext.views.context_collection import (
+    ContextCollectionListView, ContextCollectionDetailView)
 
 
 urlpatterns = [
     url(regex=r'^geocontext/$',
         view=get_context,
         name='geocontext-retrieve'),
+    # Context Service Registry
     url(regex=r'^geocontext/csr/list/$',
         view=ContextServiceRegistryListView.as_view(),
         name='csr-list'),
+    url(regex=r'^geocontext/csr/(?P<slug>[\w-]+)/$',
+        view=ContextServiceRegistryDetailView.as_view(),
+        name='csr-detail'),
+    # Context Group
     url(regex=r'^geocontext/context-group/list/$',
         view=ContextGroupListView.as_view(),
         name='context-group-list'),
+    url(regex=r'^geocontext/context-group/(?P<slug>[\w-]+)/$',
+        view=ContextGroupDetailView.as_view(),
+        name='context-group-detail'),
+    # Context Collection
     url(regex=r'^geocontext/context-collection/list/$',
         view=ContextCollectionListView.as_view(),
         name='context-collection-list'),
+    url(regex=r'^geocontext/context-collection/(?P<slug>[\w-]+)/$',
+        view=ContextCollectionDetailView.as_view(),
+        name='context-collection-detail'),
 ]
 
 urlpatterns_api = [
