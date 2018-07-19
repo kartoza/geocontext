@@ -41,6 +41,20 @@
                                     <td>-</td>
                                 {% endif %}
                             </tr>
+                            <tr>
+                                <th scope="row">Context Service Registries</th>
+                                {% if context_group.get_ordered_context_service_registries %}
+                                    <td>
+                                        <ol>
+                                            {% for context_group_service in context_group.get_ordered_context_service_registries %}
+                                            <li>{{ context_group_service.context_service_registry.name }}</li>
+                                            {% endfor %}
+                                        </ol>
+                                    </td>
+                                {% else %}
+                                    <td>-</td>
+                                {% endif %}
+                            </tr>
                         </tbody>
                     </table>
                 </div>

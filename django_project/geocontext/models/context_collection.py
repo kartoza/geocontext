@@ -43,3 +43,7 @@ class ContextCollection(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_ordered_context_groups(self):
+        """Helper to retrieve context groups in order."""
+        return self.collectiongroups_set.all().order_by('order')
