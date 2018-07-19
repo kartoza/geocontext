@@ -5,9 +5,13 @@
 {% endblock %}
 
 {% block body_content %}
-    <h1>Context Groups</h1>
-    <div class="row">
-      <div class="col-4">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <h1>Context Collections</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-3">
         <div class="list-group" id="list-tab" role="tablist">
             {% for context_collection in context_collection_list %}
                 <a class="list-group-item list-group-item-action
@@ -18,45 +22,14 @@
             {% endfor %}
         </div>
       </div>
-      <div class="col-8">
+      <div class="col-7">
         <div class="tab-content" id="nav-tabContent">
             {% for context_collection in context_collection_list %}
                 <div class="tab-pane fade
                     {% if context_collection == context_collection_list.0 %}show active{% endif %}"
                      id="list-{{ context_collection.key }}" role="tabpanel"
                      aria-labelledby="list-{{ context_collection.key }}-list">
-                    <h3>{{ context_collection.name }}</h3>
-                    <table class="table table-borderless table-striped">
-                        <tbody>
-                            <tr>
-                                <th scope="row">Key</th>
-                                <td>{{ context_collection.key }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Description</th>
-                                {# Create cusstom tag for this #}
-                                {% if context_collection.description %}
-                                    <td>{{ context_collection.description }}</td>
-                                {% else %}
-                                    <td>-</td>
-                                {% endif %}
-                            </tr>
-                            <tr>
-                                <th scope="row">Context Groups</th>
-                                {% if context_collection.get_ordered_context_groups %}
-                                    <td>
-                                        <ol>
-                                            {% for collection_group_service in context_collection.get_ordered_context_groups %}
-                                            <li>{{ collection_group_service.context_group.name }}</li>
-                                            {% endfor %}
-                                        </ol>
-                                    </td>
-                                {% else %}
-                                    <td>-</td>
-                                {% endif %}
-                            </tr>
-                        </tbody>
-                    </table>
+                    {% include "geocontext/includes/context_collection_content.html" %}
                 </div>
             {% endfor %}
         </div>
