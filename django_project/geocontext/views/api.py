@@ -29,13 +29,13 @@ from geocontext.models.utilities import retrieve_context
 
 
 class ContextServiceRegistryListAPIView(generics.ListAPIView):
-    """List all service registry or create new one."""
+    """List all context service registry."""
     queryset = ContextServiceRegistry.objects.all()
     serializer_class = ContextServiceRegistrySerializer
 
 
 class ContextServiceRegistryDetailAPIView(generics.RetrieveAPIView):
-    """Retrieve, update, or delete a service registry."""
+    """Retrieve a detail of a context service registry."""
 
     lookup_field = 'key'
 
@@ -44,15 +44,15 @@ class ContextServiceRegistryDetailAPIView(generics.RetrieveAPIView):
 
 
 class ContextCacheListAPIView(generics.ListAPIView):
-    """List all context cache."""
+    """List all current context cache values."""
     queryset = ContextCache.objects.all()
     serializer_class = ContextValueGeoJSONSerializer
 
 
 class ContextValueGeometryListAPI(views.APIView):
-    """List all context cache based on point."""
+    """List all current context cache based on point (x, y)."""
 
-    def get(self, request, x, y, csr_keys=None, format=None):
+    def get(self, request, x, y, csr_keys=None):
         # Parse location
         x = float(x)
         y = float(y)
@@ -62,7 +62,6 @@ class ContextValueGeometryListAPI(views.APIView):
             csr_keys = [o.key for o in context_service_registries]
         else:
             csr_keys = csr_keys.split(',')
-
 
         context_caches = []
         for csr_key in csr_keys:
@@ -78,7 +77,7 @@ class ContextValueGeometryListAPI(views.APIView):
 
 
 class ContextGroupValueAPIView(views.APIView):
-    """API view for Context Group Value."""
+    """Retrieving value based on a point (x, y) and a context group key."""
     def get(self, request, x, y, context_group_key):
         # Parse location
         x = float(x)
@@ -90,7 +89,8 @@ class ContextGroupValueAPIView(views.APIView):
 
 
 class ContextCollectionValueAPIView(views.APIView):
-    """API view for Context Collection Value."""
+    """Retrieving value based on a point (x, y) and a context collection key.
+    """
     def get(self, request, x, y, context_collection_key):
         # Parse location
         x = float(x)
