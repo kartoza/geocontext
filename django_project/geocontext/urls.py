@@ -8,7 +8,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from geocontext.views.api import (
     ContextServiceRegistryListAPIView,
     ContextServiceRegistryDetailAPIView,
-    ContextCacheListAPIView,
     ContextValueGeometryListAPI,
     ContextGroupValueAPIView,
     ContextCollectionValueAPIView,
@@ -61,11 +60,6 @@ urlpatterns_api = [
     url(regex=r'^geocontext/csr/(?P<key>[\w-]+)/$',
         view=ContextServiceRegistryDetailAPIView.as_view(),
         name='context-service-registry-detail-api'
-        ),
-    # Context Cache
-    url(regex=r'^geocontext/cache/$',
-        view=ContextCacheListAPIView.as_view(),
-        name='context-cache-list-api'
         ),
     url(regex=r'^geocontext/value/list/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
