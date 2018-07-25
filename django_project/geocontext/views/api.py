@@ -12,7 +12,6 @@ from rest_framework import views
 from rest_framework.response import Response
 
 from geocontext.forms import GeoContextForm
-from geocontext.models.context_cache import ContextCache
 from geocontext.models.context_service_registry import ContextServiceRegistry
 
 from geocontext.serializers.context_service_registry import (
@@ -41,12 +40,6 @@ class ContextServiceRegistryDetailAPIView(generics.RetrieveAPIView):
 
     queryset = ContextServiceRegistry.objects.all()
     serializer_class = ContextServiceRegistrySerializer
-
-
-class ContextCacheListAPIView(generics.ListAPIView):
-    """List all current context cache values."""
-    queryset = ContextCache.objects.all()
-    serializer_class = ContextValueGeoJSONSerializer
 
 
 class ContextValueGeometryListAPI(views.APIView):
