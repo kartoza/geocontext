@@ -1,0 +1,39 @@
+{% extends 'main_base.html' %}
+
+{% block title %}
+    Context Group
+{% endblock %}
+
+{% block body_content %}
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <h1>Context Groups</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-3">
+        <div class="list-group" id="list-tab" role="tablist">
+            {% for context_group in context_group_list %}
+                <a class="list-group-item list-group-item-action
+                    {% if context_group == context_group_list.0 %}active{% endif %}"
+                   id="list-{{ context_group.key }}-list" data-toggle="list"
+                   href="#list-{{ context_group.key }}"
+                   role="tab" aria-controls="home">{{ context_group.name }}</a>
+            {% endfor %}
+        </div>
+      </div>
+      <div class="col-7">
+        <div class="tab-content" id="nav-tabContent">
+            {% for context_group in context_group_list %}
+                <div class="tab-pane fade
+                    {% if context_group == context_group_list.0 %}show active{% endif %}"
+                     id="list-{{ context_group.key }}" role="tabpanel"
+                     aria-labelledby="list-{{ context_group.key }}-list">
+                    {% include "geocontext/includes/context_group_content.html" %}
+                </div>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% include "includes/pagination.html" %}
+{% endblock body_content %}

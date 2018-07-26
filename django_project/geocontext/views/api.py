@@ -12,7 +12,6 @@ from rest_framework import views
 from rest_framework.response import Response
 
 from geocontext.forms import GeoContextForm
-from geocontext.models.context_cache import ContextCache
 from geocontext.models.context_service_registry import ContextServiceRegistry
 
 from geocontext.serializers.context_service_registry import (
@@ -28,14 +27,14 @@ from geocontext.serializers.context_collection import (
 from geocontext.models.utilities import retrieve_context
 
 
-class ContextServiceRegistryList(generics.ListCreateAPIView):
-    """List all service registry or create new one."""
+class ContextServiceRegistryListAPIView(generics.ListAPIView):
+    """List all context service registry."""
     queryset = ContextServiceRegistry.objects.all()
     serializer_class = ContextServiceRegistrySerializer
 
 
-class ContextServiceRegistryDetail(generics.RetrieveUpdateDestroyAPIView):
-    """Retrieve, update, or delete a service registry."""
+class ContextServiceRegistryDetailAPIView(generics.RetrieveAPIView):
+    """Retrieve a detail of a context service registry."""
 
     lookup_field = 'key'
 
@@ -43,16 +42,10 @@ class ContextServiceRegistryDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ContextServiceRegistrySerializer
 
 
-class ContextCacheList(generics.ListAPIView):
-    """List all context cache."""
-    queryset = ContextCache.objects.all()
-    serializer_class = ContextValueGeoJSONSerializer
+class ContextValueGeometryListAPI(views.APIView):
+    """List all current context cache based on point (x, y)."""
 
-
-class ContextValueGeometryList(views.APIView):
-    """List all context cache based on point."""
-
-    def get(self, request, x, y, csr_keys=None, format=None):
+    def get(self, request, x, y, csr_keys=None):
         # Parse location
         x = float(x)
         y = float(y)
@@ -62,7 +55,6 @@ class ContextValueGeometryList(views.APIView):
             csr_keys = [o.key for o in context_service_registries]
         else:
             csr_keys = csr_keys.split(',')
-
 
         context_caches = []
         for csr_key in csr_keys:
@@ -77,8 +69,8 @@ class ContextValueGeometryList(views.APIView):
         return Response(serializer.data)
 
 
-class ContextGroupValueView(views.APIView):
-    """API view for Context Group Value."""
+class ContextGroupValueAPIView(views.APIView):
+    """Retrieving value based on a point (x, y) and a context group key."""
     def get(self, request, x, y, context_group_key):
         # Parse location
         x = float(x)
@@ -89,8 +81,9 @@ class ContextGroupValueView(views.APIView):
         return Response(context_group_value_serializer.data)
 
 
-class ContextCollectionValueView(views.APIView):
-    """API view for Context Collection Value."""
+class ContextCollectionValueAPIView(views.APIView):
+    """Retrieving value based on a point (x, y) and a context collection key.
+    """
     def get(self, request, x, y, context_collection_key):
         # Parse location
         x = float(x)

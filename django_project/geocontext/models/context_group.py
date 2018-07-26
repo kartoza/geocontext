@@ -42,3 +42,7 @@ class ContextGroup(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_ordered_context_service_registries(self):
+        """Helper to retrieve CSR in order."""
+        return self.contextgroupservices_set.all().order_by('order')

@@ -1,0 +1,15 @@
+{% extends 'main_base.html' %}
+
+{% block title %}
+    Context Collection
+{% endblock %}
+
+{% block body_content %}
+    <h1 class="text-center">Context Collection</h1>
+    <div class="row justify-content-center">
+      <div class="col-8 ">
+        {% include "geocontext/includes/context_collection_content.html" %}
+      </div>
+    </div>
+    {% include "includes/pagination.html" %}
+{% endblock body_content %}
