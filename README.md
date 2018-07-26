@@ -30,10 +30,10 @@ Story queue on Waffle:
 
 [![Throughput Graph](https://graphs.waffle.io/kartoza/geocontext/throughput.svg)](https://waffle.io/kartoza/geocontext/metrics)
 
-* Current test status master: [![Build Status](https://travis-ci.org/inasafe/inasafe.svg?branch=master)](https://travis-ci.org/inasafe/inasafe) and
+* Current test status master: [![Build Status](https://travis-ci.org/kartoza/geocontext.svg?branch=master)](https://travis-ci.org/kartoza/geocontext) and
 [![Code Health](https://landscape.io/github/kartoza/geocontext/master/landscape.svg?style=flat)](https://landscape.io/github/kartoza/geocontext/master)
 
-* Current test status develop: [![Build Status](https://travis-ci.org/inasafe/inasafe.svg?branch=develop)](https://travis-ci.org/inasafe/inasafe) and
+* Current test status develop: [![Build Status](https://travis-ci.org/kartoza/geocontext.svg?branch=develop)](https://travis-ci.org/kartoza/geocontext) and
 [![Code Health](https://landscape.io/github/kartoza/geocontext/develop/landscape.svg?style=flat)](https://landscape.io/github/kartoza/geocontext/develop)
 
 
