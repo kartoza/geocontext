@@ -4,19 +4,15 @@
 import os
 
 from django.test import TestCase
-
 from django.conf import settings
 
 from base.management.commands.utilities import import_data, delete_data
-
-test_data_directory = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), 'data')
 
 
 class TestGeoContextView(TestCase):
     """Test for geocontext view."""
 
-    def tearDownClass(cls):
+    def tearDown(self):
         """Run after finished."""
         delete_data()
 
