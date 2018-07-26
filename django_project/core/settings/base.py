@@ -5,6 +5,7 @@ core.settings.base
 # Django settings for projecta project.
 
 from .utils import absolute_path
+import os
 
 ADMINS = (
     ('Dimas Ciputra', 'dimas@kartoza.com'),
@@ -36,6 +37,9 @@ USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
+
+# Base directory, refers to /home/web/django_project/core
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
