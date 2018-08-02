@@ -40,7 +40,7 @@ class ContextCacheAdmin(OSMGeoAdmin):
 
 class ContextGroupAdmin(admin.ModelAdmin):
     """Context Group admin model."""
-    list_display = ('key', 'name', 'description')
+    list_display = ('key', 'name', 'group_type', 'description')
     inlines = [ContextGroupServicesInLine]
 
 

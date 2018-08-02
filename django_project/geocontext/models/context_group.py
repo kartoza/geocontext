@@ -11,6 +11,14 @@ from geocontext.models.context_service_registry import ContextServiceRegistry
 class ContextGroup(models.Model):
     """Context Group"""
 
+    GROUP_TYPE_TEXT = 'text'
+    GROUP_TYPE_GRAPH = 'graph'
+
+    GROUP_TYPE_CHOICES = (
+        (GROUP_TYPE_TEXT, 'Text'),
+        (GROUP_TYPE_GRAPH, 'Graph')  # The values can be used for graph
+    )
+
     key = models.CharField(
         help_text=_('Key of context group.'),
         blank=False,
@@ -38,6 +46,15 @@ class ContextGroup(models.Model):
         help_text=_('List of context service registry in the context group.'),
         through='ContextGroupServices',
         blank=True,
+    )
+
+    group_type = models.CharField(
+        help_text='Type of the group to determine the UI.',
+        null=False,
+        blank=False,
+        default=GROUP_TYPE_TEXT,
+        choices=GROUP_TYPE_CHOICES,
+        max_length=10
     )
 
     def __str__(self):
