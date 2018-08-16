@@ -9,8 +9,10 @@ import os
 
 ADMINS = (
     ('Dimas Ciputra', 'dimas@kartoza.com'),
-    ('Tim Sutton', 'tim@kartoza.com'),
-    ('Christian Christellis', 'christian@kartoza.com'),
+    ('Irwan Fathurrahman', 'irwan@kartoza.com'),
+    ('Anita Nilam', 'anita@kartoza.com'),
+    ('Yarjuna Rohmat', 'rohmat@kartoza.com'),
+    ('Ismail Sunni', 'ismail@kartoza.com'),
 )
 
 MANAGERS = ADMINS
