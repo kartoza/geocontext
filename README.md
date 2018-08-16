@@ -1,24 +1,26 @@
 # GeoContext
 
-[![GeoContext Screenshot](https://user-images.githubusercontent.com/178003/36256821-3b6512b2-125d-11e8-8726-da143f0cf1fa.png)](http://geocontext.kartoza.com)
-
-A django app for monitoring rivers and river health.
+A django project to retrieve information of a point.
 
 View a running instance at [http://geocontext.kartoza.com](http://geocontext.kartoza.com)
-
-Note that GeoContext is under development and not yet feature complete.
 
 The latest source code is available at
 [https://github.com/kartoza/geocontext](https://github.com/kartoza/geocontext).
 
 * **Developers:** See our [developer guide](README-dev.md)
-* **Designers:** See our [Moqups Project](https://app.moqups.com/tim@kartoza.com/47tU30vEA3/edit/page/aa9df7b72) for design moqups.
 * **For production:** See our [deployment guide](README-docker.md)
 
 
 ## Key features
 
-* To be added
+* Stateless and easy to deploy
+* Able to retrieve context information of a point from several sources 
+(context service registries)
+* Currently work with WFS and WMS sources
+* Using cache mechanism to retrieve context information faster
+* Two level hierarchy (context service registry --> context group --> context
+ collection) for easier to manage
+* Simple API
 
 
 ## Project activity
@@ -58,63 +60,39 @@ make migrate
 make collectstatic
 ```
 
-If you need backups, put btsync keys in these files. If you don't need backups,
-you can let the default content.
 
 So as to create your admin account:
 ```
 make superuser
 ```
 
-**intercom.io**
-
-If you wish to make use of [intercom.io](https://www.intercom.io), include a
-`private.py` file in `core.settings` with your `INTERCOM_APP_ID` as a string.
-The necessary code snippet is already included in `project_base.html`.
-
-**google authentication**
-
-In social auth to use the google authentication you need to go to:
-
-https://console.developers.google.com/apis/credentials
-
-Create and oath2 credential with these options:
-
-Authorized redirect URIs
-
-http://geocontext.kartoza.com<your domain>/en/complete/google-oauth2/
-
-Use the GeoContext admin panel to set up the google account with your id and
-secret
-
-**github authentication**
-
-Create a developer key here:
-
-https://github.com/settings/applications/new
-
-Set the callback and site homepage url to the top of your site e.g.
-
-http://localhost:61202
-
-At http://localhost:61202/en/site-admin/socialaccount/socialapp/add/
-
-Set the key and secret from the github key page.
-
-**Backups**
-
-If you wish to sync backups, you need to establish a read / write btsync
-key on your production server and run one or more btsync clients
-with a read only key.
-
+**Loading Data**
+GeoContext use a json file to populate the context service registry and its 
+group and collection. Everything is stored in [geocontext.json](https://github.com/kartoza/geocontext/blob/develop/django_project/base/management/commands/geocontext.json).
+You can load it by running this command:
+```bash
+make import-data
+``` 
+Or if you have your own json file, you can load it with:
+```bash
+make import-data FILE_URI=path/to/your/json/file
 ```
-cd deployment
-cp btsync-media.env.EXAMPLE btsync-media.env
-cp btsync-db.env.EXAMPLE btsync-db.env
+Be careful, it will replace your context service registry data (and its 
+hierarchy) with your new one from the json file. But no worries, when your 
+run this `import-data` command, it will export your context service registry 
+data to a new json file.
+
+You can also export your context service registry to json file by running:
+```bash
+make export-data
 ```
 
-Now edit the ``btsync-media.env`` and ``btsync-db.env`` files, including
-relevant SECRET and DEVICE settings.
+## API
+After you have working geocontext instance, you can then check the available 
+API from the API documentation links (you can find it in the main page) or 
+see the content and the hierarchy of context service registry (you can also 
+find the link in the main page)
+
 
 ## Participation
 
@@ -160,8 +138,8 @@ all necessary servicing, repair or correction.
 
 Thank you to the individual contributors who have helped to build GeoContext:
 
-* Christian Christelis (Lead developer): christian@kartoza.com
-* Tim Sutton (Lead developer): tim@kartoza.com
-* Dimas Ciptura: dimas@kartoza.com
-* Irwan Fathurrahman: irwan@kartoza.com
-* Anita Hapsari: anita@kartoza.com
+* Tim Sutton ([@timlinux](https://github.com/timlinux)) : tim@kartoza.com
+* Ismail Sunni ([@ismailsunni](https://github.com/ismailsunni)) : ismail@kartoza
+.com
+* Dimas Tri Ciputra ([@dimasciput](https://github.com/dimasciput)) : 
+dimas@kartoza.com
