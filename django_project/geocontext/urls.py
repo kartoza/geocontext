@@ -61,12 +61,12 @@ urlpatterns_api = [
         view=ContextServiceRegistryDetailAPIView.as_view(),
         name='context-service-registry-detail-api'
         ),
-    url(regex=r'^geocontext/value/list/'
-              r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
-              r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/$',
-        view=ContextValueGeometryListAPI.as_view(),
-        name='context-value-list-all-api'
-        ),
+    # url(regex=r'^geocontext/value/list/'
+    #           r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
+    #           r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/$',
+    #     view=ContextValueGeometryListAPI.as_view(),
+    #     name='context-value-list-all-api'
+    #     ),
     url(regex=r'^geocontext/value/list/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
