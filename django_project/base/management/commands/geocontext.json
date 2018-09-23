@@ -815,15 +815,13 @@
             "layer_typename": "kartoza:tmaxsdev12c",
             "service_version": "1.3.0"
         }
-
-
-
     ],
     "context_group": [
         {
             "key": "water_group",
             "name": "River Catchments",
             "description": "Layers that relate to freshwater,estuarine and maritime ecosystems",
+            "group_type": "text",
             "context_service_registry_keys": [
                 "water_management_area",
                 "primary_catchment_area",
@@ -841,6 +839,7 @@
             "key": "political_boundary_group",
             "name": "Administrative Boundary",
             "description": "A collection of administrative and cadastral boundaries within South Africa",
+            "group_type": "text",
             "context_service_registry_keys": [
                 "provinces",
                 "provinces_geoserver",
@@ -851,8 +850,9 @@
         },
         {
             "key": "rainfall_group",
-            "name": "Rainfall Rasters",
+            "name": "Average Monthly Rainfall",
             "description": "A collection of rasters depicting monthly rainfall in South Africa",
+            "group_type": "graph",
             "context_service_registry_keys": [
                 "monthly_rainfall_march",
                 "monthly_rainfall_april",
@@ -868,8 +868,9 @@
         },
         {
             "key": "mean_maximum_temperature_group",
-            "name": "Monthly",
+            "name": "Monthly Mean Maximum Temperature",
             "description": "Monthly Means Of Daily Maximum Temperature (C) January - December",
+            "group_type": "graph",
             "context_service_registry_keys": [
                 "mean_maximum_temperature_january",
                 "mean_maximum_temperature_february",
@@ -885,11 +886,11 @@
                 "mean_maximum_temperature_december"
             ]
         },
-
         {
             "key": "mean_average_temperature_group",
-            "name": "Monthly mean,maximum and standard deviation Rasters",
-            "description": "A collection of rasters depicting monthly rainfall in South Africa",
+            "name": "Monthly mean average temperature",
+            "description": "A collection of rasters depicting monthly temperature",
+            "group_type": "graph",
             "context_service_registry_keys": [
                 "mean_average_temperature_january",
                 "mean_average_temperature_february",
@@ -905,12 +906,11 @@
                 "mean_average_temperature_december"
             ]
         },
-
-
         {
             "key": "mean_standard_deviation_temperature_group",
-            "name": "Monthly mean,maximum and standard deviation Rasters",
-            "description": "A collection of rasters depicting monthly rainfall in South Africa",
+            "name": "Monthly mean standard deviation of temperature",
+            "description": "A collection of rasters depicting monthly mean standard deviation of temperature in South Africa",
+            "group_type": "graph",
             "context_service_registry_keys": [
                 "mean_standard_deviation_temperature_january",
                 "mean_standard_deviation_temperature_february",
@@ -930,6 +930,7 @@
             "key": "cadastre_group",
             "name": "Cadastre",
             "description": "Land demarcations from Surveyor General",
+            "group_type": "text",
             "context_service_registry_keys": [
                 "farm_portion",
                 "erf"
@@ -939,6 +940,7 @@
             "key": "vegetation_group",
             "name": "Land Cover and Land Use",
             "description": "Layers that depict natural/artificial vegetation and also monitors land-use changes",
+            "group_type": "text",
             "context_service_registry_keys": [
                 "vegetation_2012",
                 "sa_biomes"
@@ -962,20 +964,31 @@
             "description": "Collection of rivers layers and their ecosystems",
             "context_group_keys": [
                 "water_group"
-
             ]
         },
         {
             "key": "climate",
             "name": "Climate Collection",
-            "description": "Grouping of layers that depicts climate charasteristics",
+            "description": "Grouping of layers that depicts climate characteristics",
             "context_group_keys": [
                 "rainfall_group",
                 "mean_maximum_temperature_group",
                 "mean_average_temperature_group",
                 "mean_standard_deviation_temperature_group"
-
             ]
+        },
+        {
+            "key": "ledet",
+            "name": "LEDET Collection",
+            "description": "LEDET Special Collection..",
+            "context_group_keys": [
+                "political_boundary_group",
+                "water_group",
+                "rainfall_group",
+                "mean_maximum_temperature_group",
+                "mean_average_temperature_group",
+                "mean_standard_deviation_temperature_group"
+                ]
         }
     ]
 }
