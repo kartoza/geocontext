@@ -2,6 +2,7 @@
 """Context Service Registry Model."""
 
 import requests
+import logging
 from datetime import datetime, timedelta
 import pytz
 from xml.dom import minidom
@@ -15,6 +16,8 @@ from django.http import QueryDict
 from geocontext.utilities import (
     convert_coordinate, parse_gml_geometry, get_bbox)
 from geocontext.models.validators import key_validator
+
+LOGGER = logging.getLogger(__name__)
 
 
 class ContextServiceRegistry(models.Model):
@@ -198,17 +201,25 @@ class ContextServiceRegistry(models.Model):
         else:
             url = self.build_query_url(x, y, srid)
             request = requests.get(url)
-            content = request.content
-            if ':' in self.layer_typename:
-                workspace = self.layer_typename.split(':')[0]
-                geometry = parse_gml_geometry(content, workspace)
+            if request.status_code == 200:
+                content = request.content
+                if ':' in self.layer_typename:
+                    workspace = self.layer_typename.split(':')[0]
+                    geometry = parse_gml_geometry(content, workspace)
+                else:
+                    geometry = parse_gml_geometry(content)
+                if not geometry:
+                    return None
+                if not geometry.srid:
+                    geometry.srid = self.srid
+                value = self.parse_request_value(content)
             else:
-                geometry = parse_gml_geometry(content)
-            if not geometry:
-                return None
-            if not geometry.srid:
-                geometry.srid = self.srid
-            value = self.parse_request_value(content)
+                error_message = (
+                    'Failed to request to %s for CSR %s got %s because of '
+                    '%s' % (
+                        url, self.key, request.status_code, request.reason))
+                LOGGER.error(error_message)
+                value = None
 
         # Create cache here.
         from geocontext.models.context_cache import ContextCache
