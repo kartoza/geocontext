@@ -816,6 +816,118 @@
             "service_version": "1.3.0"
         }
 
+        ,
+        {
+            "key": "actual_vapour_pressure_january",
+            "name": "Actual vapour Pressure January",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp01c",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "actual_vapour_pressure_february",
+            "name": "Actual vapour Pressure February",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp02c",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "actual_vapour_pressure_march",
+            "name": "Actual vapour Pressure March",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp03c",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "actual_vapour_pressure_april",
+            "name": "Actual vapour Pressure April",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp04c",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "actual_vapour_pressure_may",
+            "name": "Actual vapour Pressure May",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp05c",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "actual_vapour_pressure_july",
+            "name": "Actual vapour Pressure July",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp07c",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "actual_vapour_pressure_august",
+            "name": "Actual vapour Pressure August",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp08c",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "actual_vapour_pressure_october",
+            "name": "Actual vapour Pressure October",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp010c",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "actual_vapour_pressure_november",
+            "name": "Actual vapour Pressure November",
+            "description": null,
+            "url": "http://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp011c",
+            "service_version": "1.3.0"
+        }
+
+
+
 
 
     ],
@@ -864,6 +976,24 @@
                 "monthly_rainfall_october",
                 "monthly_rainfall_november",
                 "monthly_rainfall_december"
+            ]
+        },
+
+        {
+            "key": "actual_vapour_group",
+            "name": "Actual vapour  Rasters",
+            "description": "A collection of rasters depicting vapour  in South Africa",
+            "context_service_registry_keys": [
+                "actual_vapour_pressure_january",
+                "actual_vapour_pressure_february",
+                "actual_vapour_pressure_march",
+                "actual_vapour_pressure_april",
+                "actual_vapour_pressure_may",
+                "actual_vapour_pressure_july",
+                "actual_vapour_pressure_august",
+                "actual_vapour_pressure_october",
+                "actual_vapour_pressure_november"
+
             ]
         },
         {
@@ -973,7 +1103,8 @@
                 "rainfall_group",
                 "mean_maximum_temperature_group",
                 "mean_average_temperature_group",
-                "mean_standard_deviation_temperature_group"
+                "mean_standard_deviation_temperature_group",
+                "actual_vapour_group"
 
             ]
         }
