@@ -368,7 +368,7 @@
 
 
         {
-            "key": "mean_maximum_temperature_january",
+            "key": "monthly_mean_maximum_temperature_january",
             "name": "Monthly Means Of Daily Maximum Temperature (C) January",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -380,7 +380,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_maximum_temperature_february",
+            "key": "monthly_mean_maximum_temperature_february",
             "name": "Monthly Means Of Daily Maximum Temperature (C) February",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -392,7 +392,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_maximum_temperature_march",
+            "key": "monthly_mean_maximum_temperature_march",
             "name": "Monthly Means Of Daily Maximum Temperature (C) March",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -404,7 +404,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_maximum_temperature_april",
+            "key": "monthly_mean_maximum_temperature_april",
             "name": "Monthly Means Of Daily Maximum Temperature (C) April",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -416,7 +416,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_maximum_temperature_may",
+            "key": "monthly_mean_maximum_temperature_may",
             "name": "Monthly Means Of Daily Maximum Temperature (C) May",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -428,7 +428,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_maximum_temperature_june",
+            "key": "monthly_mean_maximum_temperature_june",
              "name": "Monthly Means Of Daily Maximum Temperature (C) June",
              "description": null,
              "url": "https://maps.kartoza.com/geoserver/wms",
@@ -440,7 +440,7 @@
              "service_version": "1.3.0"
         },
         {
-            "key": "mean_maximum_temperature_july",
+            "key": "monthly_mean_maximum_temperature_july",
             "name": "Monthly Means Of Daily Maximum Temperature (C) July",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -452,7 +452,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_maximum_temperature_august",
+            "key": "monthly_mean_maximum_temperature_august",
             "name": "Monthly Means Of Daily Maximum Temperature (C) August",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -464,7 +464,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_maximum_temperature_september",
+            "key": "monthly_mean_maximum_temperature_september",
             "name": "Monthly Means Of Daily Maximum Temperature (C) September",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -476,7 +476,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_maximum_temperature_october",
+            "key": "monthly_mean_maximum_temperature_october",
             "name": "Monthly Means Of Daily Maximum Temperature (C) October",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -488,7 +488,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_maximum_temperature_november",
+            "key": "monthly_mean_maximum_temperature_november",
             "name": "Monthly Means Of Daily Maximum Temperature (C) November",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -500,7 +500,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_maximum_temperature_december",
+            "key": "monthly_mean_maximum_temperature_december",
             "name": "Monthly Means Of Daily Maximum Temperature (C) December",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -513,7 +513,7 @@
         },
 
         {
-            "key": "mean_average_temperature_january",
+            "key": "monthly_mean_average_temperature_january",
             "name": "Monthly Means Of Daily Average Temperature (C) January",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -525,7 +525,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_average_temperature_february",
+            "key": "monthly_mean_average_temperature_february",
             "name": "Monthly Means Of Daily Average Temperature (C) February",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -537,7 +537,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_average_temperature_march",
+            "key": "monthly_mean_average_temperature_march",
             "name": "Monthly Means Of Daily Average Temperature (C) March",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -549,7 +549,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_average_temperature_april",
+            "key": "monthly_mean_average_temperature_april",
             "name": "Monthly Means Of Daily Average Temperature (C) April",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -561,7 +561,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_average_temperature_may",
+            "key": "monthly_mean_average_temperature_may",
             "name": "Monthly Means Of Daily Average Temperature (C) May",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -573,7 +573,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_average_temperature_june",
+            "key": "monthly_mean_average_temperature_june",
              "name": "Monthly Means Of Daily Average Temperature (C) June",
              "description": null,
              "url": "https://maps.kartoza.com/geoserver/wms",
@@ -585,7 +585,7 @@
              "service_version": "1.3.0"
         },
         {
-            "key": "mean_average_temperature_july",
+            "key": "monthly_mean_average_temperature_july",
             "name": "Monthly Means Of Daily Average Temperature (C) July",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -597,7 +597,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_average_temperature_august",
+            "key": "monthly_mean_average_temperature_august",
             "name": "Monthly Means Of Daily Average Temperature (C) August",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -609,7 +609,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_average_temperature_september",
+            "key": "monthly_mean_average_temperature_september",
             "name": "Monthly Means Of Daily Average Temperature (C) September",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -621,7 +621,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_average_temperature_october",
+            "key": "monthly_mean_average_temperature_october",
             "name": "Monthly Means Of Daily Average Temperature (C) October",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -633,7 +633,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_average_temperature_november",
+            "key": "monthly_mean_average_temperature_november",
             "name": "Monthly Means Of Daily Average Temperature (C) November",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -645,7 +645,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_average_temperature_december",
+            "key": "monthly_mean_average_temperature_december",
             "name": "Monthly Means Of Daily Average Temperature (C) December",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -658,7 +658,7 @@
         },
 
         {
-            "key": "mean_standard_deviation_temperature_january",
+            "key": "monthly_mean_standard_deviation_temperature_january",
             "name": "Standard Deviation (C) Of Daily Maximum Temperature January",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -670,7 +670,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_standard_deviation_temperature_february",
+            "key": "monthly_mean_standard_deviation_temperature_february",
             "name": "Standard Deviation (C) Of Daily Maximum Temperature February",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -682,7 +682,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_standard_deviation_temperature_march",
+            "key": "monthly_mean_standard_deviation_temperature_march",
             "name": "Standard Deviation (C) Of Daily Maximum Temperature March",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -694,7 +694,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_standard_deviation_temperature_april",
+            "key": "monthly_mean_standard_deviation_temperature_april",
             "name": "Standard Deviation (C) Of Daily Maximum Temperature April",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -706,7 +706,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_standard_deviation_temperature_may",
+            "key": "monthly_mean_standard_deviation_temperature_may",
             "name": "Standard Deviation (C) Of Daily Maximum Temperature May",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -718,7 +718,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_standard_deviation_temperature_june",
+            "key": "monthly_mean_standard_deviation_temperature_june",
              "name": "Standard Deviation (C) Of Daily Maximum Temperature June",
              "description": null,
              "url": "https://maps.kartoza.com/geoserver/wms",
@@ -730,7 +730,7 @@
              "service_version": "1.3.0"
         },
         {
-            "key": "mean_standard_deviation_temperature_july",
+            "key": "monthly_mean_standard_deviation_temperature_july",
             "name": "Standard Deviation (C) Of Daily Maximum Temperature July",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -742,7 +742,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_standard_deviation_temperature_august",
+            "key": "monthly_mean_standard_deviation_temperature_august",
             "name": "Standard Deviation (C) Of Daily Maximum Temperature August",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -754,7 +754,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_standard_deviation_temperature_september",
+            "key": "monthly_mean_standard_deviation_temperature_september",
             "name": "Standard Deviation (C) Of Daily Maximum Temperature September",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -766,7 +766,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_standard_deviation_temperature_october",
+            "key": "monthly_mean_standard_deviation_temperature_october",
             "name": "Standard Deviation (C) Of Daily Maximum Temperature October",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -778,7 +778,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_standard_deviation_temperature_november",
+            "key": "monthly_mean_standard_deviation_temperature_november",
             "name": "Standard Deviation (C) Of Daily Maximum Temperature November",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -790,7 +790,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "mean_standard_deviation_temperature_december",
+            "key": "monthly_mean_standard_deviation_temperature_december",
             "name": "Standard Deviation (C) Of Daily Maximum Temperature December",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -804,7 +804,7 @@
 
         ,
         {
-            "key": "actual_vapour_pressure_january",
+            "key": "monthly_actual_vapour_pressure_january",
             "name": "Actual vapour Pressure January",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -816,7 +816,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "actual_vapour_pressure_february",
+            "key": "monthly_actual_vapour_pressure_february",
             "name": "Actual vapour Pressure February",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -828,7 +828,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "actual_vapour_pressure_march",
+            "key": "monthly_actual_vapour_pressure_march",
             "name": "Actual vapour Pressure March",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -840,7 +840,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "actual_vapour_pressure_april",
+            "key": "monthly_actual_vapour_pressure_april",
             "name": "Actual vapour Pressure April",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -852,7 +852,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "actual_vapour_pressure_may",
+            "key": "monthly_actual_vapour_pressure_may",
             "name": "Actual vapour Pressure May",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -864,7 +864,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "actual_vapour_pressure_july",
+            "key": "monthly_actual_vapour_pressure_july",
             "name": "Actual vapour Pressure July",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -876,7 +876,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "actual_vapour_pressure_august",
+            "key": "monthly_actual_vapour_pressure_august",
             "name": "Actual vapour Pressure August",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -888,7 +888,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "actual_vapour_pressure_october",
+            "key": "monthly_actual_vapour_pressure_october",
             "name": "Actual vapour Pressure October",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -900,7 +900,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "actual_vapour_pressure_november",
+            "key": "monthly_actual_vapour_pressure_november",
             "name": "Actual vapour Pressure November",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -952,7 +952,7 @@
         }
         ,
         {
-            "key": "relative_humidity_january",
+            "key": "monthly_relative_humidity_january",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity  January",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -964,7 +964,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "relative_humidity__february",
+            "key": "monthly_relative_humidity__february",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity February",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -976,7 +976,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "relative_humidity_march",
+            "key": "monthly_relative_humidity_march",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity March",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -988,7 +988,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "relative_humidity_april",
+            "key": "monthly_relative_humidity_april",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity April",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1000,7 +1000,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "relative_humidity_may",
+            "key": "monthly_relative_humidity_may",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity May",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1012,7 +1012,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "relative_humidity_june",
+            "key": "monthly_relative_humidity_june",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity June",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1024,7 +1024,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "relative_humidity_july",
+            "key": "monthly_relative_humidity_july",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity July",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1036,7 +1036,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "relative_humidity_august",
+            "key": "monthly_relative_humidity_august",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity August",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1048,7 +1048,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "relative_humidity_september",
+            "key": "monthly_relative_humidity_september",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity September",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1060,7 +1060,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "relative_humidity_october",
+            "key": "monthly_relative_humidity_october",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity October",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1072,7 +1072,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "relative_humidity_november",
+            "key": "monthly_relative_humidity_november",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity November",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1084,7 +1084,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "relative_humidity_december",
+            "key": "monthly_relative_humidity_december",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity November",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1093,6 +1093,31 @@
             "time_to_live": 604800,
             "srid": 4326,
             "layer_typename": "kartoza:maxrh_d12",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "sa_land_cover",
+            "name": "South Africa Landcover 72 Classes",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:PALETTE_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:national-Land-Cover-72-classes",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "sa_lada_land_use",
+            "name": "South Africa Landuse",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "qgs:landuse",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:lada_land_use",
             "service_version": "1.3.0"
         }
 
@@ -1151,18 +1176,18 @@
             "name": "Relative humidity Rasters",
             "description": "A collection of rasters depicting Daily minimum and maximum relative humidity  as relative humidity in South Africa",
             "context_service_registry_keys": [
-                "relative_humidity_january",
-                "relative_humidity_february",
-                "relative_humidity_march",
-                "relative_humidity_april",
-                "relative_humidity_may",
-                "relative_humidity_june",
-                "relative_humidity_july",
-                "relative_humidity_august",
-                "relative_humidity_september",
-                "relative_humidity_october",
-                "relative_humidity_november",
-                "relative_humidity_december"
+                "monthly_relative_humidity_january",
+                "monthly_relative_humidity_february",
+                "monthly_relative_humidity_march",
+                "monthly_relative_humidity_april",
+                "monthly_relative_humidity_may",
+                "monthly_relative_humidity_june",
+                "monthly_relative_humidity_july",
+                "monthly_relative_humidity_august",
+                "monthly_relative_humidity_september",
+                "monthly_relative_humidity_october",
+                "monthly_relative_humidity_november",
+                "monthly_relative_humidity_december"
 
             ]
         },
@@ -1172,15 +1197,15 @@
             "name": "Actual vapour  Rasters",
             "description": "A collection of rasters depicting vapour  in South Africa",
             "context_service_registry_keys": [
-                "actual_vapour_pressure_january",
-                "actual_vapour_pressure_february",
-                "actual_vapour_pressure_march",
-                "actual_vapour_pressure_april",
-                "actual_vapour_pressure_may",
-                "actual_vapour_pressure_july",
-                "actual_vapour_pressure_august",
-                "actual_vapour_pressure_october",
-                "actual_vapour_pressure_november"
+                "monthly_actual_vapour_pressure_january",
+                "monthly_actual_vapour_pressure_february",
+                "monthly_actual_vapour_pressure_march",
+                "monthly_actual_vapour_pressure_april",
+                "monthly_actual_vapour_pressure_may",
+                "monthly_actual_vapour_pressure_july",
+                "monthly_actual_vapour_pressure_august",
+                "monthly_actual_vapour_pressure_october",
+                "monthly_actual_vapour_pressure_november"
 
             ]
         },
@@ -1189,18 +1214,18 @@
             "name": "Monthly",
             "description": "Monthly Means Of Daily Maximum Temperature (C) January - December",
             "context_service_registry_keys": [
-                "mean_maximum_temperature_january",
-                "mean_maximum_temperature_february",
-                "mean_maximum_temperature_march",
-                "mean_maximum_temperature_april",
-                "mean_maximum_temperature_may",
-                "mean_maximum_temperature_june",
-                "mean_maximum_temperature_july",
-                "mean_maximum_temperature_august",
-                "mean_maximum_temperature_september",
-                "mean_maximum_temperature_october",
-                "mean_maximum_temperature_november",
-                "mean_maximum_temperature_december"
+                "monthly_mean_maximum_temperature_january",
+                "monthly_mean_maximum_temperature_february",
+                "monthly_mean_maximum_temperature_march",
+                "monthly_mean_maximum_temperature_april",
+                "monthly_mean_maximum_temperature_may",
+                "monthly_mean_maximum_temperature_june",
+                "monthly_mean_maximum_temperature_july",
+                "monthly_mean_maximum_temperature_august",
+                "monthly_mean_maximum_temperature_september",
+                "monthly_mean_maximum_temperature_october",
+                "monthly_mean_maximum_temperature_november",
+                "monthly_mean_maximum_temperature_december"
             ]
         },
 
@@ -1209,18 +1234,18 @@
             "name": "Monthly mean,maximum and standard deviation Rasters",
             "description": "A collection of rasters depicting monthly rainfall in South Africa",
             "context_service_registry_keys": [
-                "mean_average_temperature_january",
-                "mean_average_temperature_february",
-                "mean_average_temperature_march",
-                "mean_average_temperature_april",
-                "mean_average_temperature_may",
-                "mean_average_temperature_june",
-                "mean_average_temperature_july",
-                "mean_average_temperature_august",
-                "mean_average_temperature_september",
-                "mean_average_temperature_october",
-                "mean_average_temperature_november",
-                "mean_average_temperature_december"
+                "monthly_mean_average_temperature_january",
+                "monthly_mean_average_temperature_february",
+                "monthly_mean_average_temperature_march",
+                "monthly_mean_average_temperature_april",
+                "monthly_mean_average_temperature_may",
+                "monthly_mean_average_temperature_june",
+                "monthly_mean_average_temperature_july",
+                "monthly_mean_average_temperature_august",
+                "monthly_mean_average_temperature_september",
+                "monthly_mean_average_temperature_october",
+                "monthly_mean_average_temperature_november",
+                "monthly_mean_average_temperature_december"
             ]
         },
 
@@ -1230,18 +1255,18 @@
             "name": "Monthly mean,maximum and standard deviation Rasters",
             "description": "A collection of rasters depicting monthly rainfall in South Africa",
             "context_service_registry_keys": [
-                "mean_standard_deviation_temperature_january",
-                "mean_standard_deviation_temperature_february",
-                "mean_standard_deviation_temperature_march",
-                "mean_standard_deviation_temperature_april",
-                "mean_standard_deviation_temperature_may",
-                "mean_standard_deviation_temperature_june",
-                "mean_standard_deviation_temperature_july",
-                "mean_standard_deviation_temperature_august",
-                "mean_standard_deviation_temperature_september",
-                "mean_standard_deviation_temperature_october",
-                "mean_standard_deviation_temperature_november",
-                "mean_standard_deviation_temperature_december"
+                "monthly_mean_standard_deviation_temperature_january",
+                "monthly_mean_standard_deviation_temperature_february",
+                "monthly_mean_standard_deviation_temperature_march",
+                "monthly_mean_standard_deviation_temperature_april",
+                "monthly_mean_standard_deviation_temperature_may",
+                "monthly_mean_standard_deviation_temperature_june",
+                "monthly_mean_standard_deviation_temperature_july",
+                "monthly_mean_standard_deviation_temperature_august",
+                "monthly_mean_standard_deviation_temperature_september",
+                "monthly_mean_standard_deviation_temperature_october",
+                "monthly_mean_standard_deviation_temperature_november",
+                "monthly_mean_standard_deviation_temperature_december"
             ]
         },
 
@@ -1269,11 +1294,22 @@
         },
         {
             "key": "vegetation_group",
-            "name": "Land Cover and Land Use",
+            "name": "Land Cover and Land Use vectors",
             "description": "Layers that depict natural/artificial vegetation and also monitors land-use changes",
             "context_service_registry_keys": [
                 "vegetation_2012",
                 "sa_biomes"
+
+            ]
+        }
+        ,
+        {
+            "key": "land_cover_group",
+            "name": "Land Cover and Land Use layers including rasters",
+            "description": "Layers that depict land-use changes",
+            "context_service_registry_keys": [
+                "sa_land_cover",
+                "sa_lada_land_use"
 
             ]
         }
@@ -1295,6 +1331,17 @@
             "context_group_keys": [
                 "water_group"
 
+            ]
+        },
+
+        {
+            "key": "land_cover_land_use_group",
+            "name": "Land Use group",
+            "description": "Collection of layers showing how the land is being utilised or changing",
+            "context_group_keys": [
+                "vegetation_group",
+                "land_cover_group",
+                "elevation_group"
             ]
         },
         {
