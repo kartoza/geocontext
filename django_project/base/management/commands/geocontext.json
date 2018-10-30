@@ -1112,8 +1112,8 @@
             "key": "sa_lada_land_use",
             "name": "South Africa Landuse",
             "description": null,
-            "url": "https://maps.kartoza.com/geoserver/wms",
-            "query_type": "WMS",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
             "result_regex": "qgs:landuse",
             "time_to_live": 604800,
             "srid": 3857,
@@ -1232,7 +1232,7 @@
         {
             "key": "mean_average_temperature_group",
             "name": "Monthly mean,maximum and standard deviation Rasters",
-            "description": "A collection of rasters depicting monthly rainfall in South Africa",
+            "description": "A collection of rasters depicting monthly mean temperature in South Africa",
             "context_service_registry_keys": [
                 "monthly_mean_average_temperature_january",
                 "monthly_mean_average_temperature_february",
@@ -1253,7 +1253,7 @@
         {
             "key": "mean_standard_deviation_temperature_group",
             "name": "Monthly mean,maximum and standard deviation Rasters",
-            "description": "A collection of rasters depicting monthly rainfall in South Africa",
+            "description": "A collection of rasters depicting standard deviation of temperature in South Africa",
             "context_service_registry_keys": [
                 "monthly_mean_standard_deviation_temperature_january",
                 "monthly_mean_standard_deviation_temperature_february",
@@ -1345,6 +1345,22 @@
             ]
         },
         {
+            "key": "ledet",
+            "name": "LEDET Collection",
+            "description": "LEDET Special Collection..",
+            "context_group_keys": [
+                "political_boundary_group",
+                "cadastre_group",
+                "water_group",
+                "rainfall_group",
+                "mean_maximum_temperature_group",
+                "mean_average_temperature_group",
+                "mean_standard_deviation_temperature_group",
+                "elevation_group",
+                "land_cover_group"
+            ]
+        },
+        {
             "key": "climate",
             "name": "Climate Collection",
             "description": "Grouping of layers that depicts climate charasteristics",
@@ -1355,7 +1371,6 @@
                 "mean_standard_deviation_temperature_group",
                 "actual_vapour_group",
                 "relative_humidity_group"
-
             ]
         }
     ]
