@@ -5,60 +5,60 @@
             "key": "water_management_area",
             "name": "Water Management Area",
             "description": null,
-            "url": "https://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:name",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "water_management_area",
+            "layer_typename": "kartoza:water_management_areas",
             "service_version": "1.0.0"
         },
         {
             "key": "primary_catchment_area",
             "name": "Primary Catchment Area",
             "description": null,
-            "url": "https://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:name",
             "time_to_live": 604800,
             "srid": 3857,
-            "layer_typename": "primary_catchment_area",
+            "layer_typename": "kartoza:primary_catchment_area",
             "service_version": "1.0.0"
         },
         {
             "key": "secondary_catchment_area",
             "name": "Secondary Catchment Area",
             "description": null,
-            "url": "https://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:name",
             "time_to_live": 604800,
             "srid": 3857,
-            "layer_typename": "secondary_catchment_area",
+            "layer_typename": "kartoza:secondary_catchment_area",
             "service_version": "1.0.0"
         },
         {
             "key": "tertiary_catchment_area",
             "name": "Tertiary Catchment Area",
             "description": null,
-            "url": "https://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "qgs:name",
+            "result_regex": "qgs:category",
             "time_to_live": 604800,
             "srid": 3857,
-            "layer_typename": "tertiary_catchment_area",
+            "layer_typename": "kartoza:tertiary_catchment_area",
             "service_version": "1.0.0"
         },
         {
             "key": "quaternary_catchment_area",
             "name": "Quaternary Catchment Area",
             "description": null,
-            "url": "https://maps.kartoza.com/web/?map=/web/kartoza/kartoza.qgs",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "qgs:name",
             "time_to_live": 604800,
             "srid": 3857,
-            "layer_typename": "quaternary_catchment_area",
+            "layer_typename": "kartoza:Quaternary-catchments",
             "service_version": "1.0.0"
         },
         {
@@ -67,7 +67,7 @@
              "description": null,
              "url": "https://maps.kartoza.com/geoserver/wfs",
              "query_type": "WFS",
-             "result_regex": "qgs:id",
+             "result_regex": "qgs:provname",
              "time_to_live": 604800,
              "srid": 3857,
              "layer_typename": "kartoza:sa_provinces",
@@ -81,7 +81,7 @@
             "query_type": "WFS",
             "result_regex": "qgs:id",
             "time_to_live": 604800,
-            "srid": 3857,
+            "srid": 4148,
             "layer_typename": "kartoza:farm_portion",
             "service_version": "1.0.0"
         },
@@ -93,7 +93,7 @@
             "query_type": "WFS",
             "result_regex": "qgs:id",
             "time_to_live": 604800,
-            "srid": 4326,
+            "srid": 4148,
             "layer_typename": "kartoza:erf",
             "service_version": "1.0.0"
         },
@@ -110,15 +110,28 @@
             "service_version": "1.0.0"
         },
         {
-            "key": "municipal_ward_boundaries",
-            "name": "Municipal Ward Boundaries",
+            "key": "local_municipalities",
+            "name": "Local Municipality Boundaries",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "qgs:mn_name",
+            "result_regex": "qgs:municname",
             "time_to_live": 604800,
             "srid": 3857,
-            "layer_typename": "kartoza:municipal_ward_boundaries",
+            "layer_typename": "kartoza:local_municipalities",
+            "service_version": "1.0.0"
+        },
+
+        {
+            "key": "ward_boundaries",
+            "name": "Wards Municipal Boundaries",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "qgs:wardno",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:wards",
             "service_version": "1.0.0"
         },
         {
@@ -1150,8 +1163,9 @@
             "context_service_registry_keys": [
                 "sa_provinces",
                 "district_municipalities",
-                "municipal_ward_boundaries",
-                "sub_places"
+                "local_municipalities",
+                "sub_places",
+                "ward_boundaries"
             ]
         },
         {
@@ -1335,7 +1349,7 @@
         },
 
         {
-            "key": "land_cover_land_use_group",
+            "key": "land_cover_land_use",
             "name": "Land Use group",
             "description": "Collection of layers showing how the land is being utilised or changing",
             "context_group_keys": [
