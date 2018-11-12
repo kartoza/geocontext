@@ -1246,10 +1246,13 @@
             "context_service_registry_keys": [
                 "monthly_mean_average_temperature_january",
                 "monthly_mean_average_temperature_march",
+                "monthly_mean_average_temperature_april",
                 "monthly_mean_average_temperature_may",
+                "monthly_mean_average_temperature_june",
                 "monthly_mean_average_temperature_july",
                 "monthly_mean_average_temperature_september",
-                "monthly_mean_average_temperature_november"
+                "monthly_mean_average_temperature_november",
+                "monthly_mean_average_temperature_december"
 
             ]
         },
@@ -1262,10 +1265,15 @@
             "context_service_registry_keys": [
 
                 "monthly_mean_standard_deviation_temperature_february",
+                "monthly_mean_standard_deviation_temperature_march",
+                "monthly_mean_standard_deviation_temperature_may",
                 "monthly_mean_standard_deviation_temperature_june",
+                "monthly_mean_standard_deviation_temperature_july",
                 "monthly_mean_standard_deviation_temperature_august",
                 "monthly_mean_standard_deviation_temperature_september",
-                "monthly_mean_standard_deviation_temperature_november"
+                "monthly_mean_standard_deviation_temperature_october",
+                "monthly_mean_standard_deviation_temperature_november",
+                "monthly_mean_standard_deviation_temperature_december"
 
             ]
         },
