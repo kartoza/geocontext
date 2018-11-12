@@ -926,7 +926,7 @@
         }
         ,
         {
-            "key": "srtm_30m_dem",
+            "key": "srtm_dem",
             "name": "DEM of South Africa 30m",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -952,7 +952,7 @@
         }
         ,
         {
-            "key": "altitude-dev",
+            "key": "altitude_dev",
             "name": "DEM of South Africa",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -960,7 +960,7 @@
             "result_regex": "kartoza:GRAY_INDEX",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:altitude-dev",
+            "layer_typename": "kartoza:altitudesdev",
             "service_version": "1.3.0"
         }
         ,
@@ -1191,7 +1191,6 @@
             "description": "A collection of rasters depicting Daily minimum and maximum relative humidity  as relative humidity in South Africa",
             "context_service_registry_keys": [
                 "monthly_relative_humidity_january",
-                "monthly_relative_humidity_february",
                 "monthly_relative_humidity_march",
                 "monthly_relative_humidity_april",
                 "monthly_relative_humidity_may",
@@ -1291,9 +1290,9 @@
             "name": "Digital elevation rasters",
             "description": "A collection of rasters depicting terrain elevation in South Africa",
             "context_service_registry_keys": [
-                "srtm_30m_dem",
+                "srtm_dem",
                  "altitude",
-                 "altitude-dev"
+                 "altitude_dev"
 
             ]
         },
