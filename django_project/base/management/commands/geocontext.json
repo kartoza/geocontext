@@ -63,7 +63,7 @@
         },
         {
             "key": "sa_provinces",
-             "name": "South Africa Provinces",
+             "name": "SA Provinces",
              "description": null,
              "url": "https://maps.kartoza.com/geoserver/wfs",
              "query_type": "WFS",
@@ -208,7 +208,7 @@
         },
         {
             "key": "dams500g",
-            "name": "South Africa Dams Polygon",
+            "name": "Dams 500g",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -220,7 +220,7 @@
         },
         {
             "key": "rivers500k",
-            "name": "Rivers of south africa",
+            "name": "SA 500k rivers",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -927,7 +927,7 @@
         ,
         {
             "key": "srtm_dem",
-            "name": "DEM of South Africa 30m",
+            "name": "SRTM 30m DEM",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -940,7 +940,7 @@
       ,
         {
             "key": "altitude",
-            "name": "DEM of South Africa",
+            "name": "Altitude",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -953,7 +953,7 @@
         ,
         {
             "key": "altitude_dev",
-            "name": "DEM of South Africa",
+            "name": "Altitude and Relative Relief",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -977,7 +977,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_relative_humidity__february",
+            "key": "monthly_relative_humidity_february",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity February",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1098,7 +1098,7 @@
         },
         {
             "key": "monthly_relative_humidity_december",
-            "name": "Daily Minimum, Maximum and Mean Relative Humidity November",
+            "name": "Daily Minimum, Maximum and Mean Relative Humidity December",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1111,7 +1111,7 @@
         ,
         {
             "key": "sa_land_cover",
-            "name": "South Africa Landcover 72 Classes",
+            "name": "SA Landcover 72 Classes",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1123,7 +1123,7 @@
         },
         {
             "key": "sa_lada_land_use",
-            "name": "South Africa Landuse",
+            "name": "SA LADA Landuse",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -1170,7 +1170,7 @@
         },
         {
             "key": "rainfall_group",
-            "name": "Rainfall Rasters",
+            "name": "Rainfall",
             "description": "A collection of rasters depicting monthly rainfall in South Africa",
             "context_service_registry_keys": [
                 "monthly_rainfall_march",
@@ -1187,7 +1187,7 @@
         },
         {
             "key": "relative_humidity_group",
-            "name": "Relative humidity Rasters",
+            "name": "Relative Humidity",
             "description": "A collection of rasters depicting Daily minimum and maximum relative humidity  as relative humidity in South Africa",
             "context_service_registry_keys": [
                 "monthly_relative_humidity_january",
@@ -1207,7 +1207,7 @@
 
         {
             "key": "actual_vapour_group",
-            "name": "Actual vapour  Rasters",
+            "name": "Actual Vapour",
             "description": "A collection of rasters depicting vapour  in South Africa",
             "context_service_registry_keys": [
                 "monthly_actual_vapour_pressure_january",
@@ -1224,62 +1224,49 @@
         },
         {
             "key": "mean_maximum_temperature_group",
-            "name": "Monthly",
+            "name": "Monthly mean maximum temperature",
             "description": "Monthly Means Of Daily Maximum Temperature (C) January - December",
             "context_service_registry_keys": [
                 "monthly_mean_maximum_temperature_january",
                 "monthly_mean_maximum_temperature_february",
                 "monthly_mean_maximum_temperature_march",
                 "monthly_mean_maximum_temperature_april",
-                "monthly_mean_maximum_temperature_may",
                 "monthly_mean_maximum_temperature_june",
                 "monthly_mean_maximum_temperature_july",
-                "monthly_mean_maximum_temperature_august",
                 "monthly_mean_maximum_temperature_september",
                 "monthly_mean_maximum_temperature_october",
-                "monthly_mean_maximum_temperature_november",
                 "monthly_mean_maximum_temperature_december"
             ]
         },
 
         {
             "key": "mean_average_temperature_group",
-            "name": "Monthly mean,maximum and standard deviation Rasters",
+            "name": "Monthly mean average temperature",
             "description": "A collection of rasters depicting monthly mean temperature in South Africa",
             "context_service_registry_keys": [
                 "monthly_mean_average_temperature_january",
-                "monthly_mean_average_temperature_february",
                 "monthly_mean_average_temperature_march",
-                "monthly_mean_average_temperature_april",
                 "monthly_mean_average_temperature_may",
-                "monthly_mean_average_temperature_june",
                 "monthly_mean_average_temperature_july",
-                "monthly_mean_average_temperature_august",
                 "monthly_mean_average_temperature_september",
-                "monthly_mean_average_temperature_october",
-                "monthly_mean_average_temperature_november",
-                "monthly_mean_average_temperature_december"
+                "monthly_mean_average_temperature_november"
+
             ]
         },
 
 
         {
             "key": "mean_standard_deviation_temperature_group",
-            "name": "Monthly mean,maximum and standard deviation Rasters",
+            "name": "Monthly mean standard deviation temperature",
             "description": "A collection of rasters depicting standard deviation of temperature in South Africa",
             "context_service_registry_keys": [
-                "monthly_mean_standard_deviation_temperature_january",
+
                 "monthly_mean_standard_deviation_temperature_february",
-                "monthly_mean_standard_deviation_temperature_march",
-                "monthly_mean_standard_deviation_temperature_april",
-                "monthly_mean_standard_deviation_temperature_may",
                 "monthly_mean_standard_deviation_temperature_june",
-                "monthly_mean_standard_deviation_temperature_july",
                 "monthly_mean_standard_deviation_temperature_august",
                 "monthly_mean_standard_deviation_temperature_september",
-                "monthly_mean_standard_deviation_temperature_october",
-                "monthly_mean_standard_deviation_temperature_november",
-                "monthly_mean_standard_deviation_temperature_december"
+                "monthly_mean_standard_deviation_temperature_november"
+
             ]
         },
 
@@ -1287,7 +1274,7 @@
 
         {
             "key": "elevation_group",
-            "name": "Digital elevation rasters",
+            "name": "Digital Elevation",
             "description": "A collection of rasters depicting terrain elevation in South Africa",
             "context_service_registry_keys": [
                 "srtm_dem",
@@ -1307,7 +1294,7 @@
         },
         {
             "key": "vegetation_group",
-            "name": "Land Cover and Land Use vectors",
+            "name": "Vegetation",
             "description": "Layers that depict natural/artificial vegetation and also monitors land-use changes",
             "context_service_registry_keys": [
                 "vegetation_2012",
@@ -1318,7 +1305,7 @@
         ,
         {
             "key": "land_cover_group",
-            "name": "Land Cover and Land Use layers including rasters",
+            "name": "Land Cover and Land Use",
             "description": "Layers that depict land-use changes",
             "context_service_registry_keys": [
                 "sa_land_cover",
@@ -1349,7 +1336,7 @@
 
         {
             "key": "land_cover_land_use",
-            "name": "Land Use group",
+            "name": "Land Use Collection",
             "description": "Collection of layers showing how the land is being utilised or changing",
             "context_group_keys": [
                 "vegetation_group",
@@ -1376,7 +1363,7 @@
         {
             "key": "climate",
             "name": "Climate Collection",
-            "description": "Grouping of layers that depicts climate charasteristics",
+            "description": "Grouping of layers that depicts climate characteristics",
             "context_group_keys": [
                 "rainfall_group",
                 "mean_maximum_temperature_group",
