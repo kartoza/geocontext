@@ -10,6 +10,15 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+.my-carousel-header {
+  width:100%;
+  color:rgba(10,10,10, 255);
+  text-align: center;
+  margin-top:1.25rem;
+  position: absolute;
+  font-size: 4rem;
+}
+
 section {
   padding: 8rem 0;
 }
@@ -158,3 +167,4 @@ header.masthead p {
 .text-primary {
   color: #526B43 !important;
 }
+
