@@ -5,60 +5,75 @@
 {% endblock %}
 
 {% block body_content %}
-
-        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-            </ol>
-            <div class="carousel-inner rounded" style="height:100%;">
-                  <h2 class="display-4 my-carousel-header">Welcome to GeoContext</h2>
-                <img class="d-block w-100" src="../static/img/landscapemountains.png"
-                     alt="First slide">
-              <!-- Photo by Bogdan Petrea on Unsplash !-->
-                <div class="carousel-item active">
-                    <div class="carousel-caption d-none d-md-block">
-                        <p class="lead">GeoContext is a service that will fetch interesting data for a geographic
-                            position.
-                            It is an API that you can use to integrate this information into your own web site.
-                            The API returns JSON documents which enumerate any information found for the point you
-                            specify.
-                        </p>
-
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="carousel-caption d-none d-md-block">
-                        <p class="lead">
-                            GeoContext can connect to various different types of services such as WMS and WFS to
-                            collate the point information. You can configure more services as needed and collate a
-                            number of
-                            services into a group. A number of groups can be combined into a collection.
-                        </p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div class="carousel-caption d-none d-md-block">
-                        <p class="lead">
-                            Currently, the service is free to use. In the future we may charge a subscription to
-                            use it.
-                        </p>
-                    </div>
+    <div class="container">
+        <div class="jumbotron landing_header">
+            <h2 class="display-4 my-carousel-header" id="trigger-waypoint">Welcome to GeoContext!</h2>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row" style="margin-bottom: 5rem;">
+            <div class="col-sm-8">
+                <div class="jumbotron" id="trigger-diagram"><h3 class="text-center"> GeoContext is a service that will
+                    fetch interesting data
+                    for a geographic
+                    position.
+                    It is an API that you can use to integrate this information into your own web site.
+                </h3>
                 </div>
             </div>
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
+            <div class="col-sm"></div>
+            <div class="col-sm"></div>
         </div>
+    </div>
+    <div class="container">
+        <div class="row" style="margin-bottom: 5rem;">
+            <div class="col-sm"></div>
+            <div class="col-sm"></div>
+            <div class="col-sm-8">
+                <div class="jumbotron" id="trigger-terminal"><h3 class="text-center"> GeoContext can connect to various
+                    different types of
+                    services
+                    such as WMS and WFS to
+                    collate the point information. You can configure more services as needed and collate a
+                    number of
+                    services into a group. A number of groups can be combined into a collection.
+                </h3></div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row" style="margin-bottom: 5rem;">
+           <div class="col-sm-8">
+                <div class="jumbotron" style="z-index:3"><h3 class="text-center">The API returns JSON documents which enumerate any information found for the point you
+                    specify. Currently, the service is free to use
+                    and the code is open-source!
+                </h3></div>
+            </div>
+            <div class="col-sm"></div>
 
-
-        <hr class="my-4">
-
-
+            <div class="col-sm">
+            </div>
+        </div>
+    </div>
+    <div style="height: 100vh;"></div>
+    <img src="../static/img/landing_map.png" class="landing_map"/>
+    <img class="landing_waypoint"
+         data-aos="zoom-out-down"
+         data-aos-anchor="#trigger-waypoint"
+         src="../static/img/favicon.png"
+         data-aos-anchor-placement="top-top"
+         data-aos-mirror="true"
+         data-aos-once="false"
+    />
+    <img class="landing_terminal"
+         data-aos="fade-left"
+         data-aos-anchor="#trigger-terminal"
+         src="../static/img/landing_terminal.png"
+         data-aos-anchor-placement="top-top">
+    <hr class="my-4">
+     <img class="landing_diagram"
+         data-aos="fade-right"
+         data-aos-anchor="#trigger-diagram"
+         src="../static/img/landing_diagram.png"
+         data-aos-anchor-placement="top-top"/>
 {% endblock %}
