@@ -10,6 +10,83 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+.my-carousel-header {
+    color: rgba(10,10,10, 255);
+    text-align: center;
+    z-index: 0;
+}
+
+.jumbotron {
+    background-color: #FDFDFDDF !important;
+}
+.landing_header {
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+    width: 100%;
+}
+.landing_map{
+    position: fixed;
+    top:4rem;
+    max-height:100%;
+    min-width:100%;
+    z-index: -5;
+}
+
+.page_footer {
+  position: fixed;
+    width: 100%;
+    bottom: -3.5rem;
+    background-color: white;
+    margin: 0rem 3rem 3rem 0rem;
+    padding-top: 1rem;
+
+}
+
+.page_header {
+    position: fixed;
+    width: 100%;
+    z-index: 2;
+    background-color: white;
+    height: 4rem;
+    top: 0;
+}
+
+.landing_waypoint {
+    max-width: 20vw;
+    height: auto;
+    position: fixed;
+    top: 10%;
+    display: block;
+    right: 5%;
+    z-index: -1;
+     transition-duration: 1s !important;
+}
+
+.landing_terminal {
+    max-width: 30vw;
+    height: auto;
+    position: fixed;
+    bottom: 10%;
+    right: 12%;
+    z-index: -2;
+}
+
+.landing_diagram {
+    max-width: 35vw;
+    height: auto;
+    position: fixed;
+    bottom: 35%;
+    display: block;
+    left: 0;
+    z-index: -1;
+}
+
+.page_body {
+  padding-bottom: 3rem;
+}
+
 section {
   padding: 8rem 0;
 }
@@ -158,3 +235,5 @@ header.masthead p {
 .text-primary {
   color: #526B43 !important;
 }
+
+
