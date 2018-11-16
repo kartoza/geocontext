@@ -256,6 +256,32 @@
             "layer_typename": "kartoza:mean_annual temperature",
             "service_version": "1.3.0"
         },
+
+        {
+            "key": "monthly_rainfall_january",
+            "name": "Monthly Rainfall and its Inter-Annual Variability (January)",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:gmednrfl1",
+            "service_version": "1.3.0"
+        },
+
+        {
+            "key": "monthly_rainfall_february",
+            "name": "Monthly Rainfall and its Inter-Annual Variability (February)",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:gmednrfl2",
+            "service_version": "1.3.0"
+        },
         {
             "key": "monthly_rainfall_march",
             "name": "Monthly Rainfall and its Inter-Annual Variability (March)",
@@ -877,6 +903,18 @@
             "service_version": "1.3.0"
         },
         {
+            "key": "monthly_actual_vapour_pressure_june",
+            "name": "Actual vapour Pressure June",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp06c",
+            "service_version": "1.3.0"
+        },
+        {
             "key": "monthly_actual_vapour_pressure_july",
             "name": "Actual vapour Pressure July",
             "description": null,
@@ -891,6 +929,18 @@
         {
             "key": "monthly_actual_vapour_pressure_august",
             "name": "Actual vapour Pressure August",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp08c",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_actual_vapour_pressure_september",
+            "name": "Actual vapour Pressure September",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -926,7 +976,19 @@
         }
         ,
         {
-            "key": "srtm_30m_dem",
+            "key": "monthly_actual_vapour_pressure_december",
+            "name": "Actual vapour Pressure December",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:avp011c",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "srtm_dem",
             "name": "DEM of South Africa 30m",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -940,7 +1002,7 @@
       ,
         {
             "key": "altitude",
-            "name": "DEM of South Africa",
+            "name": "DEM altitude of South Africa",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -953,14 +1015,14 @@
         ,
         {
             "key": "altitude-dev",
-            "name": "DEM of South Africa",
+            "name": "DEM altitude-dev of South Africa",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
             "result_regex": "kartoza:GRAY_INDEX",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:altitude-dev",
+            "layer_typename": "kartoza:altitudesdev",
             "service_version": "1.3.0"
         }
         ,
@@ -977,7 +1039,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_relative_humidity__february",
+            "key": "monthly_relative_humidity_february",
             "name": "Daily Minimum, Maximum and Mean Relative Humidity February",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1110,6 +1172,162 @@
         }
         ,
         {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_january",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) January",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d01",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_february",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) February",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d02",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_march",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) March",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d03",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_april",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) April",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d04",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_may",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) May",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d05",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_june",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) June",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d06",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_july",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) July",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d07",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_august",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) August",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d08",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_september",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) September",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d09",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_october",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) October",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d10",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_november",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) November",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d11",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
+            "key": "monthly_standard_deviation_daily_max_relative_humidity_december",
+            "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) December",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:maxrhsdev_d01",
+            "service_version": "1.3.0"
+        }
+        ,
+        {
             "key": "sa_land_cover",
             "name": "South Africa Landcover 72 Classes",
             "description": null,
@@ -1173,6 +1391,8 @@
             "name": "Rainfall Rasters",
             "description": "A collection of rasters depicting monthly rainfall in South Africa",
             "context_service_registry_keys": [
+                "monthly_rainfall_january",
+                "monthly_rainfall_february",
                 "monthly_rainfall_march",
                 "monthly_rainfall_april",
                 "monthly_rainfall_may",
@@ -1216,10 +1436,13 @@
                 "monthly_actual_vapour_pressure_march",
                 "monthly_actual_vapour_pressure_april",
                 "monthly_actual_vapour_pressure_may",
+                "monthly_actual_vapour_pressure_june",
                 "monthly_actual_vapour_pressure_july",
                 "monthly_actual_vapour_pressure_august",
+                "monthly_actual_vapour_pressure_september",
                 "monthly_actual_vapour_pressure_october",
-                "monthly_actual_vapour_pressure_november"
+                "monthly_actual_vapour_pressure_november",
+                "monthly_actual_vapour_pressure_december"
 
             ]
         },
@@ -1283,6 +1506,25 @@
                 "monthly_mean_standard_deviation_temperature_december"
             ]
         },
+        {
+            "key": "mean_average_temperature_group",
+            "name": "Monthly mean,maximum and standard deviation Rasters",
+            "description": "A collection of rasters depicting monthly mean temperature in South Africa",
+            "context_service_registry_keys": [
+                "monthly_standard_deviation_daily_max_relative_humidity_january",
+                "monthly_standard_deviation_daily_max_relative_humidity_february",
+                "monthly_standard_deviation_daily_max_relative_humidity_march",
+                "monthly_standard_deviation_daily_max_relative_humidity_april",
+                "monthly_standard_deviation_daily_max_relative_humidity_may",
+                "monthly_standard_deviation_daily_max_relative_humidity_june",
+                "monthly_standard_deviation_daily_max_relative_humidity_july",
+                "monthly_standard_deviation_daily_max_relative_humidity_august",
+                "monthly_standard_deviation_daily_max_relative_humidity_september",
+                "monthly_standard_deviation_daily_max_relative_humidity_october",
+                "monthly_standard_deviation_daily_max_relative_humidity_november",
+                "monthly_standard_deviation_daily_max_relative_humidity_december"
+            ]
+        },
 
 
 
@@ -1291,7 +1533,7 @@
             "name": "Digital elevation rasters",
             "description": "A collection of rasters depicting terrain elevation in South Africa",
             "context_service_registry_keys": [
-                "srtm_30m_dem",
+                "srtm_dem",
                  "altitude",
                  "altitude-dev"
 
