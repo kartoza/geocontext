@@ -1350,6 +1350,161 @@
             "srid": 3857,
             "layer_typename": "kartoza:lada_land_use",
             "service_version": "1.3.0"
+        },
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_january",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) January",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d01",
+            "service_version": "1.3.0"
+        }
+        ,
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_february",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) February",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d02",
+            "service_version": "1.3.0"
+        }
+        ,
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_march",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) March",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d03",
+            "service_version": "1.3.0"
+        }
+        ,
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_april",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) April",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d04",
+            "service_version": "1.3.0"
+        }
+        ,
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_may",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) May",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d05",
+            "service_version": "1.3.0"
+        }
+        ,
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_june",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) June",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d06",
+            "service_version": "1.3.0"
+        }
+        ,
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_july",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) July",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d07",
+            "service_version": "1.3.0"
+        }
+        ,
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_august",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) August",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d08",
+            "service_version": "1.3.0"
+        }
+        ,
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_september",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) September",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d09",
+            "service_version": "1.3.0"
+        }
+        ,
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_october",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) October",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d10",
+            "service_version": "1.3.0"
+        }
+        ,
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_november",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) November",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d11",
+            "service_version": "1.3.0"
+        }
+        ,
+      {
+            "key": "monthly_mean_daily_average_relative_humidity_december",
+            "name": "Monthly Means Of Daily Average Relative Humidity (%) December",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:meanrh_d12",
+            "service_version": "1.3.0"
         }
 
 
@@ -1487,6 +1642,24 @@
         },
 
 
+        {
+            "key": "monthly_mean_daily_average_relative_humidity_group",
+            "name": "Monthly Means Of Daily Average Relative Humidity",
+            "description": "A collection of rasters depicting monthly means Of Daily average relative humidity in South Africa",
+            "context_service_registry_keys": [
+                "monthly_mean_daily_average_relative_humidity_january",
+                "monthly_mean_daily_average_relative_humidity_february",
+                "monthly_mean_daily_average_relative_humidity_march",
+                "monthly_mean_daily_average_relative_humidity_april",
+                "monthly_mean_daily_average_relative_humidity_may",
+                "monthly_mean_daily_average_relative_humidity_june",
+                "monthly_mean_daily_average_relative_humidity_july",
+                "monthly_mean_daily_average_relative_humidity_september",
+                "monthly_mean_daily_average_relative_humidity_october",
+                "monthly_mean_daily_average_relative_humidity_november",
+                "monthly_mean_daily_average_relative_humidity_december"
+            ]
+        },
         {
             "key": "mean_standard_deviation_temperature_group",
             "name": "Monthly mean,maximum and standard deviation Rasters",
