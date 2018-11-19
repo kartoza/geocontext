@@ -552,7 +552,7 @@
         },
 
         {
-            "key": "monthly_mean_average_temperature_january",
+            "key": "monthly_mean_daily_average_temperature_january",
             "name": "Monthly Means Of Daily Average Temperature (C) January",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -564,7 +564,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_mean_average_temperature_february",
+            "key": "monthly_mean_daily_average_temperature_february",
             "name": "Monthly Means Of Daily Average Temperature (C) February",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -576,7 +576,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_mean_average_temperature_march",
+            "key": "monthly_mean_daily_average_temperature_march",
             "name": "Monthly Means Of Daily Average Temperature (C) March",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -588,7 +588,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_mean_average_temperature_april",
+            "key": "monthly_mean_daily_average_temperature_april",
             "name": "Monthly Means Of Daily Average Temperature (C) April",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -600,7 +600,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_mean_average_temperature_may",
+            "key": "monthly_mean_daily_average_temperature_may",
             "name": "Monthly Means Of Daily Average Temperature (C) May",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -612,7 +612,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_mean_average_temperature_june",
+            "key": "monthly_mean_daily_average_temperature_june",
              "name": "Monthly Means Of Daily Average Temperature (C) June",
              "description": null,
              "url": "https://maps.kartoza.com/geoserver/wms",
@@ -624,7 +624,7 @@
              "service_version": "1.3.0"
         },
         {
-            "key": "monthly_mean_average_temperature_july",
+            "key": "monthly_mean_daily_average_temperature_july",
             "name": "Monthly Means Of Daily Average Temperature (C) July",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -636,7 +636,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_mean_average_temperature_august",
+            "key": "monthly_mean_daily_average_temperature_august",
             "name": "Monthly Means Of Daily Average Temperature (C) August",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -648,7 +648,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_mean_average_temperature_september",
+            "key": "monthly_mean_daily_average_temperature_september",
             "name": "Monthly Means Of Daily Average Temperature (C) September",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -660,7 +660,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_mean_average_temperature_october",
+            "key": "monthly_mean_daily_average_temperature_october",
             "name": "Monthly Means Of Daily Average Temperature (C) October",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -672,7 +672,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_mean_average_temperature_november",
+            "key": "monthly_mean_daily_average_temperature_november",
             "name": "Monthly Means Of Daily Average Temperature (C) November",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -684,7 +684,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "monthly_mean_average_temperature_december",
+            "key": "monthly_mean_daily_average_temperature_december",
             "name": "Monthly Means Of Daily Average Temperature (C) December",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
@@ -1014,8 +1014,8 @@
         }
         ,
         {
-            "key": "altitude-dev",
-            "name": "DEM altitude-dev of South Africa",
+            "key": "altitude_dev",
+            "name": "DEM altitude dev of South Africa",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2072,7 +2072,7 @@
         },
         {
             "key": "monthly_mean_daily_maximum_temperature_group",
-            "name": "Monthly",
+            "name": "Monthly Means Of Daily Maximum Temperature (C)",
             "description": "Monthly Means Of Daily Maximum Temperature (C) January - December",
             "context_service_registry_keys": [
                 "monthly_mean_daily_maximum_temperature_january",
@@ -2091,22 +2091,22 @@
         },
 
         {
-            "key": "mean_average_temperature_group",
+            "key": "monthly_mean_daily_average_temperature_group",
             "name": "Monthly mean,maximum and standard deviation Rasters",
             "description": "A collection of rasters depicting monthly mean temperature in South Africa",
             "context_service_registry_keys": [
-                "monthly_mean_average_temperature_january",
-                "monthly_mean_average_temperature_february",
-                "monthly_mean_average_temperature_march",
-                "monthly_mean_average_temperature_april",
-                "monthly_mean_average_temperature_may",
-                "monthly_mean_average_temperature_june",
-                "monthly_mean_average_temperature_july",
-                "monthly_mean_average_temperature_august",
-                "monthly_mean_average_temperature_september",
-                "monthly_mean_average_temperature_october",
-                "monthly_mean_average_temperature_november",
-                "monthly_mean_average_temperature_december"
+                "monthly_mean_daily_average_temperature_january",
+                "monthly_mean_daily_average_temperature_february",
+                "monthly_mean_daily_average_temperature_march",
+                "monthly_mean_daily_average_temperature_april",
+                "monthly_mean_daily_average_temperature_may",
+                "monthly_mean_daily_average_temperature_june",
+                "monthly_mean_daily_average_temperature_july",
+                "monthly_mean_daily_average_temperature_august",
+                "monthly_mean_daily_average_temperature_september",
+                "monthly_mean_daily_average_temperature_october",
+                "monthly_mean_daily_average_temperature_november",
+                "monthly_mean_daily_average_temperature_december"
             ]
         },
 
@@ -2149,7 +2149,7 @@
             ]
         },
         {
-            "key": "monthly_standard_deviation_daily_max_relative_humidity_group",
+            "key": "monthly_standard_deviation_daily_maximum_relative_humidity_group",
             "name": "Monthly mean,maximum and standard deviation Rasters",
             "description": "A collection of rasters depicting monthly mean temperature in South Africa",
             "context_service_registry_keys": [
@@ -2234,7 +2234,7 @@
             "context_service_registry_keys": [
                 "srtm_dem",
                  "altitude",
-                 "altitude-dev"
+                 "altitude_dev"
 
             ]
         },
@@ -2249,7 +2249,7 @@
         },
         {
             "key": "vegetation_group",
-            "name": "Land Cover and Land Use vectors",
+            "name": "Land cover showing vegetation coverage",
             "description": "Layers that depict natural/artificial vegetation and also monitors land-use changes",
             "context_service_registry_keys": [
                 "vegetation_2012",
@@ -2260,7 +2260,7 @@
         ,
         {
             "key": "land_cover_group",
-            "name": "Land Cover and Land Use layers including rasters",
+            "name": "Land Cover and Land Use layers",
             "description": "Layers that depict land-use changes",
             "context_service_registry_keys": [
                 "sa_land_cover",
@@ -2291,7 +2291,7 @@
 
         {
             "key": "land_cover_land_use",
-            "name": "Land Use group",
+            "name": "Land Use Collection",
             "description": "Collection of layers showing how the land is being utilised or changing",
             "context_group_keys": [
                 "vegetation_group",
@@ -2306,13 +2306,20 @@
             "context_group_keys": [
                 "political_boundary_group",
                 "cadastre_group",
+                "elevation_group",
                 "water_group",
                 "rainfall_group",
-                "mean_maximum_temperature_group",
-                "mean_average_temperature_group",
-                "mean_standard_deviation_temperature_group",
-                "elevation_group",
-                "land_cover_group"
+                "land_cover_group",
+                "monthly_mean_daily_maximum_temperature_group",
+                "monthly_mean_daily_average_temperature_group",
+                "monthly_mean_daily_average_relative_humidity_group",
+                "monthly_standard_deviation_daily_maximum_temperature_group",
+                "monthly_standard_deviation_daily_maximum_relative_humidity_group",
+                "monthly_standard_deviation_of_daily_mean_temperature_group",
+                "monthly_means_of_daily_minimum_temperature_group",
+                "monthly_standard_deviation_of_daily_minimum_temperature_group"
+
+
             ]
         },
         {
@@ -2321,11 +2328,16 @@
             "description": "Grouping of layers that depicts climate charasteristics",
             "context_group_keys": [
                 "rainfall_group",
-                "mean_maximum_temperature_group",
-                "mean_average_temperature_group",
-                "mean_standard_deviation_temperature_group",
+                "relative_humidity_group",
                 "actual_vapour_group",
-                "relative_humidity_group"
+                "monthly_mean_daily_maximum_temperature_group",
+                "monthly_mean_daily_average_temperature_group",
+                "monthly_means_of_daily_minimum_temperature_group",
+                "monthly_mean_daily_average_relative_humidity_group",
+                "monthly_standard_deviation_daily_maximum_temperature_group",
+                "monthly_standard_deviation_daily_maximum_relative_humidity_group",
+                "monthly_standard_deviation_of_daily_mean_temperature_group",
+                "monthly_standard_deviation_of_daily_minimum_temperature_group"
             ]
         }
     ]
