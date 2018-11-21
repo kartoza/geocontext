@@ -17,6 +17,8 @@ from geocontext.utilities import (
     convert_coordinate, parse_gml_geometry, get_bbox)
 from geocontext.models.validators import key_validator
 
+import json
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -200,6 +202,14 @@ class ContextServiceRegistry(models.Model):
                 url = response.geturl()
             except NotImplementedError as e:
                 value = e
+
+        elif self.query_type == ContextServiceRegistry.ARCREST:
+            url = self.build_query_url(x, y, srid)
+            request = requests.get(url)
+            if request.status_code == 200:
+                content = request.content
+                value = self.parse_request_value(content)
+
         else:
             url = self.build_query_url(x, y, srid)
             request = requests.get(url)
@@ -256,14 +266,21 @@ class ContextServiceRegistry(models.Model):
         :returns: The value of the result_regex in the request_content.
         :rtype: unicode
         """
-        if self.query_type in [
-            ContextServiceRegistry.WFS, ContextServiceRegistry.WMS]:
+        if self.query_type in [ContextServiceRegistry.WFS, ContextServiceRegistry.WMS]:
             xmldoc = minidom.parseString(request_content)
             try:
                 value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
                 return value_dom.childNodes[0].nodeValue
             except IndexError:
                 return None
+        elif self.query_type == ContextServiceRegistry.ARCREST:
+            jsondoc = json.loads(request_content)
+            try:
+                value = jsondoc['results'][0][self.result_regex]
+                return value
+            except IndexError:
+                return None
+
 
     def build_query_url(self, x, y, srid=4326):
         """Build query based on the model and the parameter.
@@ -323,7 +340,7 @@ class ContextServiceRegistry(models.Model):
                 'geometry': '{x:' + str(x) + ', y:' + str(y) + '}',
                 'layers': 'all:' + self.layer_typename,
                 'imageDisplay': '581,461,96',
-
+                'tolerance': '10',
             }
             query_dict = QueryDict('', mutable=True)
             query_dict.update(parameters)
@@ -331,6 +348,6 @@ class ContextServiceRegistry(models.Model):
             if '?' in self.url:
                 url = self.url + '&' + query_dict.urlencode()
             else:
-                url = self.url + '?' + query_dict.urlencode()
+                url = self.url + '/identify?' + query_dict.urlencode()
             url += '&mapExtent=' + bbox_string
             return url
