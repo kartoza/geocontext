@@ -27,12 +27,14 @@ class ContextServiceRegistry(models.Model):
     WCS = 'WCS'
     WMS = 'WMS'
     REST = 'REST'
+    ARCREST = 'ArcREST'
     WIKIPEDIA = 'Wikipedia'
     QUERY_TYPES = (
         (WFS, 'WFS'),
         (WCS, 'WCS'),
         (WMS, 'WMS'),
         (REST, 'REST'),
+        (ARCREST, 'ArcREST'),
         (WIKIPEDIA, 'Wikipedia'),
     )
 
@@ -306,4 +308,29 @@ class ContextServiceRegistry(models.Model):
                 url += '&SRSNAME=%s' % self.srid
             url += '&BBOX=' + bbox_string
 
+            return url
+        # For the ESRI Arc REST Format
+        else:
+            if self.query_type == ContextServiceRegistry.ARCREST:
+                if srid != self.srid:
+                    x, y = convert_coordinate(x, y, srid, self.srid)
+                bbox = get_bbox(x, y)
+                bbox_string = ','.join([str(i) for i in bbox])
+
+            parameters = {
+                'f': 'json',
+                'geometryType': 'esriGeometryPoint',
+                'geometry': '{x:' + str(x) + ', y:' + str(y) + '}',
+                'layers': 'all:' + self.layer_typename,
+                'imageDisplay': '581,461,96',
+
+            }
+            query_dict = QueryDict('', mutable=True)
+            query_dict.update(parameters)
+
+            if '?' in self.url:
+                url = self.url + '&' + query_dict.urlencode()
+            else:
+                url = self.url + '?' + query_dict.urlencode()
+            url += '&mapExtent=' + bbox_string
             return url
