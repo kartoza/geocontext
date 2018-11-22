@@ -103,7 +103,7 @@ class ContextServiceRegistry(models.Model):
         blank=False,
         null=False,
         max_length=200,
-        choices=QUERY_TYPES
+        choices=QUERY_TYPES,
     )
 
     # I will try to use CharField first, if not I will use django-regex-field
@@ -164,6 +164,11 @@ class ContextServiceRegistry(models.Model):
         max_length=1000,
     )
 
+    is_graph = models.BooleanField(
+        help_text=_('Indicates if this registry returns data from which a graph can be drawn.'),
+        blank=True,
+        null=False,
+    )
 
     def __str__(self):
         return self.name
