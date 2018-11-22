@@ -279,6 +279,8 @@ class ContextServiceRegistry(models.Model):
                 return value_dom.childNodes[0].nodeValue
             except IndexError:
                 return None
+
+        # For the ArcREST standard we need to parse the JSON we get from our request using the json library.
         elif self.query_type == ContextServiceRegistry.ARCREST:
             jsondoc = json.loads(request_content)
             try:
@@ -332,7 +334,7 @@ class ContextServiceRegistry(models.Model):
             url += '&BBOX=' + bbox_string
 
             return url
-        # For the ESRI Arc REST Format
+        # For the ESRI ArcREST standard a URL is constructed as with the WFS standard.
         else:
             if self.query_type == ContextServiceRegistry.ARCREST:
                 if srid != self.srid:
@@ -341,9 +343,12 @@ class ContextServiceRegistry(models.Model):
                 bbox_string = ','.join([str(i) for i in bbox])
 
             parameters = {
+
                 'f': 'json',
                 'geometryType': 'esriGeometryPoint',
                 'geometry': '{x:' + str(x) + ', y:' + str(y) + '}',
+
+                # Layers are recalled with all:<number> in QGIS' call
                 'layers': 'all:' + self.layer_typename,
                 'imageDisplay': '581,461,96',
                 'tolerance': '10',
