@@ -187,6 +187,7 @@ class ContextServiceRegistry(models.Model):
 
         :
         """
+        global value
         url = None
         geometry = None
         if self.query_type == ContextServiceRegistry.WMS:
@@ -281,11 +282,10 @@ class ContextServiceRegistry(models.Model):
         elif self.query_type == ContextServiceRegistry.ARCREST:
             jsondoc = json.loads(request_content)
             try:
-                value = jsondoc['results'][0][self.result_regex]
-                return value
+                json_value = jsondoc['results'][0][self.result_regex]
+                return json_value
             except IndexError:
                 return None
-
 
     def build_query_url(self, x, y, srid=4326):
         """Build query based on the model and the parameter.
@@ -302,6 +302,7 @@ class ContextServiceRegistry(models.Model):
         :return: URL to do query.
         :rtype: unicode
         """
+        global bbox_string
         if self.query_type == ContextServiceRegistry.WFS:
             # construct bbox
             if srid != self.srid:
