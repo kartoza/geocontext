@@ -1,9 +1,9 @@
 {
     "context_service_registry": [
         {
-            "key": "arc_rest_test",
-            "name": "Water Management Area",
-            "description": null,
+            "key": "arc_rest_test_is",
+            "name": "Arc Rest Test Layer 10",
+            "description": "Arc Rest Test Layer 10",
             "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
             "query_type": "ArcREST",
             "result_regex": "value",
@@ -14,9 +14,9 @@
         },
 
         {
-            "key": "arc_rest_test2",
-            "name": "Water Management Area",
-            "description": null,
+            "key": "arc_rest_test_the",
+            "name": "Arc Rest Test Layer 1",
+            "description": "Arc Rest Test Layer 1",
             "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
             "query_type": "ArcREST",
             "result_regex": "value",
@@ -27,9 +27,9 @@
         },
 
         {
-           "key": "arc_rest_test3",
-            "name": "Water Management Area",
-            "description": null,
+           "key": "arc_rest_test_best",
+            "name": "Arc Rest Test Layer 7",
+            "description": "Arc Rest Test Layer 7",
             "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
             "query_type": "ArcREST",
             "result_regex": "value",
@@ -2031,6 +2031,16 @@
 
     ],
     "context_group": [
+        {
+          "key": "arc_rest_test_group",
+          "name": "Arc Rest Test Is The Best",
+          "description": "Which test is the best? ArcREST Test!",
+          "context_service_registry_keys": [
+            "arc_rest_test_is",
+            "arc_rest_test_the",
+            "arc_rest_test_best"
+          ]
+        },
         {
             "key": "water_group",
             "name": "River Catchments",
