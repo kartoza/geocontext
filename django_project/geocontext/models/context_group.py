@@ -57,7 +57,7 @@ class ContextGroup(models.Model):
         max_length=10
     )
 
-    is_graph = models.BooleanField(
+    graphable = models.BooleanField(
         help_text=_(
             'Indicates if this registry'
             ' returns data from which '

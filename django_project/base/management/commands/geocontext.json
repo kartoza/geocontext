@@ -1,5 +1,18 @@
 {
     "context_service_registry": [
+      {
+            "key": "esri_imagery_world_2nd",
+            "name": "ESRI_Imagery_World_2D",
+            "description": "ESRI_Imagery_World_2D Layer 1",
+            "url": "http://services.arcgisonline.com/arcgis/rest/services/ESRI_Imagery_World_2D/MapServer/",
+            "query_type": "ARCRest",
+            "result_regex": "value",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "all:1",
+            "service_version": "1.0.0"
+        },
+
         {
             "key": "arc_rest_test_is",
             "name": "Arc Rest Test Layer 10",
@@ -2115,7 +2128,7 @@
             "key": "actual_vapour_group",
             "name": "Actual vapour  Rasters",
             "description": "A collection of rasters depicting vapour  in South Africa",
-            "is_graph": true,
+            "graphable": true,
             "context_service_registry_keys": [
                 "monthly_actual_vapour_pressure_january",
                 "monthly_actual_vapour_pressure_february",
