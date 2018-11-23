@@ -3,53 +3,15 @@
 
 
         {
-            "key": "water_management_area",
+            "key": "arc_rest_test",
             "name": "Water Management Area",
             "description": null,
-            "url": "https://maps.kartoza.com/geoserver/wfs",
-            "query_type": "WFS",
-            "result_regex": "qgs:name",
+            "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
+            "query_type": "ArcREST",
+            "result_regex": "value",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:water_management_areas",
-            "service_version": "1.0.0"
-        },
-
-        {
-            "key": "water_management_area",
-            "name": "Water Management Area",
-            "description": null,
-            "url": "https://maps.kartoza.com/geoserver/wfs",
-            "query_type": "WFS",
-            "result_regex": "qgs:name",
-            "time_to_live": 604800,
-            "srid": 4326,
-            "layer_typename": "kartoza:water_management_areas",
-            "service_version": "1.0.0"
-        },
-
-        {
-            "key": "water_management_area",
-            "name": "Water Management Area",
-            "description": null,
-            "url": "https://maps.kartoza.com/geoserver/wfs",
-            "query_type": "WFS",
-            "result_regex": "qgs:name",
-            "time_to_live": 604800,
-            "srid": 4326,
-            "layer_typename": "kartoza:water_management_areas",
-            "service_version": "1.0.0"
-        },
-        {
-            "key": "water_management_area",
-            "name": "Water Management Area",
-            "description": null,
-            "url": "https://maps.kartoza.com/geoserver/wfs",
-            "query_type": "WFS",
-            "result_regex": "qgs:name",
-            "time_to_live": 604800,
-            "srid": 4326,
-            "layer_typename": "kartoza:water_management_areas",
+            "layer_typename": "all:10",
             "service_version": "1.0.0"
         },
         {

@@ -168,6 +168,7 @@ class ContextServiceRegistry(models.Model):
         help_text=_('Indicates if this registry returns data from which a graph can be drawn.'),
         blank=True,
         null=False,
+        default=False,
     )
 
     def __str__(self):
@@ -349,7 +350,7 @@ class ContextServiceRegistry(models.Model):
                 'geometry': '{x:' + str(x) + ', y:' + str(y) + '}',
 
                 # Layers are recalled with all:<number> in QGIS' call
-                'layers': 'all:' + self.layer_typename,
+                'layers': self.layer_typename,
                 'imageDisplay': '581,461,96',
                 'tolerance': '10',
             }
