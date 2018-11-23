@@ -2093,6 +2093,7 @@
             "key": "relative_humidity_group",
             "name": "Relative humidity Rasters",
             "description": "A collection of rasters depicting Daily minimum and maximum relative humidity  as relative humidity in South Africa",
+            "is_graph": false,
             "context_service_registry_keys": [
                 "monthly_relative_humidity_january",
                 "monthly_relative_humidity_february",
@@ -2114,6 +2115,7 @@
             "key": "actual_vapour_group",
             "name": "Actual vapour  Rasters",
             "description": "A collection of rasters depicting vapour  in South Africa",
+            "is_graph": true,
             "context_service_registry_keys": [
                 "monthly_actual_vapour_pressure_january",
                 "monthly_actual_vapour_pressure_february",
