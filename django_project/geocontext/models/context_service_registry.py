@@ -268,7 +268,8 @@ class ContextServiceRegistry(models.Model):
         :rtype: unicode
         """
         if self.query_type in \
-                [ContextServiceRegistry.WFS, ContextServiceRegistry.WMS]:
+                [ContextServiceRegistry.WFS,
+                 ContextServiceRegistry.WMS]:
             xmldoc = minidom.parseString(request_content)
             try:
                 value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
@@ -331,10 +332,13 @@ class ContextServiceRegistry(models.Model):
             url += '&BBOX=' + bbox_string
 
             return url
-        # For the ESRI ArcREST standard a URL is
-        # constructed as with the WFS standard.
+        # For the ESRI ArcREST
+        # standard a URL is
+        # constructed as with
+        # the WFS standard.
         else:
-            if self.query_type == ContextServiceRegistry.ARCREST:
+            if self.query_type == \
+                    ContextServiceRegistry.ARCREST:
                 if srid != self.srid:
                     x, y = convert_coordinate(x, y, srid, self.srid)
                 bbox = get_bbox(x, y)
