@@ -59,7 +59,7 @@ class ContextGroup(models.Model):
 
     is_graph = models.BooleanField(
         help_text=_(
-            'Indicates if this registry returns data from which' +
+            'Indicates if this registry returns data from which '
             'a graph can be drawn.'),
         blank=True,
         null=False,
