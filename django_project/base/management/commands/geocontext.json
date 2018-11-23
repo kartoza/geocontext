@@ -14,6 +14,44 @@
             "layer_typename": "all:10",
             "service_version": "1.0.0"
         },
+
+        {
+            "key": "arc_rest_test2",
+            "name": "Water Management Area",
+            "description": null,
+            "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
+            "query_type": "ArcREST",
+            "result_regex": "value",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "all:1",
+            "service_version": "1.0.0"
+        },
+
+        {
+           "key": "arc_rest_test3",
+            "name": "Water Management Area",
+            "description": null,
+            "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
+            "query_type": "ArcREST",
+            "result_regex": "value",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "all:7",
+            "service_version": "1.0.0"
+        },
+        {
+           "key": "arc_rest_test4",
+            "name": "Water Management Area",
+            "description": null,
+            "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
+            "query_type": "ArcREST",
+            "result_regex": "value",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "all:9",
+            "service_version": "1.0.0"
+        },
         {
             "key": "water_management_area",
             "name": "Water Management Area",
