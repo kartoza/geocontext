@@ -1191,6 +1191,16 @@
     ],
     "context_group": [
         {
+           "key": "arc_rest_test_group",
+            "name": "arc_rest_test_group",
+            "description": "Test for the ARCRest",
+            "context_service_registry_keys": [
+                "arc_rest_test",
+                "arc_rest_test2",
+                "arc_rest_test3"
+            ]
+        },
+        {
             "key": "water_group",
             "name": "River Catchments",
             "description": "Layers that relate to freshwater,estuarine and maritime ecosystems",
@@ -1311,7 +1321,8 @@
                 "monthly_mean_average_temperature_october",
                 "monthly_mean_average_temperature_november",
                 "monthly_mean_average_temperature_december"
-            ]
+            ],
+            "is_graph": true
         },
 
 

@@ -164,13 +164,6 @@ class ContextServiceRegistry(models.Model):
         max_length=1000,
     )
 
-    is_graph = models.BooleanField(
-        help_text=_('Indicates if this registry returns data from which a graph can be drawn.'),
-        blank=True,
-        null=False,
-        default=False,
-    )
-
     def __str__(self):
         return self.name
 
@@ -188,6 +181,7 @@ class ContextServiceRegistry(models.Model):
 
         :
         """
+
         global value
         url = None
         geometry = None
@@ -281,7 +275,8 @@ class ContextServiceRegistry(models.Model):
             except IndexError:
                 return None
 
-        # For the ArcREST standard we need to parse the JSON we get from our request using the json library.
+        # For the ArcREST standard we need to parse the JSON we get from our
+        # request using the json library.
         elif self.query_type == ContextServiceRegistry.ARCREST:
             jsondoc = json.loads(request_content)
             try:
