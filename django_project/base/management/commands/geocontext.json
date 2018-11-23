@@ -50,6 +50,7 @@
             "layer_typename": "all:9",
             "service_version": "1.0.0"
         },
+
         {
             "key": "water_management_area",
             "name": "Water Management Area",
@@ -451,6 +452,10 @@
             "layer_typename": "kartoza:gmednrfl12",
             "service_version": "1.3.0"
         },
+
+
+
+
         {
             "key": "monthly_mean_daily_maximum_temperature_january",
             "name": "Monthly Means Of Daily Maximum Temperature (C) January",
@@ -595,6 +600,7 @@
             "layer_typename": "kartoza:tmaxave12c",
             "service_version": "1.3.0"
         },
+
         {
             "key": "monthly_mean_daily_average_temperature_january",
             "name": "Monthly Means Of Daily Average Temperature (C) January",
@@ -1213,7 +1219,8 @@
             "srid": 4326,
             "layer_typename": "kartoza:maxrh_d12",
             "service_version": "1.3.0"
-        },
+        }
+        ,
         {
             "key": "monthly_standard_deviation_daily_max_relative_humidity_january",
             "name": "Standard Deviations Of Daily Maximum Relative Humidity (%) January",
@@ -1393,37 +1400,6 @@
             "srid": 3857,
             "layer_typename": "kartoza:lada_land_use",
             "service_version": "1.3.0"
-        }
-    ],
-    "context_group": [
-        {
-           "key": "arc_rest_test_group",
-            "name": "arc_rest_test_group",
-            "description": "Test for the ARCRest",
-            "context_service_registry_keys": [
-                "arc_rest_test",
-                "arc_rest_test2",
-                "arc_rest_test3"
-            ]
-        },
-        {
-            "key": "water_group",
-            "name": "River Catchments",
-            "description": "Layers that relate to freshwater,estuarine and maritime ecosystems",
-            "context_service_registry_keys": [
-                "water_management_area",
-                "primary_catchment_area",
-                "secondary_catchment_area",
-                "tertiary_catchment_area",
-                "quaternary_catchment_area",
-                "nfepa_wetlands",
-                "rehabilitated_wetlands",
-                "dams500g",
-                "rivers500k",
-                "nfepa_rivers"
-            ]
-        },
-=======
         },
       {
             "key": "monthly_mean_daily_average_relative_humidity_january",
@@ -2123,6 +2099,7 @@
 
             ]
         },
+
         {
             "key": "actual_vapour_group",
             "name": "Actual vapour  Rasters",
@@ -2133,10 +2110,6 @@
                 "monthly_actual_vapour_pressure_march",
                 "monthly_actual_vapour_pressure_april",
                 "monthly_actual_vapour_pressure_may",
-                "monthly_actual_vapour_pressure_july",
-                "monthly_actual_vapour_pressure_august",
-                "monthly_actual_vapour_pressure_october",
-                "monthly_actual_vapour_pressure_november"
                 "monthly_actual_vapour_pressure_june",
                 "monthly_actual_vapour_pressure_july",
                 "monthly_actual_vapour_pressure_august",
@@ -2166,25 +2139,12 @@
                 "monthly_mean_daily_maximum_temperature_december"
             ]
         },
+
         {
             "key": "monthly_mean_daily_average_temperature_group",
             "name": "Monthly mean,maximum and standard deviation Rasters",
             "description": "A collection of rasters depicting monthly mean temperature in South Africa",
             "context_service_registry_keys": [
-                "monthly_mean_average_temperature_january",
-                "monthly_mean_average_temperature_february",
-                "monthly_mean_average_temperature_march",
-                "monthly_mean_average_temperature_april",
-                "monthly_mean_average_temperature_may",
-                "monthly_mean_average_temperature_june",
-                "monthly_mean_average_temperature_july",
-                "monthly_mean_average_temperature_august",
-                "monthly_mean_average_temperature_september",
-                "monthly_mean_average_temperature_october",
-                "monthly_mean_average_temperature_november",
-                "monthly_mean_average_temperature_december"
-            ],
-            "is_graph": true
                 "monthly_mean_daily_average_temperature_january",
                 "monthly_mean_daily_average_temperature_february",
                 "monthly_mean_daily_average_temperature_march",
@@ -2199,6 +2159,8 @@
                 "monthly_mean_daily_average_temperature_december"
             ]
         },
+
+
         {
             "key": "monthly_mean_daily_average_relative_humidity_group",
             "name": "Monthly Means Of Daily Average Relative Humidity",
@@ -2312,6 +2274,9 @@
                 "monthly_standard_deviation_of_daily_minimum_temperature_december"
             ]
         },
+
+
+
         {
             "key": "elevation_group",
             "name": "Digital elevation rasters",
@@ -2341,7 +2306,8 @@
                 "sa_biomes"
 
             ]
-        },
+        }
+        ,
         {
             "key": "land_cover_group",
             "name": "Land Cover and Land Use layers",
@@ -2354,15 +2320,15 @@
         }
     ],
     "context_collection": [
-            {
-                "key": "boundary",
-                "name": "Boundary Collection",
-                "description": "Collection of administrative and Cadastre boundaries",
-                "context_group_keys": [
-                    "political_boundary_group",
-                    "cadastre_group"
-                ]
-            },
+        {
+            "key": "boundary",
+            "name": "Boundary Collection",
+            "description": "Collection of administrative and Cadastre boundaries",
+            "context_group_keys": [
+                "political_boundary_group",
+                "cadastre_group"
+            ]
+        },
         {
             "key": "river_ecosystem",
             "name": "River Collection",
@@ -2372,6 +2338,7 @@
 
             ]
         },
+
         {
             "key": "land_cover_land_use",
             "name": "Land Use Collection",
