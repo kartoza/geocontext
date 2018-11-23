@@ -427,10 +427,6 @@
             "layer_typename": "kartoza:gmednrfl12",
             "service_version": "1.3.0"
         },
-
-
-
-
         {
             "key": "monthly_mean_maximum_temperature_january",
             "name": "Monthly Means Of Daily Maximum Temperature (C) January",
@@ -575,7 +571,6 @@
             "layer_typename": "kartoza:tmaxave12c",
             "service_version": "1.3.0"
         },
-
         {
             "key": "monthly_mean_average_temperature_january",
             "name": "Monthly Means Of Daily Average Temperature (C) January",
@@ -1158,8 +1153,7 @@
             "srid": 4326,
             "layer_typename": "kartoza:maxrh_d12",
             "service_version": "1.3.0"
-        }
-        ,
+        },
         {
             "key": "sa_land_cover",
             "name": "South Africa Landcover 72 Classes",
@@ -1184,10 +1178,6 @@
             "layer_typename": "kartoza:lada_land_use",
             "service_version": "1.3.0"
         }
-
-
-
-
     ],
     "context_group": [
         {
@@ -1266,7 +1256,6 @@
 
             ]
         },
-
         {
             "key": "actual_vapour_group",
             "name": "Actual vapour  Rasters",
@@ -1303,7 +1292,6 @@
                 "monthly_mean_maximum_temperature_december"
             ]
         },
-
         {
             "key": "mean_average_temperature_group",
             "name": "Monthly mean,maximum and standard deviation Rasters",
@@ -1324,8 +1312,6 @@
             ],
             "is_graph": true
         },
-
-
         {
             "key": "mean_standard_deviation_temperature_group",
             "name": "Monthly mean,maximum and standard deviation Rasters",
@@ -1345,9 +1331,6 @@
                 "monthly_mean_standard_deviation_temperature_december"
             ]
         },
-
-
-
         {
             "key": "elevation_group",
             "name": "Digital elevation rasters",
@@ -1377,8 +1360,7 @@
                 "sa_biomes"
 
             ]
-        }
-        ,
+        },
         {
             "key": "land_cover_group",
             "name": "Land Cover and Land Use layers including rasters",
@@ -1409,7 +1391,6 @@
 
             ]
         },
-
         {
             "key": "land_cover_land_use",
             "name": "Land Use group",
