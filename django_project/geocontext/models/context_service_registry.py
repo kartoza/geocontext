@@ -18,7 +18,6 @@ from geocontext.utilities import (
     convert_coordinate, parse_gml_geometry, get_bbox)
 from geocontext.models.validators import key_validator
 
-
 LOGGER = logging.getLogger(__name__)
 
 
@@ -226,9 +225,9 @@ class ContextServiceRegistry(models.Model):
                 parsed_value = self.parse_request_value(content)
             else:
                 error_message = (
-                    'Failed to request to %s for CSR %s got %s because of '
-                    '%s' % (
-                        url, self.key, request.status_code, request.reason))
+                        'Failed to request to %s for CSR %s got %s because of '
+                        '%s' % (
+                            url, self.key, request.status_code, request.reason))
                 LOGGER.error(error_message)
                 parsed_value = None
 
@@ -262,8 +261,8 @@ class ContextServiceRegistry(models.Model):
         :returns: The value of the result_regex in the request_content.
         :rtype: unicode
         """
-        if self.query_type in [ContextServiceRegistry.WFS,
-                               ContextServiceRegistry.WMS]:
+        if self.query_type in [
+               ContextServiceRegistry.WFS, ContextServiceRegistry.WMS]:
             xmldoc = minidom.parseString(request_content)
             try:
                 value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
@@ -271,8 +270,9 @@ class ContextServiceRegistry(models.Model):
             except IndexError:
                 return None
         # For the ArcREST standard we parse JSON (Above parsed from CSV)
-        elif self.query_type == ContextServiceRegistry.ARCREST:
-            json_document = json.loads(request_content)
+        else:
+            if self.query_type == ContextServiceRegistry.ARCREST:
+                json_document = json.loads(request_content)
             try:
                 json_value = json_document['results'][0][self.result_regex]
                 return json_value
