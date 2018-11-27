@@ -294,13 +294,13 @@ class ContextServiceRegistry(models.Model):
         :return: URL to do query.
         :rtype: unicode
         """
-        bbox_string = None
+        url = None
+        # construct bbox
+        if srid != self.srid:
+            x, y = convert_coordinate(x, y, srid, self.srid)
+        bbox = get_bbox(x, y)
+        bbox_string = ','.join([str(i) for i in bbox])
         if self.query_type == ContextServiceRegistry.WFS:
-            # construct bbox
-            if srid != self.srid:
-                x, y = convert_coordinate(x, y, srid, self.srid)
-            bbox = get_bbox(x, y)
-            bbox_string = ','.join([str(i) for i in bbox])
             parameters = {
                 'SERVICE': 'WFS',
                 'REQUEST': 'GetFeature',
@@ -324,14 +324,8 @@ class ContextServiceRegistry(models.Model):
             if ':' not in self.layer_typename:
                 url += '&SRSNAME=%s' % self.srid
             url += '&BBOX=' + bbox_string
-            return url
         # ARCRest URL Construction:
-        else:
-            if self.query_type == ContextServiceRegistry.ARCREST:
-                if srid != self.srid:
-                    x, y = convert_coordinate(x, y, srid, self.srid)
-                bbox = get_bbox(x, y)
-                bbox_string = ','.join([str(i) for i in bbox])
+        elif self.query_type == ContextServiceRegistry.ARCREST:
             parameters = {
                 'f': 'json',
                 'geometryType': 'esriGeometryPoint',
@@ -354,10 +348,10 @@ class ContextServiceRegistry(models.Model):
             else:
                 url = '{current_url}/identify?{urlencoded_parameters}'.format(
                     current_url=self.url,
-                    urlencoded_parameters=query_dict.urlencode(),
+                    urlencoded_parameters=query_dict.urlencode())
+                url += '&mapExtent={bbox_string}'.format(
+                    current_url=self.url,
+                    bbox_string=bbox_string
                 )
-            url += '&mapExtent={bbox_string}'.format(
-                current_url=self.url,
-                bbox_string=bbox_string
-            )
-            return url
+        return url
+
