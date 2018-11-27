@@ -354,4 +354,3 @@ class ContextServiceRegistry(models.Model):
                     bbox_string=bbox_string
                 )
         return url
-
