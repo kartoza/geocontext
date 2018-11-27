@@ -30,6 +30,7 @@ class ContextServiceRegistry(models.Model):
     REST = 'REST'
     ARCREST = 'ArcREST'
     WIKIPEDIA = 'Wikipedia'
+    PLACENAME = 'PlaceName'
     QUERY_TYPES = (
         (WFS, 'WFS'),
         (WCS, 'WCS'),
@@ -37,6 +38,7 @@ class ContextServiceRegistry(models.Model):
         (REST, 'REST'),
         (ARCREST, 'ArcREST'),
         (WIKIPEDIA, 'Wikipedia'),
+        (PLACENAME, 'PlaceName'),
     )
 
     key = models.CharField(
@@ -84,7 +86,8 @@ class ContextServiceRegistry(models.Model):
     )
 
     api_key = models.CharField(
-        help_text=_('API key for accessing Context Service.'),
+        help_text=_('API key for accessing Context Service. For PlaceName '
+                    'queries this is your username.'),
         blank=True,
         null=True,
         max_length=200,
@@ -201,7 +204,9 @@ class ContextServiceRegistry(models.Model):
             except NotImplementedError as e:
                 parsed_value = e
 
-        elif self.query_type == ContextServiceRegistry.ARCREST:
+        elif self.query_type in (
+                ContextServiceRegistry.ARCREST,
+                ContextServiceRegistry.PLACENAME):
             url = self.build_query_url(x, y, srid)
             request = requests.get(url)
             if request.status_code == 200:
@@ -216,7 +221,7 @@ class ContextServiceRegistry(models.Model):
                 if ':' in self.layer_typename:
                     workspace = self.layer_typename.split(':')[0]
                     geometry = parse_gml_geometry(content, workspace)
-                else:
+                elif self.query_type != ContextServiceRegistry.PLACENAME:
                     geometry = parse_gml_geometry(content)
                 if not geometry:
                     return None
@@ -225,9 +230,9 @@ class ContextServiceRegistry(models.Model):
                 parsed_value = self.parse_request_value(content)
             else:
                 error_message = (
-                    'Failed to request to %s for CSR %s got %s because of '
-                    '%s' % (
-                        url, self.key, request.status_code, request.reason))
+                        'Failed to request to %s for CSR %s got %s because of '
+                        '%s' % (
+                            url, self.key, request.status_code, request.reason))
                 LOGGER.error(error_message)
                 parsed_value = None
 
@@ -262,7 +267,7 @@ class ContextServiceRegistry(models.Model):
         :rtype: unicode
         """
         if self.query_type in [
-               ContextServiceRegistry.WFS, ContextServiceRegistry.WMS]:
+            ContextServiceRegistry.WFS, ContextServiceRegistry.WMS]:
             xmldoc = minidom.parseString(request_content)
             try:
                 value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
@@ -270,11 +275,18 @@ class ContextServiceRegistry(models.Model):
             except IndexError:
                 return None
         # For the ArcREST standard we parse JSON (Above parsed from CSV)
-        else:
-            if self.query_type == ContextServiceRegistry.ARCREST:
-                json_document = json.loads(request_content)
+        elif self.query_type == ContextServiceRegistry.ARCREST:
+            json_document = json.loads(request_content)
             try:
                 json_value = json_document['results'][0][self.result_regex]
+                return json_value
+            except IndexError:
+                return None
+        # PlaceName also parsed from JSONS but document structure differs.
+        elif self.query_type == ContextServiceRegistry.PLACENAME:
+            json_document = json.loads(request_content)
+            try:
+                json_value = json_document['geonames'][0][self.result_regex]
                 return json_value
             except IndexError:
                 return None
@@ -353,4 +365,23 @@ class ContextServiceRegistry(models.Model):
                     current_url=self.url,
                     bbox_string=bbox_string
                 )
+        elif self.query_type == ContextServiceRegistry.PLACENAME:
+            parameters = {
+                # http://api.geonames.org/findNearbyPlaceNameJSON?
+                # lat=-32.32&lng=19.14&username=christiaanvdm
+                'lat': str(y),
+                'lng': str(x),
+                'username': str(self.api_key),
+            }
+            query_dict = QueryDict('', mutable=True)
+            query_dict.update(parameters)
+            if '?' in self.url:
+                url = '{current_url}&{urlencoded_parameters}'.format(
+                    current_url=self.url,
+                    urlencoded_parameters=query_dict.urlencode(),
+                )
+            else:
+                url = '{current_url}?{urlencoded_parameters}'.format(
+                    current_url=self.url,
+                    urlencoded_parameters=query_dict.urlencode())
         return url

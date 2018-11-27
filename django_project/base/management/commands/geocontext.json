@@ -1,6 +1,18 @@
 {
     "context_service_registry": [
-      {
+        {
+            "key": "geonames_find_nearby_placenames",
+            "name": "geonames_find_nearby_placenames",
+            "description": "geonames_find_nearby_placenames",
+            "url": "http://api.geonames.org/findNearbyPlaceNameJSON",
+            "query_type": "PlaceName",
+            "result_regex": "toponymName",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "Find Nearby Place Name",
+            "service_version": "1.0.0"
+        },
+        {
             "key": "esri_imagery_world_2nd",
             "name": "ESRI_Imagery_World_2D",
             "description": "ESRI_Imagery_World_2D Layer 1",
@@ -2044,6 +2056,14 @@
 
     ],
     "context_group": [
+        {
+          "key": "placename_test_group",
+          "name": "A test of the placename type",
+          "description": "Which test is the best? ArcREST Test! Placename is decent as well though",
+          "context_service_registry_keys": [
+            "geonames_find_nearby_placenames"
+          ]
+        },
         {
           "key": "arc_rest_test_group",
           "name": "Arc Rest Test Is The Best",
