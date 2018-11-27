@@ -86,8 +86,9 @@ class ContextServiceRegistry(models.Model):
     )
 
     api_key = models.CharField(
-        help_text=_('API key for accessing Context Service. For PlaceName '
-                    'queries this is your username.'),
+        help_text=_(
+            'API key for accessing Context Service. For PlaceName queries '
+            'this is your username.'),
         blank=True,
         null=True,
         max_length=200,
