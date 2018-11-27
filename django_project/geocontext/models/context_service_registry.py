@@ -230,9 +230,13 @@ class ContextServiceRegistry(models.Model):
                 parsed_value = self.parse_request_value(content)
             else:
                 error_message = (
-                        'Failed to request to %s for CSR %s got %s because of '
-                        '%s' % (
-                            url, self.key, request.status_code, request.reason))
+                    'Failed to request to {url} for CSR {key} got '
+                    '{status_code} because of reasons'.format(
+                        url=url,
+                        key=self.key,
+                        status_code=request.status_code,
+                        reason=request.reason,
+                    ))
                 LOGGER.error(error_message)
                 parsed_value = None
 
