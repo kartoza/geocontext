@@ -57,6 +57,15 @@ class ContextGroup(models.Model):
         max_length=10
     )
 
+    graphable = models.BooleanField(
+        help_text=_(
+            'Indicates if this registry returns data from which a graph can '
+            'be drawn.'),
+        blank=True,
+        null=False,
+        default=False,
+    )
+
     def __str__(self):
         return self.name
 

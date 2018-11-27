@@ -1,5 +1,68 @@
 {
     "context_service_registry": [
+      {
+            "key": "esri_imagery_world_2nd",
+            "name": "ESRI_Imagery_World_2D",
+            "description": "ESRI_Imagery_World_2D Layer 1",
+            "url": "http://services.arcgisonline.com/arcgis/rest/services/ESRI_Imagery_World_2D/MapServer/",
+            "query_type": "ARCRest",
+            "result_regex": "value",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "all:1",
+            "service_version": "1.0.0"
+        },
+
+        {
+            "key": "arc_rest_test_is",
+            "name": "Arc Rest Test Layer 10",
+            "description": "Arc Rest Test Layer 10",
+            "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
+            "query_type": "ARCRest",
+            "result_regex": "value",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "all:10",
+            "service_version": "1.0.0"
+        },
+
+        {
+            "key": "arc_rest_test_the",
+            "name": "Arc Rest Test Layer 1",
+            "description": "Arc Rest Test Layer 1",
+            "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
+            "query_type": "ARCRest",
+            "result_regex": "value",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "all:1",
+            "service_version": "1.0.0"
+        },
+
+        {
+           "key": "arc_rest_test_best",
+            "name": "Arc Rest Test Layer 7",
+            "description": "Arc Rest Test Layer 7",
+            "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
+            "query_type": "ARCRest",
+            "result_regex": "value",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "all:7",
+            "service_version": "1.0.0"
+        },
+        {
+           "key": "arc_rest_test4",
+            "name": "Water Management Area",
+            "description": null,
+            "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
+            "query_type": "ARCRest",
+            "result_regex": "value",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "all:9",
+            "service_version": "1.0.0"
+        },
 
         {
             "key": "water_management_area",
@@ -1982,6 +2045,16 @@
     ],
     "context_group": [
         {
+          "key": "arc_rest_test_group",
+          "name": "Arc Rest Test Is The Best",
+          "description": "Which test is the best? ArcREST Test!",
+          "context_service_registry_keys": [
+            "arc_rest_test_is",
+            "arc_rest_test_the",
+            "arc_rest_test_best"
+          ]
+        },
+        {
             "key": "water_group",
             "name": "River Catchments",
             "description": "Layers that relate to freshwater,estuarine and maritime ecosystems",
@@ -2054,6 +2127,7 @@
             "key": "actual_vapour_group",
             "name": "Actual vapour  Rasters",
             "description": "A collection of rasters depicting vapour  in South Africa",
+            "graphable": true,
             "context_service_registry_keys": [
                 "monthly_actual_vapour_pressure_january",
                 "monthly_actual_vapour_pressure_february",

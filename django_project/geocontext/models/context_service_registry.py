@@ -2,6 +2,7 @@
 """Context Service Registry Model."""
 
 import requests
+import json
 import logging
 from datetime import datetime, timedelta
 import pytz
@@ -27,12 +28,14 @@ class ContextServiceRegistry(models.Model):
     WCS = 'WCS'
     WMS = 'WMS'
     REST = 'REST'
+    ARCREST = 'ArcREST'
     WIKIPEDIA = 'Wikipedia'
     QUERY_TYPES = (
         (WFS, 'WFS'),
         (WCS, 'WCS'),
         (WMS, 'WMS'),
         (REST, 'REST'),
+        (ARCREST, 'ArcREST'),
         (WIKIPEDIA, 'Wikipedia'),
     )
 
@@ -99,7 +102,7 @@ class ContextServiceRegistry(models.Model):
         blank=False,
         null=False,
         max_length=200,
-        choices=QUERY_TYPES
+        choices=QUERY_TYPES,
     )
 
     # I will try to use CharField first, if not I will use django-regex-field
@@ -160,7 +163,6 @@ class ContextServiceRegistry(models.Model):
         max_length=1000,
     )
 
-
     def __str__(self):
         return self.name
 
@@ -192,12 +194,20 @@ class ContextServiceRegistry(models.Model):
                     info_format='application/vnd.ogc.gml'
                 )
                 content = response.read()
-                value = self.parse_request_value(content)
+                parsed_value = self.parse_request_value(content)
                 # No geometry and url for WMS
                 geometry = None
                 url = response.geturl()
             except NotImplementedError as e:
-                value = e
+                parsed_value = e
+
+        elif self.query_type == ContextServiceRegistry.ARCREST:
+            url = self.build_query_url(x, y, srid)
+            request = requests.get(url)
+            if request.status_code == 200:
+                content = request.content
+                parsed_value = self.parse_request_value(content)
+
         else:
             url = self.build_query_url(x, y, srid)
             request = requests.get(url)
@@ -212,14 +222,14 @@ class ContextServiceRegistry(models.Model):
                     return None
                 if not geometry.srid:
                     geometry.srid = self.srid
-                value = self.parse_request_value(content)
+                parsed_value = self.parse_request_value(content)
             else:
                 error_message = (
                     'Failed to request to %s for CSR %s got %s because of '
                     '%s' % (
                         url, self.key, request.status_code, request.reason))
                 LOGGER.error(error_message)
-                value = None
+                parsed_value = None
 
         # Create cache here.
         from geocontext.models.context_cache import ContextCache
@@ -229,7 +239,7 @@ class ContextServiceRegistry(models.Model):
         context_cache = ContextCache(
             service_registry=self,
             name=self.key,
-            value=value,
+            value=parsed_value,
             expired_time=expired_time
         )
 
@@ -238,11 +248,8 @@ class ContextServiceRegistry(models.Model):
 
         if geometry:
             context_cache.set_geometry_field(geometry)
-
         context_cache.save()
-
         context_cache.refresh_from_db()
-
         return context_cache
 
     def parse_request_value(self, request_content):
@@ -255,11 +262,20 @@ class ContextServiceRegistry(models.Model):
         :rtype: unicode
         """
         if self.query_type in [
-            ContextServiceRegistry.WFS, ContextServiceRegistry.WMS]:
+               ContextServiceRegistry.WFS, ContextServiceRegistry.WMS]:
             xmldoc = minidom.parseString(request_content)
             try:
                 value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
                 return value_dom.childNodes[0].nodeValue
+            except IndexError:
+                return None
+        # For the ArcREST standard we parse JSON (Above parsed from CSV)
+        else:
+            if self.query_type == ContextServiceRegistry.ARCREST:
+                json_document = json.loads(request_content)
+            try:
+                json_value = json_document['results'][0][self.result_regex]
+                return json_value
             except IndexError:
                 return None
 
@@ -278,32 +294,63 @@ class ContextServiceRegistry(models.Model):
         :return: URL to do query.
         :rtype: unicode
         """
+        url = None
+        # construct bbox
+        if srid != self.srid:
+            x, y = convert_coordinate(x, y, srid, self.srid)
+        bbox = get_bbox(x, y)
+        bbox_string = ','.join([str(i) for i in bbox])
         if self.query_type == ContextServiceRegistry.WFS:
-            # construct bbox
-            if srid != self.srid:
-                x, y = convert_coordinate(x, y, srid, self.srid)
-            bbox = get_bbox(x, y)
-            bbox_string = ','.join([str(i) for i in bbox])
-
             parameters = {
                 'SERVICE': 'WFS',
                 'REQUEST': 'GetFeature',
                 'VERSION': self.service_version,
                 'TYPENAME': self.layer_typename,
-                # 'SRSNAME': 'EPSG:%s' % self.srid,  # added manually
                 'OUTPUTFORMAT': 'GML3',
-                # 'BBOX': bbox_string  # added manually
             }
             query_dict = QueryDict('', mutable=True)
             query_dict.update(parameters)
-
             if '?' in self.url:
-                url = self.url + '&' + query_dict.urlencode()
+                url = '{current_url}&{urlencoded_parameters}'.format(
+                    current_url=self.url,
+                    urlencoded_parameters=query_dict.urlencode(),
+                )
             else:
-                url = self.url + '?' + query_dict.urlencode()
+                url = '{current_url}?{urlencoded_parameters}'.format(
+                    current_url=self.url,
+                    urlencoded_parameters=query_dict.urlencode(),
+                )
             # Only add SRSNAME when there is no workspace
             if ':' not in self.layer_typename:
                 url += '&SRSNAME=%s' % self.srid
             url += '&BBOX=' + bbox_string
-
-            return url
+        # ARCRest URL Construction:
+        elif self.query_type == ContextServiceRegistry.ARCREST:
+            parameters = {
+                'f': 'json',
+                'geometryType': 'esriGeometryPoint',
+                'geometry': '{{x: {x_coordinate}, y: {y_coordinate} }}'.format(
+                    x_coordinate=x,
+                    y_coordinate=y,
+                ),
+                # Layers are recalled with all:<number> in QGIS' call
+                'layers': self.layer_typename,
+                'imageDisplay': '581,461,96',
+                'tolerance': '10',
+            }
+            query_dict = QueryDict('', mutable=True)
+            query_dict.update(parameters)
+            if '?' in self.url:
+                url = '{current_url}&{urlencoded_parameters}'.format(
+                    current_url=self.url,
+                    urlencoded_parameters=query_dict.urlencode(),
+                )
+            else:
+                url = '{current_url}/identify?{urlencoded_parameters}'.format(
+                    current_url=self.url,
+                    urlencoded_parameters=query_dict.urlencode())
+                url += '&mapExtent={bbox_string}'.format(
+                    current_url=self.url,
+                    bbox_string=bbox_string
+                )
+        return url
