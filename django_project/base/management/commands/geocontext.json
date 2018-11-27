@@ -2106,7 +2106,6 @@
             "key": "relative_humidity_group",
             "name": "Relative humidity Rasters",
             "description": "A collection of rasters depicting Daily minimum and maximum relative humidity  as relative humidity in South Africa",
-            "is_graph": false,
             "context_service_registry_keys": [
                 "monthly_relative_humidity_january",
                 "monthly_relative_humidity_february",
