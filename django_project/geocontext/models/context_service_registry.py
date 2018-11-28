@@ -271,8 +271,8 @@ class ContextServiceRegistry(models.Model):
         :returns: The value of the result_regex in the request_content.
         :rtype: unicode
         """
-        if self.query_type in [
-            ContextServiceRegistry.WFS, ContextServiceRegistry.WMS]:
+        if self.query_type in (
+                ContextServiceRegistry.WFS, ContextServiceRegistry.WMS):
             xmldoc = minidom.parseString(request_content)
             try:
                 value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
