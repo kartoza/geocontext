@@ -27,7 +27,7 @@
 
         {
             "key": "gov_protected_areas_layer_10",
-            "name": "Gov Protected Areas Layer 10",
+            "name": "Government Protected Areas Layer 10",
             "description": "Government Protected Areas Layer 10",
             "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
             "query_type": "ArcREST",
@@ -40,7 +40,7 @@
 
         {
             "key": "gov_protected_areas_layer_1",
-            "name": "Gov Protected Areas Layer 1",
+            "name": "Government Protected Areas Layer 1",
             "description": "Government Protected Areas Layer 1",
             "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
             "query_type": "ArcREST",
@@ -53,7 +53,7 @@
 
         {
            "key": "gov_protected_areas_layer_7",
-            "name": "Gov Protected Areas Layer 7",
+            "name": "Government Protected Areas Layer 7",
             "description": "Government Protected Areas Layer 7",
             "url": "https://portal.environment.gov.za/server/rest/services/Corp/ProtectedAreas/MapServer/",
             "query_type": "ArcREST",
