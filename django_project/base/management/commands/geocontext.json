@@ -2069,7 +2069,8 @@
             "gov_protected_areas_layer_7",
             "gov_protected_areas_layer_9",
             "gov_protected_areas_layer_10"
-          ]
+          ],
+
         },
         {
             "key": "water_group",
@@ -2117,7 +2118,8 @@
                 "monthly_rainfall_october",
                 "monthly_rainfall_november",
                 "monthly_rainfall_december"
-            ]
+            ],
+             "is_graphable": true
         },
         {
             "key": "relative_humidity_group",
