@@ -2117,8 +2117,7 @@
                 "monthly_rainfall_october",
                 "monthly_rainfall_november",
                 "monthly_rainfall_december"
-            ],
-             "graphable": "true"
+            ]
         },
         {
             "key": "relative_humidity_group",
