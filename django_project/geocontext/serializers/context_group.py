@@ -22,7 +22,9 @@ class ContextGroupSerializer(serializers.ModelSerializer):
             'key',
             'name',
             'description',
+            'graphable',
             'context_service_registry_keys',
+
         )
 
     def get_context_service_registry_keys(self, obj):
@@ -48,7 +50,7 @@ class ContextGroupValue(object):
         self.name = self.context_group.name
         self.srid = srid
         self.service_registry_values = []
-
+        self.graphable = self.context_group.graphable
         self.populate_service_registry_values()
 
     def populate_service_registry_values(self):
@@ -68,5 +70,6 @@ class ContextGroupValueSerializer(serializers.Serializer):
     """Serializer for Context Value Group class."""
     key = serializers.CharField()
     name = serializers.CharField()
+    graphable = serializers.BooleanField()
     service_registry_values = serializers.ListSerializer(
         child=ContextValueSerializer())
