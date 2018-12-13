@@ -1,5 +1,5 @@
 {% extends 'main_base.html' %}
-
+{% load staticfiles%}
 {% block title %}
     Getting Started
 {% endblock %}
@@ -137,7 +137,7 @@
                             <div class="col-2"></div>
                             <div class="col-8"><img style="width:100%;
                         height:auto;"
-                                src='{% static 'img/getting_started_hierarchy.png' %}'/>
+                           src="{% static 'img/getting_started_hierarchy.png' %}">
                             </div>
                             <div class="col-2"></div>
                         </div>
