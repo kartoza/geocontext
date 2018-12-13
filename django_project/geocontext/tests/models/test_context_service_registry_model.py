@@ -167,6 +167,68 @@ class TestContextServiceRegistry(TestCase):
         self.assertEqual(context_cache.value, expected_value)
         self.assertIsNone(result.geometry)
 
+    def test_retrieve_context_value_arcrest(self):
+        """Test retrieving context value from a point with ArcRest source.
+        """
+        x = 19.14
+        y = -32.32
+
+        service_registry = ContextServiceRegistryF.create()
+        service_registry.url = (
+            'https://portal.environment.gov.za/server/rest/services/Corp/'
+            'ProtectedAreas/MapServer/')
+        service_registry.srid = 4326
+        service_registry.query_type = ContextServiceRegistry.ARCREST
+        service_registry.layer_typename = 'all:10'
+        service_registry.service_version = 'ArcRest 1.0.0'
+        service_registry.result_regex = 'value'
+
+        service_registry.save()
+
+        result = service_registry.retrieve_context_value(x, y)
+        expected_value = (
+            'Cape Floral Region Protected Areas: Cederberg Wilderness Area')
+        self.assertEqual(result.value, expected_value)
+        self.assertIsNotNone(result.value)
+        self.assertIsNone(result.geometry)
+
+        context_caches = ContextCache.objects.filter(
+            service_registry=service_registry)
+        self.assertIsNotNone(context_caches)
+        context_cache = context_caches[0]
+        self.assertEqual(context_cache.value, expected_value)
+        self.assertIsNone(result.geometry)
+
+    def test_retrieve_context_value_placename(self):
+        """Test retrieving context value from a point with ArcRest source.
+        """
+        x = 19.14
+        y = -32.32
+
+        service_registry = ContextServiceRegistryF.create()
+        service_registry.url = (
+            'http://api.geonames.org/findNearbyPlaceNameJSON')
+        service_registry.srid = 4326
+        service_registry.query_type = ContextServiceRegistry.PLACENAME
+        service_registry.layer_typename = 'Find Nearby Place Name'
+        service_registry.service_version = 'Version 1.0.0'
+        service_registry.result_regex = 'toponymName'
+        service_registry.api_key = 'christiaanvdm'
+
+        service_registry.save()
+
+        result = service_registry.retrieve_context_value(x, y)
+        expected_value = 'Wuppertal'
+        self.assertEqual(result.value, expected_value)
+        self.assertIsNotNone(result.value)
+
+        context_caches = ContextCache.objects.filter(
+            service_registry=service_registry)
+        self.assertIsNotNone(context_caches)
+        context_cache = context_caches[0]
+        self.assertEqual(context_cache.value, expected_value)
+        self.assertIsNone(result.geometry)
+
     def test_retrieve_context_value_invalid(self):
         """Test retrieving context value from a point with different CRS.
 
