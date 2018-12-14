@@ -2044,7 +2044,1261 @@
             "srid": 4326,
             "layer_typename": "kartoza:tminsdev12c",
             "service_version": "1.3.0"
+        },
+
+
+      {
+            "key": "yearly_bioclimatic_variables_01",
+            "name": "bioclimatic_variables_01",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_01",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_02",
+            "name": "bioclimatic_variables_02",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_02",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_03",
+            "name": "bioclimatic_variables_03",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_03",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_04",
+            "name": "bioclimatic_variables_04",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_04",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_05",
+            "name": "bioclimatic_variables_05",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_05",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_06",
+            "name": "bioclimatic_variables_06",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_06",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_07",
+            "name": "bioclimatic_variables_07",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_07",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_08",
+            "name": "bioclimatic_variables_08",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_08",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_09",
+            "name": "bioclimatic_variables_09",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_09",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_10",
+            "name": "bioclimatic_variables_10",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_10",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_11",
+            "name": "bioclimatic_variables_11",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_11",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_12",
+            "name": "bioclimatic_variables_12",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_12",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_13",
+            "name": "bioclimatic_variables_13",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_13",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_14",
+            "name": "bioclimatic_variables_14",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_14",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_15",
+            "name": "bioclimatic_variables_15",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_15",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_16",
+            "name": "bioclimatic_variables_16",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_16",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_17",
+            "name": "bioclimatic_variables_17",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_17",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_18",
+            "name": "bioclimatic_variables_18",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_18",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "yearly_bioclimatic_variables_19",
+            "name": "bioclimatic_variables_19",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bio_30s_19",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_solar_radiation_january",
+            "name": "Monthly Solar Radiation January",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_srad_01",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_solar_radiation_february",
+            "name": "Monthly Solar Radiation February",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:bwc2_0_30s_srad_02",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "ymonthly_solar_radiation_march",
+            "name": "Monthly Solar Radiation March",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_srad_03",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_solar_radiation_april",
+            "name": "Monthly Solar Radiation April",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_srad_04",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_solar_radiation_may",
+            "name": "Monthly Solar Radiation May",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_srad_05",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_solar_radiation_june",
+            "name": "Monthly Solar Radiation June",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_srad_06",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_solar_radiation_july",
+            "name": "Monthly Solar Radiation July",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_srad_07",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_solar_radiation_august",
+            "name": "Monthly Solar Radiation August",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_srad_08",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_solar_radiation_september",
+            "name": "Monthly Solar Radiation September",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_srad_09",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_solar_radiation_october",
+            "name": "Monthly Solar Radiation October",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_srad_10",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_solar_radiation_november",
+            "name": "Monthly Solar Radiation November",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_srad_11",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_solar_radiation_december",
+            "name": "Monthly Solar Radiation December",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_srad_12",
+            "service_version": "1.3.0"
         }
+
+
+        ,
+        {
+            "key": "monthly_average_temperature_january",
+            "name": "Monthly Average Temperature January",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_01",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_average_temperature_february",
+            "name": "Monthly Average Temperature February",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_02",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_average_temperature_march",
+            "name": "Monthly Average Temperature March",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_03",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_average_temperature_april",
+            "name": "Monthly Average Temperature April",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_04",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_average_temperature_may",
+            "name": "Monthly Average Temperature May",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_05",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_average_temperature_june",
+            "name": "Monthly Average Temperature June",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_06",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_average_temperature_july",
+            "name": "Monthly Average Temperature July",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_07",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_average_temperature_august",
+            "name": "Monthly Average Temperature August",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_08",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_average_temperature_september",
+            "name": "Monthly Average Temperature September",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_09",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_average_temperature_october",
+            "name": "Monthly Average Temperature October",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_10",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_average_temperature_november",
+            "name": "Monthly Average Temperature November",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_11",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_average_temperature_december",
+            "name": "Monthly Average Temperature December",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tavg_12",
+            "service_version": "1.3.0"
+        }
+
+
+        ,
+        {
+            "key": "monthly_max_temperature_january",
+            "name": "Monthly Maximum Temperature January",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_01",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_max_temperature_february",
+            "name": "Monthly Maximum Temperature February",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_02",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_max_temperature_march",
+            "name": "Monthly Maximum Temperature March",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_03",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_max_temperature_april",
+            "name": "Monthly Maximum Temperature April",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_04",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_max_temperature_may",
+            "name": "Monthly Maximum Temperature May",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_05",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_max_temperature_june",
+            "name": "Monthly Maximum Temperature June",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_06",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_max_temperature_july",
+            "name": "Monthly Maximum Temperature July",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_07",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_max_temperature_august",
+            "name": "Monthly Maximum Temperature August",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_08",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_max_temperature_september",
+            "name": "Monthly Maximum Temperature September",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_09",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_max_temperature_october",
+            "name": "Monthly Maximum Temperature October",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_10",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_max_temperature_november",
+            "name": "Monthly Maximum Temperature November",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_11",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_max_temperature_december",
+            "name": "Monthly Maximum Temperature December",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_12",
+            "service_version": "1.3.0"
+        }
+
+
+        ,
+        {
+            "key": "monthly_min_temperature_january",
+            "name": "Monthly Minimum Temperature January",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_01",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_min_temperature_february",
+            "name": "Monthly Minimum Temperature February",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_02",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_min_temperature_march",
+            "name": "Monthly Minimum Temperature March",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_03",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_min_temperature_april",
+            "name": "Monthly Minimum Temperature April",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_04",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_min_temperature_may",
+            "name": "Monthly Minimum Temperature May",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_05",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_min_temperature_june",
+            "name": "Monthly Minimum Temperature June",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_06",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_min_temperature_july",
+            "name": "Monthly Minimum Temperature July",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_07",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_min_temperature_august",
+            "name": "Monthly Minimum Temperature August",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmax_08",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_min_temperature_september",
+            "name": "Monthly Minimum Temperature September",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmin_09",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_min_temperature_october",
+            "name": "Monthly Minimum Temperature October",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmin_10",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_min_temperature_november",
+            "name": "Monthly Minimum Temperature November",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmin_11",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_min_temperature_december",
+            "name": "Monthly Minimum Temperature December",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_tmin_12",
+            "service_version": "1.3.0"
+        }
+
+        ,
+        {
+            "key": "monthly_water_vapor_pressure_january",
+            "name": "Monthly Water Vapor January",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_01",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_water_vapor_pressure_february",
+            "name": "Monthly Water Vapor February",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_02",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_water_vapor_pressure_march",
+            "name": "Monthly Water Vapor March",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_03",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_water_vapor_pressure_april",
+            "name": "Monthly Water Vapor April",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_04",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_water_vapor_pressure_may",
+            "name": "Monthly Water Vapor May",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_05",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_water_vapor_pressure_june",
+            "name": "Monthly Water Vapor June",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_06",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_water_vapor_pressure_july",
+            "name": "Monthly Water Vapor July",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_07",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_water_vapor_pressure_august",
+            "name": "Monthly Water Vapor August",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_08",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_water_vapor_pressure_september",
+            "name": "Monthly Water Vapor September",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_09",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_water_vapor_pressure_october",
+            "name": "Monthly Water Vapor October",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_10",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_water_vapor_pressure_november",
+            "name": "Monthly Water Vapor November",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_11",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_water_vapor_pressure_december",
+            "name": "Monthly Water Vapor December",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_vapr_12",
+            "service_version": "1.3.0"
+        }
+
+        ,
+        {
+            "key": "monthly_wind_speed_january",
+            "name": "Monthly Wind Speed January",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_01",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_wind_speed_february",
+            "name": "Monthly Wind Speed February",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_02",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_wind_speed_march",
+            "name": "Monthly Wind Speed March",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_03",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_wind_speed_april",
+            "name": "Monthly Wind Speed April",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_04",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_wind_speed_may",
+            "name": "Monthly Wind Speed May",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_05",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_wind_speed_june",
+            "name": "Monthly Wind Speed June",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_06",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_wind_speed_july",
+            "name": "Monthly Wind Speed July",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_07",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_wind_speed_august",
+            "name": "Monthly Wind Speed August",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_08",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_wind_speed_september",
+            "name": "Monthly Wind Speed September",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_09",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_wind_speed_october",
+            "name": "Monthly Wind Speed October",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_10",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_wind_speed_november",
+            "name": "Monthly Wind Speed November",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_11",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_wind_speed_december",
+            "name": "Monthly Wind Speed December",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_wind_12",
+            "service_version": "1.3.0"
+        }
+
+        ,
+        {
+            "key": "monthly_precipitation_january",
+            "name": "Monthly Precipitation January",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_01",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_precipitation_february",
+            "name": "Monthly Precipitation February",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_02",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_precipitation_march",
+            "name": "Monthly Precipitation March",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_03",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_precipitation_april",
+            "name": "Monthly Precipitation April",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_04",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_precipitation_may",
+            "name": "Monthly Precipitation May",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_05",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_precipitation_june",
+            "name": "Monthly Precipitation June",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_06",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_precipitation_july",
+            "name": "Monthly Precipitation July",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_07",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_precipitation_august",
+            "name": "Monthly Precipitation August",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_08",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_precipitation_september",
+            "name": "Monthly Precipitation September",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_09",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_precipitation_october",
+            "name": "Monthly Precipitation October",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_10",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_precipitation_november",
+            "name": "Monthly Precipitation November",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_11",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "monthly_precipitation_december",
+            "name": "Monthly Precipitation December",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "kartoza:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:wc2_0_30s_prec_12",
+            "service_version": "1.3.0"
+        }
+
 
 
 
@@ -2358,6 +3612,197 @@
 
             ]
         }
+        ,
+        {
+            "key": "bioclimatic_variables_group",
+            "name": "bioclimatic layers",
+            "description": "Layers that depict bioclimatic variables",
+            "context_service_registry_keys": [
+                "yearly_bioclimatic_variables_01",
+                "yearly_bioclimatic_variables_02",
+                "yearly_bioclimatic_variables_03",
+                "yearly_bioclimatic_variables_04",
+                "yearly_bioclimatic_variables_05",
+                "yearly_bioclimatic_variables_06",
+                "yearly_bioclimatic_variables_07",
+                "yearly_bioclimatic_variables_08",
+                "yearly_bioclimatic_variables_09",
+                "yearly_bioclimatic_variables_10",
+                "yearly_bioclimatic_variables_11",
+                "yearly_bioclimatic_variables_12",
+                "yearly_bioclimatic_variables_13",
+                "yearly_bioclimatic_variables_14",
+                "yearly_bioclimatic_variables_15",
+                "yearly_bioclimatic_variables_16",
+                "yearly_bioclimatic_variables_17",
+                "yearly_bioclimatic_variables_18",
+                "yearly_bioclimatic_variables_19"
+
+            ]
+        }
+
+        ,
+        {
+            "key": "monthly_precipitation_group",
+            "name": "monthly precipitation layers",
+            "description": "Layers that depict monthly precipitation from world climate ",
+            "context_service_registry_keys": [
+                "monthly_precipitation_january",
+                "monthly_precipitation_february",
+                "monthly_precipitation_march",
+                "monthly_precipitation_april",
+                "monthly_precipitation_may",
+                "monthly_precipitation_june",
+                "monthly_precipitation_july",
+                "monthly_precipitation_august",
+                "monthly_precipitation_september",
+                "monthly_precipitation_october",
+                "monthly_precipitation_november",
+                "monthly_precipitation_december"
+
+
+            ]
+        },
+
+        {
+            "key": "monthly_wind_speed_group",
+            "name": "monthly wind speed layers",
+            "description": "Layers that depict monthly wind speed from world climate ",
+            "context_service_registry_keys": [
+                "monthly_wind_speed_january",
+                "monthly_wind_speed_february",
+                "monthly_wind_speed_march",
+                "monthly_wind_speed_april",
+                "monthly_wind_speed_may",
+                "monthly_wind_speed_june",
+                "monthly_wind_speed_july",
+                "monthly_wind_speed_august",
+                "monthly_wind_speed_september",
+                "monthly_wind_speed_october",
+                "monthly_wind_speed_november",
+                "monthly_wind_speed_december"
+
+
+            ]
+        }
+        ,
+
+        {
+            "key": "monthly_water_vapor_pressure_group",
+            "name": "monthly water vapor pressure  layers",
+            "description": "Layers that depict monthly water vapor pressure from world climate ",
+            "context_service_registry_keys": [
+                "monthly_water_vapor_pressure_january",
+                "monthly_water_vapor_pressure_february",
+                "monthly_water_vapor_pressure_march",
+                "monthly_water_vapor_pressure_april",
+                "monthly_water_vapor_pressure_may",
+                "monthly_water_vapor_pressure_june",
+                "monthly_water_vapor_pressure_july",
+                "monthly_water_vapor_pressure_august",
+                "monthly_water_vapor_pressure_september",
+                "monthly_water_vapor_pressure_october",
+                "monthly_water_vapor_pressure_november",
+                "monthly_water_vapor_pressure_december"
+
+
+            ]
+        }
+
+        ,
+
+        {
+            "key": "monthly_min_temperature_group",
+            "name": "monthly minimum temperature  layers",
+            "description": "Layers that depict monthly minimum temperatures from world climate ",
+            "context_service_registry_keys": [
+                "monthly_min_temperature_january",
+                "monthly_min_temperature_february",
+                "monthly_min_temperature_march",
+                "monthly_min_temperature_april",
+                "monthly_min_temperature_may",
+                "monthly_min_temperature_june",
+                "monthly_min_temperature_july",
+                "monthly_min_temperature_august",
+                "monthly_min_temperature_september",
+                "monthly_min_temperature_october",
+                "monthly_min_temperature_november",
+                "monthly_min_temperature_december"
+
+
+            ]
+        }
+
+        ,
+
+        {
+            "key": "monthly_max_temperature_group",
+            "name": "monthly maximum temperature  layers",
+            "description": "Layers that depict monthly minimum temperatures from world climate ",
+            "context_service_registry_keys": [
+                "monthly_max_temperature_january",
+                "monthly_max_temperature_february",
+                "monthly_max_temperature_march",
+                "monthly_max_temperature_april",
+                "monthly_max_temperature_may",
+                "monthly_max_temperature_june",
+                "monthly_max_temperature_july",
+                "monthly_max_temperature_august",
+                "monthly_max_temperature_september",
+                "monthly_max_temperature_october",
+                "monthly_max_temperature_november",
+                "monthly_max_temperature_december"
+
+
+            ]
+        }
+
+        ,
+
+        {
+            "key": "monthly_average_temperature_group",
+            "name": "monthly average temperature  layers",
+            "description": "Layers that depict monthly average temperatures from world climate ",
+            "context_service_registry_keys": [
+                "monthly_average_temperature_january",
+                "monthly_average_temperature_february",
+                "monthly_average_temperature_march",
+                "monthly_average_temperature_april",
+                "monthly_average_temperature_may",
+                "monthly_average_temperature_june",
+                "monthly_average_temperature_july",
+                "monthly_average_temperature_august",
+                "monthly_average_temperature_september",
+                "monthly_average_temperature_october",
+                "monthly_average_temperature_november",
+                "monthly_average_temperature_december"
+
+
+            ]
+        }
+        ,
+
+        {
+            "key": "monthly_solar_radiation_group",
+            "name": "monthly solar radiation  layers",
+            "description": "Layers that depict monthly solar radiation from world climate ",
+            "context_service_registry_keys": [
+                "monthly_solar_radiation_january",
+                "monthly_solar_radiation_february",
+                "monthly_solar_radiation_march",
+                "monthly_solar_radiation_april",
+                "monthly_solar_radiation_may",
+                "monthly_solar_radiation_june",
+                "monthly_solar_radiation_july",
+                "monthly_solar_radiation_august",
+                "monthly_solar_radiation_september",
+                "monthly_solar_radiation_october",
+                "monthly_solar_radiation_november",
+                "monthly_solar_radiation_december"
+
+
+            ]
+        }
     ],
     "context_collection": [
         {
@@ -2378,6 +3823,23 @@
 
             ]
         },
+        {
+            "key": "world_climate",
+            "name": "World Climate Collection",
+            "description": "Collection of world climate layers",
+            "context_group_keys": [
+                "bioclimatic_variables_group",
+                "monthly_precipitation_group",
+                "monthly_wind_speed_group",
+                "monthly_water_vapor_pressure_group",
+                "monthly_min_temperature_group",
+                "monthly_max_temperature_group",
+                "monthly_average_temperature_group",
+                "monthly_solar_radiation_group"
+
+            ]
+        },
+
 
         {
             "key": "land_cover_land_use",
