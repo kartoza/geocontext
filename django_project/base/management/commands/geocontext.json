@@ -2300,7 +2300,7 @@
             "service_version": "1.3.0"
         },
         {
-            "key": "ymonthly_solar_radiation_march",
+            "key": "monthly_solar_radiation_march",
             "name": "Monthly Solar Radiation March",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
