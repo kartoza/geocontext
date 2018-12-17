@@ -1018,7 +1018,7 @@
             "result_regex": "kartoza:GRAY_INDEX",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:avp08c",
+            "layer_typename": "kartoza:avp09c",
             "service_version": "1.3.0"
         },
         {
@@ -1055,7 +1055,7 @@
             "result_regex": "kartoza:GRAY_INDEX",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:avp011c",
+            "layer_typename": "kartoza:avp012c",
             "service_version": "1.3.0"
         },
         {
@@ -1394,7 +1394,7 @@
             "result_regex": "kartoza:GRAY_INDEX",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:maxrhsdev_d01",
+            "layer_typename": "kartoza:maxrhsdev_d12",
             "service_version": "1.3.0"
         }
         ,
@@ -1886,7 +1886,7 @@
             "result_regex": "kartoza:GRAY_INDEX",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:tminave03c",
+            "layer_typename": "kartoza:tminave12c",
             "service_version": "1.3.0"
         }
             ,
