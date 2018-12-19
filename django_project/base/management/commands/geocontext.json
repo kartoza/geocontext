@@ -1042,7 +1042,7 @@
             "result_regex": "kartoza:GRAY_INDEX",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:avp011c",
+            "layer_typename": "kartoza:avp11c",
             "service_version": "1.3.0"
         }
         ,
@@ -1055,7 +1055,7 @@
             "result_regex": "kartoza:GRAY_INDEX",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:avp012c",
+            "layer_typename": "kartoza:avp12c",
             "service_version": "1.3.0"
         },
         {
