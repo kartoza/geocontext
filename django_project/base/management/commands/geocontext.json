@@ -3824,8 +3824,8 @@
             ]
         },
         {
-            "key": "world_climate",
-            "name": "World Climate Collection",
+            "key": "global_climate",
+            "name": "Global Climate Collection",
             "description": "Collection of world climate layers",
             "context_group_keys": [
                 "bioclimatic_variables_group",
