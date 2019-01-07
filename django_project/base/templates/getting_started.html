@@ -1,0 +1,339 @@
+{% extends 'main_base.html' %}
+{% load staticfiles%}
+{% block title %}
+    Getting Started
+{% endblock %}
+
+{% block body_content %}
+    <div class='container'>
+        <div class='row'>
+            <div class='d-none d-xl-block col-xl-12 col-sm-12 bd-toc'>
+                <ul class='section-nav'>
+                    <li class='toc-entry toc-h2'>
+                        <a href='#overview'>Overview</a>
+                    </li>
+                    <li class='toc-entry toc-h2'>
+                        <a href='#audience'>Audience</a>
+
+                    </li>
+                    <li class='toc-entry toc-h2'>
+                        <a href='#hello_world'>Hello World!</a>
+                    </li>
+                    <li class='toc-entry toc-h2'>
+                        <a href='#behind_the_scenes'>Behind the scenes</a>
+                    </li>
+                    <li class='toc-entry toc-h2'><a
+                            href='#basic_js_example'>Basic JS example</a>
+                        <ul>
+                            <li class='toc-entry toc-h3'><a
+                                    href='#loading_the_data'>Loading the data
+                            </a></li>
+                            <li class='toc-entry toc-h3'><a
+                                    href='#adding_something_visual'>Adding
+                                Something Visual</a></li>
+                            <li class='toc-entry toc-h3'><a
+                                    href='#making_our_data_more_dynamic'>
+                                Making our data more dynamic
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class='toc-entry toc-h2'>
+                        <a href='#additional_resources'>
+                            Additional Resources</a>
+                    </li>
+                </ul>
+            </div>
+            <div class='col-12'>
+
+                <div id='overview' class='row'>
+                    <div class='col-sm-12'>
+                        <div class='h2'>
+                            Overview
+                        </div>
+                        <p>
+                            Getting started aims to get the end user up to speed
+                            using the GeoContext API quickly. The GeoContext API
+                            aims
+                            to provide the user with multi-contextual data for a
+                            specific point. GeoContext implements various
+                            standards
+                            as
+                            well as specific services in order to return the
+                            data as
+                            specified in your database and returns a
+                            <b>single</b> value for each <b>Context Service
+                            Registry</b>
+                        </p>
+                    </div>
+                </div>
+                <div id='audience' class='row'>
+                    <div class='col-sm-12'>
+                        <div class='h2'>
+                            Audience
+                        </div>
+                        <p>
+                            This documentation is designed for people familiar
+                            with
+                            JavaScript programming and basic object-oriented
+                            programming concepts. Basic knowledge of GIS
+                            (Geographical Information Systems) may prove useful,
+                            but it is not critical.
+                        </p>
+                    </div>
+                </div>
+                <div id='hello_world' class='row'>
+                    <div class='col-sm-12'>
+                        <div class='h2'>
+                            Hello World!
+                        </div>
+                        <p>
+                            The GeoContext rest API accepts a GET request and
+                            delivers JSON data. The simplest way to see it in
+                            action is to simply open the following in your
+                            browser
+                            <br>
+                            <a href=
+                                       'https://geocontext.kartoza.com/api/v1/geocontext/value/collection/19.143617/-32.323005/land_cover_land_use/?format=api'>
+                                https://geocontext.kartoza.com/api/v1/geocontext/value/collection/19.143617/-32.323005/land_cover_land_use/?format=api
+                            </a>
+                        </p>
+                        <p>
+                            Or for convenience as <b>JSON</b>:
+                            <br>
+                            <a href=
+                                       'https://geocontext.kartoza.com/api/v1/geocontext/value/collection/19.143617/-32.323005/land_cover_land_use/?format=json'>
+                                https://geocontext.kartoza.com/api/v1/geocontext/value/collection/19.143617/-32.323005/land_cover_land_use/?format=json
+                            </a>
+                        </p>
+
+                    </div>
+                </div>
+                <div id='behind_the_scenes' class='row'>
+                    <div class='col-sm-12'>
+                        <div class='h2'>
+                            Behind the scenes
+                        </div>
+                        <p>
+                            So, we all like JSON, but what is really going on
+                            here? In order to appreciate the scope of GeoContext
+                            we
+                            shall consider a quick overview of how the calls are
+                            laid out.
+                        </p>
+                        <h4>There are 3 hierarchical levels:</h4>
+                        <ul>
+
+                            <li>
+                                Context Service Registry
+                            </li>
+                            <li>
+                                Context Service Group
+                            </li>
+                            <li>
+                                Context Service Collection
+                            </li>
+                        </ul>
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col-8"><img style="width:100%;
+                        height:auto;"
+                           src="{% static 'img/getting_started_hierarchy.png' %}">
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                        <br>
+                        <p>
+                            Hence, the context service registries are each
+                            separate
+                            calls that get bundled into a neat package for use.
+                            Exactly
+                            what that bundle looks like and where it gets its
+                            data
+                            is up to you - This is specified in the database.
+                        </p>
+                    </div>
+                </div>
+                <div id='basic_js_example' class='row'>
+                    <div class='col-sm-12'>
+                        <div class='h2'>
+                            Basic JavaScript example
+                        </div>
+                        <p>
+                            For clarity, lets have a look at what retrieving
+                            the data would like in a simple JavaScript example
+                        </p>
+                    </div>
+                </div>
+                <div id='loading_the_data' class='row'>
+                    <div class='col-sm-12'>
+                        <div class='h3'>
+                            Loading the data
+                        </div>
+                        <p>
+                            As a start lets look at how easily one is able to
+                            retrieve the necessary specified data.
+                        <ol>
+                            <li>Create a new file: "PickAName.HTML"
+                                anywhere on your computer.
+                            </li>
+                            <li>Create a simple new page with a button
+                                to return our data as follows:
+                            </li>
+
+
+                            <pre style="border-style: solid; border-width: 1px;
+                        border-color: lightgray;
+                        padding: 1rem; margin: 1rem; margin-left: 0;">
+                                <code>
+    &lt!DOCTYPE html&gt
+
+    &lthtml&gt
+    &ltbutton type="button" id="btn"&gtClick me!&lt/button&gt
+    &ltp class="text"&gtReplace me!&lt/p&gt
+
+    &ltscript src="https://code.jquery.com/jquery-2.1.1.min.js"&gt&lt/script&gt
+    &ltscript&gt
+        var my_data = '';
+        $('#btn').click(function () {
+            $('.text').text('loading . . .');
+            $.get(`https://geocontext.kartoza.com/api/v1/geocontext/value/
+                group/19.14/-32.32/rainfall_group/?format=json`,
+                function (data) {
+                    console.log(data);
+                    my_data = JSON.stringify(data, null, 2);
+                })
+                .done(function () {
+                    $('.text').text(my_data);
+                })
+                .fail(function () {
+                    console.log('Failed to retrieve data');
+                })
+                .always(function () {
+                    console.log('Request complete');
+                });
+        });
+    &lt/script&gt
+    &lt/html&gt
+                            </code>
+                        </pre>
+
+                            <li>Open your file with any modern browser,
+                                click the button, and if all goes well your
+                                monitor should be filled with some awesome
+                                JSON!
+                            </li>
+                        </ol>
+                        </p>
+
+                    </div>
+                </div>
+
+                <div id='adding_something_visual' class='row'>
+                    <div class='col-sm-12'>
+                        <div class='h3'>
+                            Adding Something Visual
+                        </div>
+                        <p>
+                            Still not impressed? Alright, lets extend the
+                            above example to show how easily (using a simple
+                            JS library called ChartJS) we can turn that
+                            sweet, sweet JSON into something more obviously
+                            useful - using some graphs!
+                        </p>
+                        <ol>
+                            <li>We import the ChartJS library (insert this
+                                bellow the line where we import JQuery):
+                            </li>
+                            <br>
+                            <pre style="border-style: solid; border-width: 1px;
+                        border-color: lightgray;
+                        padding: 1rem; margin: 1rem; margin-left: 0;
+                        padding-bottom: 0">
+                                <code>
+    &ltscript src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"&gt&lt/script&gt
+                                </code>
+                            </pre>
+                            <li>Add the function to draw our graph (just
+                                above the end of our script looks like a
+                                good spot):
+                            </li>
+                            <pre style="border-style: solid; border-width: 1px;
+                        border-color: lightgray;
+                        padding: 1rem; margin: 1rem; margin-left: 0;
+                        padding-bottom: 0">
+                                <code>
+    function drawGraph(data, labels, heading) {
+
+       var ctx = document.getElementById("myChart").getContext('2d');
+       var myChart = new Chart(ctx, {
+           type: 'line',
+           data: {
+               labels: labels,
+               datasets: [{
+                   label: heading,
+                   fill: false,
+                   data: data,
+                   spanGaps: true,
+                   backgroundColor: [
+                        'rgba(0, 100, 255, 0.2)',
+                   ],
+                   borderColor: [
+                        'rgba(0, 100, 255, 0.2)',
+                    ],
+                   borderWidth: 0.5
+               }]
+           },
+       });
+    }
+                                </code>
+                            </pre>
+                            <li>
+                                Finally, we need only declare our variables and
+                                call our "drawGraph" function when our data
+                                is done loading. Amend your above code up
+                                until the end of your click's done response
+                                as follows:
+                            </li>
+                            <pre style="border-style: solid; border-width: 1px;
+                        border-color: lightgray;
+                        padding: 1rem; margin: 1rem; margin-left: 0;
+                        padding-bottom: 0">
+                                <code>
+   var my_data = '';
+   var data_object = null;
+   var values = [];
+   var keys = [];
+   $('#btn').click(function () {
+       $('.text').text('loading . . .');
+
+       $.get(
+           'https://geocontext.kartoza.com/api/v1/geocontext/value/' +
+           'group/19.14/-32.32/rainfall_group/?format=json',
+           function (data) {
+               console.log(data);
+               my_data = JSON.stringify(data, null, 2);
+               data_object = data;
+           })
+           .done(function () {
+               $('.text').text(my_data);
+               $.each(data_object.service_registry_values, function (index) {
+                   values.push(this.value + 0);
+                   keys.push(this.key);
+               });
+               var data_heading = data_object.key;
+               drawGraph(values, keys, data_heading);
+
+           })
+                                </code>
+                            </pre>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock body_content %}
