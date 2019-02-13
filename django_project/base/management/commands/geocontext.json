@@ -89,6 +89,30 @@
             "service_version": "1.0.0"
         },
         {
+            "key": "eco_region",
+            "name": "Ecological Regions",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:ecoregion",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:eco_region_1",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "geo_class",
+            "name": "Geomorphological zones",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:geo_class",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:geoclass",
+            "service_version": "1.0.0"
+        },
+        {
             "key": "primary_catchment_area",
             "name": "Primary Catchment Area",
             "description": null,
@@ -3579,6 +3603,17 @@
                 "srtm_dem",
                  "altitude",
                  "altitude_dev"
+
+            ]
+        },
+        {
+            "key": "eco_geo_group",
+            "name": "Ecological group",
+            "description": "A collection of layers depicting ecology in South Africa",
+            "context_service_registry_keys": [
+                "eco_region",
+                 "geo_class"
+
 
             ]
         },
