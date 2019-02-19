@@ -94,10 +94,10 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:ecoregion",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
-            "srid": 4326,
-            "layer_typename": "kartoza:eco_region_1",
+            "srid": 3857,
+            "layer_typename": "kartoza:ecoregion_1",
             "service_version": "1.0.0"
         },
         {
@@ -106,7 +106,7 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:geo_class",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 4326,
             "layer_typename": "kartoza:geoclass",
