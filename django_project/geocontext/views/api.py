@@ -110,11 +110,13 @@ class RiverNameAPIView(views.APIView):
             raise Http404()
         try:
             conn = (
-                psycopg2.connect("dbname=%s user=%s host=%s password='%s' "
-                     "port=%s" % (
-                    db_name, db_user, db_host, db_pass, db_port))
+                psycopg2.connect(
+                    "dbname=%s user=%s host=%s password='%s' port=%s" % (
+                        db_name, db_user, db_host, db_pass, db_port
+                    )
+                )
             )
-        except psycopg2.OperationalError as e:
+        except psycopg2.OperationalError:
             raise Http404()
         cursor = conn.cursor()
         cursor.callproc('finder', [x, y])
