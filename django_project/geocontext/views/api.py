@@ -2,10 +2,12 @@
 """View definitions."""
 
 from distutils.util import strtobool
+import psycopg2
 
 from django.core.serializers import serialize
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
+from django.conf import settings
 
 from rest_framework import generics
 from rest_framework import views
@@ -93,6 +95,35 @@ class ContextCollectionValueAPIView(views.APIView):
         context_collection_value_serializer = ContextCollectionValueSerializer(
             context_collection_value)
         return Response(context_collection_value_serializer.data)
+
+
+class RiverNameAPIView(views.APIView):
+    """Retrieving river name based on a point (x, y)
+    """
+    def get(self, request, x, y):
+        db_name = settings.RIVER_DATABASE['NAME']
+        db_host = settings.RIVER_DATABASE['HOST']
+        db_user = settings.RIVER_DATABASE['USER']
+        db_pass = settings.RIVER_DATABASE['PASSWORD']
+        db_port = 5432
+        if not db_name or not db_host:
+            raise Http404()
+        try:
+            conn = (
+                psycopg2.connect("dbname=%s user=%s host=%s password='%s' "
+                     "port=%s" % (
+                    db_name, db_user, db_host, db_pass, db_port))
+            )
+        except psycopg2.OperationalError as e:
+            raise Http404()
+        cursor = conn.cursor()
+        cursor.callproc('finder', [x, y])
+        results = cursor.fetchone()
+        cursor.close()
+        if results:
+            return Response(results[0])
+        else:
+            raise Http404()
 
 
 def get_context(request):

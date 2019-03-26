@@ -20,9 +20,10 @@ AUTHENTICATION_BACKENDS = (
 
 # Django grappelli need to be added before django.contrib.admin
 INSTALLED_APPS = (
-    'raven.contrib.django.raven_compat',  # enable Raven plugin
-    'grappelli',
-) + INSTALLED_APPS
+                     'raven.contrib.django.raven_compat',
+                     # enable Raven plugin
+                     'grappelli',
+                 ) + INSTALLED_APPS
 
 # Grapelli settings
 GRAPPELLI_ADMIN_TITLE = 'GeoContext Admin Page'
@@ -73,3 +74,11 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 LOGIN_REDIRECT_URL = "/"
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+RIVER_DATABASE = {
+    'NAME': os.environ.get('RIVER_DATABASE_NAME'),
+    'USER': os.environ.get('RIVER_DATABASE_USER'),
+    'PASSWORD': os.environ.get('RIVER_DATABASE_PASSWORD'),
+    'HOST': os.environ.get('RIVER_DATABASE_HOST'),
+    'PORT': 5432,
+}
