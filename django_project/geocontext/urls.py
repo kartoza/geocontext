@@ -11,6 +11,7 @@ from geocontext.views.api import (
     ContextValueGeometryListAPI,
     ContextGroupValueAPIView,
     ContextCollectionValueAPIView,
+    RiverNameAPIView,
     get_context
 )
 
@@ -87,6 +88,13 @@ urlpatterns_api = [
               r'(?P<context_group_key>[\w\-,]+)/$',
         view=ContextGroupValueAPIView.as_view(),
         name='context-group-list-api'
+        ),
+    # Get river name
+    url(regex=r'^geocontext/river-name/'
+              r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
+              r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/$',
+        view=RiverNameAPIView.as_view(),
+        name='river-name-api'
         ),
 ]
 
