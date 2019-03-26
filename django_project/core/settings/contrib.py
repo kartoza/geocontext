@@ -55,6 +55,10 @@ DJANGO_EASY_AUDIT_WATCH_AUTH_EVENTS = True
 # Defines whether to log URL requests made to the project
 DJANGO_EASY_AUDIT_WATCH_REQUEST_EVENTS = True
 
+DJANGO_EASY_AUDIT_UNREGISTERED_CLASSES_EXTRA = (
+    'geocontext.ContextCache',
+)
+
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
         'SCOPE': ['user:email', 'public_repo', 'read:org']
