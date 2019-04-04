@@ -18,12 +18,20 @@ ADD REQUIREMENTS.txt /REQUIREMENTS.txt
 RUN pip install -r /REQUIREMENTS.txt
 RUN pip install uwsgi
 
-ADD uwsgi.conf /uwsgi.conf
+ARG BIMS_TAG=develop
+RUN git clone --depth=1 git://github.com/kartoza/geocontext.git --branch ${BIMS_TAG} /usr/src/geocontext
+
+#USER www-data
+WORKDIR /usr/src/geocontext
+
+RUN mkdir -p /home/web/media
+ADD entry-point.sh /usr/src/geocontext/entry-point.sh
+RUN chmod +x /usr/src/geocontext/entry-point.sh
+
+ADD uwsgi.conf /usr/src/geocontext/uwsgi.conf
 
 # Open port 8080 as we will be running our uwsgi socket on that
 EXPOSE 8080
 
-#USER www-data
-WORKDIR /home/web/django_project
-
-CMD ["uwsgi", "--ini", "/uwsgi.conf"]
+ENTRYPOINT ["/usr/src/geocontext/entry-point.sh"]
+CMD ["uwsgi", "--ini", "/usr/src/geocontext/uwsgi.conf"]
