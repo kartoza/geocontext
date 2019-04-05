@@ -97,7 +97,7 @@
             "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 3857,
-            "layer_typename": "kartoza:ecoregion_1",
+            "layer_typename": "kartoza:eco_region_1",
             "service_version": "1.0.0"
         },
         {
