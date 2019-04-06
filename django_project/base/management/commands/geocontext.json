@@ -3380,8 +3380,8 @@
         },
         {
             "key": "rainfall_group",
-            "name": "Rainfall Rasters",
-            "description": "A collection of rasters depicting monthly rainfall in South Africa",
+            "name": "Rainfall",
+            "description": "A collection of raster layers depicting monthly rainfall in South Africa",
             "context_service_registry_keys": [
                 "monthly_rainfall_january",
                 "monthly_rainfall_february",
@@ -3399,8 +3399,8 @@
         },
         {
             "key": "relative_humidity_group",
-            "name": "Relative humidity Rasters",
-            "description": "A collection of rasters depicting Daily minimum and maximum relative humidity  as relative humidity in South Africa",
+            "name": "Relative humidity",
+            "description": "A collection of raster layers depicting Daily minimum and maximum relative humidity  as relative humidity in South Africa",
             "context_service_registry_keys": [
                 "monthly_relative_humidity_january",
                 "monthly_relative_humidity_february",
@@ -3419,9 +3419,9 @@
         },
 
         {
-            "key": "actual_vapour_group",
-            "name": "Actual vapour  Rasters",
-            "description": "A collection of rasters depicting vapour  in South Africa",
+            "key": "actual_vapour_pressure_group",
+            "name": "Actual vapour pressure",
+            "description": "A collection of raster layers depicting vapour  in South Africa from January - December",
             "context_service_registry_keys": [
                 "monthly_actual_vapour_pressure_january",
                 "monthly_actual_vapour_pressure_february",
@@ -3440,7 +3440,7 @@
         },
         {
             "key": "monthly_mean_daily_maximum_temperature_group",
-            "name": "Monthly Means Of Daily Maximum Temperature (C)",
+            "name": "Monthly means of daily maximum temperature (C)",
             "description": "Monthly Means Of Daily Maximum Temperature (C) January - December",
             "context_service_registry_keys": [
                 "monthly_mean_daily_maximum_temperature_january",
@@ -3460,8 +3460,8 @@
 
         {
             "key": "monthly_mean_daily_average_temperature_group",
-            "name": "Monthly mean,maximum and standard deviation Rasters",
-            "description": "A collection of rasters depicting monthly mean temperature in South Africa",
+            "name": "Monthly mean daily average temperature (C)",
+            "description": "A collection of raster layers depicting monthly mean temperature in South Africa from January - December",
             "context_service_registry_keys": [
                 "monthly_mean_daily_average_temperature_january",
                 "monthly_mean_daily_average_temperature_february",
@@ -3481,7 +3481,7 @@
 
         {
             "key": "monthly_mean_daily_average_relative_humidity_group",
-            "name": "Monthly Means Of Daily Average Relative Humidity",
+            "name": "Monthly means of daily average relative humidity",
             "description": "A collection of rasters depicting monthly means Of Daily average relative humidity in South Africa",
             "context_service_registry_keys": [
                 "monthly_mean_daily_average_relative_humidity_january",
@@ -3499,8 +3499,8 @@
         },
         {
             "key": "monthly_standard_deviation_daily_maximum_temperature_group",
-            "name": "Standard Deviation (C) Of Daily Maximum Temperature ",
-            "description": "A collection of rasters depicting standard deviation of daily maximum temperature in South Africa",
+            "name": "Standard deviation (C) of daily maximum temperature ",
+            "description": "A collection of raster layers depicting standard deviation of daily maximum temperature in South Africa",
             "context_service_registry_keys": [
                 "monthly_standard_deviation_daily_maximum_temperature_january",
                 "monthly_standard_deviation_daily_maximum_temperature_february",
@@ -3518,8 +3518,8 @@
         },
         {
             "key": "monthly_standard_deviation_daily_maximum_relative_humidity_group",
-            "name": "Monthly mean,maximum and standard deviation Rasters",
-            "description": "A collection of rasters depicting monthly mean temperature in South Africa",
+            "name": "Monthly standard deviation of maximum relative humidity",
+            "description": "A collection of raster layers depicting monthly standard deviation of maximum relative humidity in South Africa",
             "context_service_registry_keys": [
                 "monthly_standard_deviation_daily_max_relative_humidity_january",
                 "monthly_standard_deviation_daily_max_relative_humidity_february",
@@ -3537,8 +3537,8 @@
         },
         {
             "key": "monthly_standard_deviation_of_daily_mean_temperature_group",
-            "name": "Standard Deviations (C) Of Daily Mean Temperature ",
-            "description": "A collection of rasters depicting standard deviations (C) Of daily mean temperature in South Africa",
+            "name": "Standard deviations (C) of daily mean temperature ",
+            "description": "A collection of raster layers depicting standard deviations (C) Of daily mean temperature in South Africa",
             "context_service_registry_keys": [
                 "monthly_standard_deviation_of_daily_mean_temperature_january",
                 "monthly_standard_deviation_of_daily_mean_temperature_february",
@@ -3556,8 +3556,8 @@
         },
         {
             "key": "monthly_means_of_daily_minimum_temperature_group",
-            "name": "Monthly Means Of Daily Minimum Temperature ",
-            "description": "A collection of rasters depicting monthly means of daily minimum temperature in South Africa",
+            "name": "Monthly means of daily minimum temperature ",
+            "description": "A collection of raster layers depicting monthly means of daily minimum temperature in South Africa",
             "context_service_registry_keys": [
                 "monthly_means_of_daily_minimum_temperature_january",
                 "monthly_means_of_daily_minimum_temperature_february",
@@ -3575,8 +3575,8 @@
         },
         {
             "key": "monthly_standard_deviation_of_daily_minimum_temperature_group",
-            "name": "Standard Deviation (C) Of Daily Minimum Temperature",
-            "description": "A collection of rasters depicting standard deviation of daily minimum temperature  in South Africa",
+            "name": "Standard deviation (C) of daily minimum temperature",
+            "description": "A collection of raster layers depicting standard deviation of daily minimum temperature  in South Africa",
             "context_service_registry_keys": [
                 "monthly_standard_deviation_of_daily_minimum_temperature_january",
                 "monthly_standard_deviation_of_daily_minimum_temperature_february",
@@ -3650,8 +3650,8 @@
         ,
         {
             "key": "bioclimatic_variables_group",
-            "name": "bioclimatic layers",
-            "description": "Layers that depict bioclimatic variables",
+            "name": "Bioclimatic layers",
+            "description": "Layers that depict bioclimatic variables from world climate",
             "context_service_registry_keys": [
                 "yearly_bioclimatic_variables_01",
                 "yearly_bioclimatic_variables_02",
@@ -3679,8 +3679,8 @@
         ,
         {
             "key": "monthly_precipitation_group",
-            "name": "monthly precipitation layers",
-            "description": "Layers that depict monthly precipitation from world climate ",
+            "name": "Monthly precipitation",
+            "description": "Raster layers that depict monthly precipitation from world climate ",
             "context_service_registry_keys": [
                 "monthly_precipitation_january",
                 "monthly_precipitation_february",
@@ -3701,8 +3701,8 @@
 
         {
             "key": "monthly_wind_speed_group",
-            "name": "monthly wind speed layers",
-            "description": "Layers that depict monthly wind speed from world climate ",
+            "name": "Monthly wind speed layers",
+            "description": "Raster layers that depict monthly wind speed from world climate ",
             "context_service_registry_keys": [
                 "monthly_wind_speed_january",
                 "monthly_wind_speed_february",
@@ -3724,8 +3724,8 @@
 
         {
             "key": "monthly_water_vapor_pressure_group",
-            "name": "monthly water vapor pressure  layers",
-            "description": "Layers that depict monthly water vapor pressure from world climate ",
+            "name": "Monthly water vapor pressure  layers",
+            "description": "Raster layers that depict monthly water vapor pressure from world climate ",
             "context_service_registry_keys": [
                 "monthly_water_vapor_pressure_january",
                 "monthly_water_vapor_pressure_february",
@@ -3748,8 +3748,8 @@
 
         {
             "key": "monthly_min_temperature_group",
-            "name": "monthly minimum temperature  layers",
-            "description": "Layers that depict monthly minimum temperatures from world climate ",
+            "name": "Monthly minimum temperature",
+            "description": "Raster layers that depict monthly minimum temperatures from world climate ",
             "context_service_registry_keys": [
                 "monthly_min_temperature_january",
                 "monthly_min_temperature_february",
@@ -3772,8 +3772,8 @@
 
         {
             "key": "monthly_max_temperature_group",
-            "name": "monthly maximum temperature  layers",
-            "description": "Layers that depict monthly minimum temperatures from world climate ",
+            "name": "Monthly maximum temperature",
+            "description": "Raster layers that depict monthly minimum temperatures from world climate ",
             "context_service_registry_keys": [
                 "monthly_max_temperature_january",
                 "monthly_max_temperature_february",
@@ -3796,8 +3796,8 @@
 
         {
             "key": "monthly_average_temperature_group",
-            "name": "monthly average temperature  layers",
-            "description": "Layers that depict monthly average temperatures from world climate ",
+            "name": "Monthly average temperature",
+            "description": "Raster layers that depict monthly average temperatures from world climate ",
             "context_service_registry_keys": [
                 "monthly_average_temperature_january",
                 "monthly_average_temperature_february",
@@ -3819,8 +3819,8 @@
 
         {
             "key": "monthly_solar_radiation_group",
-            "name": "monthly solar radiation  layers",
-            "description": "Layers that depict monthly solar radiation from world climate ",
+            "name": "Monthly solar radiation",
+            "description": "Raster layers that depict monthly solar radiation from world climate ",
             "context_service_registry_keys": [
                 "monthly_solar_radiation_january",
                 "monthly_solar_radiation_february",
