@@ -113,6 +113,91 @@
             "service_version": "1.0.0"
         },
         {
+            "key": "geo_class_recoded",
+            "name": "Geomorphological zones - recoded",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:river_geoclass",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "feow_hydrosheds",
+            "name": "Freshwater Ecoregion of the World",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:feow_id",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:river_geoclass",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "national_cba",
+            "name": "National Critical Biodiversity",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:national_cba",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "ground_swsas",
+            "name": "Strategic Water Source Areas - Ground",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:ground_strategic_water_source_2017",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "surface_swsas",
+            "name": "Strategic Water Source Areas - Surface",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:surface_strategic_water_source_2017",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "nfepa_wetlands_vegetation",
+            "name": "NFEPA Wetlands Vegetation",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:nfepa_wetlands_vegetation",
+            "service_version": "1.0.0"
+        },
+
+        {
+            "key": "nfepa_sanct_all",
+            "name": "NFEPA Fish Sanctuaries All Species",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:nofissanc",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:nfepa_fish_sanctuaries_all_species",
+            "service_version": "1.0.0"
+        },
+        {
             "key": "primary_catchment_area",
             "name": "Primary Catchment Area",
             "description": null,
@@ -299,10 +384,10 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:majwetveg",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:wetland_clusters",
+            "layer_typename": "kartoza:nfepa_wetland_cluster",
             "service_version": "1.0.0"
         },
         {
@@ -3363,7 +3448,9 @@
                 "rehabilitated_wetlands",
                 "dams500g",
                 "rivers500k",
-                "nfepa_rivers"
+                "nfepa_rivers",
+                "nfepa_wetlands_vegetation",
+                "nfepa_sanct_all"
             ]
         },
         {
@@ -3612,9 +3699,12 @@
             "description": "A collection of layers depicting ecology in South Africa",
             "context_service_registry_keys": [
                 "eco_region",
-                 "geo_class"
-
-
+                 "geo_class",
+                 "geo_class_recoded",
+                 "feow_hydrosheds",
+                 "national_cba",
+                 "ground_swsas",
+                 "surface_swsas"
             ]
         },
         {
