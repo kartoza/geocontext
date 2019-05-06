@@ -89,8 +89,8 @@
             "service_version": "1.0.0"
         },
         {
-            "key": "eco_region",
-            "name": "Ecological Regions",
+            "key": "eco_region_1",
+            "name": "Ecological Region 1",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -98,6 +98,18 @@
             "time_to_live": 604800,
             "srid": 3857,
             "layer_typename": "kartoza:eco_region_1",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "eco_region_2",
+            "name": "Ecological Region 2",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:eco_region_2",
             "service_version": "1.0.0"
         },
         {
@@ -239,7 +251,7 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "kartoza:names",
+            "result_regex": "kartoza:name",
             "time_to_live": 604800,
             "srid": 3857,
             "layer_typename": "kartoza:tertiary_catchment_area",
@@ -282,6 +294,18 @@
             "service_version": "1.0.0"
         },
         {
+            "key": "ngi50k_rivers",
+            "name": "NGI 50k rivers",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:hydr_lines_exp",
+            "service_version": "1.0.0"
+        },
+        {
             "key": "erf",
             "name": "Erven Boundaries",
             "description": null,
@@ -299,7 +323,7 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:district",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 3857,
             "layer_typename": "kartoza:district_municipalities",
@@ -311,7 +335,7 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:municname",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 3857,
             "layer_typename": "kartoza:local_municipalities",
@@ -324,7 +348,7 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:wardno",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 3857,
             "layer_typename": "kartoza:wards",
@@ -336,7 +360,7 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:sp_name",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 4326,
             "layer_typename": "kartoza:sub_places",
@@ -367,7 +391,7 @@
             "service_version": "1.0.0"
         },
         {
-            "key": "nfepa_wetlands",
+            "key": "nfepa_wetlands_2011",
             "name": "NFEPA Wetlands 2011",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
@@ -391,7 +415,7 @@
             "service_version": "1.0.0"
         },
         {
-            "key": "wetlandcluster",
+            "key": "nfepa_wetlandcluster_2011",
             "name": "NFEPA wetland clusters 2011",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
@@ -3459,6 +3483,48 @@
           ]
         },
         {
+          "key": "national_freshwater_ecosystem_priority_area",
+          "name": "National Freshwater Ecosystem Priority Area (NFEPA)",
+          "description": "Layers that depict national freshwater priority Areas",
+          "context_service_registry_keys": [
+             "nfepa_rivers_2011",
+              "nfepa_rivers_fepas_2011",
+              "nfepa_wetlands_vegetation",
+              "nfepa_fish_sanctuaries_all_species",
+              "nfepa_fish_sanctuaries_2011",
+              "nfepa_wetlands_2011",
+              "nfepa_wetlandcluster_2011"
+          ]
+        },
+        {
+          "key": "strategic_water_source_areas",
+          "name": "Strategic Water Source Areas (WSA)",
+          "description": "Layers that depict water source areas",
+          "context_service_registry_keys": [
+             "surface_swsas",
+              "ground_swsas"
+
+
+          ]
+        },
+
+        {
+          "key": "water_management_area",
+          "name": "Water Management Area",
+          "description": "Layers that depict water management areas",
+          "context_service_registry_keys": [
+             "water_management_area"
+          ]
+        },
+        {
+          "key": "freshwater_ecoregion_of_the_world",
+          "name": "Freshwater Ecoregion of the World",
+          "description": "Layers that depict fresh water rivers",
+          "context_service_registry_keys": [
+             "feow_hydrosheds"
+          ]
+        },
+        {
             "key": "water_group",
             "name": "River Catchments",
             "description": "Layers that relate to freshwater,estuarine and maritime ecosystems",
@@ -3468,7 +3534,7 @@
                 "secondary_catchment_area",
                 "tertiary_catchment_area",
                 "quaternary_catchment_area",
-                "nfepa_wetlands",
+                "nfepa_wetlands_2011",
                 "rehabilitated_wetlands",
                 "dams500g",
                 "rivers500k",
@@ -3724,7 +3790,8 @@
             "name": "Ecological group",
             "description": "A collection of layers depicting ecology in South Africa",
             "context_service_registry_keys": [
-                "eco_region",
+                "eco_region_1",
+                "eco_region_2",
                  "geo_class",
                  "geo_class_recoded",
                  "feow_hydrosheds",
@@ -3932,6 +3999,58 @@
             ]
         }
         ,
+        {
+            "key": "river_catchment_areas_group",
+            "name": "River Catchments in South Africa",
+            "description": "Layer that depicts the various categories of river catchments in South Africa",
+            "context_service_registry_keys": [
+               "primary_catchment_area",
+                "secondary_catchment_area",
+                "tertiary_catchment_area",
+                "quaternary_catchment_area"
+
+            ]
+        },
+        {
+            "key": "river_ecoregion_group",
+            "name": "River ecoregions in South Africa",
+            "description": "Layer that depicts the various ecoregion categories  in South Africa",
+            "context_service_registry_keys": [
+               "eco_region_1",
+                "eco_region_2"
+
+
+            ]
+        },
+        {
+            "key": "geomorphological_group",
+            "name": "Geomorphological zone",
+            "description": "Layer that depicts geomorphological zones  in South Africa",
+            "context_service_registry_keys": [
+               "geo_class"
+
+            ]
+        },
+        {
+            "key": "river_group",
+            "name": "Rivers in South Africa",
+            "description": "Layer that depicts various rivers in South Africa according to scale and source",
+            "context_service_registry_keys": [
+               "rivers500k",
+                "ngi50k_rivers"
+
+            ]
+        },
+        {
+            "key": "critical_biodiversity_area",
+            "name": "Critical Biodiversity area (CBA)",
+            "description": "Layer that depicts various rivers in South Africa according to scale and source",
+            "context_service_registry_keys": [
+               "national_cba"
+
+
+            ]
+        },
 
         {
             "key": "monthly_solar_radiation_group",
@@ -3963,6 +4082,23 @@
             "context_group_keys": [
                 "political_boundary_group",
                 "cadastre_group"
+            ]
+        },
+        {
+            "key": "healthy_rivers_spatial",
+            "name": "Healthy Rivers Spatial Filters",
+            "description": "Collection of layers used for spatial filters",
+            "context_group_keys": [
+                "river_group",
+                "geomorphological_group",
+                "freshwater_ecoregion_of_the_world",
+                "political_boundary_group",
+                "water_management_area",
+                "river_catchment_areas_group",
+                "river_ecoregion_group",
+                "critical_biodiversity_area",
+                "national_freshwater_ecosystem_priority_area",
+                "strategic_water_source_areas"
             ]
         },
         {
