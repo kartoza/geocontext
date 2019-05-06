@@ -186,15 +186,27 @@
         },
 
         {
-            "key": "nfepa_sanct_all",
+            "key": "nfepa_fish_sanctuaries_all_species",
             "name": "NFEPA Fish Sanctuaries All Species",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:nofissanc",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:nfepa_fish_sanctuaries_all_species",
+            "layer_typename": "kartoza:nfepa_fishsanctuaries_all_species",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "nfepa_fish_sanctuaries_2011",
+            "name": "NFEPA Fish Sanctuaries All Species",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:fish_sanctuaries",
             "service_version": "1.0.0"
         },
         {
@@ -242,7 +254,7 @@
             "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 3857,
-            "layer_typename": "kartoza:Quaternary-catchments",
+            "layer_typename": "kartoza:quaternary_catchment",
             "service_version": "1.0.0"
         },
         {
@@ -372,7 +384,7 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "kartoza:name",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 4326,
             "layer_typename": "kartoza:rehabilitated_wetlands",
@@ -396,7 +408,7 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:label",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 4326,
             "layer_typename": "kartoza:dams500g",
@@ -408,22 +420,34 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:reachcode",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
-            "srid": 4222,
-            "layer_typename": "kartoza:rivers_500k",
+            "srid": 3857,
+            "layer_typename": "kartoza:dwa_500k_rivers",
             "service_version": "1.0.0"
         },
         {
-            "key": "nfepa_rivers",
+            "key": "nfepa_rivers_2011",
             "name": "NFEPA Rivers 2011",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:fepacode",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:rivers-nfepa",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "nfepa_rivers_fepas_2011",
+            "name": "NFEPA river FEPAs 2011",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:rivers-nfepa",
+            "layer_typename": "kartoza:rivers_nfepa",
             "service_version": "1.0.0"
         },
 
@@ -3448,9 +3472,11 @@
                 "rehabilitated_wetlands",
                 "dams500g",
                 "rivers500k",
-                "nfepa_rivers",
+                "nfepa_rivers_2011",
+                "nfepa_rivers_fepas_2011",
                 "nfepa_wetlands_vegetation",
-                "nfepa_sanct_all"
+                "nfepa_fish_sanctuaries_all_species",
+                "nfepa_fish_sanctuaries_2011"
             ]
         },
         {
