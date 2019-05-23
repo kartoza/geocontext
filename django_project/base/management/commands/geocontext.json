@@ -126,7 +126,7 @@
         },
         {
             "key": "geo_class_recoded",
-            "name": "Geomorphological zones - recoded",
+            "name": "Geomorphological zones",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -142,22 +142,58 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:feow_id",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 4326,
             "layer_typename": "kartoza:freshwater_ecoregions_of_the_world",
             "service_version": "1.0.0"
         },
         {
-            "key": "national_cba",
-            "name": "National Critical Biodiversity",
-            "description": null,
+            "key": "wc_cape_biodiversity_spatial_plan",
+            "name": "Protected Areas",
+            "description": "Map of biodiversity covering both terrestrial and freshwater reals , as well as major coastal and easturine habitats within Western Cape",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:national_cba",
+            "layer_typename": "kartoza:bsp_pa_2017",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "national_protected_area",
+            "name": "National Protected Area",
+            "description": "",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:national_protected_areas",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "national_cba_layer",
+            "name": "National Critical Biodiversity",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "kartoza:source",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:cba_national",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "national_esa",
+            "name": "National Ecological Support Areas",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "kartoza:category",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:ecological_support_areas",
             "service_version": "1.0.0"
         },
         {
@@ -270,6 +306,18 @@
             "service_version": "1.0.0"
         },
         {
+            "key": "quinary_catchment_area",
+            "name": "Quinary Catchment Area",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:flow_water_types",
+            "service_version": "1.0.0"
+        },
+        {
             "key": "sa_provinces",
              "name": "South Africa Provinces",
              "description": null,
@@ -364,6 +412,18 @@
             "time_to_live": 604800,
             "srid": 4326,
             "layer_typename": "kartoza:sub_places",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "sub_wmas",
+            "name": "Sub Water Management Areas",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:sub_wmas",
             "service_version": "1.0.0"
         },
         {
@@ -3513,7 +3573,8 @@
           "name": "Water Management Area",
           "description": "Layers that depict water management areas",
           "context_service_registry_keys": [
-             "water_management_area"
+             "water_management_area",
+              "sub_wmas"
           ]
         },
         {
@@ -3795,7 +3856,7 @@
                  "geo_class",
                  "geo_class_recoded",
                  "feow_hydrosheds",
-                 "national_cba",
+                 "national_cba_layer",
                  "ground_swsas",
                  "surface_swsas"
             ]
@@ -4007,7 +4068,8 @@
                "primary_catchment_area",
                 "secondary_catchment_area",
                 "tertiary_catchment_area",
-                "quaternary_catchment_area"
+                "quaternary_catchment_area",
+                "quinary_catchment_area"
 
             ]
         },
@@ -4042,13 +4104,34 @@
             ]
         },
         {
-            "key": "critical_biodiversity_area",
-            "name": "Critical Biodiversity area (CBA)",
+            "key": "national_cba",
+            "name": "Critical Biodiversity area (CBA) for the whole country (SA)",
+            "description": "Layer that depicts amalgamated CBA for the country",
+            "context_service_registry_keys": [
+
+                "national_esa",
+                "national_cba_layer"
+
+            ]
+        },
+        {
+            "key": "provincial_cba",
+            "name": "Critical Biodiversity area (CBA) for the whole country (SA)",
+            "description": "Layer that depicts national CBA",
+            "context_service_registry_keys": [
+                "wc_cape_biodiversity_spatial_plan"
+
+
+            ]
+        },
+
+
+        {
+            "key": "national_protected_areas_group",
+            "name": "National protected areas layer",
             "description": "Layer that depicts various rivers in South Africa according to scale and source",
             "context_service_registry_keys": [
-               "national_cba"
-
-
+               "national_protected_areas"
             ]
         },
 
