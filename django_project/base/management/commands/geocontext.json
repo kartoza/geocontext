@@ -161,6 +161,114 @@
             "service_version": "1.0.0"
         },
         {
+            "key": "limpopo_cba",
+            "name": "Limpopo Critical Biodiversity plan",
+            "description": "",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 32735,
+            "layer_typename": "kartoza:limpopo_cba_mview",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "free_state_cba",
+            "name": "Free State Critical Biodiversity plan",
+            "description": "",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 32735,
+            "layer_typename": "kartoza:free_state_cba_mview",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "gauteng_cba",
+            "name": "Gauteng Critical Biodiversity plan",
+            "description": "",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:gauteng_cba_mview",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "mpumalanga_cba",
+            "name": "Gauteng Critical Biodiversity plan",
+            "description": "",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:mpumalanga_cba_mview",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "northern_cape_cba",
+            "name": "Northern Cape Critical Biodiversity plan",
+            "description": "",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 32734,
+            "layer_typename": "kartoza:northern_cape_cba_mview",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "north_west_cba",
+            "name": "North West  Critical Biodiversity plan",
+            "description": "",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 32735,
+            "layer_typename": "kartoza:nw_cba_mview",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "kzn_cba",
+            "name": "North West  Critical Biodiversity plan",
+            "description": "",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "kartoza:kzn_cba_mview",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "ec_cba",
+            "name": "Eastern Cape  Critical Biodiversity plan",
+            "description": "",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 4148,
+            "layer_typename": "kartoza:ec_cba2",
+            "service_version": "1.0.0"
+        },
+        {
+            "key": "wc_cba",
+            "name": "Eastern Cape  Critical Biodiversity plan",
+            "description": "",
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:name",
+            "time_to_live": 604800,
+            "srid": 32734,
+            "layer_typename": "kartoza:wc_cba_mview",
+            "service_version": "1.0.0"
+        },
+        {
             "key": "national_protected_area",
             "name": "National Protected Area",
             "description": "",
@@ -178,10 +286,10 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "kartoza:source",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 4326,
-            "layer_typename": "kartoza:cba_national",
+            "layer_typename": "kartoza:cba_national_mview",
             "service_version": "1.0.0"
         },
         {
@@ -190,10 +298,10 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "kartoza:category",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
-            "srid": 4326,
-            "layer_typename": "kartoza:ecological_support_areas",
+            "srid": 32734,
+            "layer_typename": "kartoza:ecological_support_areas_mview",
             "service_version": "1.0.0"
         },
         {
@@ -4119,7 +4227,16 @@
             "name": "Critical Biodiversity area (CBA) for the whole country (SA)",
             "description": "Layer that depicts national CBA",
             "context_service_registry_keys": [
-                "wc_cape_biodiversity_spatial_plan"
+                "wc_cape_biodiversity_spatial_plan",
+                "limpopo_cba",
+                "free_state_cba",
+                "gauteng_cba",
+                "mpumalanga_cba",
+                "northern_cape_cba",
+                "north_west_cba",
+                "kzn_cba",
+                "ec_cba",
+                "wc_cba"
 
 
             ]
