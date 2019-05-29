@@ -198,7 +198,7 @@
         },
         {
             "key": "mpumalanga_cba",
-            "name": "Gauteng Critical Biodiversity plan",
+            "name": "Mpumalanga Critical Biodiversity plan",
             "description": "",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -234,7 +234,7 @@
         },
         {
             "key": "kzn_cba",
-            "name": "North West  Critical Biodiversity plan",
+            "name": "Kwazulu Natal Critical Biodiversity plan",
             "description": "",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -258,7 +258,7 @@
         },
         {
             "key": "wc_cba",
-            "name": "Eastern Cape  Critical Biodiversity plan",
+            "name": "Western Cape Critical Biodiversity plan",
             "description": "",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -355,7 +355,7 @@
         },
         {
             "key": "nfepa_fish_sanctuaries_2011",
-            "name": "NFEPA Fish Sanctuaries All Species",
+            "name": "NFEPA Fish Sanctuaries 2011",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -395,7 +395,7 @@
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "kartoza:name",
+            "result_regex": "gml:name",
             "time_to_live": 604800,
             "srid": 3857,
             "layer_typename": "kartoza:tertiary_catchment_area",
@@ -584,7 +584,7 @@
         },
         {
             "key": "nfepa_wetlandcluster_2011",
-            "name": "NFEPA wetland clusters 2011",
+            "name": "NFEPA Wetland Clusters 2011",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -608,7 +608,7 @@
         },
         {
             "key": "rivers500k",
-            "name": "Rivers of south africa",
+            "name": "Rivers of South Africa",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -632,7 +632,7 @@
         },
         {
             "key": "nfepa_rivers_fepas_2011",
-            "name": "NFEPA river FEPAs 2011",
+            "name": "NFEPA River FEPAs 2011",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -642,7 +642,18 @@
             "layer_typename": "kartoza:rivers_nfepa",
             "service_version": "1.0.0"
         },
-
+        {
+            "key": "sa_lada_land_use",
+            "name": "South Africa Landuse",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wfs",
+            "query_type": "WFS",
+            "result_regex": "gml:landuse",
+            "time_to_live": 604800,
+            "srid": 3857,
+            "layer_typename": "kartoza:lada_land_use",
+            "service_version": "1.3.0"
+        },
 
         {
             "key": "mean_annual_temperature",
@@ -672,7 +683,7 @@
 
         {
             "key": "monthly_rainfall_february",
-            "name": "Monthly Rainfall and its Inter-Annual Variability (February)",
+            "name": "Monthly Rainfall and it's Inter-Annual Variability (February)",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -684,7 +695,7 @@
         },
         {
             "key": "monthly_rainfall_march",
-            "name": "Monthly Rainfall and its Inter-Annual Variability (March)",
+            "name": "Monthly Rainfall and it's Inter-Annual Variability (March)",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -696,7 +707,7 @@
         },
         {
             "key": "monthly_rainfall_april",
-            "name": "Monthly Rainfall and its Inter-Annual Variability (April)",
+            "name": "Monthly Rainfall and it's Inter-Annual Variability (April)",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -708,7 +719,7 @@
         },
         {
             "key": "monthly_rainfall_may",
-            "name": "Monthly Rainfall and its Inter-Annual Variability (May)",
+            "name": "Monthly Rainfall and it's Inter-Annual Variability (May)",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -720,7 +731,7 @@
         },
         {
             "key": "monthly_rainfall_june",
-            "name": "Monthly Rainfall and its Inter-Annual Variability (June)",
+            "name": "Monthly Rainfall and it's Inter-Annual Variability (June)",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -732,7 +743,7 @@
         },
         {
             "key": "monthly_rainfall_july",
-             "name": "Monthly Rainfall and its Inter-Annual Variability (July)",
+             "name": "Monthly Rainfall and it's Inter-Annual Variability (July)",
              "description": null,
              "url": "https://maps.kartoza.com/geoserver/wms",
              "query_type": "WMS",
@@ -744,7 +755,7 @@
         },
         {
             "key": "monthly_rainfall_august",
-            "name": "Monthly Rainfall and its Inter-Annual Variability (August)",
+            "name": "Monthly Rainfall and it's Inter-Annual Variability (August)",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -756,7 +767,7 @@
         },
         {
             "key": "monthly_rainfall_september",
-            "name": "Monthly Rainfall and its Inter-Annual Variability (September)",
+            "name": "Monthly Rainfall and it's Inter-Annual Variability (September)",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -768,7 +779,7 @@
         },
         {
             "key": "monthly_rainfall_october",
-            "name": "Monthly Rainfall and its Inter-Annual Variability (October)",
+            "name": "Monthly Rainfall and it's Inter-Annual Variability (October)",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -780,7 +791,7 @@
         },
         {
             "key": "monthly_rainfall_november",
-            "name": "Monthly Rainfall and its Inter-Annual Variability (November)",
+            "name": "Monthly Rainfall and it's Inter-Annual Variability (November)",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -792,7 +803,7 @@
         },
         {
             "key": "monthly_rainfall_december",
-            "name": "Monthly Rainfall and its Inter-Annual Variability (December)",
+            "name": "Monthly Rainfall and it's Inter-Annual Variability (December)",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1240,7 +1251,7 @@
         ,
         {
             "key": "monthly_actual_vapour_pressure_january",
-            "name": "Actual vapour Pressure January",
+            "name": "Actual Vapour Pressure January",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1252,7 +1263,7 @@
         },
         {
             "key": "monthly_actual_vapour_pressure_february",
-            "name": "Actual vapour Pressure February",
+            "name": "Actual Vapour Pressure February",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1264,7 +1275,7 @@
         },
         {
             "key": "monthly_actual_vapour_pressure_march",
-            "name": "Actual vapour Pressure March",
+            "name": "Actual Vapour Pressure March",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1276,7 +1287,7 @@
         },
         {
             "key": "monthly_actual_vapour_pressure_april",
-            "name": "Actual vapour Pressure April",
+            "name": "Actual Vapour Pressure April",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1288,7 +1299,7 @@
         },
         {
             "key": "monthly_actual_vapour_pressure_may",
-            "name": "Actual vapour Pressure May",
+            "name": "Actual Vapour Pressure May",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1300,7 +1311,7 @@
         },
         {
             "key": "monthly_actual_vapour_pressure_june",
-            "name": "Actual vapour Pressure June",
+            "name": "Actual Vapour Pressure June",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1312,7 +1323,7 @@
         },
         {
             "key": "monthly_actual_vapour_pressure_july",
-            "name": "Actual vapour Pressure July",
+            "name": "Actual Vapour Pressure July",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1324,7 +1335,7 @@
         },
         {
             "key": "monthly_actual_vapour_pressure_august",
-            "name": "Actual vapour Pressure August",
+            "name": "Actual Vapour Pressure August",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1336,7 +1347,7 @@
         },
         {
             "key": "monthly_actual_vapour_pressure_september",
-            "name": "Actual vapour Pressure September",
+            "name": "Actual Vapour Pressure September",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1348,7 +1359,7 @@
         },
         {
             "key": "monthly_actual_vapour_pressure_october",
-            "name": "Actual vapour Pressure October",
+            "name": "Actual Vapour Pressure October",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1360,7 +1371,7 @@
         },
         {
             "key": "monthly_actual_vapour_pressure_november",
-            "name": "Actual vapour Pressure November",
+            "name": "Actual Vapour Pressure November",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1373,7 +1384,7 @@
         ,
         {
             "key": "monthly_actual_vapour_pressure_december",
-            "name": "Actual vapour Pressure December",
+            "name": "Actual Vapour Pressure December",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1398,7 +1409,7 @@
       ,
         {
             "key": "altitude",
-            "name": "DEM altitude of South Africa",
+            "name": "DEM Altitude of South Africa",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1411,7 +1422,7 @@
         ,
         {
             "key": "altitude_dev",
-            "name": "DEM altitude dev of South Africa",
+            "name": "DEM Altitude dev of South Africa",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -1735,18 +1746,7 @@
             "layer_typename": "kartoza:national-Land-Cover-72-classes",
             "service_version": "1.3.0"
         },
-        {
-            "key": "sa_lada_land_use",
-            "name": "South Africa Landuse",
-            "description": null,
-            "url": "https://maps.kartoza.com/geoserver/wfs",
-            "query_type": "WFS",
-            "result_regex": "gml:landuse",
-            "time_to_live": 604800,
-            "srid": 3857,
-            "layer_typename": "kartoza:lada_land_use",
-            "service_version": "1.3.0"
-        },
+
       {
             "key": "monthly_mean_daily_average_relative_humidity_january",
             "name": "Monthly Means Of Daily Average Relative Humidity (%) January",
@@ -2374,7 +2374,7 @@
 
       {
             "key": "yearly_bioclimatic_variables_01",
-            "name": "bioclimatic_variables_01",
+            "name": "Bioclimatic Variables 01",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2386,7 +2386,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_02",
-            "name": "bioclimatic_variables_02",
+            "name": "Bioclimatic Variables02",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2398,7 +2398,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_03",
-            "name": "bioclimatic_variables_03",
+            "name": "Bioclimatic Variables 03",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2410,7 +2410,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_04",
-            "name": "bioclimatic_variables_04",
+            "name": "Bioclimatic Variables 04",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2422,7 +2422,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_05",
-            "name": "bioclimatic_variables_05",
+            "name": "Bioclimatic Variables 05",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2434,7 +2434,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_06",
-            "name": "bioclimatic_variables_06",
+            "name": "Bioclimatic Variables 06",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2446,7 +2446,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_07",
-            "name": "bioclimatic_variables_07",
+            "name": "Bioclimatic Variables 07",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2458,7 +2458,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_08",
-            "name": "bioclimatic_variables_08",
+            "name": "Bioclimatic Variables 08",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2470,7 +2470,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_09",
-            "name": "bioclimatic_variables_09",
+            "name": "Bioclimatic Variables 09",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2482,7 +2482,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_10",
-            "name": "bioclimatic_variables_10",
+            "name": "Bioclimatic Variables 10",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2494,7 +2494,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_11",
-            "name": "bioclimatic_variables_11",
+            "name": "Bioclimatic Variables 11",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2506,7 +2506,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_12",
-            "name": "bioclimatic_variables_12",
+            "name": "Bioclimatic Variables 12",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2518,7 +2518,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_13",
-            "name": "bioclimatic_variables_13",
+            "name": "Bioclimatic Variables 13",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2530,7 +2530,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_14",
-            "name": "bioclimatic_variables_14",
+            "name": "Bioclimatic Variables 14",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2542,7 +2542,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_15",
-            "name": "bioclimatic_variables_15",
+            "name": "Bioclimatic Variables 15",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2554,7 +2554,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_16",
-            "name": "bioclimatic_variables_16",
+            "name": "Bioclimatic Variables 16",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2566,7 +2566,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_17",
-            "name": "bioclimatic_variables_17",
+            "name": "Bioclimatic Variables 17",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2578,7 +2578,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_18",
-            "name": "bioclimatic_variables_18",
+            "name": "Bioclimatic Variables 18",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -2590,7 +2590,7 @@
         },
         {
             "key": "yearly_bioclimatic_variables_19",
-            "name": "bioclimatic_variables_19",
+            "name": "Bioclimatic Variables 19",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wms",
             "query_type": "WMS",
@@ -3768,7 +3768,7 @@
 
         {
             "key": "actual_vapour_pressure_group",
-            "name": "Actual vapour pressure",
+            "name": "Actual Vapour pressure",
             "description": "A collection of raster layers depicting vapour  in South Africa from January - December",
             "context_service_registry_keys": [
                 "monthly_actual_vapour_pressure_january",
@@ -3808,7 +3808,7 @@
 
         {
             "key": "monthly_mean_daily_average_temperature_group",
-            "name": "Monthly mean daily average temperature (C)",
+            "name": "Monthly Mean Daily Average Temperature (C)",
             "description": "A collection of raster layers depicting monthly mean temperature in South Africa from January - December",
             "context_service_registry_keys": [
                 "monthly_mean_daily_average_temperature_january",
@@ -3829,7 +3829,7 @@
 
         {
             "key": "monthly_mean_daily_average_relative_humidity_group",
-            "name": "Monthly means of daily average relative humidity",
+            "name": "Monthly Means of Daily Average Relative Humidity",
             "description": "A collection of rasters depicting monthly means Of Daily average relative humidity in South Africa",
             "context_service_registry_keys": [
                 "monthly_mean_daily_average_relative_humidity_january",
@@ -3847,7 +3847,7 @@
         },
         {
             "key": "monthly_standard_deviation_daily_maximum_temperature_group",
-            "name": "Standard deviation (C) of daily maximum temperature ",
+            "name": "Standard Deviation (C) of Daily Maximum Temperature ",
             "description": "A collection of raster layers depicting standard deviation of daily maximum temperature in South Africa",
             "context_service_registry_keys": [
                 "monthly_standard_deviation_daily_maximum_temperature_january",
@@ -3866,7 +3866,7 @@
         },
         {
             "key": "monthly_standard_deviation_daily_maximum_relative_humidity_group",
-            "name": "Monthly standard deviation of maximum relative humidity",
+            "name": "Monthly Standard Deviation of Maximum Relative Humidity",
             "description": "A collection of raster layers depicting monthly standard deviation of maximum relative humidity in South Africa",
             "context_service_registry_keys": [
                 "monthly_standard_deviation_daily_max_relative_humidity_january",
@@ -3885,7 +3885,7 @@
         },
         {
             "key": "monthly_standard_deviation_of_daily_mean_temperature_group",
-            "name": "Standard deviations (C) of daily mean temperature ",
+            "name": "Standard Deviations (C) of Daily Mean Temperature ",
             "description": "A collection of raster layers depicting standard deviations (C) Of daily mean temperature in South Africa",
             "context_service_registry_keys": [
                 "monthly_standard_deviation_of_daily_mean_temperature_january",
@@ -3904,7 +3904,7 @@
         },
         {
             "key": "monthly_means_of_daily_minimum_temperature_group",
-            "name": "Monthly means of daily minimum temperature ",
+            "name": "Monthly Means of Daily Minimum Temperature ",
             "description": "A collection of raster layers depicting monthly means of daily minimum temperature in South Africa",
             "context_service_registry_keys": [
                 "monthly_means_of_daily_minimum_temperature_january",
@@ -3923,7 +3923,7 @@
         },
         {
             "key": "monthly_standard_deviation_of_daily_minimum_temperature_group",
-            "name": "Standard deviation (C) of daily minimum temperature",
+            "name": "Standard deviation (C) of Daily Minimum Temperature",
             "description": "A collection of raster layers depicting standard deviation of daily minimum temperature  in South Africa",
             "context_service_registry_keys": [
                 "monthly_standard_deviation_of_daily_minimum_temperature_january",
@@ -3945,7 +3945,7 @@
 
         {
             "key": "elevation_group",
-            "name": "Digital elevation rasters",
+            "name": "Digital Elevation",
             "description": "A collection of rasters depicting terrain elevation in South Africa",
             "context_service_registry_keys": [
                 "srtm_dem",
@@ -3956,7 +3956,7 @@
         },
         {
             "key": "eco_geo_group",
-            "name": "Ecological group",
+            "name": "Ecological Group",
             "description": "A collection of layers depicting ecology in South Africa",
             "context_service_registry_keys": [
                 "eco_region_1",
@@ -3980,7 +3980,7 @@
         },
         {
             "key": "vegetation_group",
-            "name": "Land cover showing vegetation coverage",
+            "name": "Land Cover Showing Vegetation Coverage",
             "description": "Layers that depict natural/artificial vegetation and also monitors land-use changes",
             "context_service_registry_keys": [
                 "vegetation_2012",
@@ -4031,7 +4031,7 @@
         ,
         {
             "key": "monthly_precipitation_group",
-            "name": "Monthly precipitation",
+            "name": "Monthly Precipitation",
             "description": "Raster layers that depict monthly precipitation from world climate ",
             "context_service_registry_keys": [
                 "monthly_precipitation_january",
@@ -4053,7 +4053,7 @@
 
         {
             "key": "monthly_wind_speed_group",
-            "name": "Monthly wind speed layers",
+            "name": "Monthly Wind Speed",
             "description": "Raster layers that depict monthly wind speed from world climate ",
             "context_service_registry_keys": [
                 "monthly_wind_speed_january",
@@ -4076,7 +4076,7 @@
 
         {
             "key": "monthly_water_vapor_pressure_group",
-            "name": "Monthly water vapor pressure  layers",
+            "name": "Monthly Water Vapor Pressure",
             "description": "Raster layers that depict monthly water vapor pressure from world climate ",
             "context_service_registry_keys": [
                 "monthly_water_vapor_pressure_january",
@@ -4100,7 +4100,7 @@
 
         {
             "key": "monthly_min_temperature_group",
-            "name": "Monthly minimum temperature",
+            "name": "Monthly Minimum Temperature",
             "description": "Raster layers that depict monthly minimum temperatures from world climate ",
             "context_service_registry_keys": [
                 "monthly_min_temperature_january",
@@ -4124,7 +4124,7 @@
 
         {
             "key": "monthly_max_temperature_group",
-            "name": "Monthly maximum temperature",
+            "name": "Monthly Maximum Temperature",
             "description": "Raster layers that depict monthly minimum temperatures from world climate ",
             "context_service_registry_keys": [
                 "monthly_max_temperature_january",
@@ -4148,7 +4148,7 @@
 
         {
             "key": "monthly_average_temperature_group",
-            "name": "Monthly average temperature",
+            "name": "Monthly Average Temperature",
             "description": "Raster layers that depict monthly average temperatures from world climate ",
             "context_service_registry_keys": [
                 "monthly_average_temperature_january",
@@ -4183,7 +4183,7 @@
         },
         {
             "key": "river_ecoregion_group",
-            "name": "River ecoregions in South Africa",
+            "name": "River Ecoregions in South Africa",
             "description": "Layer that depicts the various ecoregion categories  in South Africa",
             "context_service_registry_keys": [
                "eco_region_1",
@@ -4194,7 +4194,7 @@
         },
         {
             "key": "geomorphological_group",
-            "name": "Geomorphological zone",
+            "name": "Geomorphological zones",
             "description": "Layer that depicts geomorphological zones  in South Africa",
             "context_service_registry_keys": [
                "geo_class"
@@ -4213,7 +4213,7 @@
         },
         {
             "key": "national_cba",
-            "name": "Critical Biodiversity area (CBA) for the whole country (SA)",
+            "name": "Critical Biodiversity Area (CBA) for the whole country (SA)",
             "description": "Layer that depicts amalgamated CBA for the country",
             "context_service_registry_keys": [
 
@@ -4224,8 +4224,8 @@
         },
         {
             "key": "provincial_cba",
-            "name": "Critical Biodiversity area (CBA) for the whole country (SA)",
-            "description": "Layer that depicts national CBA",
+            "name": "Provincial Critical Biodiversity Area (CBA)",
+            "description": "Layer that depicts provincial CBA",
             "context_service_registry_keys": [
                 "wc_cape_biodiversity_spatial_plan",
                 "limpopo_cba",
@@ -4245,7 +4245,7 @@
 
         {
             "key": "national_protected_areas_group",
-            "name": "National protected areas layer",
+            "name": "National Protected Areas",
             "description": "Layer that depicts various rivers in South Africa according to scale and source",
             "context_service_registry_keys": [
                "national_protected_areas"
@@ -4254,7 +4254,7 @@
 
         {
             "key": "monthly_solar_radiation_group",
-            "name": "Monthly solar radiation",
+            "name": "Monthly Solar Radiation",
             "description": "Raster layers that depict monthly solar radiation from world climate ",
             "context_service_registry_keys": [
                 "monthly_solar_radiation_january",
