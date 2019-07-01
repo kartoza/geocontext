@@ -90,19 +90,19 @@
         },
         {
             "key": "eco_region_1",
-            "name": "Ecological Region 1",
+            "name": "Ecoregion level 1",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
             "time_to_live": 604800,
-            "srid": 3857,
+            "srid": 4148,
             "layer_typename": "kartoza:eco_region_1",
             "service_version": "1.0.0"
         },
         {
             "key": "eco_region_2",
-            "name": "Ecological Region 2",
+            "name": "Ecoregion level 2",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -114,7 +114,7 @@
         },
         {
             "key": "geo_class",
-            "name": "Geomorphological zones",
+            "name": "Geomorphological zone",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -126,7 +126,7 @@
         },
         {
             "key": "geo_class_recoded",
-            "name": "Geomorphological zones",
+            "name": "Geomorphological zone",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -150,7 +150,7 @@
         },
         {
             "key": "wc_cape_biodiversity_spatial_plan",
-            "name": "Protected Areas",
+            "name": "Protected Area",
             "description": "Map of biodiversity covering both terrestrial and freshwater reals , as well as major coastal and easturine habitats within Western Cape",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -216,7 +216,7 @@
             "query_type": "WFS",
             "result_regex": "gml:name",
             "time_to_live": 604800,
-            "srid": 32734,
+            "srid":  32734,
             "layer_typename": "kartoza:northern_cape_cba_mview",
             "service_version": "1.0.0"
         },
@@ -294,7 +294,7 @@
         },
         {
             "key": "national_esa",
-            "name": "National Ecological Support Areas",
+            "name": "National Ecological Support Area",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -306,7 +306,7 @@
         },
         {
             "key": "ground_swsas",
-            "name": "Strategic Water Source Areas - Ground",
+            "name": "Ground Strategic Water Source Area",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -318,7 +318,7 @@
         },
         {
             "key": "surface_swsas",
-            "name": "Strategic Water Source Areas - Surface",
+            "name": "Surface Strategic Water Source Area",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -427,7 +427,7 @@
         },
         {
             "key": "sa_provinces",
-             "name": "South Africa Provinces",
+             "name": "South African Provincial Boundaries",
              "description": null,
              "url": "https://maps.kartoza.com/geoserver/wfs",
              "query_type": "WFS",
@@ -487,7 +487,7 @@
         },
         {
             "key": "local_municipalities",
-            "name": "Local Municipality Boundaries",
+            "name": "Local Municipality",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -500,7 +500,7 @@
 
         {
             "key": "ward_boundaries",
-            "name": "Wards Municipal Boundaries",
+            "name": "Wards",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -524,7 +524,7 @@
         },
         {
             "key": "sub_wmas",
-            "name": "Sub Water Management Areas",
+            "name": "Sub Water Management Area",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -596,7 +596,7 @@
         },
         {
             "key": "dams500g",
-            "name": "South Africa Dams Polygon",
+            "name": "DWA Dams",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -608,7 +608,7 @@
         },
         {
             "key": "rivers500k",
-            "name": "Rivers of South Africa",
+            "name": "DWA 500k rivers",
             "description": null,
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
@@ -3677,7 +3677,7 @@
         },
 
         {
-          "key": "water_management_area",
+          "key": "water_management_area_group",
           "name": "Water Management Area",
           "description": "Layers that depict water management areas",
           "context_service_registry_keys": [
@@ -3956,15 +3956,10 @@
         },
         {
             "key": "eco_geo_group",
-            "name": "Ecological Group",
-            "description": "A collection of layers depicting ecology in South Africa",
+            "name": "Water Ecology Group",
+            "description": "A collection of layers depicting ground water in South Africa",
             "context_service_registry_keys": [
-                "eco_region_1",
-                "eco_region_2",
-                 "geo_class",
-                 "geo_class_recoded",
                  "feow_hydrosheds",
-                 "national_cba_layer",
                  "ground_swsas",
                  "surface_swsas"
             ]
@@ -4197,7 +4192,8 @@
             "name": "Geomorphological zones",
             "description": "Layer that depicts geomorphological zones  in South Africa",
             "context_service_registry_keys": [
-               "geo_class"
+               "geo_class",
+                "geo_class_recoded"
 
             ]
         },
@@ -4212,7 +4208,7 @@
             ]
         },
         {
-            "key": "national_cba",
+            "key": "national_cba_group",
             "name": "Critical Biodiversity Area (CBA) for the whole country (SA)",
             "description": "Layer that depicts amalgamated CBA for the country",
             "context_service_registry_keys": [
@@ -4241,6 +4237,8 @@
 
             ]
         },
+
+
 
 
         {
@@ -4293,10 +4291,10 @@
                 "geomorphological_group",
                 "freshwater_ecoregion_of_the_world",
                 "political_boundary_group",
-                "water_management_area",
+                "water_management_area_group",
                 "river_catchment_areas_group",
                 "river_ecoregion_group",
-                "critical_biodiversity_area",
+                "national_cba_group",
                 "national_freshwater_ecosystem_priority_area",
                 "strategic_water_source_areas"
             ]
