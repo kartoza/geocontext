@@ -3622,7 +3622,128 @@
             "srid": 4326,
             "layer_typename": "kartoza:wc2_0_30s_prec_12",
             "service_version": "1.3.0"
+        },
+        {
+            "key": "land_cover_2009",
+            "name": "Copernicus Global Land cover map 2009",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "africa:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "africa:L1_LCC_09",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "land_cover_2010",
+            "name": "Copernicus Global Land cover map 2010",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "africa:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "africa:L1_LCC_10",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "land_cover_2011",
+            "name": "Copernicus Global Land cover map 2011",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "africa:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "africa:L1_LCC_11",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "land_cover_2012",
+            "name": "Copernicus Global Land cover map 2012",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "africa:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "africa:L1_LCC_12",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "land_cover_2013",
+            "name": "Copernicus Global Land cover map 2013",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "africa:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "africa:L1_LCC_13",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "land_cover_2014",
+            "name": "Copernicus Global Land cover map 2014",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "africa:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "africa:L1_LCC_14",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "land_cover_2015",
+            "name": "Copernicus Global Land cover map 2015",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "africa:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "africa:L1_LCC_15",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "land_cover_2016",
+            "name": "Copernicus Global Land cover map 2016",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "africa:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "africa:L1_LCC_16",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "land_cover_2017",
+            "name": "Copernicus Global Land cover map 2017",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "africa:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "africa:L1_LCC_17",
+            "service_version": "1.3.0"
+        },
+        {
+            "key": "land_cover_2018",
+            "name": "Copernicus Global Land cover map 2018",
+            "description": null,
+            "url": "https://maps.kartoza.com/geoserver/wms",
+            "query_type": "WMS",
+            "result_regex": "africa:GRAY_INDEX",
+            "time_to_live": 604800,
+            "srid": 4326,
+            "layer_typename": "africa:L1_LCC_18",
+            "service_version": "1.3.0"
         }
+
 
 
 
@@ -4238,9 +4359,6 @@
             ]
         },
 
-
-
-
         {
             "key": "national_protected_areas_group",
             "name": "National Protected Areas",
@@ -4270,6 +4388,25 @@
 
 
             ]
+        },
+        {
+          "key": "copernicus_land_cover_classification",
+          "name": "Copernicus land cover classification",
+          "description": "This land cover dataset at continental scale is based on the Copernicus Global Land cover map. WaPOR data adds, on top of the Copernicus map, the distinction between irrigated and rainfed areas. It is published on a yearly basis",
+          "context_service_registry_keys": [
+             "land_cover_2009",
+              "land_cover_2010",
+              "land_cover_2011",
+              "land_cover_2012",
+              "land_cover_2013",
+              "land_cover_2014",
+              "land_cover_2015",
+              "land_cover_2016",
+              "land_cover_2017",
+              "land_cover_2018"
+
+
+          ]
         }
     ],
     "context_collection": [
