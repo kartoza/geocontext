@@ -6,6 +6,7 @@ import json
 import logging
 from datetime import datetime, timedelta
 import pytz
+import fnmatch
 from xml.dom import minidom
 
 from owslib.wms import WebMapService
@@ -15,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.http import QueryDict
 
 from geocontext.utilities import (
-    convert_coordinate, parse_gml_geometry, get_bbox)
+    convert_coordinate, parse_gml_geometry, get_bbox, find_geometry_in_xml)
 from geocontext.models.validators import key_validator
 
 LOGGER = logging.getLogger(__name__)
@@ -215,31 +216,41 @@ class ContextServiceRegistry(models.Model):
                 parsed_value = self.parse_request_value(content)
 
         else:
-            url = self.build_query_url(x, y, srid)
-            request = requests.get(url)
-            if request.status_code == 200:
-                content = request.content
-                if ':' in self.layer_typename:
-                    workspace = self.layer_typename.split(':')[0]
-                    geometry = parse_gml_geometry(content, workspace)
-                elif self.query_type != ContextServiceRegistry.PLACENAME:
-                    geometry = parse_gml_geometry(content)
-                if not geometry:
-                    return None
-                if not geometry.srid:
-                    geometry.srid = self.srid
-                parsed_value = self.parse_request_value(content)
+            geo_name, geo_type = find_geometry_in_xml(url)
+            if fnmatch.fnmatch(geo_type, '*Polygon*'):
+                print('we will use the filter function')
+                url = self.filter_query_url(x, y, srid)
+                request = requests.get(url)
+                if request.status_code == 200:
+                    content = request.content
+
             else:
-                error_message = (
-                    'Failed to request to {url} for CSR {key} got '
-                    '{status_code} because of reasons'.format(
-                        url=url,
-                        key=self.key,
-                        status_code=request.status_code,
-                        reason=request.reason,
-                    ))
-                LOGGER.error(error_message)
-                parsed_value = None
+
+                url = self.build_query_url(x, y, srid)
+                request = requests.get(url)
+                if request.status_code == 200:
+                    content = request.content
+                    if ':' in self.layer_typename:
+                        workspace = self.layer_typename.split(':')[0]
+                        geometry = parse_gml_geometry(content, workspace)
+                    elif self.query_type != ContextServiceRegistry.PLACENAME:
+                        geometry = parse_gml_geometry(content)
+                    if not geometry:
+                        return None
+                    if not geometry.srid:
+                        geometry.srid = self.srid
+                    parsed_value = self.parse_request_value(content)
+                else:
+                    error_message = (
+                        'Failed to request to {url} for CSR {key} got '
+                        '{status_code} because of reasons'.format(
+                            url=url,
+                            key=self.key,
+                            status_code=request.status_code,
+                            reason=request.reason,
+                        ))
+                    LOGGER.error(error_message)
+                    parsed_value = None
 
         # Create cache here.
         from geocontext.models.context_cache import ContextCache
@@ -390,3 +401,97 @@ class ContextServiceRegistry(models.Model):
                     current_url=self.url,
                     urlencoded_parameters=query_dict.urlencode())
         return url
+
+
+    def describe_query_url(self):
+        """Build query based on the model and the parameter.
+
+        :param x: The value of x coordinate.
+        :type x: float
+
+        :param y: The value of y coordinate.
+        :type y: float
+
+        :param srid: The srid of the coordinate.
+        :type srid: int
+
+        :return: URL to do query.
+        :rtype: unicode
+        """
+        describe_url = None
+        if self.query_type == ContextServiceRegistry.WFS:
+            parameters = {
+                'SERVICE': 'WFS',
+                'REQUEST': 'DescribeFeatureType',
+                'VERSION': self.service_version,
+                'TYPENAME': self.layer_typename
+            }
+            query_dict = QueryDict('', mutable=True)
+            query_dict.update(parameters)
+            if '?' in self.url:
+                describe_url = '{current_url}&{urlencoded_parameters}'.format(
+                    current_url=self.url,
+                    urlencoded_parameters=query_dict.urlencode(),
+                )
+            else:
+                describe_url = '{current_url}?{urlencoded_parameters}'.format(
+                    current_url=self.url,
+                    urlencoded_parameters=query_dict.urlencode(),
+                )
+        return describe_url
+
+    def filter_query_url(self, x, y, srid=4326):
+        """Build query based on the model and the parameter.
+
+        :param x: The value of x coordinate.
+        :type x: float
+
+        :param y: The value of y coordinate.
+        :type y: float
+
+        :param srid: The srid of the coordinate.
+        :type srid: int
+
+        :return: URL to do query.
+        :rtype: unicode
+        """
+        parameter_url = describe_query_url()
+        geometry_name, geometry_type = find_geometry_in_xml(parameter_url)
+        filter_url = None
+        # construct bbox
+        attribute_name = (self.result_regex[4:])
+        layer_filter = ''' <Filter xmlns="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">\
+                        <Intersects><PropertyName>%s</PropertyName><gml:Point srsName="EPSG:4326">\
+                        <gml:coordinates>%s,%s</gml:coordinates></gml:Point></Intersects></Filter>''' % (geometry_name,x, y)
+
+
+
+        if self.query_type == ContextServiceRegistry.WFS:
+            parameters = {
+                'SERVICE': 'WFS',
+                'REQUEST': 'GetFeature',
+                'VERSION': self.service_version,
+                'TYPENAME': self.layer_typename,
+                'FILTER': layer_filter,
+                'PROPERTYNAME': '(%s)' % attribute_name,
+                'MAXFEATURES': 1,
+                'OUTPUTFORMAT': 'GML3',
+            }
+            query_dict = QueryDict('', mutable=True)
+            query_dict.update(parameters)
+            if '?' in self.url:
+                filter_url = '{current_url}&{urlencoded_parameters}'.format(
+                    current_url=self.url,
+                    urlencoded_parameters=query_dict.urlencode(),
+                )
+            else:
+                filter_url = '{current_url}?{urlencoded_parameters}'.format(
+                    current_url=self.url,
+                    urlencoded_parameters=query_dict.urlencode(),
+                )
+            # Only add SRSNAME when there is no workspace
+            if ':' not in self.layer_typename:
+                filter_url += '&SRSNAME=%s' % self.srid
+
+        return filter_url
+

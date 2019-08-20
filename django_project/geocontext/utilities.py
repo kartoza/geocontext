@@ -3,6 +3,9 @@
 
 import logging
 from xml.dom import minidom
+import xml.etree.ElementTree as ET
+import requests
+
 
 from django.contrib.gis.geos import (
     GEOSGeometry, Point, LineString, LinearRing, Polygon, MultiPoint,
@@ -65,6 +68,49 @@ def parse_gml_geometry(gml_string, workspace=None):
     except GDALException:
         logger.error('GDAL error')
         return None
+
+def tag_with_version(tag, version):
+    """ Replace version in tag """
+    if version:
+        return version + tag
+    return tag
+
+
+def find_geometry_in_xml(url):
+    request = requests.get(url)
+    content = request.content
+    content_parsed = ET.fromstring(content)
+
+    version = None
+    try:
+        content_parsed.tag.split('}')[1]
+        version = content_parsed.tag.split('}')[0] + '}'
+    except IndexError:
+        pass
+    geometry_name, geometry_type = None, None
+    try:
+        complex_type = content_parsed.find(
+            tag_with_version('complexType', version))
+        complex_content = complex_type.find(
+            tag_with_version('complexContent', version))
+        extension = complex_content.find(
+            tag_with_version('extension', version))
+        sequences = extension.find(
+            tag_with_version('sequence', version))
+        for sequence in sequences:
+            try:
+                if 'gml' in sequence.attrib['type']:
+                    geometry_name = sequence.attrib['name']
+                    geometry_type = sequence.attrib['type'].replace('gml:', '').replace('PropertyType', '')
+            except KeyError:
+                continue
+        pass
+    except Exception as e:
+        logging.exception(e)
+        pass
+
+    return geometry_name, geometry_type
+
 
 
 def convert_2d_to_3d(geometry_2d):
