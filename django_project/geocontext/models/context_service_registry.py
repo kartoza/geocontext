@@ -216,13 +216,14 @@ class ContextServiceRegistry(models.Model):
                 parsed_value = self.parse_request_value(content)
 
         else:
-            geo_name, geo_type = find_geometry_in_xml(url)
+            parameter_url = self.describe_query_url()
+            geo_name, geo_type = find_geometry_in_xml(parameter_url)
             if fnmatch.fnmatch(geo_type, '*Polygon*'):
-                print('we will use the filter function')
                 url = self.filter_query_url(x, y, srid)
                 request = requests.get(url)
                 if request.status_code == 200:
                     content = request.content
+                    parsed_value = self.parse_request_value(content)
 
             else:
 
@@ -455,14 +456,14 @@ class ContextServiceRegistry(models.Model):
         :return: URL to do query.
         :rtype: unicode
         """
-        parameter_url = describe_query_url()
-        geometry_name, geometry_type = find_geometry_in_xml(parameter_url)
+        parameter_url = self.describe_query_url()
+        geom_name, geom_type = find_geometry_in_xml(parameter_url)
         filter_url = None
         # construct bbox
         attribute_name = (self.result_regex[4:])
         layer_filter = ''' <Filter xmlns="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">\
                         <Intersects><PropertyName>%s</PropertyName><gml:Point srsName="EPSG:4326">\
-                        <gml:coordinates>%s,%s</gml:coordinates></gml:Point></Intersects></Filter>''' % (geometry_name,x, y)
+                        <gml:coordinates>%s,%s</gml:coordinates></gml:Point></Intersects></Filter>''' % (geom_name,x, y)
 
 
 
