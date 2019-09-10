@@ -320,6 +320,12 @@ build-devweb: db
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) build devweb
 
+import-web-data:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Importing GeoContext Data."
+	@echo "------------------------------------------------------------------"
+	@docker-compose -p $(PROJECT_ID) exec dev-web python manage.py import_data $(FILE_URI)
 status:
 	@echo
 	@echo "------------------------------------------------------------------"
