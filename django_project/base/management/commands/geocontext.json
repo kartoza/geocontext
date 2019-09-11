@@ -274,7 +274,7 @@
             "description": "",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
-            "result_regex": "gml:name",
+            "result_regex": "gml:cur_nme",
             "time_to_live": 604800,
             "srid": 4326,
             "layer_typename": "kartoza:national_protected_areas",
@@ -4336,6 +4336,7 @@
 
                 "national_esa",
                 "national_cba_layer"
+
 
             ]
         },
