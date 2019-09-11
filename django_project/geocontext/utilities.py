@@ -6,7 +6,6 @@ from xml.dom import minidom
 import xml.etree.ElementTree as ET
 import requests
 
-
 from django.contrib.gis.geos import (
     GEOSGeometry, Point, LineString, LinearRing, Polygon, MultiPoint,
     MultiLineString, MultiPolygon)
@@ -69,6 +68,7 @@ def parse_gml_geometry(gml_string, workspace=None):
         logger.error('GDAL error')
         return None
 
+
 def tag_with_version(tag, version):
     """ Replace version in tag """
     if version:
@@ -110,7 +110,6 @@ def find_geometry_in_xml(url):
         pass
 
     return geometry_name, geometry_type
-
 
 
 def convert_2d_to_3d(geometry_2d):
