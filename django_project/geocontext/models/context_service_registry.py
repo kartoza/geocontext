@@ -403,7 +403,6 @@ class ContextServiceRegistry(models.Model):
                     urlencoded_parameters=query_dict.urlencode())
         return url
 
-
     def describe_query_url(self):
         """Build query based on the model and the parameter.
 
@@ -461,11 +460,10 @@ class ContextServiceRegistry(models.Model):
         filter_url = None
         # construct bbox
         attribute_name = (self.result_regex[4:])
-        layer_filter = ''' <Filter xmlns="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">\
-                        <Intersects><PropertyName>%s</PropertyName><gml:Point srsName="EPSG:4326">\
-                        <gml:coordinates>%s,%s</gml:coordinates></gml:Point></Intersects></Filter>''' % (geom_name,x, y)
-
-
+        layer_filter = ''' <Filter xmlns="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml"> \
+                        <Intersects><PropertyName>%s</PropertyName><gml:Point srsName="EPSG:4326"> \
+                        <gml:coordinates>%s,%s</gml:coordinates></gml:Point></Intersects></Filter>''' % (
+            geom_name, x, y)
 
         if self.query_type == ContextServiceRegistry.WFS:
             parameters = {
@@ -495,4 +493,3 @@ class ContextServiceRegistry(models.Model):
                 filter_url += '&SRSNAME=%s' % self.srid
 
         return filter_url
-

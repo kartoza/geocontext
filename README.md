@@ -25,13 +25,6 @@ The latest source code is available at
 
 ## Project activity
 
-Story queue on Waffle:
-
-* [![Stories in Ready](https://badge.waffle.io/kartoza/geocontext.svg?label=ready&title=Ready)](http://waffle.io/kartoza/geocontext)
-* [![Stories in In Progress](https://badge.waffle.io/kartoza/geocontext.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/kartoza/geocontext)
-
-[![Throughput Graph](https://graphs.waffle.io/kartoza/geocontext/throughput.svg)](https://waffle.io/kartoza/geocontext/metrics)
-
 * Current test status master: [![Build Status](https://travis-ci.org/kartoza/geocontext.svg?branch=master)](https://travis-ci.org/kartoza/geocontext) and
 [![Code Health](https://landscape.io/github/kartoza/geocontext/master/landscape.svg?style=flat)](https://landscape.io/github/kartoza/geocontext/master)
 
@@ -102,12 +95,7 @@ development and source code, and be able to participate in every level of the
 project - we invite comments, suggestions and contributions.  See
 [our milestones list](https://github.com/kartoza/geocontext/milestones) and
 [our open issues list](https://github.com/kartoza/geocontext/issues?page=1&state=open)
-for known bugs and outstanding tasks. You can also chat live with our developers
-and community members using the link below.
-
-[![Join the chat at https://gitter.im/kartoza/geocontext](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kartoza/geocontext?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-
+for known bugs and outstanding tasks. 
 
 ## Credits
 
