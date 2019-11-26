@@ -93,16 +93,16 @@
                             browser
                             <br>
                             <a href=
-                                       'https://geocontext.kartoza.com/api/v1/geocontext/value/collection/19.143617/-32.323005/land_cover_land_use/?format=api'>
-                                https://geocontext.kartoza.com/api/v1/geocontext/value/collection/19.143617/-32.323005/land_cover_land_use/?format=api
+                                       'https://geocontext.kartoza.com/api/v1/geocontext/value/group/19.14/-32.32/rainfall_group/?format=api'>
+                                https://geocontext.kartoza.com/api/v1/geocontext/value/group/19.14/-32.32/rainfall_group/?format=api
                             </a>
                         </p>
                         <p>
                             Or for convenience as <b>JSON</b>:
                             <br>
                             <a href=
-                                       'https://geocontext.kartoza.com/api/v1/geocontext/value/collection/19.143617/-32.323005/land_cover_land_use/?format=json'>
-                                https://geocontext.kartoza.com/api/v1/geocontext/value/collection/19.143617/-32.323005/land_cover_land_use/?format=json
+                                       'https://geocontext.kartoza.com/api/v1/geocontext/value/group/19.14/-32.32/rainfall_group/?format=json'>
+                                https://geocontext.kartoza.com/api/v1/geocontext/value/group/19.14/-32.32/rainfall_group/?format=api
                             </a>
                         </p>
 
@@ -196,8 +196,8 @@
         var my_data = '';
         $('#btn').click(function () {
             $('.text').text('loading . . .');
-            $.get(`https://geocontext.kartoza.com/api/v1/geocontext/value/
-                group/19.14/-32.32/rainfall_group/?format=json`,
+            $.get('https://geocontext.kartoza.com/api/v1/geocontext/value/'+
+                'group/19.14/-32.32/rainfall_group/?format=json',
                 function (data) {
                     console.log(data);
                     my_data = JSON.stringify(data, null, 2);
@@ -251,6 +251,18 @@
                         padding-bottom: 0">
                                 <code>
     &ltscript src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"&gt&lt/script&gt
+                                </code>
+                            </pre>
+                            <li>Next, add a canvas element to our HTML.
+                                Let's put it below our "Replace me" paragraph for now.
+                            </li>
+                            <br>
+                            <pre style="border-style: solid; border-width: 1px;
+                        border-color: lightgray;
+                        padding: 1rem; margin: 1rem; margin-left: 0;
+                        padding-bottom: 0">
+                                <code>
+    &ltcanvas id="myChart"&gt&lt/canvas&gt
                                 </code>
                             </pre>
                             <li>Add the function to draw our graph (just
