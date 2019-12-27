@@ -79,7 +79,7 @@
         {
             "key": "water_management_area",
             "name": "Water Management Area",
-            "description": null,
+            "description": "The National Water Act (Act 36 of 1998) requires the progressive development of a National Water Recourse Strategy (NWRS), which provides the framework for the protection, use, development, conservation, management and control of water recourses for the country as a whole. Further, the NWRS provides the framework within which water will be managed at a regional or catchment level, within defined Water Management Areas. This layer gives a representation of the Water Management Areas of the Republic of South Africa in relation to the drainage region boundaries. Main rivers, dams, and towns are also represented.\nData Source: Department of Water Affairs 2016",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -91,7 +91,7 @@
         {
             "key": "eco_region_1",
             "name": "Ecoregion level 1",
-            "description": null,
+            "description": "Ecoregions (Level I, version 2005) for South Africa derived from terrain and vegetation, with some consideration of altitude, rainfall, runoff variability, air temperature, geology, soil.  Data Source: Department of Water and Sanitation: 2011",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -103,7 +103,7 @@
         {
             "key": "eco_region_2",
             "name": "Ecoregion level 2",
-            "description": null,
+            "description": "Ecoregions (Level II, version 2005) for South Africa derived from terrain and vegetation, with some consideration of altitude, rainfall, runoff variability, air temperature, geology, soil. Level II ecoregions are a refinement of the Level I ecoregions, using the same methods.  Data Source: Department of Water and Sanitation: 2011",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -115,7 +115,7 @@
         {
             "key": "geo_class",
             "name": "Geomorphological zone",
-            "description": null,
+            "description": "Zonation concepts are based on downstream changes in the river long profile. The main classes are source zone, Mountain headwater stream, Mountain stream, and foothills.  Data Source: DWAF 1:500 000. February 2006",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -127,7 +127,7 @@
         {
             "key": "geo_class_recoded",
             "name": "Geomorphological zone",
-            "description": null,
+            "description": "Zonation concepts are based on downstream changes in the river long profile. The main classes are source zone, Mountain headwater stream, Mountain stream, and foothills.  Data Source: DWAF 1:500 000. February 2006",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -139,7 +139,7 @@
         {
             "key": "feow_hydrosheds",
             "name": "Freshwater Ecoregion of the World",
-            "description": null,
+            "description": "Freshwater Ecoregions of the World, (FEOW) provides a new global biogeographic regionalization of the Earth&apos;s freshwater biodiversity.  Covering virtually all freshwater habitats on Earth, this first-ever ecoregion map, together with associated species data, is a useful tool for underpinning global and regional conservation planning efforts, particularly to identify outstanding and imperiled freshwater systems; for serving as a logical framework for large-scale conservation strategies; and for providing a global-scale knowledge base for increasing freshwater biogeographic literacy.\n    Purpose: The freshwater ecoregion map serves as a complement to the global terrestrial and marine ecoregion maps and differs from them in that freshwater species (primarily fish) and freshwater processes drove the map delineation.\n    Supplemental_Information: The freshwater ecoregion map encompasses 426 units, whose boundaries generally - though not always - correspond with those of watersheds (also known as drainage basins or catchments). Within individual ecoregions, there will be the turnover of species, such as when moving up or down a river system, but taken as a whole an ecoregion will typically have a distinct evolutionary history and/or ecological processes. Ecoregions are delineated based on the best available information, but data describing freshwater species and ecological processes are characterized by marked gaps and variation in quality, and improved information in the future may warrant map revisions.\n\nSource: 2008 by The Nature Conservancy and World Wildlife Fund",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -163,7 +163,7 @@
         {
             "key": "limpopo_cba",
             "name": "Limpopo Critical Biodiversity plan",
-            "description": "",
+            "description": "http://metadata.sanbi.org/geonetwork/srv/eng/catalog.search#/metadata/edd6eb2a-28da-433c-ae5c-306350d1609f",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -175,7 +175,7 @@
         {
             "key": "free_state_cba",
             "name": "Free State Critical Biodiversity plan",
-            "description": "",
+            "description": "http://metadata.sanbi.org/geonetwork/srv/eng/catalog.search#/metadata/e1c41271-4b74-41c8-a372-7abed9bd8c6d",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -187,7 +187,7 @@
         {
             "key": "gauteng_cba",
             "name": "Gauteng Critical Biodiversity plan",
-            "description": "",
+            "description": "http://metadata.sanbi.org/geonetwork/srv/eng/catalog.search#/metadata/be585c83-20b9-425f-b474-c51b84c5b106",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -211,7 +211,7 @@
         {
             "key": "northern_cape_cba",
             "name": "Northern Cape Critical Biodiversity plan",
-            "description": "",
+            "description": "http://metadata.sanbi.org/geonetwork/srv/eng/catalog.search#/metadata/2de01c38-24bb-4c83-8a2b-17679027f841",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -223,7 +223,7 @@
         {
             "key": "north_west_cba",
             "name": "North West  Critical Biodiversity plan",
-            "description": "",
+            "description": "http://metadata.sanbi.org/geonetwork/srv/eng/catalog.search#/metadata/ffa27dc6-58de-4ae5-b197-bb78b968733b",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -235,7 +235,7 @@
         {
             "key": "kzn_cba",
             "name": "Kwazulu Natal Critical Biodiversity plan",
-            "description": "",
+            "description": "http://metadata.sanbi.org/geonetwork/srv/eng/catalog.search#/metadata/2de01c38-24bb-4c83-8a2b-17679027f841",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -247,7 +247,7 @@
         {
             "key": "ec_cba",
             "name": "Eastern Cape  Critical Biodiversity plan",
-            "description": "",
+            "description": "http://metadata.sanbi.org/geonetwork/srv/eng/catalog.search#/metadata/57f2199a-c727-402b-9f10-5cdb8325f37c",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -259,7 +259,7 @@
         {
             "key": "wc_cba",
             "name": "Western Cape Critical Biodiversity plan",
-            "description": "",
+            "description": "The provincial BSP Map was developed using systematic biodiversity planning methodology, following the approaches of Margules and Pressey (2000) and Ardron et al . (2010). The data were analysed using specialised software called Marxan (Game & Grantham 2008) accessed via an open-source GIS platform, QGIS, and the plugin (interface software) CLUZ (Smith 2016). ",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -283,7 +283,7 @@
         {
             "key": "national_cba_layer",
             "name": "National Critical Biodiversity",
-            "description": null,
+            "description": "A CBA Map is a spatial plan for ecological sustainability. It identifies a set of biodiversity priority areas, called Critical Biodiversity Areas (CBAs) and Ecological Support Areas (ESAs), which, together with protected areas, are important for the persistence of a viable representative sample of all ecosystem types and species as well as the long-term ecological functioning of the landscape as a whole. CBA Maps are typically developed at the provincial, district or metropolitan scale, and are based on a systematic biodiversity plan. Map categories include PA (Protected Areas), CBA (Critical Biodiversity) and ESA (Ecological Support Areas). \n\nSource Sanbi 2019",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -295,7 +295,7 @@
         {
             "key": "national_esa",
             "name": "National Ecological Support Area",
-            "description": null,
+            "description": "ESAs are required to support and sustain the ecological functioning of Critical Biodiversity Areas (CBAs). Source: Sanbi 2016",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
@@ -307,7 +307,7 @@
         {
             "key": "ground_swsas",
             "name": "Ground Strategic Water Source Area",
-            "description": null,
+            "description": "Surface water SWSAs are found in areas with high rainfall and produce most of the runoff. The SWSA-sw study identified 22 areas that were significant at the national level and a further nine that are significant at a sub-national level.",
             "url": "https://maps.kartoza.com/geoserver/wfs",
             "query_type": "WFS",
             "result_regex": "gml:name",
