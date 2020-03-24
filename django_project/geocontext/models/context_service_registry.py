@@ -460,10 +460,13 @@ class ContextServiceRegistry(models.Model):
         filter_url = None
         # construct bbox
         attribute_name = (self.result_regex[4:])
-        layer_filter = ''' <Filter xmlns="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml"> \
-                        <Intersects><PropertyName>%s</PropertyName><gml:Point srsName="EPSG:4326"> \
-                        <gml:coordinates>%s,%s</gml:coordinates></gml:Point></Intersects></Filter>''' % (
-            geom_name, x, y)
+        layer_filter = \
+            ''' <Filter xmlns="http://www.opengis.net/ogc" \
+            xmlns:gml="http://www.opengis.net/gml"> \
+            <Intersects><PropertyName>{}</PropertyName><gml:Point \
+            srsName="EPSG:4326"> \
+            <gml:coordinates>{},{}</gml:coordinates>\
+            </gml:Point></Intersects></Filter>'''.format(geom_name, x, y)
 
         if self.query_type == ContextServiceRegistry.WFS:
             parameters = {
