@@ -7,7 +7,7 @@ SHELL := /bin/bash
 #    P R O D U C T I O N     C O M M A N D S
 # ----------------------------------------------------------------------------
 default: web
-run: build permissions web migrate collectstatic
+run: build permissions web wait migrate collectstatic
 
 deploy: run
 	@echo
@@ -54,6 +54,10 @@ db:
 	@echo "Running db in production mode"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) up -d db
+
+wait:
+	@echo "waiting a minute for machine to calm down"
+	@sleep 60
 
 mediasync:
 	@echo
