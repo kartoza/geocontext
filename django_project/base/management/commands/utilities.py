@@ -112,7 +112,7 @@ def import_data(file_uri):
                     try:
                         context_service_registry = \
                             ContextServiceRegistry.objects.get(key=csr_key)
-                    except ContextServiceRegistry.DoesNotExist as e:
+                    except ContextServiceRegistry.DoesNotExist:
                         print('No CSR registered for %s' % csr_key)
                         continue
 
