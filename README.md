@@ -126,3 +126,5 @@ Thank you to the individual contributors who have helped to build GeoContext:
 .com
 * Dimas Tri Ciputra ([@dimasciput](https://github.com/dimasciput)) : 
 dimas@kartoza.com
+* Andre Theron ([@andretheronsa](https://github.com/andretheronsa)) : 
+andre.theron@kartoza.com
