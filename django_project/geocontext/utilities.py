@@ -101,12 +101,8 @@ def find_geometry_in_xml(url):
             try:
                 if 'gml' in sequence.attrib['type']:
                     geometry_name = sequence.attrib['name']
-                    geometry_type = \
-                        sequence.attrib['type'].replace(
-                            'gml:', ''
-                        ).replace(
-                            'PropertyType', ''
-                        )
+                    geometry_type = sequence.attrib['type'].replace(
+                        'gml:', '').replace('PropertyType', '')
             except KeyError:
                 continue
         pass
