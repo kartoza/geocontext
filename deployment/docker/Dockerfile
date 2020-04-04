@@ -1,6 +1,6 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
 # Note this base image is based on debian
-FROM python:3.6.8
+FROM python:3.8.2-buster
 MAINTAINER Dimas Ciputra<dimas@kartoza.com>
 
 RUN export DEBIAN_FRONTEND=noninteractive
@@ -10,8 +10,8 @@ RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN apt-get update -y
 
 RUN apt-get install -y python3-pip \
-    python-gdal \
-    python-geoip \
+    python3-gdal \
+    python3-geoip \
     python3-setuptools
 
 ADD REQUIREMENTS.txt /REQUIREMENTS.txt

@@ -12,12 +12,7 @@ components (Database, uwsgi server, web server):
 
 
 The blue box is there to provide a means to develop on the same environment
-as you deploy and would not be relevant for server side deployments.
-Everything is managed using docker containers, with pycharm
-making ssh connections into the developer container and using the
-python interpreter found therein. Newer versions of PyCharm have 'native' docker support
-but after testing we opted to continue to use the ssh method described here. You may want to
-test when new versions of PyCharm come out in case they have improved the direct docker support.
+as you deploy and would not be relevant for server side deployments. Everything is managed using docker containers and there are many approaches to connect to these for development. There are instructions below for attaching to the container using VSCode or connecting via SSH using PyCharm.
 
 **Note:** You don't need to use this architecture, you can deploy as a standard
 django app using virtualenv and locally installed postgis, nginx etc.
@@ -44,7 +39,18 @@ make-devbuild.bat
 make-devweb.bat
 ```
 
+### Develop inside the container using VS Code
+
+The Visual Studio Code Remote - Containers extension lets you use a Docker container as a full-featured development environment.
+
+See the [Instructions](https://code.visualstudio.com/docs/remote/containers) for developing in a remote container.
+
 ### Create a remote interpreter in pycharm
+
+Pycharm can be used to ssh into the developer container and use the
+python interpreter found therein. Newer versions of PyCharm have 'native' docker support
+but after testing we opted to continue to use the ssh method described here. You may want to
+test when new versions of PyCharm come out in case they have improved the direct docker support.
 
 Open the project in pycharm then do:
 
@@ -96,7 +102,7 @@ Now set these options:
 
 * **Name:** Django Server
 * **Host:** 0.0.0.0
-* **Port:** (use the http port specified in the docker-compose.yml file, e.g. 8080)`*` **Run browser** If checked, it will open the url after you click run. You should be able to access the running projecta on 0.0.0.0:61202 (the port that mapped to 8080)
+* **Port:** (use the http port specified in the docker-compose.yml file, e.g. 8080)`*` **Run browser** If checked, it will open the url after you click run. You should be able to access the running geocontext on 0.0.0.0:61202 (the port that mapped to 8080)
 * **Additional options:** ``--settings=core.settings.dev_docker``
 * **Run browser:** Optionally set this to your IP address (MacOS/Linux) or your specific IP address (Windows) followed by the port forward address for port 8080 specified in your ``docker-compose.yml`` file. For example: ``http://0.0.0.0:65202``.
 * **Environment vars:** Leave as default unless you need to add something to the env

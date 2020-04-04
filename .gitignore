@@ -123,7 +123,6 @@ deployment/btsync-media.env.PRODUCTION
 .sync/
 # These don't get versioned since they are generated on the fly 
 deployment/docker/Dockerfile-prod
-deployment/docker/projecta.tar.gz
 
 # GeoContext data backup directory
 django_project/base/management/commands/backups/
