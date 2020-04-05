@@ -11,7 +11,7 @@ env:
     - DJANGO_SETTINGS_MODULE=core.settings.test_travis
 
 sudo: false
-dist: trusty
+dist: bionic
 
 python:
   - '3.8.2'
