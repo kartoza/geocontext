@@ -7,7 +7,9 @@ SHELL := /bin/bash
 #    P R O D U C T I O N     C O M M A N D S
 # ----------------------------------------------------------------------------
 default: web
-run: build permissions web wait migrate collectstatic import-data
+run: build permissions web migrate collectstatic
+devdeploy: build permissions web wait migrate collectstatic superuser import-data \
+	build-devweb devweb
 
 deploy: run
 	@echo
@@ -54,10 +56,6 @@ db:
 	@echo "Running db in production mode"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) up -d db
-
-wait:
-	@echo "waiting a minute for machine to calm down"
-	@sleep 60
 
 mediasync:
 	@echo
@@ -137,6 +135,10 @@ collectstatic:
 	# uwsgi container it seems so I use docker exec here
 	# no -it flag so we can run over remote shell
 	@docker exec $(PROJECT_ID)-uwsgi python manage.py collectstatic --noinput
+
+wait:
+	@echo "waiting 30s for machine to calm down"
+	@sleep 30
 
 reload:
 	@echo
