@@ -1,6 +1,6 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
 # Note this base image is based on debian
-FROM python:3.8.2-buster
+FROM python:3.7.7-buster
 MAINTAINER Dimas Ciputra<dimas@kartoza.com>
 
 RUN export DEBIAN_FRONTEND=noninteractive
@@ -15,8 +15,8 @@ RUN apt-get install -y python3-pip \
     python3-setuptools
 
 ADD REQUIREMENTS.txt /REQUIREMENTS.txt
-RUN pip install -r /REQUIREMENTS.txt
-RUN pip install uwsgi
+RUN python3 -m pip install -r /REQUIREMENTS.txt
+RUN python3 -m pip install uwsgi
 
 ADD uwsgi.conf /uwsgi.conf
 
