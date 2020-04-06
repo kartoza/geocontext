@@ -7,13 +7,13 @@ SHELL := /bin/bash
 #    P R O D U C T I O N     C O M M A N D S
 # ----------------------------------------------------------------------------
 default: web
-run: build permissions web wait migrate collectstatic
+run: build permissions web wait migrate collectstatic import-data
 
 deploy: run
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Bringing up fresh instance "
-	@echo "You can access it on http://localhost:65200"
+	@echo "You can access it on http://localhost"
 	@echo "------------------------------------------------------------------"
 
 build:
