@@ -1,7 +1,9 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
 # Note this base image is based on debian
 FROM python:3.7.7
-MAINTAINER Dimas Ciputra<dimas@kartoza.com>
+
+LABEL maintainer="Dimas Ciputra<dimas@kartoza.com>"
+LABEL maintainer="Andre Theron<andre.theron@kartoza.com>"
 
 RUN export DEBIAN_FRONTEND=noninteractive
 ENV DEBIAN_FRONTEND noninteractive
