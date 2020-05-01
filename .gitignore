@@ -127,3 +127,6 @@ deployment/docker/projecta.tar.gz
 
 # GeoContext data backup directory
 django_project/base/management/commands/backups/
+
+# .env files with sensitive information
+deployment/.env
