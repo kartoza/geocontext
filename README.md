@@ -127,7 +127,7 @@ all necessary servicing, repair or correction.
 Thank you to the individual contributors who have helped to build GeoContext:
 
 * Tim Sutton ([@timlinux](https://github.com/timlinux)) : tim@kartoza.com
-* Ismail Sunni ([@ismailsunni](https://github.com/ismailsunni)) : ismail@kartoza
-.com
+* Andre Theron ([@andretheronsa](https://github.com/andretheronsa)) : 
+andre.theron@kartoza.com
 * Dimas Tri Ciputra ([@dimasciput](https://github.com/dimasciput)) : 
 dimas@kartoza.com
