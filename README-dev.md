@@ -3,6 +3,23 @@
 **Note:** This documentation is intentionally generic so that it can
 be copy-pasted between projects - do not put project specific details here.
 
+## Quickstart with Docker and VSCode
+
+An easy way to set up a locally development environment is with Docker and VSCode.
+
+1. For local DB access first uncomment the ports section in the db app in the docker-compose.yml 
+
+2. Use run-dev to build the production and development containers, create superuser,
+and import default registries.
+```
+make run-dev
+```
+3. Geocontext should now be running at localhost.
+4. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
+5. Now we can use the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension to
+get into the running containers to run management commands, run another server, debug etc.
+  * Attach a VSCode session bu right clicking on the running geocontext_devweb container in the extension
+
 ## Application architecture under docker
 
 The following diagram provides and overview of the core architecture
