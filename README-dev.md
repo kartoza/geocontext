@@ -8,17 +8,21 @@ be copy-pasted between projects - do not put project specific details here.
 An easy way to set up a locally development environment is with Docker and VSCode.
 
 1. For local DB access first uncomment the ports section in the db app in the docker-compose.yml 
-
-2. Use run-dev to build the production and development containers, create superuser,
+2. For river-name specific queries you should add the river database details to the uwsgi environment
+  (RIVER_DATABASE_USER, RIVER_DATABASE_HOST, RIVER_DATABASE_PASSWORD, RIVER_DATABASE_NAME)
+3. Use run-dev to build the production and development containers, create superuser,
 and import default registries.
 ```
 make run-dev
 ```
-3. Geocontext should now be running at localhost.
-4. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
-5. Now we can use the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension to
-get into the running containers to run management commands, run another server, debug etc.
-  * Attach a VSCode session bu right clicking on the running geocontext_devweb container in the extension
+4. Geocontext should now be running at localhost.
+5. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
+7. Attach a VSCode session by right clicking on the running geocontext_devweb container in the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension
+6. Now we can get into the running containers to run management commands, run another server at another port, debug etc.
+7. Tests can be run using the development environment using
+```
+make test
+```
 
 ## Application architecture under docker
 
@@ -135,12 +139,6 @@ able to step through views etc as you work.
 I made a general overview screencast describing this process here:
 
 [![YouTube Screencast](http://img.youtube.com/vi/n-wwp17MqhU/0.jpg)](https://www.youtube.com/watch?v=n-wwp17MqhU "YouTube Screencast")
-
-
-## Running Tests
-
-Tim write stuff here....
-
 
 ## Developer FAQ
 
