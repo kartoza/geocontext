@@ -84,14 +84,10 @@ def import_data(file_uri):
         for k, v in csr_data.items():
             setattr(service_registry, k, v)
         service_registry.save()
-        print('   id = %s, CSR %s is loaded' % (
-            service_registry.id, service_registry.name))
 
         try:
             service_registry.full_clean()
             service_registry.save()
-            print('   id = %s, CSR %s is loaded' % (
-                service_registry.id, service_registry.name))
         except ValidationError as e:
             print('   >>> CSR %s is not clean because %s ' % (
                 service_registry.name, e))
