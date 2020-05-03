@@ -311,10 +311,6 @@ enable-machine:
 # ----------------------------------------------------------------------------
 
 setup-dev: run superuser import-data build-devweb devweb
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Setup full dev build - interactive for permissin/user"
-	@echo "------------------------------------------------------------------"
 
 devweb: db
 	@echo
