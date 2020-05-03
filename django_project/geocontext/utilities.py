@@ -174,8 +174,9 @@ def get_bbox(x, y, factor=0.001):
 
 
 def generalize_point(point: Point, service_registry) -> Point:
-    """Generalize a point to grid - cache need not contain data at higher
-    resolution than native_resolution. This is done before quering cache/web service.
+    """Generalize a point to grid depending on data source type.
+    Cache does not need to contain data at higher  resolution than native_resolution. 
+    This is done before quering cache/web service.
 
     :param point: Point in WGS84
     :type point: GEOS point
@@ -184,13 +185,9 @@ def generalize_point(point: Point, service_registry) -> Point:
     :return: point
     :rtype: Point
     """
-    #if service_registry is not None:
-        # res = service_registry.objects.get(native_resolution)
-        # origin = service_registry.objects.get(origin)
-        #pass
-    # Use decimal rounding up to avoid unpredictable rounding behavior
-    decimals = 5
-    x_round = Decimal(point.x).quantize(Decimal('0.' + '0' * decimals))
-    y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
-    general_point = Point(float(x_round), float(y_round), srid=4326)
-    return general_point
+    if service_registry.query_type != service_registry.WFS:
+        decimals = 5
+        x_round = Decimal(point.x).quantize(Decimal('0.' + '0' * decimals))
+        y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
+        point = Point(float(x_round), float(y_round), srid=4326)
+    return point
