@@ -111,7 +111,7 @@ class TestContextServiceRegistry(TestCase):
             'http://maps.kartoza.com/geoserver/wfs')
         service_registry.srid = 3857
         service_registry.query_type = ContextServiceRegistry.WFS
-        service_registry.layer_typename = 'kartoza:sa_provinces'
+        service_registry.layer_typename = 'sa_provinces'
         service_registry.service_version = '1.0.0'
 
         service_registry.result_regex = 'kartoza:provname'
@@ -158,14 +158,12 @@ class TestContextServiceRegistry(TestCase):
         expected_value = '746.0'
         self.assertEqual(result.value, expected_value)
         self.assertIsNotNone(result.value)
-        self.assertIsNone(result.geometry)
 
         context_caches = ContextCache.objects.filter(
             service_registry=service_registry)
         self.assertIsNotNone(context_caches)
         context_cache = context_caches[0]
         self.assertEqual(context_cache.value, expected_value)
-        self.assertIsNone(result.geometry)
 
     def test_retrieve_context_value_arcrest(self):
         """Test retrieving context value from a point with ArcRest source.
@@ -190,14 +188,12 @@ class TestContextServiceRegistry(TestCase):
             'Cape Floral Region Protected Areas: Cederberg Wilderness Area')
         self.assertEqual(result.value, expected_value)
         self.assertIsNotNone(result.value)
-        self.assertIsNone(result.geometry)
 
         context_caches = ContextCache.objects.filter(
             service_registry=service_registry)
         self.assertIsNotNone(context_caches)
         context_cache = context_caches[0]
         self.assertEqual(context_cache.value, expected_value)
-        self.assertIsNone(result.geometry)
 
     def test_retrieve_context_value_placename(self):
         """Test retrieving context value from a point with ArcRest source.
@@ -227,7 +223,6 @@ class TestContextServiceRegistry(TestCase):
         self.assertIsNotNone(context_caches)
         context_cache = context_caches[0]
         self.assertEqual(context_cache.value, expected_value)
-        self.assertIsNone(result.geometry)
 
     def test_retrieve_context_value_invalid(self):
         """Test retrieving context value from a point with different CRS.

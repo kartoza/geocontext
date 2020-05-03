@@ -11,6 +11,7 @@ from xml.dom import minidom
 
 from owslib.wms import WebMapService
 
+from django.contrib.gis.geos import Point
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.http import QueryDict
@@ -186,7 +187,8 @@ class ContextServiceRegistry(models.Model):
         :
         """
         url = None
-        geometry = None
+        # Default geometry is generalized query point - allows caching for all services
+        geometry = (Point(x, y))
         if self.query_type == ContextServiceRegistry.WMS:
             try:
                 wms = WebMapService(self.url, self.service_version)
@@ -200,8 +202,6 @@ class ContextServiceRegistry(models.Model):
                 )
                 content = response.read()
                 parsed_value = self.parse_request_value(content)
-                # No geometry and url for WMS
-                geometry = None
                 url = response.geturl()
             except NotImplementedError as e:
                 parsed_value = e
@@ -218,6 +218,9 @@ class ContextServiceRegistry(models.Model):
         else:
             parameter_url = self.describe_query_url()
             geo_name, geo_type = find_geometry_in_xml(parameter_url)
+            # Catch finding geometry error
+            if None in [geo_name, geo_type]:
+                return None
             if fnmatch.fnmatch(geo_type, '*Polygon*'):
                 url = self.filter_query_url(x, y, srid)
                 request = requests.get(url)
@@ -267,7 +270,6 @@ class ContextServiceRegistry(models.Model):
 
         if url:
             context_cache.source_uri = url
-
         if geometry:
             context_cache.set_geometry_field(geometry)
         context_cache.save()

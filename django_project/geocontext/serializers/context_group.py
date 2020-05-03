@@ -1,6 +1,8 @@
 # coding=utf-8
 """Serializer for context group."""
 
+from concurrent.futures import ThreadPoolExecutor
+
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from geocontext.models.context_group import ContextGroup
@@ -58,12 +60,15 @@ class ContextGroupValue(object):
         self.service_registry_values = []
         context_group_services = ContextGroupServices.objects.filter(
             context_group=self.context_group).order_by('order')
-        for context_group_service in context_group_services:
-            context_service_registry_key = \
-                context_group_service.context_service_registry.key
-            context_cache = retrieve_context(
-                self.x, self.y, context_service_registry_key, self.srid)
-            self.service_registry_values.append(context_cache)
+
+        with ThreadPoolExecutor() as executor:
+            for result in executor.map(self.threaded_function, context_group_services):
+                self.service_registry_values.append(result)          
+
+    def threaded_function(self, context_group_service):
+        registry_key = context_group_service.context_service_registry.key
+        context_cache = retrieve_context(self.x, self.y, registry_key, self.srid)
+        return context_cache
 
 
 class ContextGroupValueSerializer(serializers.Serializer):

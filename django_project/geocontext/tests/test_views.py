@@ -37,7 +37,7 @@ class TestGeoContextView(TestCase):
         y = -32.1
 
         service_registry = ContextServiceRegistry.objects.get(
-            key='water_management_area')
+            key='quaternary_catchment_area')
 
         start_direct = datetime.now()
         retrieve_context(x, y, service_registry.key)
@@ -51,5 +51,4 @@ class TestGeoContextView(TestCase):
         duration_cache = end_cache - start_cache
         message = 'Direct: %.5f. Cache: %.5f' % (
             duration_direct.total_seconds(), duration_cache.total_seconds())
-        print(message)
         self.assertGreater(duration_direct, duration_cache, message)

@@ -1,6 +1,8 @@
 # coding=utf-8
 """Serializer for context collection."""
 
+from concurrent.futures import ThreadPoolExecutor
+
 from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
@@ -56,12 +58,15 @@ class ContextCollectionValue(object):
         self.context_group_values = []
         collection_groups = CollectionGroups.objects.filter(
             context_collection=self.context_collection).order_by('order')
-        for collection_group in collection_groups:
-            context_group_key = \
-                collection_group.context_group.key
-            context_group_value = ContextGroupValue(
-                self.x, self.y, context_group_key, self.srid)
-            self.context_group_values.append(context_group_value)
+
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            for result in executor.map(self.threaded_function, collection_groups):
+                self.context_group_values.append(result)
+
+    def threaded_function(self, collection_group):
+        group_key = collection_group.context_group.key
+        group_val = ContextGroupValue(self.x, self.y, group_key, self.srid)
+        return group_val
 
 
 class ContextCollectionValueSerializer(serializers.Serializer):

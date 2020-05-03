@@ -6,7 +6,7 @@ import pytz
 from django.contrib.gis.geos import Point
 
 from geocontext.models import ContextServiceRegistry, ContextCache
-from geocontext.utilities import convert_coordinate
+from geocontext.utilities import convert_coordinate, generalize_point
 
 
 def retrieve_context(x, y, service_registry_key, srid=4326):
@@ -38,6 +38,10 @@ def retrieve_context(x, y, service_registry_key, srid=4326):
     if not service_registry:
         raise Exception(
             'Service Registry is not Found for %s' % service_registry_key)
+
+    # Generalize to improve cache hits
+    point = generalize_point(point, service_registry)
+
     caches = ContextCache.objects.filter(
         service_registry=service_registry)
 
@@ -55,4 +59,4 @@ def retrieve_context(x, y, service_registry_key, srid=4326):
                     break
 
     # Can not find in caches, request from context service.
-    return service_registry.retrieve_context_value(x, y, srid)
+    return service_registry.retrieve_context_value(point.x, point.y, point.srid)

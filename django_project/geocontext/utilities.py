@@ -1,10 +1,11 @@
 # coding=utf-8
 """Utilities module for geocontext app."""
 
+from decimal import Decimal
 import logging
+import requests
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
-import requests
 
 from django.contrib.gis.geos import (
     GEOSGeometry, Point, LineString, LinearRing, Polygon, MultiPoint,
@@ -80,7 +81,8 @@ def find_geometry_in_xml(url):
     request = requests.get(url)
     content = request.content
     content_parsed = ET.fromstring(content)
-
+    if request.status_code == 500:
+        return None, None
     version = None
     try:
         content_parsed.tag.split('}')[1]
@@ -169,3 +171,26 @@ def get_bbox(x, y, factor=0.001):
         x + x_diff,
         y + y_diff
     ]
+
+
+def generalize_point(point: Point, service_registry) -> Point:
+    """Generalize a point to grid - cache need not contain data at higher
+    resolution than native_resolution. This is done before quering cache/web service.
+
+    :param point: Point in WGS84
+    :type point: GEOS point
+    :param service_registry: Context service registry object
+    :type service_registry: model object
+    :return: point
+    :rtype: Point
+    """
+    #if service_registry is not None:
+        # res = service_registry.objects.get(native_resolution)
+        # origin = service_registry.objects.get(origin)
+        #pass
+    # Use decimal rounding up to avoid unpredictable rounding behavior
+    decimals = 5
+    x_round = Decimal(point.x).quantize(Decimal('0.' + '0' * decimals))
+    y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
+    general_point = Point(float(x_round), float(y_round), srid=4326)
+    return general_point
