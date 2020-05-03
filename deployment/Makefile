@@ -310,10 +310,10 @@ enable-machine:
 # for pydevd etc. If they dont get copied, restart pycharm...
 # ----------------------------------------------------------------------------
 
-run-dev: run superuser import-data build-devweb devweb
+setup-dev: run superuser import-data build-devweb devweb
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Starting full dev build - interactive for permissin/user
+	@echo "Setup full dev build - interactive for permissin/user
 	@echo "------------------------------------------------------------------"
 
 devweb: db
