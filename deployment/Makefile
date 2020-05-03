@@ -313,7 +313,7 @@ enable-machine:
 setup-dev: run superuser import-data build-devweb devweb
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Setup full dev build - interactive for permissin/user
+	@echo "Setup full dev build - interactive for permissin/user"
 	@echo "------------------------------------------------------------------"
 
 devweb: db
@@ -383,7 +383,7 @@ help:
 	@echo "* **rm** - remove all containers."
 	@echo "* **rm-only** - remove any containers without trying to kill them first. "
 	@echo "* **run** - builds and runs the complete orchestrated set of containers."
-	@echo "* **run-dev** - builds and runs all containers + dev, creates superuser and imports data."
+	@echo "* **setup-dev** - builds and runs all containers + dev, creates superuser and imports data."
 	@echo "* **sentry** - **currently not working I think.** The idea is to spin up a sentry instance together with your app for fault reporting."
 	@echo "* **shell** - open a bash shell in the uwsgi (where django runs) container."
 	@echo "* **superuser** - create a django superuser account."
