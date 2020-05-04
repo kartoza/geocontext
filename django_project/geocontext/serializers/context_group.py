@@ -61,7 +61,7 @@ class ContextGroupValue(object):
         context_group_services = ContextGroupServices.objects.filter(
             context_group=self.context_group).order_by('order')
 
-        with ThreadPoolExecutor() as executor:
+        with ThreadPoolExecutor(max_workers=5) as executor:
             for result in executor.map(self.retrieve_cache, context_group_services):
                 self.service_registry_values.append(result)
 

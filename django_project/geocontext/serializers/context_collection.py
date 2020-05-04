@@ -57,13 +57,15 @@ class ContextCollectionValue(object):
         self.context_group_values = []
         collection_groups = CollectionGroups.objects.filter(
             context_collection=self.context_collection).order_by('order')
-        for collection_group in collection_groups:
-            context_group_key = \
-                collection_group.context_group.key
-            context_group_value = ContextGroupValue(
-                self.x, self.y, context_group_key, self.srid)
-            self.context_group_values.append(context_group_value)
 
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            for result in executor.map(self.retrieve_groups, collection_groups):
+                self.context_group_values.append(result)
+
+    def retrieve_groups(self, collection_group):
+            group_key = collection_group.context_group.key
+            group_value = ContextGroupValue(self.x, self.y, group_key, self.srid)
+            return group_value
 
 class ContextCollectionValueSerializer(serializers.Serializer):
     """Serializer for Context Collection Value class."""
