@@ -187,7 +187,7 @@ class ContextServiceRegistry(models.Model):
         :
         """
         url = None
-        # Default geometry is generalized query point - allows caching for all services
+        # Default geometry is generalized query point
         geometry = (Point(x, y))
         if self.query_type == ContextServiceRegistry.WMS:
             try:

@@ -175,8 +175,8 @@ def get_bbox(x, y, factor=0.001):
 
 def generalize_point(point: Point, service_registry) -> Point:
     """Generalize a point to grid depending on data source type.
-    Cache does not need to contain data at higher  resolution than native_resolution. 
-    This is done before quering cache/web service.
+    Cache does not need to contain data at higher resolution than
+    native_resolution. This is done before quering cache/web service.
 
     :param point: Point in WGS84
     :type point: GEOS point

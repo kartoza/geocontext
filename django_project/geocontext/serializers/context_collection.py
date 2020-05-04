@@ -11,6 +11,7 @@ from geocontext.models.collection_groups import CollectionGroups
 from geocontext.serializers.context_group import (
     ContextGroupValue, ContextGroupValueSerializer)
 
+
 class ContextCollectionSerializer(serializers.ModelSerializer):
     """Serializer class for Context Collection."""
 
@@ -55,17 +56,18 @@ class ContextCollectionValue(object):
     def populate_context_group_values(self):
         """Populate context group values."""
         self.context_group_values = []
-        collection_groups = CollectionGroups.objects.filter(
+        col_groups = CollectionGroups.objects.filter(
             context_collection=self.context_collection).order_by('order')
 
         with ThreadPoolExecutor(max_workers=2) as executor:
-            for result in executor.map(self.retrieve_groups, collection_groups):
+            for result in executor.map(self.retrieve_groups, col_groups):
                 self.context_group_values.append(result)
 
     def retrieve_groups(self, collection_group):
-            group_key = collection_group.context_group.key
-            group_value = ContextGroupValue(self.x, self.y, group_key, self.srid)
-            return group_value
+        group_key = collection_group.context_group.key
+        group_value = ContextGroupValue(self.x, self.y, group_key, self.srid)
+        return group_value
+
 
 class ContextCollectionValueSerializer(serializers.Serializer):
     """Serializer for Context Collection Value class."""

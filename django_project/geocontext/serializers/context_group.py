@@ -11,7 +11,7 @@ from geocontext.serializers.context_cache import ContextValueSerializer
 
 from geocontext.models.utilities import retrieve_context
 
-import time
+
 class ContextGroupSerializer(serializers.ModelSerializer):
     """Serializer class for Context Group."""
 
@@ -58,16 +58,16 @@ class ContextGroupValue(object):
     def populate_service_registry_values(self):
         """Populate service registry values."""
         self.service_registry_values = []
-        context_group_services = ContextGroupServices.objects.filter(
+        group_services = ContextGroupServices.objects.filter(
             context_group=self.context_group).order_by('order')
 
         with ThreadPoolExecutor(max_workers=5) as executor:
-            for result in executor.map(self.retrieve_cache, context_group_services):
+            for result in executor.map(self.retrieve_cache, group_services):
                 self.service_registry_values.append(result)
 
     def retrieve_cache(self, context_group_service):
-        registry_key = context_group_service.context_service_registry.key
-        context_cache = retrieve_context(self.x, self.y, registry_key, self.srid)
+        reg_key = context_group_service.context_service_registry.key
+        context_cache = retrieve_context(self.x, self.y, reg_key, self.srid)
         return context_cache
 
 

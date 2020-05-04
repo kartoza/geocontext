@@ -154,7 +154,7 @@ class ContextCache(models.Model):
         :rtype: GEOSGeometry
         """
         if self.geometry_point:
-            return self.geometry_point        
+            return self.geometry_point
         if self.geometry_linestring:
             return self.geometry_linestring
         elif self.geometry_polygon:

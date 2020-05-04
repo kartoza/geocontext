@@ -59,4 +59,5 @@ def retrieve_context(x, y, service_registry_key, srid=4326):
                     break
 
     # Can not find in caches, request from context service.
-    return service_registry.retrieve_context_value(point.x, point.y, point.srid)
+    val = service_registry.retrieve_context_value(point.x, point.y, point.srid)
+    return val
