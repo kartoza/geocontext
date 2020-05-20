@@ -256,6 +256,7 @@ class ContextServiceRegistry(models.Model):
                     LOGGER.error(error_message)
                     parsed_value = None
 
+        # TODO this needs to be done outside the threads in seperate function - this should return only value!
         # Create cache here.
         from geocontext.models.context_cache import ContextCache
         expired_time = datetime.utcnow() + timedelta(seconds=self.time_to_live)

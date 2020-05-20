@@ -39,8 +39,8 @@ def retrieve_context(x, y, service_registry_key, srid=4326):
         raise Exception(
             'Service Registry is not Found for %s' % service_registry_key)
 
-    # Generalize to improve cache hits is service requires
-    point = generalize_point(point, service_registry)
+    # TODO Generalize to improve cache hits
+    # point = generalize_point(point, service_registry)
 
     caches = ContextCache.objects.filter(
         service_registry=service_registry)

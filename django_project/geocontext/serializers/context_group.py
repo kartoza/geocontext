@@ -55,13 +55,15 @@ class ContextGroupValue(object):
         self.graphable = self.context_group.graphable
         self.populate_service_registry_values()
 
+    # TODO first query the cache before threading
+
     def populate_service_registry_values(self):
         """Populate service registry values."""
         self.service_registry_values = []
         group_services = ContextGroupServices.objects.filter(
             context_group=self.context_group).order_by('order')
 
-        with ThreadPoolExecutor(max_workers=5) as executor:
+        with ThreadPoolExecutor() as executor:
             for result in executor.map(self.retrieve_cache, group_services):
                 self.service_registry_values.append(result)
 
@@ -70,6 +72,8 @@ class ContextGroupValue(object):
         context_cache = retrieve_context(self.x, self.y, reg_key, self.srid)
         return context_cache
 
+
+    # TODO Now we need to insert into the cache again since retrieve_context_value doesnt
 
 class ContextGroupValueSerializer(serializers.Serializer):
     """Serializer for Context Value Group class."""

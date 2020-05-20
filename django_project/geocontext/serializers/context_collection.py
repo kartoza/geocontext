@@ -53,13 +53,15 @@ class ContextCollectionValue(object):
 
         self.populate_context_group_values()
 
+    # TODO first query the cache before threading
+
     def populate_context_group_values(self):
         """Populate context group values."""
         self.context_group_values = []
         col_groups = CollectionGroups.objects.filter(
             context_collection=self.context_collection).order_by('order')
 
-        with ThreadPoolExecutor(max_workers=2) as executor:
+        with ThreadPoolExecutor() as executor:
             for result in executor.map(self.retrieve_groups, col_groups):
                 self.context_group_values.append(result)
 
@@ -68,6 +70,7 @@ class ContextCollectionValue(object):
         group_value = ContextGroupValue(self.x, self.y, group_key, self.srid)
         return group_value
 
+    # TODO Now we need to insert into the cache again since retrieve_context_value doesnt
 
 class ContextCollectionValueSerializer(serializers.Serializer):
     """Serializer for Context Collection Value class."""
