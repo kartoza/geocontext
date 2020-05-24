@@ -26,7 +26,10 @@ from geocontext.serializers.context_group import (
 from geocontext.serializers.context_collection import (
     ContextCollectionValue, ContextCollectionValueSerializer)
 
-from geocontext.models.utilities import retrieve_context
+from geocontext.models.utilities import (
+    ContextServiceRegistryUtils,
+    retrieve_from_registry_util
+)
 
 
 class ContextServiceRegistryListAPIView(generics.ListAPIView):
@@ -60,8 +63,11 @@ class ContextValueGeometryListAPI(views.APIView):
 
         context_caches = []
         for csr_key in csr_keys:
-            context_cache = retrieve_context(x, y, csr_key)
-            context_caches.append(context_cache)
+            registry_utils = ContextServiceRegistryUtils(csr_key, x, y)
+            cache = registry_utils.retrieve_context_cache()
+            context_caches.append(cache)
+        if None in context_caches:
+            return Response('No cache found')
         with_geometry = self.request.query_params.get('with-geometry', 'True')
         if strtobool(with_geometry):
             serializer = ContextValueGeoJSONSerializer(
@@ -141,13 +147,17 @@ def get_context(request):
             y = cleaned_data['y']
             srid = cleaned_data.get('srid', 4326)
             service_registry_key = cleaned_data['service_registry_key']
-            result = retrieve_context(x, y, service_registry_key, srid)
+            registry_utils = ContextServiceRegistryUtils(service_registry_key, x, y, srid)
+            cache = registry_utils.retrieve_context_cache()
+            if cache is None:
+                result = retrieve_from_registry_util(registry_utils)
+                cache = registry_utils.create_context_cache(**result)
             fields = ('value', 'key')
-            if result:
+            if cache:
                 return HttpResponse(
                     serialize(
                         'geojson',
-                        [result],
+                        [cache],
                         geometry_field='geometry_multi_polygon',
                         fields=fields),
                     content_type='application/json')

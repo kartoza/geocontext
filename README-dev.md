@@ -10,10 +10,10 @@ An easy way to set up a locally development environment is with Docker and VSCod
 1. For local DB access first uncomment the ports section in the db app in the docker-compose.yml 
 2. For river-name specific queries you should add the river database details to the uwsgi environment
   (RIVER_DATABASE_USER, RIVER_DATABASE_HOST, RIVER_DATABASE_PASSWORD, RIVER_DATABASE_NAME)
-3. Use run-dev to build the production and development containers, create superuser,
+3. Use setup-dev to build the production and development containers, create superuser,
 and import default registries.
 ```
-make run-dev
+make setup-dev
 ```
 4. Geocontext should now be running at localhost.
 5. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis

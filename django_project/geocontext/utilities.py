@@ -1,7 +1,5 @@
 # coding=utf-8
 """Utilities module for geocontext app."""
-
-from decimal import Decimal
 import logging
 import requests
 from xml.dom import minidom
@@ -14,6 +12,23 @@ from django.contrib.gis.gdal.error import GDALException
 
 logger = logging.getLogger(__name__)
 
+class ServiceDefinitions():
+    WFS = 'WFS'
+    WCS = 'WCS'
+    WMS = 'WMS'
+    REST = 'REST'
+    ARCREST = 'ArcREST'
+    WIKIPEDIA = 'Wikipedia'
+    PLACENAME = 'PlaceName'
+    QUERY_TYPES = (
+        (WFS, 'WFS'),
+        (WCS, 'WCS'),
+        (WMS, 'WMS'),
+        (REST, 'REST'),
+        (ARCREST, 'ArcREST'),
+        (WIKIPEDIA, 'Wikipedia'),
+        (PLACENAME, 'PlaceName'),
+    )
 
 def convert_coordinate(x, y, srid_source, srid_target):
     """Convert coordinate x y from srid_source to srid_target.
@@ -171,23 +186,3 @@ def get_bbox(x, y, factor=0.001):
         x + x_diff,
         y + y_diff
     ]
-
-
-def generalize_point(point: Point, service_registry) -> Point:
-    """Generalize a point to grid depending on data source type.
-    Cache does not need to contain data at higher resolution than
-    native_resolution. This is done before quering cache/web service.
-
-    :param point: Point in WGS84
-    :type point: GEOS point
-    :param service_registry: Context service registry object
-    :type service_registry: model object
-    :return: point
-    :rtype: Point
-    """
-    if service_registry.query_type != service_registry.WFS:
-        decimals = 5
-        x_round = Decimal(point.x).quantize(Decimal('0.' + '0' * decimals))
-        y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
-        point = Point(float(x_round), float(y_round), srid=4326)
-    return point

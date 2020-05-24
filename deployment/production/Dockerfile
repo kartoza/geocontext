@@ -1,6 +1,6 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
 # Note this base image is based on debian
-FROM python:3.7-buster
+FROM python:3.8-buster
 
 LABEL maintainer="Dimas Ciputra<dimas@kartoza.com>"
 LABEL maintainer="Andre Theron<andre.theron@kartoza.com>"

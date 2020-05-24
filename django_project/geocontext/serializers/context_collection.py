@@ -1,15 +1,19 @@
 # coding=utf-8
 """Serializer for context collection."""
 
-from concurrent.futures import ThreadPoolExecutor
-
 from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
+from geocontext.models.context_group import ContextGroup
 from geocontext.models.context_collection import ContextCollection
 from geocontext.models.collection_groups import CollectionGroups
+from geocontext.models.context_group_services import ContextGroupServices
 from geocontext.serializers.context_group import (
     ContextGroupValue, ContextGroupValueSerializer)
+from geocontext.models.utilities import (
+    ContextServiceRegistryUtils,
+    thread_retrieve_external
+)
 
 
 class ContextCollectionSerializer(serializers.ModelSerializer):
@@ -53,24 +57,53 @@ class ContextCollectionValue(object):
 
         self.populate_context_group_values()
 
-    # TODO first query the cache before threading
-
     def populate_context_group_values(self):
         """Populate context group values."""
         self.context_group_values = []
-        col_groups = CollectionGroups.objects.filter(
+        collection_groups = CollectionGroups.objects.filter(
             context_collection=self.context_collection).order_by('order')
+        external_queries = []
+        group_caches = {}
+        for collection_group in collection_groups:
+            context_group = get_object_or_404(
+                ContextGroup, key=collection_group.context_group.key)
+            group_services = ContextGroupServices.objects.filter(
+                context_group=context_group).order_by('order')
+            for group_service in group_services:
+                registry_utils = ContextServiceRegistryUtils(
+                    group_service.context_service_registry.key, self.x, self.y, self.srid)
+                cache = registry_utils.retrieve_context_cache()
 
-        with ThreadPoolExecutor() as executor:
-            for result in executor.map(self.retrieve_groups, col_groups):
-                self.context_group_values.append(result)
+                # Append all the caches found locally - add externally required to dict
+                if cache is None:
+                    external_queries.append((context_group.key, registry_utils))
+                else:
+                    if context_group.key in group_caches:
+                        group_caches[context_group.key].append(cache)
+                    else:
+                        group_caches[context_group.key] = [cache]
 
-    def retrieve_groups(self, collection_group):
-        group_key = collection_group.context_group.key
-        group_value = ContextGroupValue(self.x, self.y, group_key, self.srid)
-        return group_value
+        # Parallel request external resources not found locally
+        new_result_list = thread_retrieve_external(external_queries)
 
-    # TODO Now we need to insert into the cache again since retrieve_context_value doesnt
+        # Add new external resources to dict with group: [cache]
+        for result in new_result_list:
+            group_key, util = result[0], result[1]
+            if util is not None:
+                cache = util.create_context_cache()
+                if group_key in group_caches:
+                    group_caches[group_key].append(cache)
+                else:
+                    group_caches[group_key] = [cache]
+
+        # Init contextgroup serializer but override populating context registry values
+        for group_key, cache_list in group_caches.items():
+            context_group_value = ContextGroupValue(
+                self.x, self.y, group_key, self.srid, populate=False)
+            for cache in cache_list:
+                context_group_value.service_registry_values.append(cache)
+            self.context_group_values.append(context_group_value)
+
 
 class ContextCollectionValueSerializer(serializers.Serializer):
     """Serializer for Context Collection Value class."""

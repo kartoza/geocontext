@@ -32,8 +32,8 @@ db:
   restart: unless-stopped
 #  Uncomment the next line to have an access with PGAdmin using localhost and port 25432 on your computer.
 #  Only for development !
-#  ports:
-#    - "25432:5432"
+  ports:
+    - "25432:5432"
 
 uwsgi:
   # Note you cannot scale if you use container_name
@@ -48,6 +48,10 @@ uwsgi:
     - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
     - VIRTUAL_HOST=geocontext.kartoza.com
     - VIRTUAL_PORT=8080
+    - RIVER_DATABASE_USER=geoserver
+    - RIVER_DATABASE_HOST=postgis.kartoza.com
+    - RIVER_DATABASE_PASSWORD=+245^&LKtr
+    - RIVER_DATABASE_NAME=kartozagis
   volumes:
     - ../django_project:/home/web/django_project
     - ./static:/home/web/static:rw
@@ -118,6 +122,10 @@ devweb:
     - PYTHONPATH=/home/web/django_project
     - VIRTUAL_HOST=geocontext.kartoza.com
     - VIRTUAL_PORT=8080
+    - RIVER_DATABASE_USER=geoserver
+    - RIVER_DATABASE_HOST=postgis.kartoza.com
+    - RIVER_DATABASE_PASSWORD=+245^&LKtr
+    - RIVER_DATABASE_NAME=kartozagis
   volumes:
     - ../django_project:/home/web/django_project
     - ./static:/home/web/static

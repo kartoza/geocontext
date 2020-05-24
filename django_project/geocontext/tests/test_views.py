@@ -8,7 +8,8 @@ from django.test import TestCase
 
 from geocontext.models.context_service_registry import ContextServiceRegistry
 
-from geocontext.models.utilities import retrieve_context
+from geocontext.models.utilities import (
+    retrieve_context_external, retrieve_context_cache)
 from base.management.commands.utilities import import_data
 
 test_data_directory = os.path.join(
@@ -40,11 +41,12 @@ class TestGeoContextView(TestCase):
             key='quaternary_catchment_area')
 
         start_direct = datetime.now()
-        retrieve_context(x, y, service_registry.key)
+        retrieve_context_cache(x, y, service_registry.key)
+
         end_direct = datetime.now()
 
         start_cache = datetime.now()
-        retrieve_context(x, y, service_registry.key)
+        retrieve_context_cache(x, y, service_registry.key)
         end_cache = datetime.now()
 
         duration_direct = end_direct - start_direct
