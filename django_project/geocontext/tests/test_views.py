@@ -8,8 +8,7 @@ from django.test import TestCase
 
 from geocontext.models.context_service_registry import ContextServiceRegistry
 
-from geocontext.models.utilities import (
-    retrieve_context_external, retrieve_context_cache)
+from geocontext.models.utilities import ContextServiceRegistryUtils
 from base.management.commands.utilities import import_data
 
 test_data_directory = os.path.join(
@@ -36,17 +35,16 @@ class TestGeoContextView(TestCase):
         """Test for retrieving from service registry and cache."""
         x = 27.8
         y = -32.1
-
-        service_registry = ContextServiceRegistry.objects.get(
-            key='quaternary_catchment_area')
+        csr_key = 'quaternary_catchment_area'
 
         start_direct = datetime.now()
-        retrieve_context_cache(x, y, service_registry.key)
+        registry_utils = ContextServiceRegistryUtils(csr_key, x, y)
+        registry_utils.retrieve_context_cache()
 
         end_direct = datetime.now()
 
         start_cache = datetime.now()
-        retrieve_context_cache(x, y, service_registry.key)
+        registry_utils.retrieve_context_cache()
         end_cache = datetime.now()
 
         duration_direct = end_direct - start_direct

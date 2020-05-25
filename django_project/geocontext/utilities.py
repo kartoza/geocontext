@@ -12,7 +12,9 @@ from django.contrib.gis.gdal.error import GDALException
 
 logger = logging.getLogger(__name__)
 
+
 class ServiceDefinitions():
+    """Class storing service definitions"""
     WFS = 'WFS'
     WCS = 'WCS'
     WMS = 'WMS'
@@ -29,6 +31,7 @@ class ServiceDefinitions():
         (WIKIPEDIA, 'Wikipedia'),
         (PLACENAME, 'PlaceName'),
     )
+
 
 def convert_coordinate(x, y, srid_source, srid_target):
     """Convert coordinate x y from srid_source to srid_target.

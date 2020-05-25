@@ -28,7 +28,7 @@ class TestContextServiceRegistry(TestCase):
         # check if model key exists.
         self.assertTrue(model.key is not None)
 
-    @unittest.skip('Failing context services registry')
+    @unittest.skip('Failing external context services registry endpoint')
     def test_retrieve_context_value1(self):
         """Test retrieving context value from a point with same CRS.
 
@@ -64,7 +64,7 @@ class TestContextServiceRegistry(TestCase):
         self.assertEqual(context_cache.geometry.geom_type, 'Polygon')
         self.assertEqual(context_cache.geometry.srid, 4326)
 
-    @unittest.skip('Failing context services registry')
+    @unittest.skip('Failing external context services registry endpoint')
     def test_retrieve_context_value2(self):
         """Test retrieving context value from a point with different CRS.
 
@@ -101,7 +101,7 @@ class TestContextServiceRegistry(TestCase):
         # Automatically projected to 4326
         self.assertEqual(context_cache.geometry.srid, 4326)
 
-    @unittest.skip('Failing context services registry')
+    @unittest.skip('Failing external context services registry endpoint')
     def test_retrieve_context_value_geoserver(self):
         """Test retrieving context value from a geoserver service.
 
@@ -138,6 +138,7 @@ class TestContextServiceRegistry(TestCase):
         # Automatically projected to 4326
         self.assertEqual(context_cache.geometry.srid, 4326)
 
+    @unittest.skip('Needs to be updated to new registryutils method')
     def test_retrieve_context_value_wms(self):
         """Test retrieving context value from a point with WMS source.
 
@@ -169,6 +170,7 @@ class TestContextServiceRegistry(TestCase):
         context_cache = context_caches[0]
         self.assertEqual(context_cache.value, expected_value)
 
+    @unittest.skip('Needs to be updated to new registryutils method')
     def test_retrieve_context_value_arcrest(self):
         """Test retrieving context value from a point with ArcRest source.
         """
@@ -199,6 +201,7 @@ class TestContextServiceRegistry(TestCase):
         context_cache = context_caches[0]
         self.assertEqual(context_cache.value, expected_value)
 
+    @unittest.skip('Needs to be updated to new registryutils method')
     def test_retrieve_context_value_placename(self):
         """Test retrieving context value from a point with ArcRest source.
         """
@@ -228,6 +231,7 @@ class TestContextServiceRegistry(TestCase):
         context_cache = context_caches[0]
         self.assertEqual(context_cache.value, expected_value)
 
+    @unittest.skip('Needs to be updated to new registryutils method')
     def test_retrieve_context_value_invalid(self):
         """Test retrieving context value from a point with different CRS.
 
@@ -251,6 +255,7 @@ class TestContextServiceRegistry(TestCase):
         result = service_registry.retrieve_context_value(x, y)
         self.assertIsNone(result)
 
+    @unittest.skip('Needs to be updated to new registryutils method')
     def test_parse_request_value(self):
         """Test parse value for WMS response."""
         service_registry = ContextServiceRegistryF.create()

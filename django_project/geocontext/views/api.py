@@ -28,7 +28,7 @@ from geocontext.serializers.context_collection import (
 
 from geocontext.models.utilities import (
     ContextServiceRegistryUtils,
-    retrieve_from_registry_util
+    retrieve_registry_util
 )
 
 
@@ -147,11 +147,13 @@ def get_context(request):
             y = cleaned_data['y']
             srid = cleaned_data.get('srid', 4326)
             service_registry_key = cleaned_data['service_registry_key']
-            registry_utils = ContextServiceRegistryUtils(service_registry_key, x, y, srid)
-            cache = registry_utils.retrieve_context_cache()
+            registry_util = ContextServiceRegistryUtils(
+                service_registry_key, x, y, srid)
+            cache = registry_util.retrieve_context_cache()
             if cache is None:
-                result = retrieve_from_registry_util(registry_utils)
-                cache = registry_utils.create_context_cache(**result)
+                result = retrieve_registry_util(
+                    (service_registry_key, registry_util))
+                cache = result[1].create_context_cache()
             fields = ('value', 'key')
             if cache:
                 return HttpResponse(

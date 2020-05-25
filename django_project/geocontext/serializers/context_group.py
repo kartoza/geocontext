@@ -46,7 +46,8 @@ class ContextGroupValue(object):
         """Initialize method for context group value."""
         self.x = x
         self.y = y
-        self.context_group = get_object_or_404(ContextGroup, key=context_group_key)
+        self.context_group = get_object_or_404(
+            ContextGroup, key=context_group_key)
         self.key = self.context_group.key
         self.name = self.context_group.name
         self.srid = srid
@@ -64,7 +65,11 @@ class ContextGroupValue(object):
         external_registry_utils = []
         for group_service in group_services:
             registry_utils = ContextServiceRegistryUtils(
-                group_service.context_service_registry.key, self.x, self.y, self.srid)
+                group_service.context_service_registry.key,
+                self.x,
+                self.y,
+                self.srid
+            )
             cache = registry_utils.retrieve_context_cache()
 
             # Append all the caches found locally - list those still needed
@@ -75,12 +80,12 @@ class ContextGroupValue(object):
 
         # Parallel request external resources not found locally
         new_result_list = thread_retrieve_external(external_registry_utils)
-        
+
         # Add new external resources to cache
         for new_result in new_result_list:
-            group_key, util = new_result[0], new_result[1]
-            if util is not None:
-                self.service_registry_values.append(util.create_context_cache())
+            if new_result[1] is not None:
+                self.service_registry_values.append(
+                    new_result[1].create_context_cache())
 
 
 class ContextGroupValueSerializer(serializers.Serializer):

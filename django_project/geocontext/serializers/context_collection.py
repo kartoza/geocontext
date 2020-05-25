@@ -71,12 +71,17 @@ class ContextCollectionValue(object):
                 context_group=context_group).order_by('order')
             for group_service in group_services:
                 registry_utils = ContextServiceRegistryUtils(
-                    group_service.context_service_registry.key, self.x, self.y, self.srid)
+                    group_service.context_service_registry.key,
+                    self.x,
+                    self.y,
+                    self.srid
+                )
                 cache = registry_utils.retrieve_context_cache()
 
-                # Append all the caches found locally - add externally required to dict
+                # Append all the caches found locally - add externally required
                 if cache is None:
-                    external_queries.append((context_group.key, registry_utils))
+                    external_queries.append(
+                        (context_group.key, registry_utils))
                 else:
                     if context_group.key in group_caches:
                         group_caches[context_group.key].append(cache)
@@ -96,7 +101,7 @@ class ContextCollectionValue(object):
                 else:
                     group_caches[group_key] = [cache]
 
-        # Init contextgroup serializer but override populating context registry values
+        # Init contextgroup serializer but override populating registry values
         for group_key, cache_list in group_caches.items():
             context_group_value = ContextGroupValue(
                 self.x, self.y, group_key, self.srid, populate=False)

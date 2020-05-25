@@ -5,8 +5,8 @@ import fnmatch
 import json
 import logging
 import pytz
-import threading
 import requests
+import threading
 
 from owslib.wms import WebMapService
 from xml.dom import minidom
@@ -15,7 +15,6 @@ from django.http import QueryDict
 
 from geocontext.models.context_service_registry import ContextServiceRegistry
 from geocontext.models.context_cache import ContextCache
-
 from geocontext.utilities import (
     convert_coordinate,
     find_geometry_in_xml,
@@ -29,14 +28,30 @@ thread_local = threading.local()
 
 
 def thread_retrieve_external(registry_utils):
+    """Threading master function for retrieving external service data
+
+    :param registry_utils: List with Registry util argument tuple objects
+    :type registry_utils: ContextServiceRegistryUtils
+
+    :return: list of threading results
+    :rtype: list
+    """
     new_result_list = []
     with ThreadPoolExecutor() as executor:
-        for result in executor.map(retrieve_from_registry_util, registry_utils):
+        for result in executor.map(retrieve_registry_util, registry_utils):
             new_result_list.append(result)
     return new_result_list
 
 
-def retrieve_from_registry_util(registry_util):
+def retrieve_registry_util(registry_util):
+    """Threading function for retrieving external service data
+
+    :param registry_utils: (group key, registryUtil)
+    :type registry_utils: tuple
+
+    :return: list of threading results
+    :rtype: list
+    """
     if not hasattr(thread_local, "session"):
         thread_local.session = requests.Session()
     registry_util[1].retrieve_context_value(thread_local.session)
@@ -44,12 +59,24 @@ def retrieve_from_registry_util(registry_util):
 
 
 class ContextServiceRegistryUtils():
-    """Utility class for context registry model
-    only __init__, get&create_context_cache access DB 
-    but does not store any direct data.
+    """Utility class for context registry model.
+    Threadsafe - only __init__, get_ & create_context_cache
+    access DB but does not store any connection.
     """
-
     def __init__(self, service_registry_key, x, y, srid=4326):
+        """Each instance requires a location + service registry key
+        The coordinate is generalized and service registry loaded
+        for external data download - save to cache operations.
+
+        :param service_registry_key: service_registry_key
+        :type service_registry_key: int
+        :param x: (longitude)
+        :type x: float
+        :param y: Y (latitude)
+        :type y: float
+        :param srid: SRID (optional).
+        :type srid: int
+        """
         self.service_registry_key = service_registry_key
         service_registry = self.get_service_registry()
         self.query_type = service_registry.query_type
@@ -65,10 +92,18 @@ class ContextServiceRegistryUtils():
         self.parsed_value = None
 
     def get_service_registry(self):
+        """Returns context service registry instance
+
+        :raises KeyError: If registry not found
+        :return: context service registry
+        :rtype: ContextServiceRegistry
+        """
         try:
-            return ContextServiceRegistry.objects.get(key=self.service_registry_key)
+            return ContextServiceRegistry.objects.get(
+                key=self.service_registry_key)
         except ContextServiceRegistry.DoesNotExist:
-            raise KeyError(f'Service Registry not Found for {self.service_registry_key}')
+            raise KeyError('Service Registry not Found for'
+                           f'{self.service_registry_key}')
 
     def generalize_point(self, x, y, srid):
         """Generalize a point to standard srid grid depending on data source type.
@@ -76,7 +111,7 @@ class ContextServiceRegistryUtils():
         native_resolution. This is done after projection but before quering
         cache/web service.
 
-        Default precision for non WFS is 4 decimals (~10m)
+        Default precision for is 4 decimals (~10m)
 
         :param point: Point
         :type point: GEOS point
@@ -90,20 +125,25 @@ class ContextServiceRegistryUtils():
         else:
             point = Point(x, y, srid=4326)
 
+        # Default round to 4 decimals
+        decimals = 4
+        x_round = Decimal(point.x).quantize(Decimal('0.' + '0' * decimals))
+        y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
+        point = Point(float(x_round), float(y_round), srid=4326)
+
         if self.query_type != ServiceDefinitions.WFS:
-            decimals = 4
-            x_round = Decimal(point.x).quantize(Decimal('0.' + '0' * decimals))
-            y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
-            point = Point(float(x_round), float(y_round), srid=4326)
+            pass
+
         return point
 
     def retrieve_context_cache(self):
         """Retrieve context from point x, y.
 
-        :returns: context_cache
+        :returns: context_cache on None
         :rtype: context_cache or None
         """
-        caches = ContextCache.objects.filter(service_registry=self.get_service_registry())
+        caches = ContextCache.objects.filter(
+            service_registry=self.get_service_registry())
 
         for cache in caches:
             if cache.geometry:
@@ -171,17 +211,23 @@ class ContextServiceRegistryUtils():
                     self.parsed_value = self.parse_request_value(content)
                 else:
                     error_message = (
-                        f'{self.new_url} url failed for CSR: {self.service_registry_key}.'
-                        f'Got: {request.status_code} because of reasons: {request.reason}'
+                        f'{self.new_url} url failed for CSR: '
+                        f'{self.service_registry_key}.'
+                        f'Got: {request.status_code} because of reasons: '
+                        f'{request.reason}'
                     )
                     LOGGER.error(error_message)
                     self.parsed_value = None
 
     def create_context_cache(self):
+        """Add context value to cache
+
+        :return: Context cache instance
+        :rtype: ContextCache
+        """
         service_registry = self.get_service_registry()
-        expired_time = (
-            datetime.utcnow() + timedelta(seconds=service_registry.time_to_live)
-        )
+        expired_time = (datetime.utcnow() + timedelta(
+                        seconds=service_registry.time_to_live))
         expired_time = expired_time.replace(tzinfo=pytz.UTC)
         context_cache = ContextCache(
             service_registry=service_registry,
