@@ -8,7 +8,7 @@ from django.test import TestCase
 
 from geocontext.models.context_service_registry import ContextServiceRegistry
 
-from geocontext.models.utilities import ContextServiceRegistryUtils
+from geocontext.models.utilities import CSRUtils
 from base.management.commands.utilities import import_data
 
 test_data_directory = os.path.join(
@@ -38,13 +38,13 @@ class TestGeoContextView(TestCase):
         csr_key = 'quaternary_catchment_area'
 
         start_direct = datetime.now()
-        registry_utils = ContextServiceRegistryUtils(csr_key, x, y)
-        registry_utils.retrieve_context_cache()
+        csr_util = CSRUtils(csr_key, x, y)
+        csr_util.retrieve_context_cache()
 
         end_direct = datetime.now()
 
         start_cache = datetime.now()
-        registry_utils.retrieve_context_cache()
+        csr_util.retrieve_context_cache()
         end_cache = datetime.now()
 
         duration_direct = end_direct - start_direct

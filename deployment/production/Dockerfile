@@ -13,7 +13,8 @@ RUN apt-get update -y && \
     apt-get install -y python3-pip \
     python3-gdal \
     python3-geoip \
-    python3-setuptools
+    python3-setuptools \ 
+    uwsgi-plugin-python3
 
 ADD REQUIREMENTS.txt /REQUIREMENTS.txt
 RUN pip install -r /REQUIREMENTS.txt

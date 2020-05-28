@@ -1,18 +1,20 @@
 # coding=utf-8
 """Serializer for context collection."""
-
 from django.shortcuts import get_object_or_404
-
 from rest_framework import serializers
+
 from geocontext.models.context_group import ContextGroup
 from geocontext.models.context_collection import ContextCollection
 from geocontext.models.collection_groups import CollectionGroups
 from geocontext.models.context_group_services import ContextGroupServices
-from geocontext.serializers.context_group import (
-    ContextGroupValue, ContextGroupValueSerializer)
 from geocontext.models.utilities import (
-    ContextServiceRegistryUtils,
-    thread_retrieve_external
+    CSRUtils,
+    thread_retrieve_external,
+    UtilArg
+)
+from geocontext.serializers.context_group import (
+    ContextGroupValue,
+    ContextGroupValueSerializer
 )
 
 
@@ -60,28 +62,29 @@ class ContextCollectionValue(object):
     def populate_context_group_values(self):
         """Populate context group values."""
         self.context_group_values = []
+        util_arg_list = []
+        group_caches = {}
         collection_groups = CollectionGroups.objects.filter(
             context_collection=self.context_collection).order_by('order')
-        external_queries = []
-        group_caches = {}
         for collection_group in collection_groups:
             context_group = get_object_or_404(
                 ContextGroup, key=collection_group.context_group.key)
             group_services = ContextGroupServices.objects.filter(
                 context_group=context_group).order_by('order')
             for group_service in group_services:
-                registry_utils = ContextServiceRegistryUtils(
+                csr_util = CSRUtils(
                     group_service.context_service_registry.key,
                     self.x,
                     self.y,
                     self.srid
                 )
-                cache = registry_utils.retrieve_context_cache()
+                cache = csr_util.retrieve_context_cache()
 
-                # Append all the caches found locally - add externally required
+                # Append all the caches found locally - list still needed
                 if cache is None:
-                    external_queries.append(
-                        (context_group.key, registry_utils))
+                    util_arg = UtilArg(group_key=context_group.key,
+                                       csr_util=csr_util)
+                    util_arg_list.append(util_arg)
                 else:
                     if context_group.key in group_caches:
                         group_caches[context_group.key].append(cache)
@@ -89,17 +92,17 @@ class ContextCollectionValue(object):
                         group_caches[context_group.key] = [cache]
 
         # Parallel request external resources not found locally
-        new_result_list = thread_retrieve_external(external_queries)
+        if len(util_arg_list) > 0:
+            new_result_list = thread_retrieve_external(util_arg_list)
 
-        # Add new external resources to dict with group: [cache]
-        for result in new_result_list:
-            group_key, util = result[0], result[1]
-            if util is not None:
-                cache = util.create_context_cache()
-                if group_key in group_caches:
-                    group_caches[group_key].append(cache)
-                else:
-                    group_caches[group_key] = [cache]
+            # Add new external resources to dict with group: [cache]
+            for new_util_arg in new_result_list:
+                if new_util_arg is not None:
+                    cache = new_util_arg.csr_util.create_context_cache()
+                    if new_util_arg.group_key in group_caches:
+                        group_caches[new_util_arg.group_key].append(cache)
+                    else:
+                        group_caches[new_util_arg.group_key] = [cache]
 
         # Init contextgroup serializer but override populating registry values
         for group_key, cache_list in group_caches.items():

@@ -59,7 +59,7 @@ def convert_coordinate(x, y, srid_source, srid_target):
     return point.x, point.y
 
 
-def parse_gml_geometry(gml_string, workspace=None):
+def parse_gml_geometry(gml_string, tag_name='qgs:geometry'):
     """Parse geometry from gml document.
 
     :param gml_string: String that represent full gml document.
@@ -69,17 +69,22 @@ def parse_gml_geometry(gml_string, workspace=None):
         more than one.
     :rtype: GEOSGeometry
     """
-    xmldoc = minidom.parseString(gml_string)
     try:
-        if workspace:
-            tag_name = workspace + ':' + 'geom'
+        xmldoc = minidom.parseString(gml_string)
+    except Exception as e:
+        logger.error(f'Could not parse GML string: {e}')
+        return None
+    try:
+        if tag_name == 'qgs:geometry':       
+            geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
+            geometry_gml_dom = geometry_dom.childNodes[1]
+            return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
+        else:
+            tag_name = tag_name.split(':')[0] + ':' + 'geom'
             geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
             geometry_gml_dom = geometry_dom.childNodes[0]
             return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
-        else:
-            geometry_dom = xmldoc.getElementsByTagName('qgs:geometry')[0]
-            geometry_gml_dom = geometry_dom.childNodes[1]
-            return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
+
     except IndexError:
         logger.error('No geometry found')
         return None
@@ -95,12 +100,8 @@ def tag_with_version(tag, version):
     return tag
 
 
-def find_geometry_in_xml(url):
-    request = requests.get(url)
-    content = request.content
+def find_geometry_in_xml(content):
     content_parsed = ET.fromstring(content)
-    if request.status_code == 500:
-        return None, None
     version = None
     try:
         content_parsed.tag.split('}')[1]

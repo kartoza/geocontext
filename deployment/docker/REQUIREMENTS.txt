@@ -12,7 +12,7 @@ django-pipeline==1.7.0
 django-role-permissions==2.2.1
 django-sentry==1.13.5
 djangorestframework-gis==0.15
-djangorestframework==3.11.0
+djangorestframework==3.11.*
 markdown==3.2.1
 psycopg2-binary==2.8.5
 pytz==2020.1

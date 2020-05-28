@@ -27,8 +27,9 @@ from geocontext.serializers.context_collection import (
     ContextCollectionValue, ContextCollectionValueSerializer)
 
 from geocontext.models.utilities import (
-    ContextServiceRegistryUtils,
-    retrieve_registry_util
+    CSRUtils,
+    retrieve_external_csr,
+    UtilArg
 )
 
 
@@ -63,8 +64,8 @@ class ContextValueGeometryListAPI(views.APIView):
 
         context_caches = []
         for csr_key in csr_keys:
-            registry_utils = ContextServiceRegistryUtils(csr_key, x, y)
-            cache = registry_utils.retrieve_context_cache()
+            csr_util = CSRUtils(csr_key, x, y)
+            cache = csr_util.retrieve_context_cache()
             context_caches.append(cache)
         if None in context_caches:
             return Response('No cache found')
@@ -147,13 +148,13 @@ def get_context(request):
             y = cleaned_data['y']
             srid = cleaned_data.get('srid', 4326)
             service_registry_key = cleaned_data['service_registry_key']
-            registry_util = ContextServiceRegistryUtils(
-                service_registry_key, x, y, srid)
-            cache = registry_util.retrieve_context_cache()
+            csr_util = CSRUtils(service_registry_key, x, y, srid)
+            cache = csr_util.retrieve_context_cache()
             if cache is None:
-                result = retrieve_registry_util(
-                    (service_registry_key, registry_util))
-                cache = result[1].create_context_cache()
+                util_arg = UtilArg(group_key=None, csr_util=csr_util)
+                new_util_arg = retrieve_external_csr(util_arg)
+                if new_util_arg is not None:
+                    cache = new_util_arg.csr_util.create_context_cache()
             fields = ('value', 'key')
             if cache:
                 return HttpResponse(

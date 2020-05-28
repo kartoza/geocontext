@@ -155,7 +155,9 @@ class ContextCache(models.Model):
         """
         if self.geometry_point:
             return self.geometry_point
-        if self.geometry_linestring:
+        elif self.geometry_point_3d:
+            return self.geometry_point_3d
+        elif self.geometry_linestring:
             return self.geometry_linestring
         elif self.geometry_polygon:
             return self.geometry_polygon
