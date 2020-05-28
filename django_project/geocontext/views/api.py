@@ -26,7 +26,11 @@ from geocontext.serializers.context_group import (
 from geocontext.serializers.context_collection import (
     ContextCollectionValue, ContextCollectionValueSerializer)
 
-from geocontext.models.utilities import retrieve_context
+from geocontext.models.utilities import (
+    CSRUtils,
+    retrieve_external_csr,
+    UtilArg
+)
 
 
 class ContextServiceRegistryListAPIView(generics.ListAPIView):
@@ -60,8 +64,11 @@ class ContextValueGeometryListAPI(views.APIView):
 
         context_caches = []
         for csr_key in csr_keys:
-            context_cache = retrieve_context(x, y, csr_key)
-            context_caches.append(context_cache)
+            csr_util = CSRUtils(csr_key, x, y)
+            cache = csr_util.retrieve_context_cache()
+            context_caches.append(cache)
+        if None in context_caches:
+            return Response('No cache found')
         with_geometry = self.request.query_params.get('with-geometry', 'True')
         if strtobool(with_geometry):
             serializer = ContextValueGeoJSONSerializer(
@@ -141,13 +148,19 @@ def get_context(request):
             y = cleaned_data['y']
             srid = cleaned_data.get('srid', 4326)
             service_registry_key = cleaned_data['service_registry_key']
-            result = retrieve_context(x, y, service_registry_key, srid)
+            csr_util = CSRUtils(service_registry_key, x, y, srid)
+            cache = csr_util.retrieve_context_cache()
+            if cache is None:
+                util_arg = UtilArg(group_key=None, csr_util=csr_util)
+                new_util_arg = retrieve_external_csr(util_arg)
+                if new_util_arg is not None:
+                    cache = new_util_arg.csr_util.create_context_cache()
             fields = ('value', 'key')
-            if result:
+            if cache:
                 return HttpResponse(
                     serialize(
                         'geojson',
-                        [result],
+                        [cache],
                         geometry_field='geometry_multi_polygon',
                         fields=fields),
                     content_type='application/json')

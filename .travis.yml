@@ -11,16 +11,16 @@ env:
     - DJANGO_SETTINGS_MODULE=core.settings.test_travis
 
 sudo: false
-dist: trusty
+dist: bionic
 
 python:
-  - '3.6'
+  - '3.8'
 
 addons:
   postgresql: "9.6"
   apt:
     packages:
-    - postgresql-9.6-postgis-2.3
+    - postgresql-9.6-postgis-2.4
 
 install:
   - pip install codecov
@@ -46,5 +46,4 @@ after_success:
 email:
  - tim@kartoza.com
  - dimas@kartoza.com
- - christian@kartoza.com
- - ismail@kartoza.com
+ - andre.theron@kartoza.com

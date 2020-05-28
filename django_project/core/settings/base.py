@@ -2,7 +2,7 @@
 """
 core.settings.base
 """
-# Django settings for projecta project.
+# Django settings for geocontext project.
 
 from .utils import absolute_path
 import os
@@ -11,8 +11,7 @@ ADMINS = (
     ('Dimas Ciputra', 'dimas@kartoza.com'),
     ('Irwan Fathurrahman', 'irwan@kartoza.com'),
     ('Anita Nilam', 'anita@kartoza.com'),
-    ('Yarjuna Rohmat', 'rohmat@kartoza.com'),
-    ('Ismail Sunni', 'ismail@kartoza.com'),
+    ('Andre Theron', 'andre.theron@kartoza.com'),
 )
 
 MANAGERS = ADMINS
@@ -123,6 +122,15 @@ TEMPLATES = [
         },
     },
 ]
+
+# Rest Upgrade - https://github.com/encode/django-rest-framework/issues/6809
+# django-rest-framework.org/community/3.10-announcement/#continuing-to-use-coreapi
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+}
+
+# Allow unlimeted persistent DB connections - required for multithreading.
+CONN_MAX_AGE = 60
 
 MIDDLEWARE = (
     'corsheaders.middleware.CorsMiddleware',

@@ -1,13 +1,16 @@
 # coding=utf-8
 """Serializer for context group."""
-
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
+
 from geocontext.models.context_group import ContextGroup
 from geocontext.models.context_group_services import ContextGroupServices
+from geocontext.models.utilities import (
+    CSRUtils,
+    thread_retrieve_external,
+    UtilArg
+)
 from geocontext.serializers.context_cache import ContextValueSerializer
-
-from geocontext.models.utilities import retrieve_context
 
 
 class ContextGroupSerializer(serializers.ModelSerializer):
@@ -40,7 +43,7 @@ class ContextGroupSerializer(serializers.ModelSerializer):
 class ContextGroupValue(object):
     """Class for holding values of context group."""
 
-    def __init__(self, x, y, context_group_key, srid=4326):
+    def __init__(self, x, y, context_group_key, srid=4326, populate=True):
         """Initialize method for context group value."""
         self.x = x
         self.y = y
@@ -51,19 +54,41 @@ class ContextGroupValue(object):
         self.srid = srid
         self.service_registry_values = []
         self.graphable = self.context_group.graphable
-        self.populate_service_registry_values()
+
+        if populate:
+            self.populate_service_registry_values()
 
     def populate_service_registry_values(self):
         """Populate service registry values."""
         self.service_registry_values = []
-        context_group_services = ContextGroupServices.objects.filter(
+        util_arg_list = []
+        group_services = ContextGroupServices.objects.filter(
             context_group=self.context_group).order_by('order')
-        for context_group_service in context_group_services:
-            context_service_registry_key = \
-                context_group_service.context_service_registry.key
-            context_cache = retrieve_context(
-                self.x, self.y, context_service_registry_key, self.srid)
-            self.service_registry_values.append(context_cache)
+        for group_service in group_services:
+            csr_util = CSRUtils(
+                group_service.context_service_registry.key,
+                self.x,
+                self.y,
+                self.srid
+            )
+            cache = csr_util.retrieve_context_cache()
+
+            # Append all the caches found locally - list still needed
+            if cache is None:
+                util_arg = UtilArg(group_key=None, csr_util=csr_util)
+                util_arg_list.append(util_arg)
+            else:
+                self.service_registry_values.append(cache)
+
+        # Parallel request external resources not found locally
+        if len(util_arg_list) > 0:
+            new_result_list = thread_retrieve_external(util_arg_list)
+
+            # Add new external resources to cache
+            for new_util_arg in new_result_list:
+                if new_util_arg is not None:
+                    self.service_registry_values.append(
+                        new_util_arg.csr_util.create_context_cache())
 
 
 class ContextGroupValueSerializer(serializers.Serializer):

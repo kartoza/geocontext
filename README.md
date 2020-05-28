@@ -45,12 +45,7 @@ git clone git://github.com/kartoza/geocontext.git
 cd geocontext/deployment
 cp btsync-db.env.EXAMPLE btsync-db.env
 cp btsync-media.env.EXAMPLE btsync-media.env
-make build
-make permissions
-make web
-# Wait a few seconds for the DB to start before to do the next command
-make migrate
-make collectstatic
+make run
 ```
 
 
@@ -127,7 +122,8 @@ all necessary servicing, repair or correction.
 Thank you to the individual contributors who have helped to build GeoContext:
 
 * Tim Sutton ([@timlinux](https://github.com/timlinux)) : tim@kartoza.com
-* Ismail Sunni ([@ismailsunni](https://github.com/ismailsunni)) : ismail@kartoza
-.com
+* Ismail Sunni (@ismailsunni)
 * Dimas Tri Ciputra ([@dimasciput](https://github.com/dimasciput)) : 
 dimas@kartoza.com
+* Andre Theron ([@andretheronsa](https://github.com/andretheronsa)) : 
+andre.theron@kartoza.com

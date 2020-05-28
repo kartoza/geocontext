@@ -8,7 +8,7 @@ from django.test import TestCase
 
 from geocontext.models.context_service_registry import ContextServiceRegistry
 
-from geocontext.models.utilities import retrieve_context
+from geocontext.models.utilities import CSRUtils
 from base.management.commands.utilities import import_data
 
 test_data_directory = os.path.join(
@@ -35,21 +35,20 @@ class TestGeoContextView(TestCase):
         """Test for retrieving from service registry and cache."""
         x = 27.8
         y = -32.1
-
-        service_registry = ContextServiceRegistry.objects.get(
-            key='water_management_area')
+        csr_key = 'quaternary_catchment_area'
 
         start_direct = datetime.now()
-        retrieve_context(x, y, service_registry.key)
+        csr_util = CSRUtils(csr_key, x, y)
+        csr_util.retrieve_context_cache()
+
         end_direct = datetime.now()
 
         start_cache = datetime.now()
-        retrieve_context(x, y, service_registry.key)
+        csr_util.retrieve_context_cache()
         end_cache = datetime.now()
 
         duration_direct = end_direct - start_direct
         duration_cache = end_cache - start_cache
         message = 'Direct: %.5f. Cache: %.5f' % (
             duration_direct.total_seconds(), duration_cache.total_seconds())
-        print(message)
         self.assertGreater(duration_direct, duration_cache, message)

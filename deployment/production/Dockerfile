@@ -1,22 +1,23 @@
 #--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
 # Note this base image is based on debian
-FROM python:3.6.8
-MAINTAINER Dimas Ciputra<dimas@kartoza.com>
+FROM python:3.8-buster
+
+LABEL maintainer="Dimas Ciputra<dimas@kartoza.com>"
+LABEL maintainer="Andre Theron<andre.theron@kartoza.com>"
 
 RUN export DEBIAN_FRONTEND=noninteractive
 ENV DEBIAN_FRONTEND noninteractive
 RUN dpkg-divert --local --rename --add /sbin/initctl
 
-RUN apt-get update -y
-
-RUN apt-get install -y python3-pip \
-    python-gdal \
-    python-geoip \
-    python3-setuptools
+RUN apt-get update -y && \
+    apt-get install -y python3-pip \
+    python3-gdal \
+    python3-geoip \
+    python3-setuptools \ 
+    uwsgi-plugin-python3
 
 ADD REQUIREMENTS.txt /REQUIREMENTS.txt
 RUN pip install -r /REQUIREMENTS.txt
-RUN pip install uwsgi
 
 ARG BIMS_TAG=develop
 RUN git clone --depth=1 git://github.com/kartoza/geocontext.git --branch ${BIMS_TAG} /usr/src/geocontext

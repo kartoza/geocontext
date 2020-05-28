@@ -25,6 +25,13 @@ class ContextCache(models.Model):
         max_length=1000,
     )
 
+    geometry_point = models.PointField(
+        help_text=_('The point geometry of the query.'),
+        blank=True,
+        null=True,
+        dim=2
+    )
+
     geometry_linestring = models.LineStringField(
         help_text=_('The line geometry of the context.'),
         blank=True,
@@ -51,6 +58,13 @@ class ContextCache(models.Model):
         blank=True,
         null=True,
         dim=2
+    )
+
+    geometry_point_3d = models.PointField(
+        help_text=_('The 3d point geometry of the query.'),
+        blank=True,
+        null=True,
+        dim=3
     )
 
     geometry_linestring_3d = models.LineStringField(
@@ -106,7 +120,12 @@ class ContextCache(models.Model):
         :param geometry: The geometry.
         :type geometry: GEOSGeometry
         """
-        if geometry.geom_type in ['LineString', 'LinearRing']:
+        if geometry.geom_type == 'Point':
+            if geometry.hasz:
+                self.geometry_point_3d = geometry
+            else:
+                self.geometry_point = geometry
+        elif geometry.geom_type in ['LineString', 'LinearRing']:
             if geometry.hasz:
                 self.geometry_linestring_3d = geometry
             else:
@@ -134,7 +153,11 @@ class ContextCache(models.Model):
         :return: The geometry of the cache
         :rtype: GEOSGeometry
         """
-        if self.geometry_linestring:
+        if self.geometry_point:
+            return self.geometry_point
+        elif self.geometry_point_3d:
+            return self.geometry_point_3d
+        elif self.geometry_linestring:
             return self.geometry_linestring
         elif self.geometry_polygon:
             return self.geometry_polygon

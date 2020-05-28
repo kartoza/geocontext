@@ -3,6 +3,27 @@
 **Note:** This documentation is intentionally generic so that it can
 be copy-pasted between projects - do not put project specific details here.
 
+## Quickstart with Docker and VSCode
+
+An easy way to set up a locally development environment is with Docker and VSCode.
+
+1. For local DB access first uncomment the ports section in the db app in the docker-compose.yml 
+2. For river-name specific queries you should add the river database details to the uwsgi environment
+  (RIVER_DATABASE_USER, RIVER_DATABASE_HOST, RIVER_DATABASE_PASSWORD, RIVER_DATABASE_NAME)
+3. Use setup-dev to build the production and development containers, create superuser,
+and import default registries.
+```
+make setup-dev
+```
+4. Geocontext should now be running at localhost.
+5. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
+7. Attach a VSCode session by right clicking on the running geocontext_devweb container in the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension
+6. Now we can get into the running containers to run management commands, run another server at another port, debug etc.
+7. Tests can be run using the development environment using
+```
+make test
+```
+
 ## Application architecture under docker
 
 The following diagram provides and overview of the core architecture
@@ -96,7 +117,7 @@ Now set these options:
 
 * **Name:** Django Server
 * **Host:** 0.0.0.0
-* **Port:** (use the http port specified in the docker-compose.yml file, e.g. 8080)`*` **Run browser** If checked, it will open the url after you click run. You should be able to access the running projecta on 0.0.0.0:61202 (the port that mapped to 8080)
+* **Port:** (use the http port specified in the docker-compose.yml file, e.g. 8080)`*` **Run browser** If checked, it will open the url after you click run. You should be able to access the running Geocontext on 0.0.0.0:61202 (the port that mapped to 8080)
 * **Additional options:** ``--settings=core.settings.dev_docker``
 * **Run browser:** Optionally set this to your IP address (MacOS/Linux) or your specific IP address (Windows) followed by the port forward address for port 8080 specified in your ``docker-compose.yml`` file. For example: ``http://0.0.0.0:65202``.
 * **Environment vars:** Leave as default unless you need to add something to the env
@@ -118,12 +139,6 @@ able to step through views etc as you work.
 I made a general overview screencast describing this process here:
 
 [![YouTube Screencast](http://img.youtube.com/vi/n-wwp17MqhU/0.jpg)](https://www.youtube.com/watch?v=n-wwp17MqhU "YouTube Screencast")
-
-
-## Running Tests
-
-Tim write stuff here....
-
 
 ## Developer FAQ
 

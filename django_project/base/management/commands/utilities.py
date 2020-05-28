@@ -66,16 +66,13 @@ def import_data(file_uri):
     print('=========================')
     # Read json file
     if os.path.exists(file_uri):
-        print('Read from local file')
         with open(file_uri) as f:
             data = json.load(f)
     else:
-        print('Read from URL')
         r = requests.get(file_uri)
         data = r.json()
 
     # Load Context Service Registries
-    print('Load Context Service Registry....')
     context_service_registries = data['context_service_registry']
     for csr_data in context_service_registries:
         service_registry, created = ContextServiceRegistry.objects. \
@@ -84,21 +81,16 @@ def import_data(file_uri):
         for k, v in csr_data.items():
             setattr(service_registry, k, v)
         service_registry.save()
-        print('   id = %s, CSR %s is loaded' % (
-            service_registry.id, service_registry.name))
 
         try:
             service_registry.full_clean()
             service_registry.save()
-            print('   id = %s, CSR %s is loaded' % (
-                service_registry.id, service_registry.name))
         except ValidationError as e:
             print('   >>> CSR %s is not clean because %s ' % (
                 service_registry.name, e))
             service_registry.delete()
 
     # Load Context Groups
-    print('Load Context Groups....')
     context_groups = data['context_group']
     for context_group_data in context_groups:
         context_group, created = ContextGroup.objects. \
@@ -112,7 +104,7 @@ def import_data(file_uri):
                     try:
                         context_service_registry = \
                             ContextServiceRegistry.objects.get(key=csr_key)
-                    except ContextServiceRegistry.DoesNotExist as e:
+                    except ContextServiceRegistry.DoesNotExist:
                         print('No CSR registered for %s' % csr_key)
                         continue
 
@@ -127,15 +119,12 @@ def import_data(file_uri):
         try:
             context_group.full_clean()
             context_group.save()
-            print(
-                '   Context Group %s is loaded' % context_group.name)
         except ValidationError as e:
             print('   >>> Context Group %s is not clean because %s ' % (
                 context_group.name, e))
             context_group.delete()
 
     # Load Context Collections
-    print('Load Context Collection....')
     context_collections = data['context_collection']
     for context_collection_data in context_collections:
         context_collection, created = ContextCollection.objects. \
@@ -159,8 +148,6 @@ def import_data(file_uri):
         try:
             context_collection.full_clean()
             context_collection.save()
-            print(
-                '   Context Collection %s is loaded' % context_collection.name)
         except ValidationError as e:
             print('   >>> Context Collection %s is not clean because %s ' % (
                 context_collection.name, e))

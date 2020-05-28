@@ -7,7 +7,7 @@ SHELL := /bin/bash
 #    P R O D U C T I O N     C O M M A N D S
 # ----------------------------------------------------------------------------
 default: web
-run: build permissions web migrate collectstatic
+run: build permissions web pause migrate collectstatic
 
 deploy: run
 	@echo
@@ -87,6 +87,10 @@ migrate:
 	@# We add the '-' prefix to the next line as the migration may fail
 	@# but we want to continue anyway.
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py migrate
+
+pause:
+	@echo "Allow 30s for db to start up"
+	@sleep 30
 
 export-data:
 	@echo
@@ -306,6 +310,8 @@ enable-machine:
 # for pydevd etc. If they dont get copied, restart pycharm...
 # ----------------------------------------------------------------------------
 
+setup-dev: run superuser import-data build-devweb devweb
+
 devweb: db
 	@echo
 	@echo "------------------------------------------------------------------"
@@ -337,6 +343,8 @@ flake8:
 	@echo "Check flake 8"
 	@flake8 ../django_project
 
+test:
+	@docker-compose -p $(PROJECT_ID) exec devweb python -W ignore manage.py test
 
 # --------------- help --------------------------------
 
@@ -371,9 +379,11 @@ help:
 	@echo "* **rm** - remove all containers."
 	@echo "* **rm-only** - remove any containers without trying to kill them first. "
 	@echo "* **run** - builds and runs the complete orchestrated set of containers."
+	@echo "* **setup-dev** - builds and runs all containers + dev, creates superuser and imports data."
 	@echo "* **sentry** - **currently not working I think.** The idea is to spin up a sentry instance together with your app for fault reporting."
 	@echo "* **shell** - open a bash shell in the uwsgi (where django runs) container."
 	@echo "* **superuser** - create a django superuser account."
+	@echo "* **test** - Run tests on development."
 	@echo "* **update-migrations** - freshen all migration definitions to match the current code base."
 	@echo "* **web** - same as **run** - runs the production site."
 	@echo "* **flake8** - Check flake 8"
