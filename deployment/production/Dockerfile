@@ -19,6 +19,7 @@ RUN apt-get update -y && \
 ADD REQUIREMENTS.txt /REQUIREMENTS.txt
 RUN pip install -r /REQUIREMENTS.txt
 
+ARG BRANCH=2.0
 RUN git clone --depth=1 git://github.com/kartoza/geocontext.git --branch ${BRANCH} /usr/src/geocontext
 
 #USER www-data
