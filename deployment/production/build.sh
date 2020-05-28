@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ -z "$REPO_NAME" ]; then
-	REPO_NAME=kartoza
+	REPO_NAME=andretheronsa
 fi
 
 if [ -z "$IMAGE_NAME" ]; then
@@ -9,7 +9,7 @@ if [ -z "$IMAGE_NAME" ]; then
 fi
 
 if [ -z "$TAG_NAME" ]; then
-	TAG_NAME=latest
+	TAG_NAME=2.0
 fi
 
 if [ -z "$BUILD_ARGS" ]; then
@@ -19,7 +19,7 @@ fi
 # Build Args Environment
 
 if [ -z "$BIMS_TAG" ]; then
-	BIMS_TAG=develop
+	BIMS_TAG=2.0
 fi
 
 echo "BIMS_TAG=${BIMS_TAG}"

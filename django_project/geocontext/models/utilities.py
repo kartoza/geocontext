@@ -59,6 +59,7 @@ def retrieve_external_csr(util_arg):
     else:
         return None
 
+
 def get_session():
     """Get thread local request session"""
     if not hasattr(thread_local, "session"):
@@ -101,7 +102,7 @@ class CSRUtils():
 
         # Geometry defaults to generalized point - for basic cache hits.
         self.x = x
-        self.y = y       
+        self.y = y
         self.query_srid = srid
         self.generalize_point()
         self.geometry = self.point
@@ -131,10 +132,11 @@ class CSRUtils():
         :return: point
         :rtype: Point
         """
-        
+
         if self.query_srid != self.srid:
             point = Point(
-                *convert_coordinate(self.x, self.y, self.query_srid, self.srid),
+                *convert_coordinate(
+                    self.x, self.y, self.query_srid, self.srid),
                 srid=self.srid
             )
         else:
@@ -189,7 +191,8 @@ class CSRUtils():
                 self.value = e
             return True
 
-        if self.query_type in [ServiceDefinitions.ARCREST, ServiceDefinitions.PLACENAME]:
+        if self.query_type in [
+                ServiceDefinitions.ARCREST, ServiceDefinitions.PLACENAME]:
             build_url = self.build_query_url()
             build_content = self.request_content(build_url)
             if build_content is not None:
@@ -212,11 +215,13 @@ class CSRUtils():
                 return True
 
             build_url = self.build_query_url()
-            build_content = self.request_content(build_url)        
+            build_content = self.request_content(build_url)
             if build_content is not None:
-                geometry = parse_gml_geometry(build_content, self.layer_typename)
+                geometry = parse_gml_geometry(
+                    build_content, self.layer_typename)
                 if geometry is not None:
-                    geometry.srid = self.srid if not geometry.srid else geometry.srid
+                    if not geometry.srid:
+                        geometry.srid = self.srid
                     self.geometry = geometry
 
         self.cache_url = build_url
@@ -237,7 +242,9 @@ class CSRUtils():
                 if response.status_code == 200:
                     return response.content
         except requests.exceptions.RequestException as e:
-            LOGGER.error(f"'{self.service_registry_key}' url failed: {url} with: {e}")
+            LOGGER.error(
+                f"'{self.service_registry_key}' url failed: {url} with: {e}"
+            )
             return None
 
     def parse_request_value(self, request_content):
@@ -317,7 +324,7 @@ class CSRUtils():
             else:
                 url = f'{self.url}/identify?{query_dict.urlencode()}'
                 url += f'&mapExtent={bbox_string}'
-    
+
         elif self.query_type == ServiceDefinitions.PLACENAME:
             parameters = {
                 'lat': str(self.point.y),
