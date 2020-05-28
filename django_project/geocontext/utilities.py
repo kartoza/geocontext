@@ -1,7 +1,6 @@
 # coding=utf-8
 """Utilities module for geocontext app."""
 import logging
-import requests
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
@@ -75,7 +74,7 @@ def parse_gml_geometry(gml_string, tag_name='qgs:geometry'):
         logger.error(f'Could not parse GML string: {e}')
         return None
     try:
-        if tag_name == 'qgs:geometry':       
+        if tag_name == 'qgs:geometry':
             geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
             geometry_gml_dom = geometry_dom.childNodes[1]
             return GEOSGeometry.from_gml(geometry_gml_dom.toxml())

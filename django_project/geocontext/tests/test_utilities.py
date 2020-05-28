@@ -2,14 +2,10 @@
 """Test for utilities module."""
 
 import os
-import unittest
 
 from django.test import SimpleTestCase
 from geocontext.utilities import (
-    convert_coordinate, parse_gml_geometry, convert_2d_to_3d, get_bbox)
-from django.contrib.gis.geos import (
-    Point, LineString, LinearRing, Polygon, MultiPoint,
-    MultiLineString, MultiPolygon)
+    convert_coordinate, parse_gml_geometry, get_bbox)
 
 test_data_directory = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), 'data')
