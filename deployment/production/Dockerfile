@@ -19,8 +19,7 @@ RUN apt-get update -y && \
 ADD REQUIREMENTS.txt /REQUIREMENTS.txt
 RUN pip install -r /REQUIREMENTS.txt
 
-ARG BIMS_TAG=develop
-RUN git clone --depth=1 git://github.com/kartoza/geocontext.git --branch ${BIMS_TAG} /usr/src/geocontext
+RUN git clone --depth=1 git://github.com/kartoza/geocontext.git --branch ${BRANCH} /usr/src/geocontext
 
 #USER www-data
 WORKDIR /usr/src/geocontext
