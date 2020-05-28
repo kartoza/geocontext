@@ -18,16 +18,16 @@ fi
 
 # Build Args Environment
 
-if [ -z "$BIMS_TAG" ]; then
-	BIMS_TAG=2.0
+if [ -z "$BRANCH" ]; then
+	BRANCH=2.0
 fi
 
-echo "BIMS_TAG=${BIMS_TAG}"
+echo "BRANCH=${BRANCH}"
 
 echo "Build: $REPO_NAME/$IMAGE_NAME:$TAG_NAME"
 
 docker build -t ${REPO_NAME}/${IMAGE_NAME} \
-	--build-arg BIMS_TAG=${BIMS_TAG} \
+	--build-arg BRANCH=${BRANCH} \
 	${BUILD_ARGS} .
 docker tag ${REPO_NAME}/${IMAGE_NAME}:latest ${REPO_NAME}/${IMAGE_NAME}:${TAG_NAME}
 docker push ${REPO_NAME}/${IMAGE_NAME}:${TAG_NAME}
