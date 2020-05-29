@@ -147,6 +147,31 @@ class CSRUtils():
         y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
         self.point = Point(float(x_round), float(y_round), srid=self.srid)
 
+    def create_context_cache(self):
+        """Add context value to cache
+
+        :return: Context cache instance
+        :rtype: ContextCache
+        """
+        service_registry = self.get_service_registry()
+        expired_time = (datetime.utcnow() + timedelta(
+                        seconds=service_registry.time_to_live))
+        expired_time = expired_time.replace(tzinfo=pytz.UTC)
+        context_cache = ContextCache(
+            service_registry=service_registry,
+            name=service_registry.key,
+            value=self.value,
+            expired_time=expired_time
+        )
+        service_registry = None
+        if self.cache_url:
+            context_cache.source_uri = self.cache_url
+        if self.geometry:
+            context_cache.set_geometry_field(self.geometry)
+        context_cache.save()
+        context_cache.refresh_from_db()
+        return context_cache
+
     def retrieve_context_cache(self):
         """Retrieve context from point.
 
@@ -191,61 +216,74 @@ class CSRUtils():
                 self.value = e
             return True
 
-        if self.query_type in [
-                ServiceDefinitions.ARCREST, ServiceDefinitions.PLACENAME]:
-            build_url = self.build_query_url()
-            build_content = self.request_content(build_url)
+        if self.query_type in [ServiceDefinitions.ARCREST, ServiceDefinitions.PLACENAME]:
+            self.cache_url = self.box_query_url()
+            build_content = self.request_content()
             if build_content is not None:
                 self.value = self.parse_request_value(build_content)
+                if self.value is not None:
+                    return True
 
         else:
-            describe_url = self.describe_query_url()
-            describe_content = self.request_content(describe_url)
+            self.cache_url = self.describe_query_url()
+            describe_content = self.request_content()
             if describe_content is None:
                 return False
 
             geo_name, geo_type = find_geometry_in_xml(describe_content)
 
-            filter_url = self.filter_query_url(geo_name)
-            filter_content = self.request_content(filter_url)
-            if filter_content is not None:
-                self.value = self.parse_request_value(filter_content)
+            # Try quick polygon intersection query
+            if 'Polygon' in geo_type:
+                self.cache_url = self.intersect_query_url(geo_name)
+                gml_string = self.request_content()
+                if gml_string is not None:
+                    self.value = self.parse_request_value(gml_string)
+                    if self.value is not None:
+                        self.fetch_geometry(gml_string)
+                    return True
 
-            if self.query_type == ServiceDefinitions.PLACENAME:
-                return True
+            # Else try boundingbox
+            else:
+                self.cache_url = self.box_query_url()
+                gml_string = self.request_content()
+                if gml_string is not None:
+                    self.value = self.parse_request_value(gml_string)
+                    if self.value is not None:
+                        self.fetch_geometry(gml_string)
+                    return True
+        return False
 
-            build_url = self.build_query_url()
-            build_content = self.request_content(build_url)
-            if build_content is not None:
-                geometry = parse_gml_geometry(
-                    build_content, self.layer_typename)
-                if geometry is not None:
-                    if not geometry.srid:
-                        geometry.srid = self.srid
-                    self.geometry = geometry
-
-        self.cache_url = build_url
-        return True
-
-    def request_content(self, url, retries=0):
-        """Get request content from url in request session
-
-        :param url: URL to do query.
-        :type url: unicode
+    def request_content(self, retries=0):
+        """Get request content from cache url in request session
 
         :return: URL to do query.
         :rtype: unicode
         """
         session = get_session()
         try:
-            with session.get(url) as response:
+            with session.get(self.cache_url) as response:
                 if response.status_code == 200:
                     return response.content
         except requests.exceptions.RequestException as e:
             LOGGER.error(
-                f"'{self.service_registry_key}' url failed: {url} with: {e}"
+                f"'{self.service_registry_key}' url failed: {self.cache_url} with: {e}"
             )
             return None
+
+    def fetch_geometry(self, gml_string):
+        """Get request geometry from gml string
+
+        :param gml_string: String that represent full gml document.
+        :type gml_string: unicode
+
+        :return: URL to do query.
+        :rtype: unicode
+        """
+        geom = parse_gml_geometry(gml_string, self.layer_typename)
+        if geom is not None:
+            if not geom.srid:
+                geom.srid = self.srid
+            self.geometry = geom
 
     def parse_request_value(self, request_content):
         """Parse request value from request content.
@@ -262,7 +300,13 @@ class CSRUtils():
                 value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
                 return value_dom.childNodes[0].nodeValue
             except IndexError:
-                return None
+                pass
+            if self.result_regex == 'gml:name':
+                try:
+                    value_dom = xmldoc.getElementsByTagName('gml:description')[0]
+                    return value_dom.childNodes[0].nodeValue
+                except IndexError:
+                    return None
         # For the ArcREST standard we parse JSON (Above parsed from CSV)
         elif self.query_type == ServiceDefinitions.ARCREST:
             json_document = json.loads(request_content)
@@ -280,7 +324,7 @@ class CSRUtils():
             except IndexError:
                 return None
 
-    def build_query_url(self):
+    def box_query_url(self):
         """Build query based on the model and the parameter.
 
         :return: URL to do query.
@@ -361,7 +405,7 @@ class CSRUtils():
                 describe_url = f'{self.url}?{query_dict.urlencode()}'
         return describe_url
 
-    def filter_query_url(self, geom_name):
+    def intersect_query_url(self, geom_name):
         """Filter query based on the model and the parameter.
 
         :return: URL to do query.
@@ -397,28 +441,3 @@ class CSRUtils():
             if ':' not in self.layer_typename:
                 filter_url += f'&SRSNAME={self.point.srid}'
         return filter_url
-
-    def create_context_cache(self):
-        """Add context value to cache
-
-        :return: Context cache instance
-        :rtype: ContextCache
-        """
-        service_registry = self.get_service_registry()
-        expired_time = (datetime.utcnow() + timedelta(
-                        seconds=service_registry.time_to_live))
-        expired_time = expired_time.replace(tzinfo=pytz.UTC)
-        context_cache = ContextCache(
-            service_registry=service_registry,
-            name=service_registry.key,
-            value=self.value,
-            expired_time=expired_time
-        )
-        service_registry = None
-        if self.cache_url:
-            context_cache.source_uri = self.cache_url
-        if self.geometry:
-            context_cache.set_geometry_field(self.geometry)
-        context_cache.save()
-        context_cache.refresh_from_db()
-        return context_cache

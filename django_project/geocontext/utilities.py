@@ -64,6 +64,9 @@ def parse_gml_geometry(gml_string, tag_name='qgs:geometry'):
     :param gml_string: String that represent full gml document.
     :type gml_string: unicode
 
+    :param tag_name: gml tag
+    :type tag_name: string  
+
     :returns: GEOGeometry from the gml document, the first one if there are
         more than one.
     :rtype: GEOSGeometry
@@ -168,24 +171,23 @@ def convert_2d_to_3d(geometry_2d):
     return geometry_3d
 
 
-def get_bbox(x, y, factor=0.001):
+def get_bbox(x, y, precision=0.0001):
     """Get small enough bbox to cover point x,y
+    precision of 4 == ~10 m bounding box
 
     :param x: X coordinate
     :type x: float
     :param y: Y coordinate
     :type y: float
-    :param factor: The factor to get the bbox, see the formula.
-    :type factor: float
+    :param precision: The factor to get the bbox, see the formula.
+    :type precision: float
 
     :return: BBOX as a list [xmin, ymin, xmax, ymax)
     :rtype: list
     """
-    x_diff = abs(x * factor)
-    y_diff = abs(y * factor)
     return [
-        x - x_diff,
-        y - y_diff,
-        x + x_diff,
-        y + y_diff
+        x - precision,
+        y - precision,
+        x + precision,
+        y + precision
     ]
