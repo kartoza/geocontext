@@ -3,7 +3,7 @@ import os
 
 from django.test import TestCase
 
-from geocontext.models.context_service_registry import ContextServiceRegistry
+from geocontext.models.service_registry import ContextServiceRegistry
 
 from geocontext.models.utilities import CSRUtils
 from base.management.commands.utilities import import_data
@@ -36,12 +36,12 @@ class TestGeoContextView(TestCase):
 
         start_direct = datetime.now()
         csr_util = CSRUtils(csr_key, x, y)
-        csr_util.retrieve_context_cache()
+        csr_util.retrieve_cache()
 
         end_direct = datetime.now()
 
         start_cache = datetime.now()
-        csr_util.retrieve_context_cache()
+        csr_util.retrieve_cache()
         end_cache = datetime.now()
 
         duration_direct = end_direct - start_direct

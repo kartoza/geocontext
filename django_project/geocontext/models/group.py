@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from geocontext.models.validators import key_validator
 
-from geocontext.models.context_service_registry import ContextServiceRegistry
+from geocontext.models.service_registry import ContextServiceRegistry
 
 
 class ContextGroup(models.Model):

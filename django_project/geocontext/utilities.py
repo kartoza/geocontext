@@ -64,7 +64,7 @@ def parse_gml_geometry(gml_string, tag_name='qgs:geometry'):
     :type gml_string: unicode
 
     :param tag_name: gml tag
-    :type tag_name: string  
+    :type tag_name: str
 
     :returns: GEOGeometry from the gml document, the first one if there are
         more than one.

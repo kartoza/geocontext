@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_gis.serializers import (
     GeoFeatureModelSerializer, GeometrySerializerMethodField)
-from geocontext.models.context_cache import ContextCache
+from geocontext.models.cache import ContextCache
 
 
 class ContextValueSerializer(serializers.ModelSerializer):

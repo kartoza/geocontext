@@ -13,8 +13,8 @@ from xml.dom import minidom
 from django.contrib.gis.geos import Point
 from django.http import QueryDict
 
-from geocontext.models.context_service_registry import ContextServiceRegistry
-from geocontext.models.context_cache import ContextCache
+from geocontext.models.service_registry import ContextServiceRegistry
+from geocontext.models.cache import ContextCache
 from geocontext.utilities import (
     convert_coordinate,
     dms_dd,
@@ -56,7 +56,7 @@ def retrieve_external_csr(util_arg):
     :return: (group_key and CSRUtils)
     :rtype: namedtuple or None
     """
-    if util_arg.csr_util.retrieve_context_value():
+    if util_arg.csr_util.retrieve_value():
         return util_arg
     else:
         return None
@@ -71,7 +71,7 @@ def get_session():
 
 class CSRUtils():
     """Mock context service registry model object + utility methods.
-    Threadsafe - only __init__, get_ & create_context_cache
+    Threadsafe - only __init__, get_ & create_cache
     access DB but does not store any connection/querysets.
     """
     def __init__(self, csr_key, x, y, srid=4326):
@@ -90,7 +90,7 @@ class CSRUtils():
         :type srid: int
         """
         self.service_registry_key = csr_key
-        service_registry = self.get_service_registry()
+        service_registry = self.get_csr()
         self.query_type = service_registry.query_type
         self.service_version = service_registry.service_version
         self.layer_typename = service_registry.layer_typename
@@ -102,14 +102,13 @@ class CSRUtils():
         self.value = None
         service_registry = None
 
-        # Geometry defaults to generalized point - for basic cache hits.
         self.x = x
         self.y = y
         self.query_srid = srid
         self.generalize_point()
         self.geometry = self.point
 
-    def get_service_registry(self):
+    def get_csr(self):
         """Returns context service registry instance
 
         :raises KeyError: If registry not found
@@ -136,13 +135,23 @@ class CSRUtils():
         :rtype: Point
         """
         # Parse DMS
+        parsed = False
         dms_chars = ['°', "'", '"', 'N', 'S', 'E', 'W', 'n', 's', 'e', 'w']
         for coord in [self.x, self.y]:
             for dms_char in dms_chars:
                 if dms_char in coord:
                     degrees, minutes, seconds = parse_dms(coord)
                     coord = dms_dd(degrees, minutes, seconds)
+                    parsed = True
                     break
+
+        # Value not DMS - assume DD and convert to float
+        if not parsed:
+            try:
+                self.x = float(self.x)
+                self.y = float(self.y)
+            except ValueError:
+                raise ValueError('Could not convert x/y to float')
 
         # Convert or set coordinate
         if self.query_srid != self.srid:
@@ -158,7 +167,7 @@ class CSRUtils():
         y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
         self.point = Point(float(x_round), float(y_round), srid=self.srid)
 
-    def create_context_cache(self):
+    def create_cache(self):
         """Add context value to cache
 
         :return: Context cache instance
@@ -168,7 +177,7 @@ class CSRUtils():
         expired_time = (datetime.utcnow() + timedelta(
                         seconds=service_registry.time_to_live))
         expired_time = expired_time.replace(tzinfo=pytz.UTC)
-        context_cache = ContextCache(
+        cache = ContextCache(
             service_registry=service_registry,
             name=service_registry.key,
             value=self.value,
@@ -176,18 +185,18 @@ class CSRUtils():
         )
         service_registry = None
         if self.cache_url:
-            context_cache.source_uri = self.cache_url
+            cache.source_uri = self.cache_url
         if self.geometry:
-            context_cache.set_geometry_field(self.geometry)
-        context_cache.save()
-        context_cache.refresh_from_db()
-        return context_cache
+            cache.set_geometry_field(self.geometry)
+        cache.save()
+        cache.refresh_from_db()
+        return cache
 
-    def retrieve_context_cache(self):
-        """Retrieve context from point.
+    def retrieve_cache(self):
+        """Try to retrieve context from point.
 
-        :returns: context_cache on None
-        :rtype: context_cache or None
+        :returns: cache on None
+        :rtype: cache or None
         """
         caches = ContextCache.objects.filter(
             service_registry=self.get_service_registry())
@@ -203,7 +212,7 @@ class CSRUtils():
                         cache.delete()
                         break
 
-    def retrieve_context_value(self):
+    def retrieve_value(self):
         """Load context value.
 
         :returns: success
@@ -262,6 +271,8 @@ class CSRUtils():
                     if self.value is not None:
                         self.fetch_geometry(gml_string)
                     return True
+
+        self.value = "error"
         return False
 
     def request_content(self, retries=0):
@@ -336,7 +347,7 @@ class CSRUtils():
                 return None
 
     def box_query_url(self):
-        """Build query based on the model and the parameter.
+        """Build query with bounding box.
 
         :return: URL to do query.
         :rtype: unicode

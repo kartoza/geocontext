@@ -22,22 +22,19 @@ class TestContextGroupRegistry(TestCase):
 
     def test_GroupServices_create(self):
         """Test Group Service Creation."""
-        context_group = ContextGroupF.create()
-        context_service_registry = ContextServiceRegistryF.create()
+        group = ContextGroupF.create()
+        csr = ContextServiceRegistryF.create()
 
-        self.assertEqual(context_group.context_service_registries.count(), 0)
+        self.assertEqual(group.context_service_registries.count(), 0)
 
-        context_group_service = ContextGroupServicesF.create(
-            context_group=context_group,
-            context_service_registry=context_service_registry
+        group_service = ContextGroupServicesF.create(
+            context_group=group,
+            context_service_registry=csr
         )
 
-        context_group_service.order = 0
-        context_group_service.save()
+        group_service.order = 0
+        group_service.save()
 
-        self.assertEqual(context_group.context_service_registries.count(), 1)
+        self.assertEqual(group.context_service_registries.count(), 1)
 
-        self.assertEqual(
-            context_group.context_service_registries.all()[0],
-            context_service_registry
-        )
+        self.assertEqual(group.context_service_registries.all()[0], csr)

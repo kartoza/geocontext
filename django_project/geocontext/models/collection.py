@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from geocontext.models.validators import key_validator
 
-from geocontext.models.context_group import ContextGroup
+from geocontext.models.group import ContextGroup
 
 
 class ContextCollection(models.Model):

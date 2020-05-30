@@ -1,8 +1,8 @@
 from django import forms
-from geocontext.models.context_service_registry import ContextServiceRegistry
+from geocontext.models.csr import ContextServiceRegistry
 
 
-def get_context_service_registry():
+def get_csr():
     service_registry_choices = [
         (m.key, m.name) for m in ContextServiceRegistry.objects.all()]
     return service_registry_choices
@@ -15,5 +15,5 @@ class GeoContextForm(forms.Form):
     service_registry_key = forms.ChoiceField(
         label='Service Registry key',
         required=True,
-        choices=get_context_service_registry
+        choices=get_csr
     )

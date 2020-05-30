@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.gis.db import models
 
-from geocontext.models.context_service_registry import ContextServiceRegistry
+from geocontext.models.service_registry import ContextServiceRegistry
 
 
 class ContextCache(models.Model):

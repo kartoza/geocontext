@@ -24,37 +24,31 @@ class TestContextCollectionRegistry(TestCase):
 
     def test_CollectionGroups_create(self):
         """Test Collection Groups Creation."""
-        context_group = ContextGroupF.create()
-        context_service_registry = ContextServiceRegistryF.create()
-        context_collection = ContextCollectionF.create()
+        group = ContextGroupF.create()
+        csr = ContextServiceRegistryF.create()
+        collection = ContextCollectionF.create()
 
-        self.assertEqual(context_group.context_service_registries.count(), 0)
-        self.assertEqual(context_collection.context_groups.count(), 0)
+        self.assertEqual(group.context_service_registries.count(), 0)
+        self.assertEqual(collection.context_groups.count(), 0)
 
-        context_group_service = ContextGroupServicesF.create(
-            context_group=context_group,
-            context_service_registry=context_service_registry
+        group_service = ContextGroupServicesF.create(
+            context_group=group,
+            context_service_registry=csr
         )
 
-        context_group_service.order = 0
-        context_group_service.save()
+        group_service.order = 0
+        group_service.save()
 
-        self.assertEqual(context_group.context_service_registries.count(), 1)
-        self.assertEqual(
-            context_group.context_service_registries.all()[0],
-            context_service_registry
+        self.assertEqual(group.context_service_registries.count(), 1)
+        self.assertEqual(group.context_service_registries.all()[0], csr)
+
+        group = CollectionGroupsF.create(
+            context_collection=collection,
+            context_group=group
         )
 
-        collection_group = CollectionGroupsF.create(
-            context_collection=context_collection,
-            context_group=context_group
-        )
+        self.assertEqual(collection.context_groups.count(), 1)
+        self.assertEqual(collection.context_groups.all()[0], group)
 
-        self.assertEqual(context_collection.context_groups.count(), 1)
-        self.assertEqual(
-            context_collection.context_groups.all()[0],
-            context_group
-        )
-
-        collection_group.order = 0
-        collection_group.save()
+        group.order = 0
+        group.save()

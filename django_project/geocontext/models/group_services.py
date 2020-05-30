@@ -1,7 +1,7 @@
 from django.db import models
 
-from geocontext.models.context_group import ContextGroup
-from geocontext.models.context_service_registry import ContextServiceRegistry
+from geocontext.models.group import ContextGroup
+from geocontext.models.service_registry import ContextServiceRegistry
 
 
 
