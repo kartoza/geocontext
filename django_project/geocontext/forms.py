@@ -9,8 +9,8 @@ def get_csr():
 
 
 class GeoContextForm(forms.Form):
-    x = forms.FloatField(label='X Coordinate', required=True)
-    y = forms.FloatField(label='Y Coordinate', required=True)
+    x = forms.CharField(label='X Coordinate', required=True)
+    y = forms.CharField(label='Y Coordinate', required=True)
     srid = forms.IntegerField(label='SRID')
     service_registry_key = forms.ChoiceField(
         label='Service Registry key',

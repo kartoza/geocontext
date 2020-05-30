@@ -5,29 +5,23 @@ from rest_framework import generics
 
 from geocontext.forms import GeoContextForm
 from geocontext.models.csr import ContextServiceRegistry
-from geocontext.models.utilities import (
-    CSRUtils,
-    retrieve_external_csr,
-    UtilArg
-)
-from geocontext.serializers.csr import (
-    ContextServiceRegistrySerializer
-)
+from geocontext.models.utilities import CSRUtils, retrieve_external_csr, UtilArg
+from geocontext.serializers.csr import CSRSerializer
 
 
-class ContextServiceRegistryListAPIView(generics.ListAPIView):
+class CSRListAPIView(generics.ListAPIView):
     """List all context service registry."""
     queryset = ContextServiceRegistry.objects.all()
-    serializer_class = ContextServiceRegistrySerializer
+    serializer_class = CSRSerializer
 
 
-class ContextServiceRegistryDetailAPIView(generics.RetrieveAPIView):
+class CSRDetailAPIView(generics.RetrieveAPIView):
     """Retrieve a detail of a context service registry."""
 
     lookup_field = 'key'
 
     queryset = ContextServiceRegistry.objects.all()
-    serializer_class = ContextServiceRegistrySerializer
+    serializer_class = CSRSerializer
 
 
 def get_context(request):

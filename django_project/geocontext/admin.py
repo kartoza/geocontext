@@ -11,7 +11,7 @@ from geocontext.models.group_services import ContextGroupServices
 from geocontext.models.collection_groups import CollectionGroups
 
 
-class ContextGroupServicesInLine(admin.TabularInline):
+class GroupServicesInLine(admin.TabularInline):
     """Inline Admin for ContextGroupServices"""
     model = ContextGroupServices
     sortable_field_name = 'order'
@@ -27,29 +27,29 @@ class CollectionGroupsInLine(admin.TabularInline):
     extra = 0
 
 
-class ContextServiceRegistryAdmin(admin.ModelAdmin):
+class CSRAdmin(admin.ModelAdmin):
     """Context Service Registry admin model."""
     list_display = ('key', 'name', 'query_type', 'url')
 
 
-class ContextCacheAdmin(OSMGeoAdmin):
+class CacheAdmin(OSMGeoAdmin):
     """Context Cache admin model."""
     list_display = ('name', 'service_registry', 'value', 'expired_time')
 
 
-class ContextGroupAdmin(admin.ModelAdmin):
+class GroupAdmin(admin.ModelAdmin):
     """Context Group admin model."""
     list_display = ('key', 'name', 'group_type', 'description')
-    inlines = [ContextGroupServicesInLine]
+    inlines = [GroupServicesInLine]
 
 
-class ContextCollectionAdmin(admin.ModelAdmin):
+class CollectionAdmin(admin.ModelAdmin):
     """Context Collection admin model."""
     list_display = ('key', 'name', 'description')
     inlines = [CollectionGroupsInLine]
 
 
-admin.site.register(ContextServiceRegistry, ContextServiceRegistryAdmin)
-admin.site.register(ContextCache, ContextCacheAdmin)
-admin.site.register(ContextGroup, ContextGroupAdmin)
-admin.site.register(ContextCollection, ContextCollectionAdmin)
+admin.site.register(ContextServiceRegistry, CSRAdmin)
+admin.site.register(ContextCache, CacheAdmin)
+admin.site.register(ContextGroup, GroupAdmin)
+admin.site.register(ContextCollection, CollectionAdmin)
