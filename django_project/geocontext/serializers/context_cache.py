@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Serializer for context cache."""
-
 from rest_framework import serializers
 from rest_framework_gis.serializers import (
     GeoFeatureModelSerializer, GeometrySerializerMethodField)

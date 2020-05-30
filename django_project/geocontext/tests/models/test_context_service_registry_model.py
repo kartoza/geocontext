@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Test for context service registry model."""
-
 from django.test import TestCase
 
 from geocontext.tests.models.model_factories import ContextServiceRegistryF

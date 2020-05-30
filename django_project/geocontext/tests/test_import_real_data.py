@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Test import data."""
-
 import os
 
 from django.test import TestCase

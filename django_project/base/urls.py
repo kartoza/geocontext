@@ -1,5 +1,3 @@
-# coding=utf-8
-
 from django.urls import path
 from django.views.generic import TemplateView
 from django.conf.urls import url, include

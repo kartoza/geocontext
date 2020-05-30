@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Management command to delete all context cache."""
-
 from django.core.management.base import BaseCommand
 import logging
 
@@ -10,17 +7,17 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    """Load service registry data."""
+    """Management command to delete all context cache."""
 
     help = 'Delete context cache'
 
     def handle(self, *args, **options):
         context_caches = ContextCache.objects.all()
         num_context_caches = ContextCache.objects.all().count()
-        print('Deleting %d cache' % num_context_caches)
+        print(f'Deleting  cache')
         for context_cache in context_caches:
             context_cache.delete()
             print('.')
-        print('%d cache deleted' % num_context_caches)
+        print(f'{num_context_caches} cache deleted')
         num_context_caches = ContextCache.objects.all().count()
-        print('Current number of caches: %d' % num_context_caches)
+        print('Current number of caches: {num_context_caches}')

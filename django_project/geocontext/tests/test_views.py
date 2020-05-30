@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Test views."""
-
 from datetime import datetime
 import os
 
@@ -49,6 +46,7 @@ class TestGeoContextView(TestCase):
 
         duration_direct = end_direct - start_direct
         duration_cache = end_cache - start_cache
-        message = 'Direct: %.5f. Cache: %.5f' % (
-            duration_direct.total_seconds(), duration_cache.total_seconds())
+        direct_time = duration_direct.total_seconds()
+        cache_time = duration_cache.total_seconds()
+        message = f'Direct: {direct_time:.5f}. Cache: {cache_time:.5f}'
         self.assertGreater(duration_direct, duration_cache, message)

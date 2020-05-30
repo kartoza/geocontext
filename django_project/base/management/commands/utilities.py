@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Utilities for commands."""
-
 import os
 import json
 import requests
@@ -86,8 +83,7 @@ def import_data(file_uri):
             service_registry.full_clean()
             service_registry.save()
         except ValidationError as e:
-            print('   >>> CSR %s is not clean because %s ' % (
-                service_registry.name, e))
+            print(f'   >>> CSR {service_registry.name} is not clean because {e} ')
             service_registry.delete()
 
     # Load Context Groups
@@ -105,7 +101,7 @@ def import_data(file_uri):
                         context_service_registry = \
                             ContextServiceRegistry.objects.get(key=csr_key)
                     except ContextServiceRegistry.DoesNotExist:
-                        print('No CSR registered for %s' % csr_key)
+                        print(f'No CSR registered for {csr_key}')
                         continue
 
                     context_group_service = ContextGroupServices(
@@ -120,8 +116,7 @@ def import_data(file_uri):
             context_group.full_clean()
             context_group.save()
         except ValidationError as e:
-            print('   >>> Context Group %s is not clean because %s ' % (
-                context_group.name, e))
+            print(f'   >>> Context Group {context_group.name} is not clean because {e} ')
             context_group.delete()
 
     # Load Context Collections
@@ -149,24 +144,23 @@ def import_data(file_uri):
             context_collection.full_clean()
             context_collection.save()
         except ValidationError as e:
-            print('   >>> Context Collection %s is not clean because %s ' % (
-                context_collection.name, e))
+            print(f'   >>> Context Collection {context_collection.name}'
+                  f' is not clean because: {e} '
+                  )
             context_collection.delete()
 
     print('After import data process...')
-    print('   Number of CSR %s' % ContextServiceRegistry.objects.count())
-    print('   Number of Context Group %s' % ContextGroup.objects.count())
-    print('   Number of Context Collection %s' %
-          ContextCollection.objects.count())
+    print(f'   Number of CSR {ContextServiceRegistry.objects.count()}')
+    print(f'   Number of Context Group {ContextGroup.objects.count()}')
+    print(f'   Number of Context Collection {ContextCollection.objects.count()}')
 
 
 def delete_data():
     """Delete geocontext data utilities method."""
     print('Before delete process...')
-    print('   Number of CSR %s' % ContextServiceRegistry.objects.count())
-    print('   Number of Context Group %s' % ContextGroup.objects.count())
-    print('   Number of Context Collection %s' %
-          ContextCollection.objects.count())
+    print(f'   Number of CSR {ContextServiceRegistry.objects.count()}')
+    print(f'   Number of Context Group {ContextGroup.objects.count()}')
+    print(f'   Number of Context Collection {ContextCollection.objects.count()}')
 
     context_service_registries = ContextServiceRegistry.objects.all()
     for context_service_registry in context_service_registries:
@@ -181,7 +175,6 @@ def delete_data():
         context_collection.delete()
 
     print('After delete process...')
-    print('   Number of CSR %s' % ContextServiceRegistry.objects.count())
-    print('   Number of Context Group %s' % ContextGroup.objects.count())
-    print('   Number of Context Collection %s' %
-          ContextCollection.objects.count())
+    print(f'   Number of CSR {ContextServiceRegistry.objects.count()}')
+    print(f'   Number of Context Group {ContextGroup.objects.count()}')
+    print(f'   Number of Context Collection {ContextCollection.objects.count()}')

@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Model for ContextGroupServices"""
-
 from django.db import models
 
 from geocontext.models.context_group import ContextGroup

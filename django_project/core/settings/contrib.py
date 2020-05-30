@@ -1,7 +1,3 @@
-# coding=utf-8
-"""
-core.settings.contrib
-"""
 from .base import *  # noqa
 
 STOP_WORDS = (

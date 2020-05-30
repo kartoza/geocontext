@@ -1,6 +1,3 @@
-# coding=utf-8
-"""View definitions."""
-
 from distutils.util import strtobool
 import psycopg2
 
@@ -118,9 +115,8 @@ class RiverNameAPIView(views.APIView):
         try:
             conn = (
                 psycopg2.connect(
-                    "dbname=%s user=%s host=%s password='%s' port=%s" % (
-                        db_name, db_user, db_host, db_pass, db_port
-                    )
+                    f"dbname={db_name} user={db_user} host={db_host}"
+                    f" password='{db_pass}' port={db_port}"
                 )
             )
         except psycopg2.OperationalError:

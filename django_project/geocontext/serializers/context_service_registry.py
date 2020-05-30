@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Serializer for context service registry."""
-
 from rest_framework import serializers
 from geocontext.models.context_service_registry import ContextServiceRegistry
 

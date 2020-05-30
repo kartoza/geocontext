@@ -1,5 +1,3 @@
-# coding=utf-8
-"""Context Service Registry Model."""
 import logging
 
 from django.db import models

@@ -1,6 +1,3 @@
-# coding=utf-8
-"""View for Context Group."""
-
 from django.views.generic import ListView, DetailView
 from geocontext.models.context_group import ContextGroup
 

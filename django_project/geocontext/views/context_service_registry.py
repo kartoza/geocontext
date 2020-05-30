@@ -1,6 +1,3 @@
-# coding=utf-8
-"""View for CSR."""
-
 from django.views.generic import ListView, DetailView
 from geocontext.models.context_service_registry import ContextServiceRegistry
 

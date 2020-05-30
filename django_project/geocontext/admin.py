@@ -1,4 +1,3 @@
-# coding=utf-8
 """Model admin class definitions."""
 
 from django.contrib import admin

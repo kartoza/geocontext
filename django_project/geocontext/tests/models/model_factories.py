@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Factories for building model instances for testing."""
-
 import factory
 from geocontext.models.context_service_registry import ContextServiceRegistry
 from geocontext.models.context_group_services import ContextGroupServices
@@ -14,11 +11,11 @@ class ContextServiceRegistryF(factory.DjangoModelFactory):
         model = ContextServiceRegistry
 
     key = factory.sequence(
-        lambda n: u'TestCSRKey%s' % n)
+        lambda n: f'TestCSRKey{n}')
     name = factory.sequence(
-        lambda n: u'Test CSR name %s' % n)
+        lambda n: f'Test CSR name {n}')
     description = factory.sequence(
-        lambda n: u'Test CSR description %s' % n)
+        lambda n: f'Test CSR description {n}')
 
 
 class ContextGroupServicesF(factory.DjangoModelFactory):
@@ -31,9 +28,9 @@ class ContextGroupF(factory.DjangoModelFactory):
         model = ContextGroup
 
     key = factory.sequence(
-        lambda n: u'TestContextGroupKey%s' % n)
+        lambda n: f'TestContextGroupKey{n}')
     name = factory.sequence(
-        lambda n: u'Test Context Group name %s' % n)
+        lambda n: f'Test Context Group name {n}')
 
 
 class CollectionGroupsF(factory.DjangoModelFactory):
@@ -46,6 +43,6 @@ class ContextCollectionF(factory.DjangoModelFactory):
         model = ContextCollection
 
     key = factory.sequence(
-        lambda n: u'TestContextCollectionKey%s' % n)
+        lambda n: f'TestContextCollectionKey{n}')
     name = factory.sequence(
-        lambda n: u'Test Context Collection name %s' % n)
+        lambda n: f'Test Context Collection name {n}')

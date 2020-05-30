@@ -1,5 +1,3 @@
-# coding=utf-8
-
 """Project level settings.
 
 Adjust these values as needed but don't commit passwords etc. to any public

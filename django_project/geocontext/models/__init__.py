@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Model definition for GeoContext app."""
-
 from geocontext.models.context_cache import *
 from geocontext.models.context_service_registry import *
 from geocontext.models.context_group_services import *

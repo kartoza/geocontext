@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Context Cache Model."""
-
 from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.gis.db import models

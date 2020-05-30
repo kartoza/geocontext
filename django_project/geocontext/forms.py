@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Forms for GeoContext app."""
-
 from django import forms
 from geocontext.models.context_service_registry import ContextServiceRegistry
 

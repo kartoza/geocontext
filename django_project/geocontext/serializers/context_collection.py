@@ -1,5 +1,3 @@
-# coding=utf-8
-"""Serializer for context collection."""
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 

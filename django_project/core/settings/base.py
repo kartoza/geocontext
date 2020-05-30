@@ -1,7 +1,3 @@
-# coding=utf-8
-"""
-core.settings.base
-"""
 # Django settings for geocontext project.
 
 from .utils import absolute_path

@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Test for utilities module."""
-
 import os
 
 from django.test import SimpleTestCase

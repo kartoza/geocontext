@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Model for CollectionGroups"""
-
 from django.db import models
 
 from geocontext.models.context_collection import ContextCollection

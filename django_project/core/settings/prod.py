@@ -1,6 +1,3 @@
-# coding=utf-8
-
-"""Project level settings."""
 from os.path import join, dirname, exists
 from .project import *  # noqa
 

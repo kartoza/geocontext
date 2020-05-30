@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Model for ContextCollection"""
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from geocontext.models.validators import key_validator
