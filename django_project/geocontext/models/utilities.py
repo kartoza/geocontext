@@ -17,10 +17,12 @@ from geocontext.models.context_service_registry import ContextServiceRegistry
 from geocontext.models.context_cache import ContextCache
 from geocontext.utilities import (
     convert_coordinate,
+    dms_dd,
     find_geometry_in_xml,
     get_bbox,
     parse_gml_geometry,
     ServiceDefinitions,
+    parse_dms
 )
 
 LOGGER = logging.getLogger(__name__)
@@ -123,25 +125,34 @@ class CSRUtils():
                            f'{self.service_registry_key}')
 
     def generalize_point(self):
-        """Generalize a point to standard srid grid depending on data source type.
-        Cache does not need to contain data at higher resolution than
-        native_resolution.
+        """Generalize a point to to registry format.
 
+        Converts degree, minute, second to decimal degree.
+        Converts to SRID of the context registry
+        Removes extreme precision to improve point cache hits.
         Default precision for is 4 decimals (~10m)
 
         :return: point
         :rtype: Point
         """
+        # Parse DMS
+        dms_chars = ['°', "'", '"', 'N', 'S', 'E', 'W', 'n', 's', 'e', 'w']
+        for coord in [self.x, self.y]:
+            for dms_char in dms_chars:
+                if dms_char in coord:
+                    degrees, minutes, seconds = parse_dms(coord)
+                    coord = dms_dd(degrees, minutes, seconds)
+                    break
 
+        # Convert or set coordinate
         if self.query_srid != self.srid:
-            point = Point(
-                *convert_coordinate(
-                    self.x, self.y, self.query_srid, self.srid),
-                srid=self.srid
-            )
+            point = Point(*convert_coordinate(self.x, self.y, self.query_srid, self.srid),
+                          srid=self.srid
+                          )
         else:
             point = Point(self.x, self.y, srid=self.srid)
 
+        # Set precision after projection
         decimals = 4
         x_round = Decimal(point.x).quantize(Decimal('0.' + '0' * decimals))
         y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))

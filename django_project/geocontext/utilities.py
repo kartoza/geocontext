@@ -1,6 +1,5 @@
-# coding=utf-8
-"""Utilities module for geocontext app."""
 import logging
+import re
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
@@ -191,3 +190,44 @@ def get_bbox(x, y, precision=0.0001):
         x + precision,
         y + precision
     ]
+
+
+def parse_dms(coord):
+    """Parse degree minute second input.
+
+    :param coord: Coord string
+    :type coord: str
+    :raises ValueError: If string could not be parsed
+    :return: degrees, minutes, seconds
+    :rtype: int, int, float
+    """
+    coord_parts = re.split('[^\d\w\.]+', coord)
+    if len(coord_parts) > 4:
+        raise ValueError(f"Could not parse degree, minute, second input")
+
+    degrees = int(coord_parts[0])
+    minutes = int(coord_parts[1])
+    seconds = float(coord_parts[2])
+    direction = coord_parts[3]
+    degrees = degrees * -1 if direction.upper() in ['W', 'S'] else degrees
+    return degrees, minutes, seconds
+
+
+def dms_dd(degrees, minutes=0, seconds=0.0):
+    """Convert degree minute second to decimal degree
+
+    :param degrees: degrees
+    :type degrees: int
+    :param minutes: minutes, defaults to 0.0
+    :type minutes: int, optional
+    :param seconds: seconds, defaults to 0.0
+    :type seconds: float, optional
+
+    :return: decimal degree
+    :rtype: float
+    """
+    if degrees >= 0:
+        decimal = degrees + (minutes / 60.0) + (seconds / 3600.0)
+    else:
+        decimal = degrees - (minutes / 60.0) - (seconds / 3600.0)
+    return decimal
