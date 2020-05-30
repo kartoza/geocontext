@@ -1,8 +1,8 @@
 from django.views.generic import ListView, DetailView
-from geocontext.models.context_service_registry import ContextServiceRegistry
+from geocontext.models.CSR import ContextServiceRegistry
 
 
-class ContextServiceRegistryListView(ListView):
+class CSRListView(ListView):
     """List view for CSR."""
 
     model = ContextServiceRegistry
@@ -11,7 +11,7 @@ class ContextServiceRegistryListView(ListView):
     paginate_by = 10
 
 
-class ContextServiceRegistryDetailView(DetailView):
+class CSRDetailView(DetailView):
     """Detail view for CSR."""
 
     model = ContextServiceRegistry

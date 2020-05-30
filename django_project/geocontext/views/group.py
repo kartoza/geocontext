@@ -1,8 +1,8 @@
 from django.views.generic import ListView, DetailView
-from geocontext.models.context_group import ContextGroup
+from geocontext.models.group import ContextGroup
 
 
-class ContextGroupListView(ListView):
+class GroupListView(ListView):
     """List view for Context Group."""
 
     model = ContextGroup
@@ -11,7 +11,7 @@ class ContextGroupListView(ListView):
     paginate_by = 10
 
 
-class ContextGroupDetailView(DetailView):
+class GroupDetailView(DetailView):
     """Detail view for Context Group."""
 
     model = ContextGroup

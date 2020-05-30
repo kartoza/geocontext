@@ -1,8 +1,8 @@
 from django.views.generic import ListView, DetailView
-from geocontext.models.context_collection import ContextCollection
+from geocontext.models.collection import ContextCollection
 
 
-class ContextCollectionListView(ListView):
+class CollectionListView(ListView):
     """List view for Context Collection."""
 
     model = ContextCollection
@@ -11,7 +11,7 @@ class ContextCollectionListView(ListView):
     paginate_by = 10
 
 
-class ContextCollectionDetailView(DetailView):
+class CollectionDetailView(DetailView):
     """Detail view for Context Collection."""
 
     model = ContextCollection
