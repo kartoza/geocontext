@@ -30,7 +30,7 @@
                     {% if csr == csr_list.0 %}show active{% endif %}"
                      id="list-{{ csr.key }}" role="tabpanel"
                      aria-labelledby="list-{{ csr.key }}-list">
-                    {% include "geocontext/includes/context_service_registry_content.html" %}
+                    {% include "geocontext/includes/csr_content.html" %}
                 </div>
             {% endfor %}
         </div>

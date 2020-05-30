@@ -1,11 +1,10 @@
 from django import forms
-from geocontext.models.csr import ContextServiceRegistry
+from geocontext.models.csr import CSR
 
 
 def get_csr():
-    service_registry_choices = [
-        (m.key, m.name) for m in ContextServiceRegistry.objects.all()]
-    return service_registry_choices
+    csr_choices = [(m.key, m.name) for m in CSR.objects.all()]
+    return csr_choices
 
 
 class GeoContextForm(forms.Form):

@@ -3,17 +3,17 @@
 from django.contrib import admin
 from django.contrib.gis.admin import OSMGeoAdmin
 
-from geocontext.models.csr import ContextServiceRegistry
-from geocontext.models.cache import ContextCache
-from geocontext.models.group import ContextGroup
-from geocontext.models.collection import ContextCollection
-from geocontext.models.group_services import ContextGroupServices
+from geocontext.models.csr import CSR
+from geocontext.models.cache import Cache
+from geocontext.models.group import Group
+from geocontext.models.collection import Collection
+from geocontext.models.group_services import GroupServices
 from geocontext.models.collection_groups import CollectionGroups
 
 
 class GroupServicesInLine(admin.TabularInline):
-    """Inline Admin for ContextGroupServices"""
-    model = ContextGroupServices
+    """Inline Admin for GroupServices"""
+    model = GroupServices
     sortable_field_name = 'order'
     ordering = ('order', )
     extra = 0
@@ -49,7 +49,7 @@ class CollectionAdmin(admin.ModelAdmin):
     inlines = [CollectionGroupsInLine]
 
 
-admin.site.register(ContextServiceRegistry, CSRAdmin)
-admin.site.register(ContextCache, CacheAdmin)
-admin.site.register(ContextGroup, GroupAdmin)
-admin.site.register(ContextCollection, CollectionAdmin)
+admin.site.register(CSR, CSRAdmin)
+admin.site.register(Cache, CacheAdmin)
+admin.site.register(Group, GroupAdmin)
+admin.site.register(Collection, CollectionAdmin)

@@ -2,10 +2,10 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from geocontext.models.validators import key_validator
 
-from geocontext.models.service_registry import ContextServiceRegistry
+from geocontext.models.csr import CSR
 
 
-class ContextGroup(models.Model):
+class Group(models.Model):
     """Context Group"""
 
     GROUP_TYPE_TEXT = 'text'
@@ -17,7 +17,7 @@ class ContextGroup(models.Model):
     )
 
     key = models.CharField(
-        help_text=_('Key of context group.'),
+        help_text=_('Key of group.'),
         blank=False,
         null=False,
         max_length=200,
@@ -26,7 +26,7 @@ class ContextGroup(models.Model):
     )
 
     name = models.CharField(
-        help_text=_('Display Name of Context Service.'),
+        help_text=_('Display Name of Service.'),
         blank=False,
         null=False,
         max_length=200,
@@ -35,13 +35,13 @@ class ContextGroup(models.Model):
     description = models.TextField(
         null=True,
         blank=True,
-        help_text='Description of the Context Group.'
+        help_text='Description of the Group.'
     )
 
-    context_service_registries = models.ManyToManyField(
-        ContextServiceRegistry,
+    csr_list = models.ManyToManyField(
+        CSR,
         help_text=_('List of context service registry in the context group.'),
-        through='ContextGroupServices',
+        through='GroupServices',
         blank=True,
     )
 
@@ -66,6 +66,6 @@ class ContextGroup(models.Model):
     def __str__(self):
         return self.name
 
-    def get_ordered_context_service_registries(self):
+    def get_ordered_csr_list(self):
         """Helper to retrieve CSR in order."""
-        return self.contextgroupservices_set.all().order_by('order')
+        return self.groupservices_set.all().order_by('order')

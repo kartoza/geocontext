@@ -1,9 +1,9 @@
 from django.test import TestCase
 
 from geocontext.tests.models.model_factories import (
-    ContextServiceRegistryF,
+    CSRF,
     ContextGroupF,
-    ContextGroupServicesF,
+    GroupServicesF,
 )
 
 
@@ -23,18 +23,14 @@ class TestContextGroupRegistry(TestCase):
     def test_GroupServices_create(self):
         """Test Group Service Creation."""
         group = ContextGroupF.create()
-        csr = ContextServiceRegistryF.create()
+        csr = CSRF.create()
 
-        self.assertEqual(group.context_service_registries.count(), 0)
+        self.assertEqual(group.csr_list.count(), 0)
 
-        group_service = ContextGroupServicesF.create(
-            context_group=group,
-            context_service_registry=csr
-        )
+        group_service = GroupServicesF.create(group=group, csr=csr)
 
         group_service.order = 0
         group_service.save()
 
-        self.assertEqual(group.context_service_registries.count(), 1)
-
-        self.assertEqual(group.context_service_registries.all()[0], csr)
+        self.assertEqual(group.csr_list.count(), 1)
+        self.assertEqual(group.csr_list.all()[0], csr)

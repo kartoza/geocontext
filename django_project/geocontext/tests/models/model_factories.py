@@ -1,14 +1,14 @@
 import factory
-from geocontext.models.csr import ContextServiceRegistry
-from geocontext.models.group_services import ContextGroupServices
-from geocontext.models.group import ContextGroup
+from geocontext.models.csr import CSR
+from geocontext.models.group_services import GroupServices
+from geocontext.models.group import Group
 from geocontext.models.collection_groups import CollectionGroups
-from geocontext.models.collection import ContextCollection
+from geocontext.models.collection import Collection
 
 
-class ContextServiceRegistryF(factory.DjangoModelFactory):
+class CSRF(factory.DjangoModelFactory):
     class Meta:
-        model = ContextServiceRegistry
+        model = CSR
 
     key = factory.sequence(
         lambda n: f'TestCSRKey{n}')
@@ -18,19 +18,19 @@ class ContextServiceRegistryF(factory.DjangoModelFactory):
         lambda n: f'Test CSR description {n}')
 
 
-class ContextGroupServicesF(factory.DjangoModelFactory):
+class GroupServicesF(factory.DjangoModelFactory):
     class Meta:
-        model = ContextGroupServices
+        model = GroupServices
 
 
-class ContextGroupF(factory.DjangoModelFactory):
+class GroupF(factory.DjangoModelFactory):
     class Meta:
-        model = ContextGroup
+        model = Group
 
     key = factory.sequence(
-        lambda n: f'TestContextGroupKey{n}')
+        lambda n: f'TestGroupKey{n}')
     name = factory.sequence(
-        lambda n: f'Test Context Group name {n}')
+        lambda n: f'Test Group name {n}')
 
 
 class CollectionGroupsF(factory.DjangoModelFactory):
@@ -40,7 +40,7 @@ class CollectionGroupsF(factory.DjangoModelFactory):
 
 class ContextCollectionF(factory.DjangoModelFactory):
     class Meta:
-        model = ContextCollection
+        model = Collection
 
     key = factory.sequence(
         lambda n: f'TestContextCollectionKey{n}')

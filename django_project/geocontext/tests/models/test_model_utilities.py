@@ -5,7 +5,7 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from geocontext.models.cache import ContextCache
-from geocontext.tests.models.model_factories import ContextServiceRegistryF
+from geocontext.tests.models.model_factories import CSRF
 from geocontext.utilities import ServiceDefinitions
 from geocontext.models.utilities import (
     CSRUtils,
@@ -26,7 +26,7 @@ class TestCRSUtils(TestCase):
         x = 18.42
         y = -29.71
 
-        csr = ContextServiceRegistryF.create()
+        csr = CSRF.create()
         csr.url = 'https://maps.kartoza.com/geoserver/wfs'
         csr.query_type = ServiceDefinitions.WFS
         csr.layer_typename = 'kartoza:water_management_areas'
@@ -60,7 +60,7 @@ class TestCRSUtils(TestCase):
         x = 18.42
         y = -29.71
 
-        csr = ContextServiceRegistryF.create()
+        csr = CSRF.create()
         csr.url = 'http://maps.kartoza.com/geoserver/wfs'
         csr.query_type = ServiceDefinitions.WFS
         csr.layer_typename = 'sa_provinces'
@@ -96,7 +96,7 @@ class TestCRSUtils(TestCase):
         x = 18.42
         y = -29.71
 
-        csr = ContextServiceRegistryF.create()
+        csr = CSRF.create()
         csr.url = 'http://maps.kartoza.com/geoserver/wfs'
         csr.query_type = ServiceDefinitions.WFS
         csr.layer_typename = 'sa_provinces'
@@ -130,7 +130,7 @@ class TestCRSUtils(TestCase):
         x = 27.8
         y = -32.1
 
-        csr = ContextServiceRegistryF.create()
+        csr = CSRF.create()
         csr.url = 'https://maps.kartoza.com/geoserver/wms'
         csr.query_type = ServiceDefinitions.WMS
         csr.layer_typename = 'kartoza:south_africa'
@@ -162,7 +162,7 @@ class TestCRSUtils(TestCase):
         x = 19.14
         y = -32.32
 
-        csr = ContextServiceRegistryF.create()
+        csr = CSRF.create()
         csr.url = (
             'https://portal.environment.gov.za/server/rest/services/Corp/'
             'ProtectedAreas/MapServer/')
@@ -196,7 +196,7 @@ class TestCRSUtils(TestCase):
         x = 19.14
         y = -32.32
 
-        csr = ContextServiceRegistryF.create()
+        csr = CSRF.create()
         csr.url = (
             'http://api.geonames.org/findNearbyPlaceNameJSON')
         csr.srid = 4326
@@ -232,7 +232,7 @@ class TestCRSUtils(TestCase):
         x = 0
         y = 0
 
-        csr = ContextServiceRegistryF.create()
+        csr = CSRF.create()
         csr.url = 'https://maps.kartoza.com/geoserver/wfs'
         csr.query_type = ServiceDefinitions.WFS
         csr.layer_typename = 'kartoza:sa_provinces'
@@ -250,7 +250,7 @@ class TestCRSUtils(TestCase):
 
     def test_parse_request_value(self, mock_get_csr):
         """Test parse value for WMS response."""
-        csr = ContextServiceRegistryF.create()
+        csr = CSRF.create()
         csr.url = 'https://maps.kartoza.com/geoserver/wms'
         csr.srid = 3857
         csr.query_type = ServiceDefinitions.WMS

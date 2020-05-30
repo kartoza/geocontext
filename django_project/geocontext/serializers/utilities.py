@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404
 
 from geocontext.models.collection_groups import CollectionGroups
-from geocontext.models.group import ContextGroup
-from geocontext.models.group_services import ContextGroupServices
-from geocontext.models.collection import ContextCollection
+from geocontext.models.group import Group
+from geocontext.models.group_services import GroupServices
+from geocontext.models.collection import Collection
 from geocontext.models.utilities import (
     CSRUtils,
     thread_retrieve_external,
@@ -14,7 +14,7 @@ from geocontext.models.utilities import (
 class GroupValues(object):
     """Class for holding values of context group."""
     def __init__(self, x, y, group_key, srid):
-        self.group = get_object_or_404(ContextGroup, key=group_key)
+        self.group = get_object_or_404(Group, key=group_key)
         self.x = x
         self.y = y
         self.srid = srid
@@ -26,11 +26,10 @@ class GroupValues(object):
     def populate_group_values(self):
         """Populate group with service registry values."""
         util_arg_list = []
-        group_services = ContextGroupServices.objects.filter(
-            context_group=self.group).order_by('order')
+        group_services = GroupServices.objects.filter(group=self.group).order_by('order')
         for group_service in group_services:
             csr_util = CSRUtils(
-                group_service.context_service_registry.key,
+                group_service.csr.key,
                 self.x,
                 self.y,
                 self.srid
@@ -63,7 +62,7 @@ class CollectionValues(GroupValues):
         self.x = x
         self.y = y
         self.srid = srid
-        self.collection = get_object_or_404(ContextCollection, key=collection_key)
+        self.collection = get_object_or_404(Collection, key=collection_key)
         self.key = self.collection.key
         self.name = self.collection.name
         self.group_values = []
@@ -73,25 +72,18 @@ class CollectionValues(GroupValues):
         util_arg_list = []
         group_caches = {}
         collection_groups = CollectionGroups.objects.filter(
-            context_collection=self.collection).order_by('order')
+                                collection=self.collection).order_by('order')
         for collection_group in collection_groups:
-            group = get_object_or_404(
-                ContextGroup, key=collection_group.context_group.key)
-            group_services = ContextGroupServices.objects.filter(
-                context_group=group).order_by('order')
+            group = get_object_or_404(Group, key=collection_group.group.key)
+            group_services = GroupServices.objects.filter(
+                                group=group).order_by('order')
             for group_service in group_services:
-                csr_util = CSRUtils(
-                    group_service.context_service_registry.key,
-                    self.x,
-                    self.y,
-                    self.srid
-                )
+                csr_util = CSRUtils(group_service.csr.key, self.x, self.y, self.srid)
                 cache = csr_util.retrieve_cache()
 
                 # Append all the caches found locally - list still needed
                 if cache is None:
-                    util_arg = UtilArg(group_key=group.key,
-                                       csr_util=csr_util)
+                    util_arg = UtilArg(group_key=group.key,csr_util=csr_util)
                     util_arg_list.append(util_arg)
                 else:
                     if group.key in group_caches:
@@ -117,4 +109,4 @@ class CollectionValues(GroupValues):
             super(GroupValues, self).__init__(self.x, self.y, group_key, self.srid)
             for cache in cache_list:
                 self.service_registry_values.append(cache)
-            self.context_group_values.append("NOTSURE")
+            self.group_values.append("NOTSURE")

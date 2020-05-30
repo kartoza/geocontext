@@ -13,8 +13,8 @@ from xml.dom import minidom
 from django.contrib.gis.geos import Point
 from django.http import QueryDict
 
-from geocontext.models.service_registry import ContextServiceRegistry
-from geocontext.models.cache import ContextCache
+from geocontext.models.csr import CSR
+from geocontext.models.cache import Cache
 from geocontext.utilities import (
     convert_coordinate,
     dms_dd,
@@ -89,18 +89,18 @@ class CSRUtils():
         :param srid: SRID (default=4326).
         :type srid: int
         """
-        self.service_registry_key = csr_key
-        service_registry = self.get_csr()
-        self.query_type = service_registry.query_type
-        self.service_version = service_registry.service_version
-        self.layer_typename = service_registry.layer_typename
-        self.result_regex = service_registry.result_regex
-        self.api_key = service_registry.api_key
-        self.url = service_registry.url
-        self.srid = service_registry.srid
+        self.csr_key = csr_key
+        csr = self.get_csr()
+        self.query_type = csr.query_type
+        self.service_version = csr.service_version
+        self.layer_typename = csr.layer_typename
+        self.result_regex = csr.result_regex
+        self.api_key = csr.api_key
+        self.url = csr.url
+        self.srid = csr.srid
         self.cache_url = None
         self.value = None
-        service_registry = None
+        csr = None
 
         self.x = x
         self.y = y
@@ -114,14 +114,13 @@ class CSRUtils():
         :raises KeyError: If registry not found
 
         :return: context service registry
-        :rtype: ContextServiceRegistry
+        :rtype: CSR
         """
         try:
-            return ContextServiceRegistry.objects.get(
-                key=self.service_registry_key)
-        except ContextServiceRegistry.DoesNotExist:
+            return CSR.objects.get(key=self.csr_key)
+        except CSR.DoesNotExist:
             raise KeyError('Service Registry not Found for'
-                           f'{self.service_registry_key}')
+                           f'{self.csr_key}')
 
     def generalize_point(self):
         """Generalize a point to to registry format.
@@ -171,19 +170,13 @@ class CSRUtils():
         """Add context value to cache
 
         :return: Context cache instance
-        :rtype: ContextCache
+        :rtype: Cache
         """
-        service_registry = self.get_service_registry()
-        expired_time = (datetime.utcnow() + timedelta(
-                        seconds=service_registry.time_to_live))
+        csr = self.get_csr()
+        expired_time = (datetime.utcnow() + timedelta(seconds=csr.time_to_live))
         expired_time = expired_time.replace(tzinfo=pytz.UTC)
-        cache = ContextCache(
-            service_registry=service_registry,
-            name=service_registry.key,
-            value=self.value,
-            expired_time=expired_time
-        )
-        service_registry = None
+        cache = Cache(csr=csr, name=csr.key, value=self.value, expired_time=expired_time)
+        csr = None
         if self.cache_url:
             cache.source_uri = self.cache_url
         if self.geometry:
@@ -198,9 +191,7 @@ class CSRUtils():
         :returns: cache on None
         :rtype: cache or None
         """
-        caches = ContextCache.objects.filter(
-            service_registry=self.get_service_registry())
-
+        caches = Cache.objects.filter(csr=self.get_csr())
         for cache in caches:
             if cache.geometry:
                 if cache.geometry.contains(self.point):

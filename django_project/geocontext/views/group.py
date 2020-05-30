@@ -6,8 +6,8 @@ class GroupListView(ListView):
     """List view for Context Group."""
 
     model = ContextGroup
-    template_name = 'geocontext/context_group_list.html'
-    context_object_name = 'context_group_list'
+    template_name = 'geocontext/group_list.html'
+    object_name = 'group_list'
     paginate_by = 10
 
 
@@ -15,6 +15,6 @@ class GroupDetailView(DetailView):
     """Detail view for Context Group."""
 
     model = ContextGroup
-    template_name = 'geocontext/context_group_detail.html'
-    context_object_name = 'context_group'
+    template_name = 'geocontext/group_detail.html'
+    object_name = 'group'
     slug_field = 'key'

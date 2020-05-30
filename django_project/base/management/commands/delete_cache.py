@@ -1,23 +1,23 @@
 from django.core.management.base import BaseCommand
 import logging
 
-from geocontext.models.cache import ContextCache
+from geocontext.models.cache import Cache
 
 logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    """Management command to delete all context cache."""
+    """Management command to delete all caches."""
 
-    help = 'Delete context cache'
+    help = 'Delete cache'
 
     def handle(self, *args, **options):
-        caches = ContextCache.objects.all()
-        num_caches = ContextCache.objects.all().count()
+        caches = Cache.objects.all()
+        num_caches = Cache.objects.all().count()
         print(f'Deleting  cache')
         for cache in caches:
             cache.delete()
             print('.')
         print(f'{num_caches} cache deleted')
-        num_caches = ContextCache.objects.all().count()
+        num_caches = Cache.objects.all().count()
         print('Current number of caches: {num_caches}')

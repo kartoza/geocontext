@@ -1,0 +1,39 @@
+{% extends 'main_base.html' %}
+
+{% block title %}
+    Context Collection
+{% endblock %}
+
+{% block body_content %}
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <h1>Context Collections</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-3">
+        <div class="list-group" id="list-tab" role="tablist">
+            {% for collection in collection_list %}
+                <a class="list-group-item list-group-item-action
+                    {% if collection == collection_list.0 %}active{% endif %}"
+                   id="list-{{ collection.key }}-list" data-toggle="list"
+                   href="#list-{{ collection.key }}"
+                   role="tab" aria-controls="home">{{ collection.name }}</a>
+            {% endfor %}
+        </div>
+      </div>
+      <div class="col-7">
+        <div class="tab-content" id="nav-tabContent">
+            {% for collection in collection_list %}
+                <div class="tab-pane fade
+                    {% if collection == collection_list.0 %}show active{% endif %}"
+                     id="list-{{ collection.key }}" role="tabpanel"
+                     aria-labelledby="list-{{ collection.key }}-list">
+                    {% include "geocontext/includes/collection_content.html" %}
+                </div>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% include "includes/pagination.html" %}
+{% endblock body_content %}

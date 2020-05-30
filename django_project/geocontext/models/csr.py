@@ -9,7 +9,7 @@ from geocontext.utilities import ServiceDefinitions
 LOGGER = logging.getLogger(__name__)
 
 
-class ContextServiceRegistry(models.Model):
+class CSR(models.Model):
     """Context Service Registry"""
     key = models.CharField(
         help_text=_('Key of Context Service.'),
@@ -79,7 +79,6 @@ class ContextServiceRegistry(models.Model):
         choices=ServiceDefinitions.QUERY_TYPES,
     )
 
-    # I will try to use CharField first, if not I will use django-regex-field
     result_regex = models.CharField(
         help_text=_('Regex to retrieve the desired value.'),
         blank=False,

@@ -1,15 +1,15 @@
 from django.test import TestCase
 
-from geocontext.tests.models.model_factories import ContextServiceRegistryF
+from geocontext.tests.models.model_factories import CSRF
 
 
-class TestContextServiceRegistry(TestCase):
+class TestCSR(TestCase):
     """Test CSR models."""
 
-    def test_ContextServiceRegistry_create(self):
+    def test_CSR_create(self):
         """Test CSR model creation."""
 
-        model = ContextServiceRegistryF.create()
+        model = CSRF.create()
 
         # check if PK exists.
         self.assertTrue(model.pk is not None)

@@ -1,23 +1,23 @@
 from rest_framework import serializers
 
-from geocontext.models.group import ContextGroup
-from geocontext.serializers.cache import ContextValueSerializer
+from geocontext.models.group import Group
+from geocontext.serializers.cache import CacheValueSerializer
 
 
 class ContextGroupSerializer(serializers.ModelSerializer):
     """Serializer class for Context Group."""
 
-    context_service_registry_keys = serializers.SerializerMethodField(
+    csr_keys = serializers.SerializerMethodField(
         source='service_registry.key')
 
     class Meta:
-        model = ContextGroup
+        model = Group
         fields = (
             'key',
             'name',
             'description',
             'graphable',
-            'context_service_registry_keys',
+            'csr_keys',
 
         )
 
@@ -27,5 +27,4 @@ class ContextGroupValueSerializer(serializers.Serializer):
     key = serializers.CharField()
     name = serializers.CharField()
     graphable = serializers.BooleanField()
-    service_registry_values = serializers.ListSerializer(
-        child=ContextValueSerializer())
+    service_registry_values = serializers.ListSerializer(child=CacheValueSerializer())

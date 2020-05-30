@@ -3,7 +3,7 @@ import os
 
 from django.test import TestCase
 
-from geocontext.models.service_registry import ContextServiceRegistry
+from geocontext.models.service_registry import CSR
 
 from geocontext.models.utilities import CSRUtils
 from base.management.commands.utilities import import_data
@@ -24,7 +24,7 @@ class TestGeoContextView(TestCase):
 
     def tearDown(self):
         """Delete all service registry data."""
-        service_registries = ContextServiceRegistry.objects.all()
+        service_registries = CSR.objects.all()
         for service_registry in service_registries:
             service_registry.delete()
 

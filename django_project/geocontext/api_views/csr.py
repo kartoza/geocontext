@@ -4,14 +4,14 @@ from django.http import HttpResponse, Http404
 from rest_framework import generics
 
 from geocontext.forms import GeoContextForm
-from geocontext.models.csr import ContextServiceRegistry
+from geocontext.models.csr import CSR
 from geocontext.models.utilities import CSRUtils, retrieve_external_csr, UtilArg
 from geocontext.serializers.csr import CSRSerializer
 
 
 class CSRListAPIView(generics.ListAPIView):
     """List all context service registry."""
-    queryset = ContextServiceRegistry.objects.all()
+    queryset = CSR.objects.all()
     serializer_class = CSRSerializer
 
 
@@ -20,7 +20,7 @@ class CSRDetailAPIView(generics.RetrieveAPIView):
 
     lookup_field = 'key'
 
-    queryset = ContextServiceRegistry.objects.all()
+    queryset = CSR.objects.all()
     serializer_class = CSRSerializer
 
 

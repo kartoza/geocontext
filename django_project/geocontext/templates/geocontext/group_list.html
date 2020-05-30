@@ -13,23 +13,23 @@
     <div class="row justify-content-center">
       <div class="col-3">
         <div class="list-group" id="list-tab" role="tablist">
-            {% for context_group in context_group_list %}
+            {% for group in group_list %}
                 <a class="list-group-item list-group-item-action
-                    {% if context_group == context_group_list.0 %}active{% endif %}"
-                   id="list-{{ context_group.key }}-list" data-toggle="list"
-                   href="#list-{{ context_group.key }}"
-                   role="tab" aria-controls="home">{{ context_group.name }}</a>
+                    {% if group == group_list.0 %}active{% endif %}"
+                   id="list-{{ group.key }}-list" data-toggle="list"
+                   href="#list-{{ group.key }}"
+                   role="tab" aria-controls="home">{{ group.name }}</a>
             {% endfor %}
         </div>
       </div>
       <div class="col-7">
         <div class="tab-content" id="nav-tabContent">
-            {% for context_group in context_group_list %}
+            {% for group in group_list %}
                 <div class="tab-pane fade
-                    {% if context_group == context_group_list.0 %}show active{% endif %}"
-                     id="list-{{ context_group.key }}" role="tabpanel"
-                     aria-labelledby="list-{{ context_group.key }}-list">
-                    {% include "geocontext/includes/context_group_content.html" %}
+                    {% if group == group_list.0 %}show active{% endif %}"
+                     id="list-{{ group.key }}" role="tabpanel"
+                     aria-labelledby="list-{{ group.key }}-list">
+                    {% include "geocontext/includes/group_content.html" %}
                 </div>
             {% endfor %}
         </div>

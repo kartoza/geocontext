@@ -1,11 +1,10 @@
 from django.utils.translation import ugettext_lazy as _
-
 from django.contrib.gis.db import models
 
-from geocontext.models.service_registry import ContextServiceRegistry
+from geocontext.models.csr import CSR
 
 
-class ContextCache(models.Model):
+class Cache(models.Model):
     """Context Cache Model Class."""
 
     name = models.CharField(
@@ -14,35 +13,30 @@ class ContextCache(models.Model):
         null=False,
         max_length=200,
     )
-
     source_uri = models.CharField(
         help_text=_('Source URI of the Context.'),
         blank=True,
         null=True,
         max_length=1000,
     )
-
     geometry_point = models.PointField(
         help_text=_('The point geometry of the query.'),
         blank=True,
         null=True,
         dim=2
     )
-
     geometry_linestring = models.LineStringField(
         help_text=_('The line geometry of the context.'),
         blank=True,
         null=True,
         dim=2
     )
-
     geometry_multi_linestring = models.MultiLineStringField(
         help_text=_('The multi line geometry of the context.'),
         blank=True,
         null=True,
         dim=2
     )
-
     geometry_polygon = models.PolygonField(
         help_text=_('The polygon geometry of the context.'),
         blank=True,
@@ -70,21 +64,18 @@ class ContextCache(models.Model):
         null=True,
         dim=3
     )
-
     geometry_multi_linestring_3d = models.MultiLineStringField(
         help_text=_('The 3d multi line geometry of the context.'),
         blank=True,
         null=True,
         dim=3
     )
-
     geometry_polygon_3d = models.PolygonField(
         help_text=_('The 3d polygon geometry of the context.'),
         blank=True,
         null=True,
         dim=3
     )
-
     geometry_multi_polygon_3d = models.MultiPolygonField(
         help_text=_('The 3d multi polygon geometry of the context.'),
         blank=True,
@@ -92,19 +83,17 @@ class ContextCache(models.Model):
         dim=3
     )
 
-    service_registry = models.ForeignKey(
-        ContextServiceRegistry,
+    csr = models.ForeignKey(
+        CSR,
         help_text=_('Service registry where the context comes from'),
         on_delete=models.CASCADE
     )
-
     value = models.CharField(
-        help_text=_('The value of the context.'),
+        help_text=_('The value of the registry.'),
         blank=True,
         null=True,
         max_length=200,
     )
-
     expired_time = models.DateTimeField(
         help_text=_('When the cache expired.'),
         blank=False,

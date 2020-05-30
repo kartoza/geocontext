@@ -1,21 +1,19 @@
 from django.db import models
 
-from geocontext.models.collection import ContextCollection
-from geocontext.models.group import ContextGroup
+from geocontext.models.collection import Collection
+from geocontext.models.group import Group
 
 
 class CollectionGroups(models.Model):
     """Collection Groups"""
-
-    class Meta:
-        unique_together = ('context_collection', 'context_group',)
-
-    context_collection = models.ForeignKey(
-        ContextCollection, on_delete=models.CASCADE)
-    context_group = models.ForeignKey(ContextGroup, on_delete=models.CASCADE)
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(
         verbose_name='Order',
         null=False,
         blank=True,
         default=0
     )
+
+    class Meta:
+        unique_together = ('collection', 'group',)

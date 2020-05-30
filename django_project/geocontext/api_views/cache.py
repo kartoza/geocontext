@@ -3,18 +3,17 @@ from distutils.util import strtobool
 from rest_framework import views
 from rest_framework.response import Response
 
-from geocontext.models.service_registry import ContextServiceRegistry
-from geocontext.serializers.cache import (
-    CacheValueGeoJSONSerializer, CacheValueSerializer)
+from geocontext.models.service_registry import CSR
+from geocontext.serializers.cache import CacheValueGeoJSONSerializer, CacheValueSerializer
 from geocontext.models.utilities import CSRUtils
 
 
 class CacheValueListAPI(views.APIView):
-    """List all current context cache based on point (x, y)."""
+    """List all current  cache based on point (x, y)."""
 
     def get(self, request, x, y, csr_keys=None):
         if not csr_keys:
-            csr_list = ContextServiceRegistry.objects.all()
+            csr_list = CSR.objects.all()
             csr_keys = [o.key for o in csr_list]
         else:
             csr_keys = csr_keys.split(',')
