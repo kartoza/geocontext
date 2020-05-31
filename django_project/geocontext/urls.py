@@ -35,6 +35,7 @@ urlpatterns = [
         name='collection-detail'),
 ]
 
+# We allow +-DD.DDD OR degree:minute:second:direction format & Optional SRID
 urlpatterns_api = [
     url(regex=r'^geocontext/csr/$',
         view=CSRListAPIView.as_view(),
@@ -45,29 +46,33 @@ urlpatterns_api = [
         name='service-registry-detail-api'
         ),
     url(regex=r'^geocontext/value/list/'
-              r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
-              r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
-              r'(?P<csr_keys>[\w\-,]+)/$',
+              r'(?P<x>(-?[0-9]{1,3}(?:\.[0-9]{1,10})?)|(\d{1,3}(:[0-5][1-9]){2}\.?(\d{1,6})?:[EW](?i)))/'
+              r'(?P<y>(-?[0-9]{1,3}(?:\.[0-9]{1,10})?)|(\d{1,3}(:[0-5][1-9]){2}\.?(\d{1,6})?:[NS](?i)))/'
+              r'(?P<csr_keys>[\w\-,]+)/'
+              r'(?:(?P<srid>[0-9]+)/)?$',
         view=CacheListAPI.as_view(),
         name='value-list-csr-api'
         ),
     url(regex=r'^geocontext/value/collection/'
-              r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
-              r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
-              r'(?P<collection_key>[\w\-,]+)/$',
+              r'(?P<x>(-?[0-9]{1,3}(?:\.[0-9]{1,10})?)|(\d{1,3}(:[0-5][1-9]){2}\.?(\d{1,6})?:[EW](?i)))/'
+              r'(?P<y>(-?[0-9]{1,3}(?:\.[0-9]{1,10})?)|(\d{1,3}(:[0-5][1-9]){2}\.?(\d{1,6})?:[NS](?i)))/'
+              r'(?P<collection_key>[\w\-,]+)/'
+              r'(?:(?P<srid>[0-9]+)/)?$',
         view=CollectionAPIView.as_view(),
         name='collection-list-api'
         ),
     url(regex=r'^geocontext/value/group/'
-              r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
-              r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
-              r'(?P<group_key>[\w\-,]+)/$',
+              r'(?P<x>(-?[0-9]{1,3}(?:\.[0-9]{1,10})?)|(\d{1,3}(:[0-5][0-9]){2}\.?(\d{1,6})?:[EW](?i)))/'
+              r'(?P<y>(-?[0-9]{1,3}(?:\.[0-9]{1,10})?)|(\d{1,3}(:[0-5][0-9]){2}\.?(\d{1,6})?:[NS](?i)))/'
+              r'(?P<group_key>[\w\-,]+)/'
+              r'(?:(?P<srid>[0-9]+)/)?$',
         view=GroupAPIView.as_view(),
         name='group-list-api'
         ),
     url(regex=r'^geocontext/river-name/'
-              r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
-              r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/$',
+              r'(?P<x>(-?[0-9]{1,3}(?:\.[0-9]{1,10})?)|(\d{1,3}(:[0-5][1-9]){2}\.?(\d{1,6})?:[EW](?i)))/'
+              r'(?P<y>(-?[0-9]{1,3}(?:\.[0-9]{1,10})?)|(\d{1,3}(:[0-5][1-9]){2}\.?(\d{1,6})?:[NS](?i)))/'
+              r'(?:(?P<srid>[0-9]+)/)?$',
         view=RiverNameAPIView.as_view(),
         name='river-name-api'
         ),

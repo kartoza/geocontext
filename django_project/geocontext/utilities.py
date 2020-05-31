@@ -1,5 +1,4 @@
 import logging
-import re
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
@@ -201,7 +200,7 @@ def get_bbox(x: float, y: float, precision: float = 0.0001) -> list:
 
 
 def parse_dms(coord: str) -> tuple:
-    """Parse degree minute second input.
+    """Parse ':' seperated degree:minute:second:direction input.
 
     :param coord: Coord string
     :type coord: str
@@ -209,7 +208,7 @@ def parse_dms(coord: str) -> tuple:
     :return: degrees, minutes, seconds
     :rtype: int, int, float
     """
-    coord_parts = re.split(r'[^\d\w\.]+', coord)
+    coord_parts = coord.split(':')
     if len(coord_parts) > 4:
         raise ValueError(f"Could not parse degree, minute, second input")
 
@@ -218,6 +217,7 @@ def parse_dms(coord: str) -> tuple:
     seconds = float(coord_parts[2])
     direction = coord_parts[3]
     degrees = degrees * -1 if direction.upper() in ['W', 'S'] else degrees
+    print(degrees, minutes, seconds, direction)
     return degrees, minutes, seconds
 
 
@@ -238,4 +238,5 @@ def dms_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
         decimal = degrees + (minutes / 60.0) + (seconds / 3600.0)
     else:
         decimal = degrees - (minutes / 60.0) - (seconds / 3600.0)
+    print(decimal)
     return decimal

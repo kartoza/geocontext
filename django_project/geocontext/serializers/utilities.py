@@ -10,10 +10,10 @@ from geocontext.models.utilities import CSRUtils, thread_retrieve_external, Util
 class GroupValues(object):
     """Class for holding values of context group."""
     def __init__(self, x, y, group_key, srid):
-        self.group = get_object_or_404(Group, key=group_key)
         self.x = x
         self.y = y
         self.srid = srid
+        self.group = get_object_or_404(Group, key=group_key)
         self.key = self.group.key
         self.name = self.group.name
         self.graphable = self.group.graphable

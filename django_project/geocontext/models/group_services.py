@@ -6,7 +6,6 @@ from geocontext.models.csr import CSR
 
 class GroupServices(models.Model):
     """Context Group Services"""
-
     group = models.ForeignKey(Group, on_delete=models.CASCADE, default=None)
     csr = models.ForeignKey(CSR, on_delete=models.CASCADE, default=None)
     order = models.PositiveIntegerField(

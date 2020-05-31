@@ -19,7 +19,7 @@ class GroupSerializer(serializers.ModelSerializer):
             'csr_keys',
         )
 
-    def get_csr_keys(self, obj):
+    def get_csr_keys(self, obj) -> list:
         keys = []
         group_services = GroupServices.objects.filter(group=obj).order_by('order')
         for group_service in group_services:

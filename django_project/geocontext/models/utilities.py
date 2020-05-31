@@ -8,6 +8,7 @@ import pytz
 import requests
 import threading
 
+from django.contrib.gis.gdal.error import SRSException
 from django.contrib.gis.geos import Point
 from django.http import QueryDict
 from owslib.wms import WebMapService
@@ -30,7 +31,7 @@ thread_local = threading.local()
 UtilArg = namedtuple('UtilArgs', ['group_key', 'csr_util'])
 
 
-def thread_retrieve_external(util_arg_list):
+def thread_retrieve_external(util_arg_list: list) -> list:
     """Threading master function for loading external service data
 
     :param util_arg_list: List with Registry util argument tuples
@@ -46,7 +47,7 @@ def thread_retrieve_external(util_arg_list):
     return new_result_list
 
 
-def retrieve_external_csr(util_arg):
+def retrieve_external_csr(util_arg: namedtuple) -> namedtuple:
     """Fetch data and loads into CSRUtils instance
     using threadlocal request session.
 
@@ -62,7 +63,7 @@ def retrieve_external_csr(util_arg):
         return None
 
 
-def get_session():
+def get_session() -> thread_local:
     """Get thread local request session"""
     if not hasattr(thread_local, "session"):
         thread_local.session = requests.Session()
@@ -74,8 +75,8 @@ class CSRUtils():
     Threadsafe - only __init__, get_ & create_cache
     access DB but does not store any connection/querysets.
     """
-    def __init__(self, csr_key, x, y, srid=4326):
-        """Generalized coordinate and load mock service registry.
+    def __init__(self, csr_key: str, x: str, y: str, srid: int = 4326):
+        """Tools to load mock csr.
 
         :param csr_key: csr_key
         :type csr_key: int
@@ -108,7 +109,7 @@ class CSRUtils():
         self.generalize_point()
         self.geometry = self.point
 
-    def get_csr(self):
+    def get_csr(self) -> CSR:
         """Returns context service registry instance
 
         :raises KeyError: If registry not found
@@ -121,10 +122,10 @@ class CSRUtils():
         except CSR.DoesNotExist:
             raise KeyError(f'Service Registry not Found for: {self.csr_key}')
 
-    def generalize_point(self):
-        """Generalize a point to to registry format.
+    def generalize_point(self) -> Point:
+        """Generalize coordinate to the registry instance format.
 
-        Converts degree, minute, second to decimal degree.
+        Converts ':' delimited degree, minute, second to decimal degree.
         Converts to SRID of the context registry
         Removes extreme precision to improve point cache hits.
         Default precision for is 4 decimals (~10m)
@@ -132,30 +133,35 @@ class CSRUtils():
         :return: point
         :rtype: Point
         """
-        # Parse DMS
-        parsed = False
-        dms_chars = ['°', "'", '"', 'N', 'S', 'E', 'W', 'n', 's', 'e', 'w']
-        for coord in [self.x, self.y]:
-            for dms_char in dms_chars:
-                if dms_char in coord:
-                    degrees, minutes, seconds = parse_dms(coord)
-                    coord = dms_dd(degrees, minutes, seconds)
-                    parsed = True
-                    break
-
-        # Value not DMS - assume DD and convert to float
-        if not parsed:
+        # Parse Coordinate try DD / otherwise DMS
+        for coord in ['x', 'y']:
             try:
-                self.x = float(self.x)
-                self.y = float(self.y)
+                setattr(self, coord, float(getattr(self, coord)))
             except ValueError:
-                raise ValueError('Could not convert x/y to float')
+                try:
+                    degrees, minutes, seconds = parse_dms(getattr(self, coord))
+                    setattr(self, coord, dms_dd(degrees, minutes, seconds))
+                except ValueError:
+                    raise ValueError('Coordinate parse failed: {coord}. Require DD/DMS.')
 
         # Convert or set coordinate
+        try:
+            self.query_srid = int(self.query_srid)
+        except ValueError:
+            raise ValueError(f"SRID: '{self.query_srid}' not valid")
+
         if self.query_srid != self.srid:
-            point = Point(*convert_coordinate(self.x, self.y, self.query_srid, self.srid),
-                          srid=self.srid
-                          )
+            try:
+                point = Point(*convert_coordinate(
+                                self.x,
+                                self.y,
+                                self.query_srid,
+                                self.srid
+                              ),
+                              srid=self.srid
+                              )
+            except SRSException:
+                raise ValueError(f"SRID: '{self.query_srid}' not valid")
         else:
             point = Point(self.x, self.y, srid=self.srid)
 
@@ -165,7 +171,7 @@ class CSRUtils():
         y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
         self.point = Point(float(x_round), float(y_round), srid=self.srid)
 
-    def create_cache(self):
+    def create_cache(self) -> Cache:
         """Add context value to cache
 
         :return: Context cache instance
@@ -184,7 +190,7 @@ class CSRUtils():
         cache.refresh_from_db()
         return cache
 
-    def retrieve_cache(self):
+    def retrieve_cache(self) -> Cache:
         """Try to retrieve context from point.
 
         :returns: cache on None
@@ -192,17 +198,16 @@ class CSRUtils():
         """
         caches = Cache.objects.filter(csr=self.get_csr())
         for cache in caches:
-            if cache.geometry:
-                if cache.geometry.contains(self.point):
-                    current_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
-                    is_expired = current_time > cache.expired_time
-                    if not is_expired:
-                        return cache
-                    else:
-                        cache.delete()
-                        break
+            if cache.geometry and cache.geometry.contains(self.point):
+                current_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
+                is_expired = current_time > cache.expired_time
+                if is_expired:
+                    cache.delete()
+                    break
+                else:
+                    return cache
 
-    def retrieve_value(self):
+    def retrieve_value(self) -> bool:
         """Load context value.
 
         :returns: success
@@ -261,11 +266,9 @@ class CSRUtils():
                     if self.value is not None:
                         self.fetch_geometry(gml_string)
                     return True
-
-        self.value = "error"
         return False
 
-    def request_content(self, retries=0):
+    def request_content(self, retries: int = 0) -> requests:
         """Get request content from cache url in request session
 
         :return: URL to do query.
@@ -282,14 +285,11 @@ class CSRUtils():
             )
             return None
 
-    def fetch_geometry(self, gml_string):
-        """Get request geometry from gml string
+    def fetch_geometry(self, gml_string: str):
+        """Load geometry from gml string
 
         :param gml_string: String that represent full gml document.
         :type gml_string: unicode
-
-        :return: URL to do query.
-        :rtype: unicode
         """
         geom = parse_gml_geometry(gml_string, self.layer_typename)
         if geom is not None:
@@ -297,14 +297,14 @@ class CSRUtils():
                 geom.srid = self.srid
             self.geometry = geom
 
-    def parse_request_value(self, request_content):
+    def parse_request_value(self, request_content: str) -> str:
         """Parse request value from request content.
 
         :param request_content: String that represent content of a request.
-        :type request_content: unicode
+        :type request_content: str
 
         :returns: The value of the result_regex in the request_content.
-        :rtype: unicode
+        :rtype: str
         """
         if self.query_type in [ServiceDefinitions.WFS, ServiceDefinitions.WMS]:
             xmldoc = minidom.parseString(request_content)
@@ -312,13 +312,7 @@ class CSRUtils():
                 value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
                 return value_dom.childNodes[0].nodeValue
             except IndexError:
-                pass
-            if self.result_regex == 'gml:name':
-                try:
-                    value_dom = xmldoc.getElementsByTagName('gml:description')[0]
-                    return value_dom.childNodes[0].nodeValue
-                except IndexError:
-                    return None
+                return None
         # For the ArcREST standard we parse JSON (Above parsed from CSV)
         elif self.query_type == ServiceDefinitions.ARCREST:
             json_document = json.loads(request_content)
@@ -336,11 +330,11 @@ class CSRUtils():
             except IndexError:
                 return None
 
-    def box_query_url(self):
+    def box_query_url(self) -> str:
         """Build query with bounding box.
 
         :return: URL to do query.
-        :rtype: unicode
+        :rtype: str
         """
         url = None
         bbox = get_bbox(self.point.x, self.point.y)
@@ -399,7 +393,7 @@ class CSRUtils():
         """Describe query based on the model and the parameter.
 
         :return: URL to do query.
-        :rtype: unicode
+        :rtype: str
         """
         describe_url = None
         if self.query_type == ServiceDefinitions.WFS:
@@ -417,11 +411,11 @@ class CSRUtils():
                 describe_url = f'{self.url}?{query_dict.urlencode()}'
         return describe_url
 
-    def intersect_query_url(self, geom_name):
+    def intersect_query_url(self, geom_name: str) -> str:
         """Filter query based on the model and the parameter.
 
         :return: URL to do query.
-        :rtype: unicode
+        :rtype: str
         """
         filter_url = None
         attribute_name = (self.result_regex[4:])
