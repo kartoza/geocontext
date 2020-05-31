@@ -38,4 +38,4 @@ class Collection(models.Model):
 
     def get_ordered_groups(self):
         """Helper to retrieve groups in order."""
-        return self.groups_set.all().order_by('order')
+        return self.collectiongroups_set.all().order_by('order')

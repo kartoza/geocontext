@@ -32,7 +32,7 @@ class ServiceDefinitions():
     )
 
 
-def convert_coordinate(x, y, srid_source, srid_target):
+def convert_coordinate(x: float, y: float, srid_source: int, srid_target: int) -> tuple:
     """Convert coordinate x y from srid_source to srid_target.
 
     :param x: The value of x coordinate.
@@ -50,15 +50,12 @@ def convert_coordinate(x, y, srid_source, srid_target):
     :return: tuple of converted x and y in float.
     :rtype: tuple(float, float)
     """
-    # create a geometry from coordinates
     point = Point(x, y, srid=srid_source)
-
     point.transform(srid_target)
-
     return point.x, point.y
 
 
-def parse_gml_geometry(gml_string, tag_name='qgs:geometry'):
+def parse_gml_geometry(gml_string, tag_name: str = 'qgs:geometry') -> GEOSGeometry:
     """Parse geometry from gml document.
 
     :param gml_string: String that represent full gml document.
@@ -95,14 +92,25 @@ def parse_gml_geometry(gml_string, tag_name='qgs:geometry'):
         return None
 
 
-def tag_with_version(tag, version):
-    """ Replace version in tag """
+def tag_with_version(tag: str, version: str) -> str:
+    """ Replace version in tag
+
+    :return: tag
+    :rtype: str
+    """
     if version:
         return version + tag
     return tag
 
 
-def find_geometry_in_xml(content):
+def find_geometry_in_xml(content: str) -> tuple:
+    """Find geometry in xml string
+
+    :param content: xml content
+    :type content: str
+    :return: geometry name and geometry type
+    :rtype: tuple
+    """
     content_parsed = ET.fromstring(content)
     version = None
     try:
@@ -132,11 +140,10 @@ def find_geometry_in_xml(content):
     except Exception as e:
         logging.exception(e)
         pass
-
     return geometry_name, geometry_type
 
 
-def convert_2d_to_3d(geometry_2d):
+def convert_2d_to_3d(geometry_2d: GEOSGeometry) -> GEOSGeometry:
     """Convert 2d geometry to 3d with adding z = 0.
 
     :param geometry_2d: 2D geometry.
@@ -171,7 +178,7 @@ def convert_2d_to_3d(geometry_2d):
     return geometry_3d
 
 
-def get_bbox(x, y, precision=0.0001):
+def get_bbox(x: float, y: float, precision: float = 0.0001) -> list:
     """Get small enough bbox to cover point x,y
     precision of 4 == ~10 m bounding box
 
@@ -193,7 +200,7 @@ def get_bbox(x, y, precision=0.0001):
     ]
 
 
-def parse_dms(coord):
+def parse_dms(coord: str) -> tuple:
     """Parse degree minute second input.
 
     :param coord: Coord string
@@ -214,7 +221,7 @@ def parse_dms(coord):
     return degrees, minutes, seconds
 
 
-def dms_dd(degrees, minutes=0, seconds=0.0):
+def dms_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
     """Convert degree minute second to decimal degree
 
     :param degrees: degrees
