@@ -4,11 +4,9 @@ from geocontext.models.group import Group
 from geocontext.serializers.cache import CacheValueSerializer
 
 
-class ContextGroupSerializer(serializers.ModelSerializer):
-    """Serializer class for Context Group."""
-
-    csr_keys = serializers.SerializerMethodField(
-        source='service_registry.key')
+class GroupSerializer(serializers.ModelSerializer):
+    """Serializer class for Group."""
+    csr_keys = serializers.SerializerMethodField(source='csr.key')
 
     class Meta:
         model = Group
@@ -22,9 +20,9 @@ class ContextGroupSerializer(serializers.ModelSerializer):
         )
 
 
-class ContextGroupValueSerializer(serializers.Serializer):
-    """Serializer for Context Value Group class."""
+class GroupValueSerializer(serializers.Serializer):
+    """Serializer for Value Group class."""
     key = serializers.CharField()
     name = serializers.CharField()
     graphable = serializers.BooleanField()
-    service_registry_values = serializers.ListSerializer(child=CacheValueSerializer())
+    csr_values = serializers.ListSerializer(child=CacheValueSerializer())

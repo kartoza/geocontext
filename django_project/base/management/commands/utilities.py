@@ -60,18 +60,18 @@ def import_data(file_uri):
     # Load Context Service Registries
     csr_list = data['csr']
     for csr_data in csr_list:
-        service_registry, created = CSR.objects.get_or_create(key=csr_data['key'])
+        csr, created = CSR.objects.get_or_create(key=csr_data['key'])
         # Change to load from dictionary
         for k, v in csr_data.items():
-            setattr(service_registry, k, v)
-        service_registry.save()
+            setattr(csr, k, v)
+        csr.save()
 
         try:
-            service_registry.full_clean()
-            service_registry.save()
+            csr.full_clean()
+            csr.save()
         except ValidationError as e:
-            print(f'   >>> CSR {service_registry.name} is not clean because {e} ')
-            service_registry.delete()
+            print(f'   >>> CSR {csr.name} is not clean because {e} ')
+            csr.delete()
 
     # Load Context Groups
     groups = data['group']
@@ -111,8 +111,7 @@ def import_data(file_uri):
                 group_keys = v
                 i = 0
                 for group_key in group_keys:
-                    group = Group.objects.get(
-                        key=group_key)
+                    group = Group.objects.get(key=group_key)
                     collection_group = CollectionGroups(
                         collection=collection,
                         group=group,

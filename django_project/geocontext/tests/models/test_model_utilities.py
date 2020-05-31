@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 from django.test import TestCase
 
-from geocontext.models.cache import ContextCache
+from geocontext.models.cache import Cache
 from geocontext.tests.models.model_factories import CSRF
 from geocontext.utilities import ServiceDefinitions
 from geocontext.models.utilities import (
@@ -22,7 +22,7 @@ class TestCRSUtils(TestCase):
     """Test CSR models."""
 
     def test_retrieve_value1(self, mock_get_csr):
-        """Test retrieving context value from a point with same CRS."""
+        """Test retrieving value from a point with same CRS."""
         x = 18.42
         y = -29.71
 
@@ -47,7 +47,7 @@ class TestCRSUtils(TestCase):
         self.assertEqual(result.geometry.geom_type, 'Polygon')
         self.assertTrue(result.geometry.valid)
 
-        caches = ContextCache.objects.filter(service_registry=csr)
+        caches = Cache.objects.filter(csr=csr)
         self.assertIsNotNone(caches)
         cache = caches[0]
         self.assertEqual(cache.value, expected_value)
@@ -56,7 +56,7 @@ class TestCRSUtils(TestCase):
 
     @unittest.skip("Please fix this")
     def test_retrieve_value2(self, mock_get_csr):
-        """Test retrieving context value from a point with different CRS."""
+        """Test retrieving value from a point with different CRS."""
         x = 18.42
         y = -29.71
 
@@ -82,7 +82,7 @@ class TestCRSUtils(TestCase):
         self.assertEqual(result.geometry.geom_type, 'MultiPolygon')
         self.assertTrue(result.geometry.valid)
 
-        caches = ContextCache.objects.filter(service_registry=csr)
+        caches = Cache.objects.filter(csr=csr)
         self.assertIsNotNone(caches)
         cache = caches[0]
         self.assertEqual(cache.value, expected_value)
@@ -92,7 +92,7 @@ class TestCRSUtils(TestCase):
 
     @unittest.skip("Please fix this")
     def test_retrieve_value_geoserver(self, mock_get_csr):
-        """Test retrieving context value from a geoserver service."""
+        """Test retrieving value from a geoserver service."""
         x = 18.42
         y = -29.71
 
@@ -117,7 +117,7 @@ class TestCRSUtils(TestCase):
         self.assertEqual(result.geometry.geom_type, 'MultiPolygon')
         self.assertTrue(result.geometry.valid)
 
-        caches = ContextCache.objects.filter(service_registry=csr)
+        caches = Cache.objects.filter(csr=csr)
         self.assertIsNotNone(caches)
         cache = caches[0]
         self.assertEqual(cache.value, expected_value)
@@ -126,7 +126,7 @@ class TestCRSUtils(TestCase):
         self.assertEqual(cache.geometry.srid, 4326)
 
     def test_retrieve_value_wms(self, mock_get_csr):
-        """Test retrieving context value from a point with WMS source."""
+        """Test retrieving value from a point with WMS source."""
         x = 27.8
         y = -32.1
 
@@ -150,14 +150,13 @@ class TestCRSUtils(TestCase):
         self.assertEqual(result.value, expected_value)
         self.assertIsNotNone(result.value)
 
-        caches = ContextCache.objects.filter(
-            service_registry=csr)
+        caches = Cache.objects.filter(csr=csr)
         self.assertIsNotNone(caches)
         cache = caches[0]
         self.assertEqual(cache.value, expected_value)
 
     def test_retrieve_value_arcrest(self, mock_get_csr):
-        """Test retrieving context value from a point with ArcRest source.
+        """Test retrieving value from a point with ArcRest source.
         """
         x = 19.14
         y = -32.32
@@ -185,13 +184,13 @@ class TestCRSUtils(TestCase):
         self.assertEqual(result.value, expected_value)
         self.assertIsNotNone(result.value)
 
-        caches = ContextCache.objects.filter(service_registry=csr)
+        caches = Cache.objects.filter(csr=csr)
         self.assertIsNotNone(caches)
         cache = caches[0]
         self.assertEqual(cache.value, expected_value)
 
     def test_retrieve_value_placename(self, mock_get_csr):
-        """Test retrieving context value from a point with ArcRest source.
+        """Test retrieving value from a point with ArcRest source.
         """
         x = 19.14
         y = -32.32
@@ -218,14 +217,14 @@ class TestCRSUtils(TestCase):
         self.assertEqual(result.value, expected_value)
         self.assertIsNotNone(result.value)
 
-        caches = ContextCache.objects.filter(service_registry=csr)
+        caches = Cache.objects.filter(csr=csr)
         self.assertIsNotNone(caches)
         cache = caches[0]
         self.assertEqual(cache.value, expected_value)
 
     @unittest.skip("Please fix this")
     def test_retrieve_value_invalid(self, mock_get_csr):
-        """Test retrieving context value from a point with different CRS.
+        """Test retrieving value from a point with different CRS.
 
         The CRS is 4326 (query), 3857 (service)
         """

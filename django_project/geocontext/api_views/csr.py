@@ -17,15 +17,18 @@ class CSRListAPIView(generics.ListAPIView):
 
 class CSRDetailAPIView(generics.RetrieveAPIView):
     """Retrieve a detail of a context service registry."""
-
     lookup_field = 'key'
-
     queryset = CSR.objects.all()
     serializer_class = CSRSerializer
 
 
 def get_context(request):
-    """Get context view."""
+    """Get context view.
+
+    :raises Http404: Can not find context
+    :return: Form
+    :rtype: GeoContextForm
+    """
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -36,8 +39,8 @@ def get_context(request):
             x = cleaned_data['x']
             y = cleaned_data['y']
             srid = cleaned_data.get('srid', 4326)
-            service_registry_key = cleaned_data['service_registry_key']
-            csr_util = CSRUtils(service_registry_key, x, y, srid)
+            csr_key = cleaned_data['csr_key_key']
+            csr_util = CSRUtils(csr_key, x, y, srid)
             cache = csr_util.retrieve_cache()
             if cache is None:
                 util_arg = UtilArg(group_key=None, csr_util=csr_util)
@@ -54,8 +57,7 @@ def get_context(request):
                         fields=fields),
                     content_type='application/json')
             else:
-                raise Http404(
-                    'Sorry! We could not find context for your point!')
+                raise Http404('Sorry! We could not find context for your point!')
 
     # if a GET (or any other method) we'll create a blank form
     else:

@@ -20,13 +20,13 @@
             <td>{{ group.graphable }}</td>
         </tr>
         <tr>
-            <th scope="row">Context Service Registries</th>
+            <th scope="row">Geocontext Service Registries</th>
             {% if group.get_ordered_csr_list %}
                 <td>
                     <ol>
                         {% for group_service in group.get_ordered_csr_list %}
                         <li>
-                            <a href="{% url "csr-detail" group_service.service_registry.key %}">
+                            <a href="{% url "csr-detail" group_service.csr.key %}">
                                 {{ group_service.csr.name }}
                             </a>
                         </li>

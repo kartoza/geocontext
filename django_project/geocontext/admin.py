@@ -28,23 +28,23 @@ class CollectionGroupsInLine(admin.TabularInline):
 
 
 class CSRAdmin(admin.ModelAdmin):
-    """Context Service Registry admin model."""
+    """Service Registry admin model."""
     list_display = ('key', 'name', 'query_type', 'url')
 
 
 class CacheAdmin(OSMGeoAdmin):
-    """Context Cache admin model."""
-    list_display = ('name', 'service_registry', 'value', 'expired_time')
+    """Cache admin model."""
+    list_display = ('name', 'csr', 'value', 'expired_time')
 
 
 class GroupAdmin(admin.ModelAdmin):
-    """Context Group admin model."""
+    """Group admin model."""
     list_display = ('key', 'name', 'group_type', 'description')
     inlines = [GroupServicesInLine]
 
 
 class CollectionAdmin(admin.ModelAdmin):
-    """Context Collection admin model."""
+    """Collection admin model."""
     list_display = ('key', 'name', 'description')
     inlines = [CollectionGroupsInLine]
 

@@ -3,7 +3,7 @@ from distutils.util import strtobool
 from rest_framework import views
 from rest_framework.response import Response
 
-from geocontext.models.service_registry import CSR
+from geocontext.models.csr import CSR
 from geocontext.serializers.cache import CacheValueGeoJSONSerializer, CacheValueSerializer
 from geocontext.models.utilities import CSRUtils
 

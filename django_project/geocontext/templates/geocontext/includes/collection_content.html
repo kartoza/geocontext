@@ -15,13 +15,13 @@
             {% endif %}
         </tr>
         <tr>
-            <th scope="row">Context Groups</th>
+            <th scope="row">Geocontext Groups</th>
             {% if collection.get_ordered_groups %}
                 <td>
                     <ol>
                         {% for collection_group_service in collection.get_ordered_groups %}
                             <li>
-                                <a href="{% url "context-group-detail" collection_group_service.group.key %}">
+                                <a href="{% url "group-detail" collection_group_service.group.key %}">
                                     {{ collection_group_service.group.name }}
                                 </a>
                             </li>

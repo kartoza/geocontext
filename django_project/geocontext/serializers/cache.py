@@ -1,22 +1,18 @@
 from rest_framework import serializers
 from rest_framework_gis.serializers import (
     GeoFeatureModelSerializer, GeometrySerializerMethodField)
-from geocontext.models.cache import ContextCache
+from geocontext.models.cache import Cache
 
 
-class ContextValueSerializer(serializers.ModelSerializer):
-    """JSON serializer for context cache.."""
-
-    key = serializers.ReadOnlyField(source='service_registry.key')
-    name = serializers.ReadOnlyField(
-        source='service_registry.name')
-    description = serializers.ReadOnlyField(
-        source='service_registry.description')
-    query_type = serializers.ReadOnlyField(
-        source='service_registry.query_type')
+class ValueSerializer(serializers.ModelSerializer):
+    """JSON serializer for cache."""
+    key = serializers.ReadOnlyField(source='csr.key')
+    name = serializers.ReadOnlyField(source='csr.name')
+    description = serializers.ReadOnlyField(source='csr.description')
+    query_type = serializers.ReadOnlyField(source='csr.query_type')
 
     class Meta:
-        model = ContextCache
+        model = Cache
         fields = (
             'key',
             'value',
@@ -26,15 +22,12 @@ class ContextValueSerializer(serializers.ModelSerializer):
         )
 
 
-class ContextValueGeoJSONSerializer(
-    ContextValueSerializer, GeoFeatureModelSerializer):
-    """Geo JSON serializer for context cache.."""
-
-    # I am not sure why I need to do this to make it work.
+class ValueGeoJSONSerializer(ValueSerializer, GeoFeatureModelSerializer):
+    """Geo JSON serializer for cache.."""
     geometry = GeometrySerializerMethodField()
 
     def get_geometry(self, obj):
         return obj.geometry
 
-    class Meta(ContextValueSerializer.Meta):
+    class Meta(ValueSerializer.Meta):
         geo_field = 'geometry'

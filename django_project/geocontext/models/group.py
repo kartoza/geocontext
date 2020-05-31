@@ -13,7 +13,7 @@ class Group(models.Model):
 
     GROUP_TYPE_CHOICES = (
         (GROUP_TYPE_TEXT, 'Text'),
-        (GROUP_TYPE_GRAPH, 'Graph')  # The values can be used for graph
+        (GROUP_TYPE_GRAPH, 'Graph')
     )
 
     key = models.CharField(

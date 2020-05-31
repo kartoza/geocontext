@@ -21,49 +21,49 @@ urlpatterns = [
     url(regex=r'^geocontext/csr/(?P<slug>[\w-]+)/$',
         view=CSRDetailView.as_view(),
         name='csr-detail'),
-    url(regex=r'^geocontext/context-group/list/$',
+    url(regex=r'^geocontext/group/list/$',
         view=GroupListView.as_view(),
-        name='context-group-list'),
-    url(regex=r'^geocontext/context-group/(?P<slug>[\w-]+)/$',
+        name='group-list'),
+    url(regex=r'^geocontext/group/(?P<slug>[\w-]+)/$',
         view=GroupDetailView.as_view(),
-        name='context-group-detail'),
-    url(regex=r'^geocontext/context-collection/list/$',
+        name='group-detail'),
+    url(regex=r'^geocontext/collection/list/$',
         view=CollectionListView.as_view(),
-        name='context-collection-list'),
-    url(regex=r'^geocontext/context-collection/(?P<slug>[\w-]+)/$',
+        name='collection-list'),
+    url(regex=r'^geocontext/collection/(?P<slug>[\w-]+)/$',
         view=CollectionDetailView.as_view(),
-        name='context-collection-detail'),
+        name='collection-detail'),
 ]
 
 urlpatterns_api = [
     url(regex=r'^geocontext/csr/$',
         view=CSRListAPIView.as_view(),
-        name='context-service-registry-list-api'
+        name='service-registry-list-api'
         ),
     url(regex=r'^geocontext/csr/(?P<key>[\w-]+)/$',
         view=CSRDetailAPIView.as_view(),
-        name='context-service-registry-detail-api'
+        name='service-registry-detail-api'
         ),
     url(regex=r'^geocontext/value/list/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<csr_keys>[\w\-,]+)/$',
         view=CacheValueListAPI.as_view(),
-        name='context-value-list-csr-api'
+        name='value-list-csr-api'
         ),
     url(regex=r'^geocontext/value/collection/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<collection_key>[\w\-,]+)/$',
         view=CollectionValueAPIView.as_view(),
-        name='context-collection-list-api'
+        name='collection-list-api'
         ),
     url(regex=r'^geocontext/value/group/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<group_key>[\w\-,]+)/$',
         view=GroupValueAPIView.as_view(),
-        name='context-group-list-api'
+        name='group-list-api'
         ),
     url(regex=r'^geocontext/river-name/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'

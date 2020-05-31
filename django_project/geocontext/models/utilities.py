@@ -119,8 +119,7 @@ class CSRUtils():
         try:
             return CSR.objects.get(key=self.csr_key)
         except CSR.DoesNotExist:
-            raise KeyError('Service Registry not Found for'
-                           f'{self.csr_key}')
+            raise KeyError(f'Service Registry not Found for: {self.csr_key}')
 
     def generalize_point(self):
         """Generalize a point to to registry format.
@@ -279,7 +278,7 @@ class CSRUtils():
                     return response.content
         except requests.exceptions.RequestException as e:
             LOGGER.error(
-                f"'{self.service_registry_key}' url failed: {self.cache_url} with: {e}"
+                f"'{self.csr_key_key}' url failed: {self.cache_url} with: {e}"
             )
             return None
 

@@ -9,11 +9,11 @@ from geocontext.tests.models.model_factories import (
 )
 
 
-class TestContextCollectionRegistry(TestCase):
+class TestCollectionRegistry(TestCase):
     """Test Collection models"""
 
-    def test_ContextCollection_create(self):
-        """Test Context Collection creation."""
+    def test_Collection_create(self):
+        """Test Collection creation."""
         model = CollectionF.create()
 
         # check if PK exists.

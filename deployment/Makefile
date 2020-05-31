@@ -113,12 +113,12 @@ delete-data:
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py delete_data
 
-delete-context-cache:
+delete-cache:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Delete context cache."
+	@echo "Delete cache."
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py delete_context_cache
+	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py delete_cache
 
 update-migrations:
 	@echo
@@ -132,10 +132,6 @@ collectstatic:
 	@echo "------------------------------------------------------------------"
 	@echo "Collecting static in production mode"
 	@echo "------------------------------------------------------------------"
-	#@docker-compose -p $(PROJECT_ID) run uwsgi python manage.py collectstatic --noinput
-	#We need to run collect static in the same context as the running
-	# uwsgi container it seems so I use docker exec here
-	# no -it flag so we can run over remote shell
 	@docker exec $(PROJECT_ID)-uwsgi python manage.py collectstatic --noinput
 
 reload:
@@ -143,7 +139,6 @@ reload:
 	@echo "------------------------------------------------------------------"
 	@echo "Reload django project in production mode"
 	@echo "------------------------------------------------------------------"
-	# no -it flag so we can run over remote shell
 	@docker exec $(PROJECT_ID)-uwsgi uwsgi --reload  /tmp/django.pid
 
 kill:
@@ -332,6 +327,7 @@ import-web-data:
 	@echo "Importing GeoContext Data."
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec dev-web python manage.py import_data $(FILE_URI)
+
 status:
 	@echo
 	@echo "------------------------------------------------------------------"
@@ -349,41 +345,41 @@ test:
 # --------------- help --------------------------------
 
 help:
-	@echo "* **build** - builds all required containers."
-	@echo "* **build-devweb** - build the development container. See [development notes](README-dev.md)."
-	@echo "* **collectstatic** - run the django collectstatic command."
-	@echo "* **create-machine** ."
-	@echo "* **db** - build and run the db container."
-	@echo "* **dbbackup** - make a snapshot of the database, saving it to deployments/backups/YYYY/MM/project-DDMMYYYY.dmp. It also creates a symlink to backups/latest.dmp for the latest backup."
-	@echo "* **dbbash** - open a bash shell inside the database container."
-	@echo "* **dblogs** - view the database logs."
-	@echo "* **dbrestore** - restore deployment/backups/latest.dmp over the active database. Will delete any existing data in your database and replace with the restore, so **use with caution**."
-	@echo "* **dbschema** - dump the current db schema (without data) to stdio. Useful if you want to compare changes between instances."
-	@echo "* **dbshell** - get a psql prompt into the db container. "
-	@echo "* **dbsnapshot** - as above but makes the backup as deployment/snapshot.smp - replacing any pre-existing snapshot."
-	@echo "* **dbsync** - use this from a development or offsite machine. It will rsync all database backups from deployment/backups to your offsite machine."
-	@echo "* **default** ."
-	@echo "* **deploy** ."
-	@echo "* **devweb** - create an ssh container derived from uwsgi that can be used as a remote interpreter for PyCharm. See [development notes](README-dev.md)."
-	@echo "* **enable-machine** - "
-	@echo "* **kill** - kills all running containers. Does not remove them."
-	@echo "* **logs** - view the logs of all running containers. Note that you can also view individual logs in the deployment/logs directory."
-	@echo "* **mailerrorlogs** - View the error logs from the mail server."
-	@echo "* **maillogs** - view the transaction logs from the mail server."
-	@echo "* **mediasync** - use this from a development or offsite machine. It will rsync all media backups from deployment/media to your offsite machine."
-	@echo "* **migrate** - run any pending migrations. "
-	@echo "* **nginx** - builds and runs the nginx container."
-	@echo "* **nginxlogs** - view just the nginx activity logs."
-	@echo "* **permissions** - Update the permissions of shared volumes. Note this will destroy any existing permissions you have in place."
-	@echo "* **reload** - reload the uwsgi process. Useful when you need django to pick up any changes you may have deployed."
-	@echo "* **rm** - remove all containers."
-	@echo "* **rm-only** - remove any containers without trying to kill them first. "
-	@echo "* **run** - builds and runs the complete orchestrated set of containers."
-	@echo "* **setup-dev** - builds and runs all containers + dev, creates superuser and imports data."
-	@echo "* **sentry** - **currently not working I think.** The idea is to spin up a sentry instance together with your app for fault reporting."
-	@echo "* **shell** - open a bash shell in the uwsgi (where django runs) container."
-	@echo "* **superuser** - create a django superuser account."
-	@echo "* **test** - Run tests on development."
-	@echo "* **update-migrations** - freshen all migration definitions to match the current code base."
-	@echo "* **web** - same as **run** - runs the production site."
-	@echo "* **flake8** - Check flake 8"
+	@echo "build - builds all required containers."
+	@echo "build-devweb - build the development container. See [development notes](README-dev.md)."
+	@echo "collectstatic - run the django collectstatic command."
+	@echo "create-machine."
+	@echo "db - build and run the db container."
+	@echo "dbbackup - make a snapshot of the database, saving it to deployments/backups/YYYY/MM/project-DDMMYYYY.dmp. It also creates a symlink to backups/latest.dmp for the latest backup."
+	@echo "dbbash - open a bash shell inside the database container."
+	@echo "dblogs - view the database logs."
+	@echo "dbrestore - restore deployment/backups/latest.dmp over the active database. Will delete any existing data in your database and replace with the restore, so **use with caution**."
+	@echo "dbschema - dump the current db schema (without data) to stdio. Useful if you want to compare changes between instances."
+	@echo "dbshell - get a psql prompt into the db container. "
+	@echo "dbsnapshot - as above but makes the backup as deployment/snapshot.smp - replacing any pre-existing snapshot."
+	@echo "dbsync - use this from a development or offsite machine. It will rsync all database backups from deployment/backups to your offsite machine."
+	@echo "default."
+	@echo "deploy."
+	@echo "devweb - create an ssh container derived from uwsgi that can be used as a remote interpreter for PyCharm. See [development notes](README-dev.md)."
+	@echo "enable-machine"
+	@echo "kill - kills all running containers. Does not remove them."
+	@echo "logs - view the logs of all running containers. Note that you can also view individual logs in the deployment/logs directory."
+	@echo "mailerrorlogs - View the error logs from the mail server."
+	@echo "maillogs - view the transaction logs from the mail server."
+	@echo "mediasync - use this from a development or offsite machine. It will rsync all media backups from deployment/media to your offsite machine."
+	@echo "migrate - run any pending migrations. "
+	@echo "nginx - builds and runs the nginx container."
+	@echo "nginxlogs - view just the nginx activity logs."
+	@echo "permissions - Update the permissions of shared volumes. Note this will destroy any existing permissions you have in place."
+	@echo "reload - reload the uwsgi process. Useful when you need django to pick up any changes you may have deployed."
+	@echo "rm - remove all containers."
+	@echo "rm-only - remove any containers without trying to kill them first. "
+	@echo "run - builds and runs the complete orchestrated set of containers."
+	@echo "setup-dev - builds and runs all containers + dev, creates superuser and imports data."
+	@echo "sentry - currently not working I think. The idea is to spin up a sentry instance together with your app for fault reporting."
+	@echo "shell - open a bash shell in the uwsgi (where django runs) container."
+	@echo "superuser - create a django superuser account."
+	@echo "test - Run tests on development."
+	@echo "update-migrations - freshen all migration definitions to match the current code base."
+	@echo "web - same as **run** - runs the production site."
+	@echo "flake8 - Check flake 8"

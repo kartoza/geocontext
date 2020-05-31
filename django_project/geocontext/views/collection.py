@@ -3,7 +3,7 @@ from geocontext.models.collection import Collection
 
 
 class CollectionListView(ListView):
-    """List view for Context Collection."""
+    """List view for Collection."""
 
     model = Collection
     template_name = 'geocontext/collection_list.html'
@@ -12,7 +12,7 @@ class CollectionListView(ListView):
 
 
 class CollectionDetailView(DetailView):
-    """Detail view for Context Collection."""
+    """Detail view for Collection."""
 
     model = Collection
     template_name = 'geocontext/collection_detail.html'

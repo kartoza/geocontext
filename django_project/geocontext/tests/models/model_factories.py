@@ -38,11 +38,11 @@ class CollectionGroupsF(factory.DjangoModelFactory):
         model = CollectionGroups
 
 
-class ContextCollectionF(factory.DjangoModelFactory):
+class CollectionF(factory.DjangoModelFactory):
     class Meta:
         model = Collection
 
     key = factory.sequence(
-        lambda n: f'TestContextCollectionKey{n}')
+        lambda n: f'TestCollectionKey{n}')
     name = factory.sequence(
-        lambda n: f'Test Context Collection name {n}')
+        lambda n: f'Test Collection name {n}')

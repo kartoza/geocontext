@@ -1,13 +1,13 @@
 from django.db import models
 
-from geocontext.models.group import ContextGroup
+from geocontext.models.group import Group
 from geocontext.models.csr import CSR
 
 
 class ContextGroupServices(models.Model):
     """Context Group Services"""
 
-    group = models.ForeignKey(ContextGroup, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     csr = models.ForeignKey(CSR, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(
         verbose_name='Order',
