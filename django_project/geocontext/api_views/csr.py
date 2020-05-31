@@ -22,8 +22,8 @@ class CSRDetailAPIView(generics.RetrieveAPIView):
     serializer_class = CSRSerializer
 
 
-def get_context(request):
-    """Get context view.
+def get_csr(request):
+    """Get get_csr view.
 
     :raises Http404: Can not find context
     :return: Form
@@ -63,4 +63,4 @@ def get_context(request):
     else:
         form = GeoContextForm(initial={'srid': 4326})
 
-    return render(request, 'geocontext/get_context.html', {'form': form})
+    return render(request, 'geocontext/get_csr.html', {'form': form})

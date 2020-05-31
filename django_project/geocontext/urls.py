@@ -3,7 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from geocontext.api_views.cache import CacheValueListAPI
 from geocontext.api_views.collection import CollectionValueAPIView
-from geocontext.api_views.csr import CSRListAPIView, CSRDetailAPIView, get_context
+from geocontext.api_views.csr import CSRListAPIView, CSRDetailAPIView, get_csr
 from geocontext.api_views.group import GroupValueAPIView
 from geocontext.api_views.river import RiverNameAPIView
 from geocontext.views.csr import CSRListView, CSRDetailView
@@ -13,7 +13,7 @@ from geocontext.views.collection import CollectionListView, CollectionDetailView
 
 urlpatterns = [
     url(regex=r'^geocontext/$',
-        view=get_context,
+        view=get_csr,
         name='geocontext-retrieve'),
     url(regex=r'^geocontext/csr/list/$',
         view=CSRListView.as_view(),
