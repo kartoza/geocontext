@@ -29,7 +29,7 @@ class Collection(models.Model):
     groups = models.ManyToManyField(
         Group,
         help_text=_('List of group in this collection.'),
-        through='Groups',
+        through='CollectionGroups',
         blank=True,
     )
 

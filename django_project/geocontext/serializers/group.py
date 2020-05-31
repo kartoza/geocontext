@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from geocontext.models.group import Group
-from geocontext.serializers.cache import CacheValueSerializer
+from geocontext.serializers.cache import CacheSerializer
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -25,4 +25,4 @@ class GroupValueSerializer(serializers.Serializer):
     key = serializers.CharField()
     name = serializers.CharField()
     graphable = serializers.BooleanField()
-    csr_values = serializers.ListSerializer(child=CacheValueSerializer())
+    csr_values = serializers.ListSerializer(child=CacheSerializer())

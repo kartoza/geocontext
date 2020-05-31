@@ -79,13 +79,8 @@ nginx:
 migrate:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running migrate static in production mode"
+	@echo "Running migrate in production mode"
 	@echo "------------------------------------------------------------------"
-	@#http://stackoverflow.com/questions/29689365/auth-user-error-with-django-1-8-and-syncdb-migrate
-	@#and
-	@#http://stackoverflow.com/questions/3143635/how-to-ignore-mv-error
-	@# We add the '-' prefix to the next line as the migration may fail
-	@# but we want to continue anyway.
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py migrate
 
 pause:
@@ -120,7 +115,7 @@ delete-cache:
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py delete_cache
 
-update-migrations:
+makemigrations:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Running update migrations in production mode"

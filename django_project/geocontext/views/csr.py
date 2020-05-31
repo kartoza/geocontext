@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView
-from geocontext.models.CSR import CSR
+from geocontext.models.csr import CSR
 
 
 class CSRListView(ListView):

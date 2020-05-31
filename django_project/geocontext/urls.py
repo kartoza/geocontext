@@ -1,10 +1,10 @@
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from geocontext.api_views.cache import CacheValueListAPI
-from geocontext.api_views.collection import CollectionValueAPIView
+from geocontext.api_views.cache import CacheListAPI
+from geocontext.api_views.collection import CollectionAPIView
 from geocontext.api_views.csr import CSRListAPIView, CSRDetailAPIView, get_csr
-from geocontext.api_views.group import GroupValueAPIView
+from geocontext.api_views.group import GroupAPIView
 from geocontext.api_views.river import RiverNameAPIView
 from geocontext.views.csr import CSRListView, CSRDetailView
 from geocontext.views.group import GroupListView, GroupDetailView
@@ -48,21 +48,21 @@ urlpatterns_api = [
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<csr_keys>[\w\-,]+)/$',
-        view=CacheValueListAPI.as_view(),
+        view=CacheListAPI.as_view(),
         name='value-list-csr-api'
         ),
     url(regex=r'^geocontext/value/collection/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<collection_key>[\w\-,]+)/$',
-        view=CollectionValueAPIView.as_view(),
+        view=CollectionAPIView.as_view(),
         name='collection-list-api'
         ),
     url(regex=r'^geocontext/value/group/'
               r'(?P<x>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<y>[+-]?[0-9]+[.]?[0-9]*)/'
               r'(?P<group_key>[\w\-,]+)/$',
-        view=GroupValueAPIView.as_view(),
+        view=GroupAPIView.as_view(),
         name='group-list-api'
         ),
     url(regex=r'^geocontext/river-name/'

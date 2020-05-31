@@ -6,8 +6,8 @@ from geocontext.models.group import Group
 
 class CollectionGroups(models.Model):
     """Collection Groups"""
-    collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, default=None)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, default=None)
     order = models.PositiveIntegerField(
         verbose_name='Order',
         null=False,

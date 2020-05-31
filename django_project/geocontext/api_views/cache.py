@@ -4,11 +4,11 @@ from rest_framework import views
 from rest_framework.response import Response
 
 from geocontext.models.csr import CSR
-from geocontext.serializers.cache import CacheValueGeoJSONSerializer, CacheValueSerializer
+from geocontext.serializers.cache import CacheGeoJSONSerializer, CacheSerializer
 from geocontext.models.utilities import CSRUtils
 
 
-class CacheValueListAPI(views.APIView):
+class CacheListAPI(views.APIView):
     """List all current  cache based on point (x, y)."""
 
     def get(self, request, x, y, csr_keys=None):
@@ -27,7 +27,7 @@ class CacheValueListAPI(views.APIView):
             return Response('No cache found')
         with_geometry = self.request.query_params.get('with-geometry', 'True')
         if strtobool(with_geometry):
-            serializer = CacheValueGeoJSONSerializer(caches, many=True)
+            serializer = CacheGeoJSONSerializer(caches, many=True)
         else:
-            serializer = CacheValueSerializer(caches, many=True)
+            serializer = CacheSerializer(caches, many=True)
         return Response(serializer.data)
