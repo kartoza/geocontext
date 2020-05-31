@@ -6,9 +6,9 @@ from geocontext.api_views.collection import CollectionAPIView
 from geocontext.api_views.csr import CSRListAPIView, CSRDetailAPIView, get_csr
 from geocontext.api_views.group import GroupAPIView
 from geocontext.api_views.river import RiverNameAPIView
+from geocontext.views.collection import CollectionListView, CollectionDetailView
 from geocontext.views.csr import CSRListView, CSRDetailView
 from geocontext.views.group import GroupListView, GroupDetailView
-from geocontext.views.collection import CollectionListView, CollectionDetailView
 
 
 urlpatterns = [

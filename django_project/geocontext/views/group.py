@@ -1,5 +1,5 @@
-from django.views.generic import ListView, DetailView
 from geocontext.models.group import Group
+from django.views.generic import DetailView, ListView
 
 
 class GroupListView(ListView):

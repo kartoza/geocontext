@@ -5,13 +5,10 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from geocontext.models.cache import Cache
+from geocontext.models.utilities import CSRUtils, retrieve_external_csr, UtilArg
 from geocontext.tests.models.model_factories import CSRF
 from geocontext.utilities import ServiceDefinitions
-from geocontext.models.utilities import (
-    CSRUtils,
-    retrieve_external_csr,
-    UtilArg
-)
+
 
 test_data_directory = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), '../data')

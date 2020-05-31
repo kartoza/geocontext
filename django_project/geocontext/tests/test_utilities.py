@@ -1,8 +1,7 @@
 import os
 
 from django.test import SimpleTestCase
-from geocontext.utilities import (
-    convert_coordinate, parse_gml_geometry, get_bbox)
+from geocontext.utilities import convert_coordinate, get_bbox, parse_gml_geometry
 
 test_data_directory = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), 'data')

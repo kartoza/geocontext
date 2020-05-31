@@ -4,8 +4,9 @@ from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
 from django.contrib.gis.geos import (
-    GEOSGeometry, Point, LineString, LinearRing, Polygon, MultiPoint,
-    MultiLineString, MultiPolygon)
+    GEOSGeometry, Point, LineString, LinearRing, Polygon,
+    MultiPoint, MultiLineString, MultiPolygon
+)
 from django.contrib.gis.gdal.error import GDALException
 
 logger = logging.getLogger(__name__)
@@ -201,7 +202,7 @@ def parse_dms(coord):
     :return: degrees, minutes, seconds
     :rtype: int, int, float
     """
-    coord_parts = re.split('[^\d\w\.]+', coord)
+    coord_parts = re.split(r'[^\d\w\.]+', coord)
     if len(coord_parts) > 4:
         raise ValueError(f"Could not parse degree, minute, second input")
 

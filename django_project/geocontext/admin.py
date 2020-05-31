@@ -1,14 +1,12 @@
-"""Model admin class definitions."""
-
 from django.contrib import admin
 from django.contrib.gis.admin import OSMGeoAdmin
 
-from geocontext.models.csr import CSR
 from geocontext.models.cache import Cache
-from geocontext.models.group import Group
 from geocontext.models.collection import Collection
-from geocontext.models.group_services import GroupServices
 from geocontext.models.collection_groups import CollectionGroups
+from geocontext.models.csr import CSR
+from geocontext.models.group import Group
+from geocontext.models.group_services import GroupServices
 
 
 class GroupServicesInLine(admin.TabularInline):

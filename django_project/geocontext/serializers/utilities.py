@@ -1,14 +1,10 @@
 from django.shortcuts import get_object_or_404
 
+from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
-from geocontext.models.collection import Collection
-from geocontext.models.utilities import (
-    CSRUtils,
-    thread_retrieve_external,
-    UtilArg
-)
+from geocontext.models.utilities import CSRUtils, thread_retrieve_external, UtilArg
 
 
 class GroupValues(object):
@@ -76,6 +72,7 @@ class CollectionValues(GroupValues):
         group_caches = {}
         collection_groups = CollectionGroups.objects.filter(
                                 collection=self.collection).order_by('order')
+
         # We need to find CRS not in cache in all groups
         for collection_group in collection_groups:
             group = get_object_or_404(Group, key=collection_group.group.key)
@@ -107,7 +104,7 @@ class CollectionValues(GroupValues):
                     else:
                         group_caches[new_util_arg.group_key] = [cache]
 
-        # Init contextgroup parent and add group key
+        # Init contextgroup add GroupValues
         for group_key, cache_list in group_caches.items():
             group_values = GroupValues(self.x, self.y, group_key, self.srid)
             for cache in cache_list:

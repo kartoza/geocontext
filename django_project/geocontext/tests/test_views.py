@@ -3,9 +3,9 @@ import os
 
 from django.test import TestCase
 
+from base.management.commands.utilities import import_data
 from geocontext.models.csr import CSR
 from geocontext.models.utilities import CSRUtils
-from base.management.commands.utilities import import_data
 
 test_data_directory = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), 'data')

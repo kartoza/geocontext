@@ -8,10 +8,10 @@ import pytz
 import requests
 import threading
 
-from owslib.wms import WebMapService
-from xml.dom import minidom
 from django.contrib.gis.geos import Point
 from django.http import QueryDict
+from owslib.wms import WebMapService
+from xml.dom import minidom
 
 from geocontext.models.csr import CSR
 from geocontext.models.cache import Cache

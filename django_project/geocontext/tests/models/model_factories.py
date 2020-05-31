@@ -1,9 +1,10 @@
 import factory
+
 from geocontext.models.csr import CSR
-from geocontext.models.group_services import GroupServices
 from geocontext.models.group import Group
-from geocontext.models.collection_groups import CollectionGroups
+from geocontext.models.group_services import GroupServices
 from geocontext.models.collection import Collection
+from geocontext.models.collection_groups import CollectionGroups
 
 
 class CSRF(factory.DjangoModelFactory):

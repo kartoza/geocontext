@@ -5,7 +5,7 @@ import requests
 from django.core.exceptions import ValidationError
 
 from geocontext.models.csr import CSR
-from geocontext.models.roup import Group
+from geocontext.models.group import Group
 from geocontext.models.collection import Collection
 from geocontext.models.group_services import GroupServices
 from geocontext.models.collection_groups import CollectionGroups

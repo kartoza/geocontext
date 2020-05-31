@@ -1,7 +1,7 @@
 import os
 
-from django.test import TestCase
 from django.conf import settings
+from django.test import TestCase
 
 from base.management.commands.utilities import import_data, delete_data
 
