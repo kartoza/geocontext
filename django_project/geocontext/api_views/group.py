@@ -6,12 +6,14 @@ from geocontext.serializers.group import GroupValueSerializer
 
 
 class GroupAPIView(views.APIView):
-    """Retrieving value based on a point (x, y, srid) and a group key."""
+    """Retrieving values from context group matching:
+    x (long), y (lat) group key and optional SRID var (default use: 4326)
+    """
     def get(self, request, x, y, group_key, srid=4326):
         group_values = GroupValues(x, y, group_key, srid)
         try:
             group_values.populate_group_values()
         except Exception as e:
-             return Response(f"Server exception: {e}")
+            return Response(f"Server exception: {e}")
         group_value_serializer = GroupValueSerializer(group_values)
         return Response(group_value_serializer.data)

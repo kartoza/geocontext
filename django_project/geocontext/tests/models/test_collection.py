@@ -28,7 +28,7 @@ class TestCollectionRegistry(TestCase):
         csr = CSRF.create()
         collection = CollectionF.create()
 
-        self.assertEqual(group.csr.count(), 0)
+        self.assertEqual(group.csr_list.count(), 0)
         self.assertEqual(collection.groups.count(), 0)
 
         group_service = GroupServicesF.create(group=group, csr=csr)
@@ -39,10 +39,10 @@ class TestCollectionRegistry(TestCase):
         self.assertEqual(group.csr_list.count(), 1)
         self.assertEqual(group.csr_list.all()[0], csr)
 
-        group = CollectionGroupsF.create(collection=collection, group=group)
+        collection_group = CollectionGroupsF.create(collection=collection, group=group)
 
         self.assertEqual(collection.groups.count(), 1)
         self.assertEqual(collection.groups.all()[0], group)
 
-        group.order = 0
-        group.save()
+        collection_group.order = 0
+        collection_group.save()

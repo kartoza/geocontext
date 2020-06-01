@@ -10,13 +10,13 @@ from geocontext.serializers.csr import CSRSerializer
 
 
 class CSRListAPIView(generics.ListAPIView):
-    """List all context service registry."""
+    """List all context service registries."""
     queryset = CSR.objects.all()
     serializer_class = CSRSerializer
 
 
 class CSRDetailAPIView(generics.RetrieveAPIView):
-    """Retrieve a detail of a context service registry."""
+    """Retrieve details of a context service registry."""
     lookup_field = 'key'
     queryset = CSR.objects.all()
     serializer_class = CSRSerializer
@@ -44,7 +44,10 @@ def get_csr(request):
             cache = csr_util.retrieve_cache()
             if cache is None:
                 util_arg = UtilArg(group_key=None, csr_util=csr_util)
-                new_util_arg = retrieve_external_csr(util_arg)
+                try:
+                    new_util_arg = retrieve_external_csr(util_arg)
+                except Exception as e:
+                    return Http404(f"Server exception: {e}")
                 if new_util_arg is not None:
                     cache = new_util_arg.csr_util.create_cache()
             fields = ('value', 'key')

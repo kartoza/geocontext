@@ -124,8 +124,9 @@ class TestCRSUtils(TestCase):
 
     def test_retrieve_value_wms(self, mock_get_csr):
         """Test retrieving value from a point with WMS source."""
-        x = 27.8
-        y = -32.1
+        x = 27.8231
+        y = -32.1231
+        srid = 4326
 
         csr = CSRF.create()
         csr.url = 'https://maps.kartoza.com/geoserver/wms'
@@ -136,14 +137,14 @@ class TestCRSUtils(TestCase):
         csr.save()
         mock_get_csr.return_value = csr
 
-        csr_util = CSRUtils(csr.key, x, y, csr.srid)
+        csr_util = CSRUtils(csr.key, x, y, srid)
 
         util_arg = UtilArg(group_key=csr.key, csr_util=csr_util)
         new_util_arg = retrieve_external_csr(util_arg)
         self.assertIsNotNone(new_util_arg)
         result = new_util_arg.csr_util.create_cache()
 
-        expected_value = '746.0'
+        expected_value = '1009.0'
         self.assertEqual(result.value, expected_value)
         self.assertIsNotNone(result.value)
 

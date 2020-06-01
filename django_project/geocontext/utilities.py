@@ -210,14 +210,16 @@ def parse_dms(coord: str) -> tuple:
     """
     coord_parts = coord.split(':')
     if len(coord_parts) > 4:
-        raise ValueError(f"Could not parse degree, minute, second input")
+        raise ValueError("Could not parse DMS format input (need dd:mm:ss:DIRECTION")
 
     degrees = int(coord_parts[0])
     minutes = int(coord_parts[1])
     seconds = float(coord_parts[2])
     direction = coord_parts[3]
-    degrees = degrees * -1 if direction.upper() in ['W', 'S'] else degrees
-    print(degrees, minutes, seconds, direction)
+    if direction.upper() in ['N', 'E', 'W', 'S']:
+        degrees = degrees * -1 if direction.upper() in ['W', 'S'] else degrees
+    else:
+        raise ValueError("Could not parse DMS format input: (need dd:mm:ss:DIRECTION")
     return degrees, minutes, seconds
 
 
@@ -238,5 +240,4 @@ def dms_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
         decimal = degrees + (minutes / 60.0) + (seconds / 3600.0)
     else:
         decimal = degrees - (minutes / 60.0) - (seconds / 3600.0)
-    print(decimal)
     return decimal

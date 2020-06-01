@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 
 class RiverNameAPIView(views.APIView):
-    """Retrieving river name based on a point (x, y)
+    """Retrieving river name matching: x (long), y (lat).
     """
     def get(self, request, x, y):
         db_name = settings.RIVER_DATABASE['NAME']

@@ -255,17 +255,20 @@ class CSRUtils():
                     self.value = self.parse_request_value(gml_string)
                     if self.value is not None:
                         self.fetch_geometry(gml_string)
-                    return True
+                        if 'Polygon' in self.geometry.geom_type:
+                            return True
 
-            # Else try boundingbox
-            else:
-                self.cache_url = self.box_query_url()
-                gml_string = self.request_content()
-                if gml_string is not None:
+            # Else try boundingbox - needed to fetch geometry?
+            self.cache_url = self.box_query_url()
+            gml_string = self.request_content()
+            if gml_string is not None:
+                # Only replace value if not yet found by poly intersect
+                if self.value is None:
                     self.value = self.parse_request_value(gml_string)
-                    if self.value is not None:
-                        self.fetch_geometry(gml_string)
-                    return True
+                # Only fetch geometry if value was found and not yet updated
+                if self.value is not None and self.geometry.geom_type == 'Point':
+                    self.fetch_geometry(gml_string)
+                return True
         return False
 
     def request_content(self, retries: int = 0) -> requests:
