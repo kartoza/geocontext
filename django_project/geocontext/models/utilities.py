@@ -207,6 +207,25 @@ class CSRUtils():
                 else:
                     return cache
 
+    # Following methods should all be async safe. Serializer utils calls these threaded.
+
+    def request_content(self, retries: int = 0) -> requests:
+        """Get request content from cache url in request session
+
+        :return: URL to do query.
+        :rtype: unicode
+        """
+        session = get_session()
+        try:
+            with session.get(self.cache_url) as response:
+                if response.status_code == 200:
+                    return response.content
+        except requests.exceptions.RequestException as e:
+            LOGGER.error(
+                f"'{self.csr_key_key}' url failed: {self.cache_url} with: {e}"
+            )
+            return None
+
     def retrieve_value(self) -> bool:
         """Load context value.
 
@@ -271,67 +290,29 @@ class CSRUtils():
                 return True
         return False
 
-    def request_content(self, retries: int = 0) -> requests:
-        """Get request content from cache url in request session
+
+    def describe_query_url(self):
+        """Describe query based on the model and the parameter.
 
         :return: URL to do query.
-        :rtype: unicode
-        """
-        session = get_session()
-        try:
-            with session.get(self.cache_url) as response:
-                if response.status_code == 200:
-                    return response.content
-        except requests.exceptions.RequestException as e:
-            LOGGER.error(
-                f"'{self.csr_key_key}' url failed: {self.cache_url} with: {e}"
-            )
-            return None
-
-    def fetch_geometry(self, gml_string: str):
-        """Load geometry from gml string
-
-        :param gml_string: String that represent full gml document.
-        :type gml_string: unicode
-        """
-        geom = parse_gml_geometry(gml_string, self.layer_typename)
-        if geom is not None:
-            if not geom.srid:
-                geom.srid = self.srid
-            self.geometry = geom
-
-    def parse_request_value(self, request_content: str) -> str:
-        """Parse request value from request content.
-
-        :param request_content: String that represent content of a request.
-        :type request_content: str
-
-        :returns: The value of the result_regex in the request_content.
         :rtype: str
         """
-        if self.query_type in [ServiceDefinitions.WFS, ServiceDefinitions.WMS]:
-            xmldoc = minidom.parseString(request_content)
-            try:
-                value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
-                return value_dom.childNodes[0].nodeValue
-            except IndexError:
-                return None
-        # For the ArcREST standard we parse JSON (Above parsed from CSV)
-        elif self.query_type == ServiceDefinitions.ARCREST:
-            json_document = json.loads(request_content)
-            try:
-                json_value = json_document['results'][0][self.result_regex]
-                return json_value
-            except IndexError:
-                return None
-        # PlaceName also parsed from JSONS but document structure differs.
-        elif self.query_type == ServiceDefinitions.PLACENAME:
-            json_document = json.loads(request_content)
-            try:
-                json_value = json_document['geonames'][0][self.result_regex]
-                return json_value
-            except IndexError:
-                return None
+        describe_url = None
+        if self.query_type == ServiceDefinitions.WFS:
+            parameters = {
+                'SERVICE': 'WFS',
+                'REQUEST': 'DescribeFeatureType',
+                'VERSION': self.service_version,
+                'TYPENAME': self.layer_typename
+            }
+            query_dict = QueryDict('', mutable=True)
+            query_dict.update(parameters)
+            if '?' in self.url:
+                describe_url = f'{self.url}&{query_dict.urlencode()}'
+            else:
+                describe_url = f'{self.url}?{query_dict.urlencode()}'
+        return describe_url
+
 
     def box_query_url(self) -> str:
         """Build query with bounding box.
@@ -392,27 +373,6 @@ class CSRUtils():
                 url = f'{self.url}?{query_dict.urlencode()}'
         return url
 
-    def describe_query_url(self):
-        """Describe query based on the model and the parameter.
-
-        :return: URL to do query.
-        :rtype: str
-        """
-        describe_url = None
-        if self.query_type == ServiceDefinitions.WFS:
-            parameters = {
-                'SERVICE': 'WFS',
-                'REQUEST': 'DescribeFeatureType',
-                'VERSION': self.service_version,
-                'TYPENAME': self.layer_typename
-            }
-            query_dict = QueryDict('', mutable=True)
-            query_dict.update(parameters)
-            if '?' in self.url:
-                describe_url = f'{self.url}&{query_dict.urlencode()}'
-            else:
-                describe_url = f'{self.url}?{query_dict.urlencode()}'
-        return describe_url
 
     def intersect_query_url(self, geom_name: str) -> str:
         """Filter query based on the model and the parameter.
@@ -450,3 +410,50 @@ class CSRUtils():
             if ':' not in self.layer_typename:
                 filter_url += f'&SRSNAME={self.point.srid}'
         return filter_url
+
+
+    def parse_request_value(self, request_content: str) -> str:
+        """Parse request value from request content.
+
+        :param request_content: String that represent content of a request.
+        :type request_content: str
+
+        :returns: The value of the result_regex in the request_content.
+        :rtype: str
+        """
+        if self.query_type in [ServiceDefinitions.WFS, ServiceDefinitions.WMS]:
+            xmldoc = minidom.parseString(request_content)
+            try:
+                value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
+                return value_dom.childNodes[0].nodeValue
+            except IndexError:
+                return None
+        # For the ArcREST standard we parse JSON (Above parsed from CSV)
+        elif self.query_type == ServiceDefinitions.ARCREST:
+            json_document = json.loads(request_content)
+            try:
+                json_value = json_document['results'][0][self.result_regex]
+                return json_value
+            except IndexError:
+                return None
+        # PlaceName also parsed from JSONS but document structure differs.
+        elif self.query_type == ServiceDefinitions.PLACENAME:
+            json_document = json.loads(request_content)
+            try:
+                json_value = json_document['geonames'][0][self.result_regex]
+                return json_value
+            except IndexError:
+                return None
+
+
+    def fetch_geometry(self, gml_string: str):
+        """Load geometry from gml string
+
+        :param gml_string: String that represent full gml document.
+        :type gml_string: unicode
+        """
+        geom = parse_gml_geometry(gml_string, self.layer_typename)
+        if geom is not None:
+            if not geom.srid:
+                geom.srid = self.srid
+            self.geometry = geom
