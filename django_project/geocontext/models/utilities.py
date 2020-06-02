@@ -31,6 +31,63 @@ thread_local = threading.local()
 UtilArg = namedtuple('UtilArgs', ['group_key', 'csr_util'])
 
 
+def get_csr(csr_key) -> CSR:
+    """Returns context service registry instance or raise error
+
+    :raises KeyError: If registry not found
+
+    :return: context service registry
+    :rtype: CSR
+    """
+    try:
+        return CSR.objects.get(key=csr_key)
+    except CSR.DoesNotExist:
+        raise KeyError(f'Service Registry not Found for: {csr_key}')
+
+
+def create_cache(csr_util) -> Cache:
+    """Add context value to cache
+
+    :param csr_util: CSRUtils instance
+    :type csr_util: CSRUtils
+
+    :return: Context cache instance
+    :rtype: Cache
+    """
+    csr = get_csr(csr_util.csr_key)
+    expired_time = (datetime.utcnow() + timedelta(seconds=csr.time_to_live))
+    expired_time = expired_time.replace(tzinfo=pytz.UTC)
+    cache = Cache(csr=csr, name=csr.key, value=csr_util.value, expired_time=expired_time)
+    if csr_util.cache_url:
+        cache.source_uri = csr_util.cache_url
+    if csr_util.geometry:
+        cache.set_geometry_field(csr_util.geometry)
+    cache.save()
+    cache.refresh_from_db()
+    return cache
+
+
+def retrieve_cache(csr_util) -> Cache:
+    """Try to retrieve context from point.
+
+    :param csr_util: CSRUtils instance
+    :type csr_util: CSRUtils
+
+    :returns: cache on None
+    :rtype: cache or None
+    """
+    caches = Cache.objects.filter(csr=get_csr(csr_util.csr_key))
+    for cache in caches:
+        if cache.geometry and cache.geometry.contains(csr_util.point):
+            current_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
+            is_expired = current_time > cache.expired_time
+            if is_expired:
+                cache.delete()
+                break
+            else:
+                return cache
+
+
 def thread_retrieve_external(util_arg_list: list) -> list:
     """Threading master function for loading external service data
 
@@ -41,7 +98,7 @@ def thread_retrieve_external(util_arg_list: list) -> list:
     :rtype: list
     """
     new_result_list = []
-    with ThreadPoolExecutor() as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         for result in executor.map(retrieve_external_csr, util_arg_list):
             new_result_list.append(result)
     return new_result_list
@@ -69,15 +126,13 @@ def get_session() -> thread_local:
 
 
 class CSRUtils():
-    """Mock context service registry model object + utility methods.
-    Threadsafe - only __init__, get_ & create_cache
-    access DB but does not store any connection/querysets.
+    """Threadsafe context service registry model object + utility methods.
     """
-    def __init__(self, csr_key: str, x: str, y: str, srid: int = 4326):
-        """Tools to load mock csr.
+    def __init__(self, csr_key: str, x: float, y: float, srid_in: int = 4326):
+        """Load threadsafe csr object. Transform user query to CSR geometry
 
         :param csr_key: csr_key
-        :type csr_key: int
+        :type csr_key: str
 
         :param x: (longitude)
         :type x: float
@@ -88,8 +143,8 @@ class CSRUtils():
         :param srid: SRID (default=4326).
         :type srid: int
         """
+        csr = get_csr(csr_key)
         self.csr_key = csr_key
-        csr = self.get_csr()
         self.query_type = csr.query_type
         self.service_version = csr.service_version
         self.layer_typename = csr.layer_typename
@@ -103,117 +158,59 @@ class CSRUtils():
 
         self.x = x
         self.y = y
-        self.srid_in = srid
+        self.srid_in = srid_in
         self.generalize_point()
         self.geometry = self.point
 
-    def get_csr(self) -> CSR:
-        """Returns context service registry instance
-
-        :raises KeyError: If registry not found
-
-        :return: context service registry
-        :rtype: CSR
-        """
-        try:
-            return CSR.objects.get(key=self.csr_key)
-        except CSR.DoesNotExist:
-            raise KeyError(f'Service Registry not Found for: {self.csr_key}')
-
     def generalize_point(self) -> Point:
-        """Generalize coordinate to the registry instance format.
+        """Generalize coordinate to the registry instance geometry.
 
-        Converts ':' delimited degree, minute, second to decimal degree.
+        Converts DMS (degree:minute:second:direction) to decimal degree.
         Converts to SRID of the context registry
         Removes extreme precision to improve point cache hits.
         Default precision for is 4 decimals (~10m)
 
-        :raises ValueError: If coordinate cannot be generalized
+        :raises ValueError: If coordinate cannot be parsed
 
         :return: point
         :rtype: Point
         """
         # Parse Coordinate try DD / otherwise DMS
-        for coord in ['x', 'y']:
+        for coord_attr_name in ['x', 'y']:
+            coord = getattr(self, coord_attr_name)
             try:
-                coord_dd = float(getattr(self, coord))
+                coord_dd = float(coord)
             except ValueError:
                 try:
-                    degrees, minutes, seconds = parse_dms(getattr(self, coord))
+                    degrees, minutes, seconds = parse_dms(coord)
                     coord_dd = dms_dd(degrees, minutes, seconds)
                 except ValueError:
                     raise ValueError('Coordinate parse failed: {coord}. Require DD/DMS.')
-            setattr(self, coord, coord_dd)
+            setattr(self, coord_attr_name, coord_dd)
 
-        self.point = Point(self.x, self.y, srid=self.srid)
+        # Parse srid and create point in crs srid
+        try:
+            self.srid_in = int(self.srid_in)
+            self.point = Point(self.x, self.y, srid=self.srid_in)
+        except ValueError:
+            raise ValueError(f"SRID: '{self.srid_in}' not valid")
 
-        if self.point.srid != self.srid:
+        if self.srid_in != self.srid:
             try:
                 self.point = convert_coordinate(self.point, self.srid)
             except SRSException:
-                raise ValueError(f"SRID: '{self.point.srid}' not valid")
+                raise ValueError(f"SRID: '{self.srid_in}' not valid")
 
-        # Set precision after projection
-        # if self.resolution:
-            # Calculate decimals depending on base resolution
-            # 1m = 5, 10m = 4, 100m = 3, 1000m = 2, 10000m = 1
+        # TODO Round smartly after projection using base data raster resolution
+        # if self.query_type == ServiceDefinitions.WMS:
+        #    if self.resolution:
+        #        Calculate decimals depending on base resolution
+        #        decimals = (1m = 5, 10m = 4, 100m = 3, 1000m = 2, 10000m = 1)
+
         decimals = 4
         x_round = Decimal(self.point.x).quantize(Decimal('0.' + '0' * decimals))
         y_round = Decimal(self.point.y).quantize(Decimal('0.' + '0' * decimals))
         self.point = Point(float(x_round), float(y_round), srid=self.srid)
-
-    def create_cache(self) -> Cache:
-        """Add context value to cache
-
-        :return: Context cache instance
-        :rtype: Cache
-        """
-        csr = self.get_csr()
-        expired_time = (datetime.utcnow() + timedelta(seconds=csr.time_to_live))
-        expired_time = expired_time.replace(tzinfo=pytz.UTC)
-        cache = Cache(csr=csr, name=csr.key, value=self.value, expired_time=expired_time)
-        csr = None
-        if self.cache_url:
-            cache.source_uri = self.cache_url
-        if self.geometry:
-            cache.set_geometry_field(self.geometry)
-        cache.save()
-        cache.refresh_from_db()
-        return cache
-
-    def retrieve_cache(self) -> Cache:
-        """Try to retrieve context from point.
-
-        :returns: cache on None
-        :rtype: cache or None
-        """
-        caches = Cache.objects.filter(csr=self.get_csr())
-        for cache in caches:
-            if cache.geometry and cache.geometry.contains(self.point):
-                current_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
-                is_expired = current_time > cache.expired_time
-                if is_expired:
-                    cache.delete()
-                    break
-                else:
-                    return cache
-
-    def request_content(self, retries: int = 0) -> requests:
-        """Get request content from cache url in request session
-
-        :return: URL to do query.
-        :rtype: unicode
-        """
-        session = get_session()
-        try:
-            with session.get(self.cache_url) as response:
-                if response.status_code == 200:
-                    return response.content
-        except requests.exceptions.RequestException as e:
-            LOGGER.error(
-                f"'{self.csr_key}' url failed: {self.cache_url} with: {e}"
-            )
-            return None
 
     def retrieve_value(self) -> bool:
         """Load context value. All exception / null values handled here.
@@ -233,6 +230,21 @@ class CSRUtils():
         except Exception as e:
             LOGGER.error(f"'{self.csr_key}' url failed: {self.cache_url} with: {e}")
             self.value = None
+
+    def request_content(self, retries: int = 0) -> requests:
+        """Get request content from cache url in request session
+
+        :return: URL to do query.
+        :rtype: unicode
+        """
+        session = get_session()
+        try:
+            with session.get(self.cache_url) as response:
+                if response.status_code == 200:
+                    return response.content
+        except requests.exceptions.RequestException as e:
+            LOGGER.error(f"'{self.csr_key}' url failed: {self.cache_url} with: {e}")
+            return None
 
     def fetch_wms(self):
         """Fetch WMS value

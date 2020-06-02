@@ -4,7 +4,13 @@ from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
-from geocontext.models.utilities import CSRUtils, thread_retrieve_external, UtilArg
+from geocontext.models.utilities import (
+    CSRUtils,
+    create_cache,
+    retrieve_cache,
+    thread_retrieve_external,
+    UtilArg
+)
 
 
 class GroupValues(object):
@@ -30,7 +36,7 @@ class GroupValues(object):
         group_services = GroupServices.objects.filter(group=self.group).order_by('order')
         for group_service in group_services:
             csr_util = CSRUtils(group_service.csr.key, self.x, self.y, self.srid)
-            cache = csr_util.retrieve_cache()
+            cache = retrieve_cache(csr_util)
 
             # Append all the caches found locally - list still needed
             if cache is None:
@@ -43,7 +49,7 @@ class GroupValues(object):
         if len(util_arg_list) > 0:
             new_util_arg_list = thread_retrieve_external(util_arg_list)
             for new_util_arg in new_util_arg_list:
-                self.service_registry_values.append(new_util_arg.csr_util.create_cache())
+                self.service_registry_values.append(create_cache(new_util_arg.csr_util))
 
 
 class CollectionValues(GroupValues):
@@ -76,7 +82,7 @@ class CollectionValues(GroupValues):
             group_services = GroupServices.objects.filter(group=group).order_by('order')
             for group_service in group_services:
                 csr_util = CSRUtils(group_service.csr.key, self.x, self.y, self.srid)
-                cache = csr_util.retrieve_cache()
+                cache = retrieve_cache(csr_util)
 
                 # Append all the caches found locally - list still needed
                 if cache is None:
@@ -92,7 +98,7 @@ class CollectionValues(GroupValues):
         if len(util_arg_list) > 0:
             new_util_arg_list = thread_retrieve_external(util_arg_list)
             for new_util_arg in new_util_arg_list:
-                cache = new_util_arg.csr_util.create_cache()
+                cache = create_cache(new_util_arg.csr_util)
                 if new_util_arg.group_key in group_caches:
                     group_caches[new_util_arg.group_key].append(cache)
                 else:

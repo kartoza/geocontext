@@ -154,8 +154,8 @@ def get_bbox(point: Point, precision: float = 0.0001) -> str:
     # Bbox generated in WGS84 for consistent boundingbox and transformed back if needed
     if original_srid != 4326:
         point = convert_coordinate(point, 4326)
-    bbox_min = Point((point.x - precision), (point.y - precision), 4326)
-    bbox_max = Point((point.x + precision), (point.y + precision), 4326)
+    bbox_min = Point((point.x - precision), (point.y - precision), srid=4326)
+    bbox_max = Point((point.x + precision), (point.y + precision), srid=4326)
     if original_srid != 4326:
         bbox_min = convert_coordinate(bbox_min, original_srid)
         bbox_max = convert_coordinate(bbox_max, original_srid)

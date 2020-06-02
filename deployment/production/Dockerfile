@@ -7,9 +7,15 @@ RUN export DEBIAN_FRONTEND=noninteractive
 ENV DEBIAN_FRONTEND noninteractive
 RUN dpkg-divert --local --rename --add /sbin/initctl
 
-RUN apt-get update --fix-missing -y \
-    && apt-get upgrade -y  \
-    && apt-get install -y python3-gdal uwsgi-plugin-python3
+RUN apt-get update -y && apt-get install -y \
+    binutils gdal-bin \
+    libproj-dev \
+    libgdal-dev \
+    python3-gdal \
+    python3-geoip \
+    python3-setuptools \
+    uwsgi-plugin-python3 \
+    && rm -rf /var/lib/apt/lists/*
 
 ADD REQUIREMENTS.txt /REQUIREMENTS.txt
 RUN pip3 install --upgrade pip && install -r /REQUIREMENTS.txt

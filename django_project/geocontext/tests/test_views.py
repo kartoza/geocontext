@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from base.management.commands.utilities import import_data
 from geocontext.models.csr import CSR
-from geocontext.models.utilities import CSRUtils
+from geocontext.models.utilities import CSRUtils, retrieve_cache
 
 test_data_directory = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), 'data')
@@ -35,12 +35,12 @@ class TestGeoContextView(TestCase):
 
         start_direct = datetime.now()
         csr_util = CSRUtils(csr_key, x, y)
-        csr_util.retrieve_cache()
+        retrieve_cache(csr_util)
 
         end_direct = datetime.now()
 
         start_cache = datetime.now()
-        csr_util.retrieve_cache()
+        retrieve_cache(csr_util)
         end_cache = datetime.now()
 
         duration_direct = end_direct - start_direct

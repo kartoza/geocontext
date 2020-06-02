@@ -5,7 +5,13 @@ from rest_framework import generics
 
 from geocontext.forms import GeoContextForm
 from geocontext.models.csr import CSR
-from geocontext.models.utilities import CSRUtils, retrieve_external_csr, UtilArg
+from geocontext.models.utilities import (
+    CSRUtils,
+    create_cache,
+    retrieve_cache,
+    retrieve_external_csr,
+    UtilArg
+)
 from geocontext.serializers.csr import CSRSerializer
 
 
@@ -41,12 +47,12 @@ def get_csr(request):
             srid = cleaned_data.get('srid', 4326)
             csr_key = cleaned_data['csr_key_key']
             csr_util = CSRUtils(csr_key, x, y, srid)
-            cache = csr_util.retrieve_cache()
+            cache = retrieve_cache(csr_util)
             if cache is None:
                 util_arg = UtilArg(group_key=None, csr_util=csr_util)
                 new_util_arg = retrieve_external_csr(util_arg)
                 if new_util_arg.csr_util.value is not None:
-                    cache = new_util_arg.csr_util.create_cache()
+                    cache = create_cache(new_util_arg.csr_util)
             fields = ('value', 'key')
             if cache:
                 return HttpResponse(

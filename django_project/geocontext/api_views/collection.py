@@ -1,5 +1,7 @@
+from rest_framework import status
 from rest_framework import views
 from rest_framework.response import Response
+
 
 from geocontext.serializers.utilities import CollectionValues
 from geocontext.serializers.collection import CollectionValueSerializer
@@ -13,7 +15,7 @@ class CollectionAPIView(views.APIView):
         collection_values = CollectionValues(x, y, collection_key, srid)
         try:
             collection_values.populate_collection_values()
-        except Exception as e:
-            return Response(f"Server exception: {e}")
+        except Exception:
+            return Response("Could not fetch data", status.HTTP_400_BAD_REQUEST)
         collection_value_serializer = CollectionValueSerializer(collection_values)
         return Response(collection_value_serializer.data)

@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework import views
 from rest_framework.response import Response
 
@@ -13,7 +14,7 @@ class GroupAPIView(views.APIView):
         group_values = GroupValues(x, y, group_key, srid)
         try:
             group_values.populate_group_values()
-        except Exception as e:
-            return Response(f"Server exception: {e}")
+        except Exception:
+            return Response("Could not fetch data", status.HTTP_400_BAD_REQUEST)
         group_value_serializer = GroupValueSerializer(group_values)
         return Response(group_value_serializer.data)

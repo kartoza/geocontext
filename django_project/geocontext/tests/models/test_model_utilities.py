@@ -5,7 +5,13 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from geocontext.models.cache import Cache
-from geocontext.models.utilities import CSRUtils, retrieve_external_csr, UtilArg
+from geocontext.models.utilities import (
+    CSRUtils,
+    get_csr,
+    create_cache,
+    retrieve_external_csr,
+    UtilArg
+)
 from geocontext.tests.models.model_factories import CSRF
 from geocontext.utilities import ServiceDefinitions
 
@@ -14,7 +20,7 @@ test_data_directory = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), '../data')
 
 
-@patch.object(CSRUtils, 'get_csr')
+@patch(get_csr)
 class TestCRSUtils(TestCase):
     """Test CSR models."""
 
@@ -36,7 +42,7 @@ class TestCRSUtils(TestCase):
         util_arg = UtilArg(group_key=csr.key, csr_util=csr_util)
         new_util_arg = retrieve_external_csr(util_arg)
         self.assertIsNotNone(new_util_arg)
-        result = new_util_arg.csr_util.create_cache()
+        result = create_cache(new_util_arg.csr_util)
 
         expected_value = '14 - Lower Orange'
         self.assertEqual(result.value, expected_value)

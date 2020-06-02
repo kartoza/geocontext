@@ -1,11 +1,12 @@
 from distutils.util import strtobool
 
+from rest_framework import status
 from rest_framework import views
 from rest_framework.response import Response
 
 from geocontext.models.csr import CSR
 from geocontext.serializers.cache import CacheGeoJSONSerializer, CacheSerializer
-from geocontext.models.utilities import CSRUtils
+from geocontext.models.utilities import CSRUtils, retrieve_cache
 
 
 class CacheListAPI(views.APIView):
@@ -19,12 +20,12 @@ class CacheListAPI(views.APIView):
         try:
             for csr_key in csr_keys:
                 csr_util = CSRUtils(csr_key, x, y, srid)
-                cache = csr_util.retrieve_cache()
+                cache = retrieve_cache(csr_util)
                 caches.append(cache)
-        except Exception as e:
-            return Response(f'Server exception: {e}')
+        except Exception:
+            return Response("Server error", status.HTTP_400_BAD_REQUEST)
         if None in caches:
-            return Response('No cache found')
+            return Response("No cache found", status.HTTP_400_BAD_REQUEST)
         with_geometry = self.request.query_params.get('with-geometry', 'True')
         if strtobool(with_geometry):
             serializer = CacheGeoJSONSerializer(caches, many=True)
