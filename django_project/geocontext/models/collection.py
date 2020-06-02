@@ -33,6 +33,9 @@ class Collection(models.Model):
         blank=True,
     )
 
+    class Meta:
+        ordering = ['key']
+
     def __str__(self):
         return self.name
 

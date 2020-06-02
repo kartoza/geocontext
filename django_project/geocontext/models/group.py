@@ -63,6 +63,9 @@ class Group(models.Model):
         default=False,
     )
 
+    class Meta:
+        ordering = ['key']
+
     def __str__(self):
         return self.name
 

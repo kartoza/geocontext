@@ -17,7 +17,7 @@ class GroupValues(object):
         self.key = self.group.key
         self.name = self.group.name
         self.graphable = self.group.graphable
-        self.csr_values = []
+        self.service_registry_values = []
 
     def populate_group_values(self):
         """Populate GroupValue with service registry values.
@@ -37,16 +37,13 @@ class GroupValues(object):
                 util_arg = UtilArg(group_key=None, csr_util=csr_util)
                 util_arg_list.append(util_arg)
             else:
-                self.csr_values.append(cache)
+                self.service_registry_values.append(cache)
 
-        # Parallel request external resources not found locally
+        # Parallel request external resources not found locally and add to cache
         if len(util_arg_list) > 0:
             new_util_arg_list = thread_retrieve_external(util_arg_list)
-
-            # Add new external resources to cache
             for new_util_arg in new_util_arg_list:
-                if new_util_arg is not None:
-                    self.csr_values.append(new_util_arg.csr_util.create_cache())
+                self.service_registry_values.append(new_util_arg.csr_util.create_cache())
 
 
 class CollectionValues(GroupValues):
@@ -59,7 +56,7 @@ class CollectionValues(GroupValues):
         self.collection = get_object_or_404(Collection, key=collection_key)
         self.key = self.collection.key
         self.name = self.collection.name
-        self.group_values = []
+        self.context_group_values = []
 
     def populate_collection_values(self):
         """Populate CollectionValue with service registry values.
@@ -91,22 +88,19 @@ class CollectionValues(GroupValues):
                     else:
                         group_caches[group.key] = [cache]
 
-        # Parallel request external resources not found locally
+        # Parallel request external resources not in cache to dict with group: [cache]
         if len(util_arg_list) > 0:
             new_util_arg_list = thread_retrieve_external(util_arg_list)
-
-            # Add new external resources to dict with group: [cache]
             for new_util_arg in new_util_arg_list:
-                if new_util_arg is not None:
-                    cache = new_util_arg.csr_util.create_cache()
-                    if new_util_arg.group_key in group_caches:
-                        group_caches[new_util_arg.group_key].append(cache)
-                    else:
-                        group_caches[new_util_arg.group_key] = [cache]
+                cache = new_util_arg.csr_util.create_cache()
+                if new_util_arg.group_key in group_caches:
+                    group_caches[new_util_arg.group_key].append(cache)
+                else:
+                    group_caches[new_util_arg.group_key] = [cache]
 
         # Init contextgroup add GroupValues
         for group_key, cache_list in group_caches.items():
             group_values = GroupValues(self.x, self.y, group_key, self.srid)
             for cache in cache_list:
-                group_values.csr_values.append(cache)
-            self.group_values.append(group_values)
+                group_values.service_registry_values.append(cache)
+            self.context_group_values.append(group_values)

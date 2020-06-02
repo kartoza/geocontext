@@ -136,5 +136,14 @@ class CSR(models.Model):
         max_length=1000,
     )
 
+    resolution = models.IntegerField(
+        help_text=_('Base data resolution of the source data in meter.'),
+        blank=True,
+        null=True
+    )
+
+    class Meta:
+        ordering = ['key']
+
     def __str__(self):
         return self.name

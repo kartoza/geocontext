@@ -44,11 +44,8 @@ def get_csr(request):
             cache = csr_util.retrieve_cache()
             if cache is None:
                 util_arg = UtilArg(group_key=None, csr_util=csr_util)
-                try:
-                    new_util_arg = retrieve_external_csr(util_arg)
-                except Exception as e:
-                    return Http404(f"Server exception: {e}")
-                if new_util_arg is not None:
+                new_util_arg = retrieve_external_csr(util_arg)
+                if new_util_arg.csr_util.value is not None:
                     cache = new_util_arg.csr_util.create_cache()
             fields = ('value', 'key')
             if cache:

@@ -1,29 +1,5 @@
 # Developer Documentation
 
-**Note:** This documentation is intentionally generic so that it can
-be copy-pasted between projects - do not put project specific details here.
-
-## Quickstart with Docker and VSCode
-
-An easy way to set up a locally development environment is with Docker and VSCode.
-
-1. For local DB access first uncomment the ports section in the db app in the docker-compose.yml 
-2. For river-name specific queries you should add the river database details to the uwsgi environment
-  (RIVER_DATABASE_USER, RIVER_DATABASE_HOST, RIVER_DATABASE_PASSWORD, RIVER_DATABASE_NAME)
-3. Use setup-dev to build the production and development containers, create superuser,
-and import default registries.
-```
-make setup-dev
-```
-4. Geocontext should now be running at localhost.
-5. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
-7. Attach a VSCode session by right clicking on the running geocontext_devweb container in the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension
-6. Now we can get into the running containers to run management commands, run another server at another port, debug etc.
-7. Tests can be run using the development environment using
-```
-make test
-```
-
 ## Application architecture under docker
 
 The following diagram provides and overview of the core architecture
@@ -88,10 +64,10 @@ When prompted about host authenticity, click Yes.
 After the python interpreter is set, set its path mapping:
 
   * **Local path:** `<path to your git repo>/django_project`
-  * **Remote path:** `/home/web/django_project`
+  * **Remote path:** `/usr/src/geocontext`
 
 After that you should see something like this:
-   `<Project root>/django_project→/home/web/django_project`
+   `<Project root>/django_project→/usr/src/geocontext`
 
 In settings, django support:
 
@@ -129,7 +105,7 @@ Now set these options:
   and add a run that points to your git checkout on your local host and the
   /home/web directory in the docker host. e.g.
   * **Local path:** <path to your git repo>/django_project
-  * **Remote path:** /home/web/django_project
+  * **Remote path:** /usr/src/geocontext/django_project
 * click OK to save your run configuration
 
 Now you can run the server using the green triangle next to the Django server

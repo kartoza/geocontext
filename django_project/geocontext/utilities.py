@@ -31,40 +31,6 @@ class ServiceDefinitions():
     )
 
 
-def convert_coordinate(x: float, y: float, srid_source: int, srid_target: int) -> tuple:
-    """Convert coordinate x y from srid_source to srid_target.
-
-    :param x: The value of x coordinate.
-    :type x: float
-
-    :param y: The value of y coordinate.
-    :type y: float
-
-    :param srid_source: The source SRID.
-    :type srid_source: int
-
-    :param srid_target: The target SRID.
-    :type srid_target: int
-
-    :return: tuple of converted x and y in float.
-    :rtype: tuple(float, float)
-    """
-    point = Point(x, y, srid=srid_source)
-    point.transform(srid_target)
-    return point.x, point.y
-
-
-def tag_with_version(tag: str, version: str) -> str:
-    """ Replace version in tag
-
-    :return: tag
-    :rtype: str
-    """
-    if version:
-        return version + tag
-    return tag
-
-
 def convert_2d_to_3d(geometry_2d: GEOSGeometry) -> GEOSGeometry:
     """Convert 2d geometry to 3d with adding z = 0.
 
@@ -98,6 +64,33 @@ def convert_2d_to_3d(geometry_2d: GEOSGeometry) -> GEOSGeometry:
         raise Exception('Not supported geometry')
 
     return geometry_3d
+
+
+def tag_with_version(tag: str, version: str) -> str:
+    """ Replace version in tag
+
+    :return: tag
+    :rtype: str
+    """
+    if version:
+        return version + tag
+    return tag
+
+
+def convert_coordinate(point, srid_target: int) -> Point:
+    """Convert coordinate x y from srid_source to srid_target.
+
+    :param point: Point
+    :type point: Point
+
+    :param srid_target: The target SRID.
+    :type srid_target: int
+
+    :return: transformed point
+    :rtype: Point
+    """
+    point.transform(srid_target)
+    return point
 
 
 def parse_dms(coord: str) -> tuple:
@@ -144,28 +137,30 @@ def dms_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
     return decimal
 
 
-# The following functions should be async safe as the are called by CSRUtils threaded
-
-def get_bbox(x: float, y: float, precision: float = 0.0001) -> list:
+def get_bbox(point: Point, precision: float = 0.0001) -> str:
     """Get small enough bbox to cover point x,y
-    precision of 4 == ~10 m bounding box
+    precision of 4 == ~10 m on srid=4326 bounding box
 
-    :param x: X coordinate
-    :type x: float
-    :param y: Y coordinate
-    :type y: float
+    :param point: Point
+    :type point: Point
+
     :param precision: The factor to get the bbox, see the formula.
     :type precision: float
 
-    :return: BBOX as a list [xmin, ymin, xmax, ymax)
-    :rtype: list
+    :return: BBOX string
+    :rtype: str
     """
-    return [
-        x - precision,
-        y - precision,
-        x + precision,
-        y + precision
-    ]
+    original_srid = point.srid
+    # Bbox generated in WGS84 for consistent boundingbox and transformed back if needed
+    if original_srid != 4326:
+        point = convert_coordinate(point, 4326)
+    bbox_min = Point((point.x - precision), (point.y - precision), 4326)
+    bbox_max = Point((point.x + precision), (point.y + precision), 4326)
+    if original_srid != 4326:
+        bbox_min = convert_coordinate(bbox_min, original_srid)
+        bbox_max = convert_coordinate(bbox_max, original_srid)
+    bbox = [bbox_min.x, bbox_min.y, bbox_max.x, bbox_max.y]
+    return ','.join([str(i) for i in bbox])
 
 
 def parse_gml_geometry(gml_string, tag_name: str = 'qgs:geometry') -> GEOSGeometry:

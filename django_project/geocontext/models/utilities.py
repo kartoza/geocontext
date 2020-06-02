@@ -49,7 +49,7 @@ def thread_retrieve_external(util_arg_list: list) -> list:
 
 def retrieve_external_csr(util_arg: namedtuple) -> namedtuple:
     """Fetch data and loads into CSRUtils instance
-    using threadlocal request session.
+    using threadlocal request session if found.
 
     :param namedtuple: (group_key, csr_util)
     :type util_arg: namedtuple(int, CSRUtils)
@@ -57,10 +57,8 @@ def retrieve_external_csr(util_arg: namedtuple) -> namedtuple:
     :return: (group_key and CSRUtils)
     :rtype: namedtuple or None
     """
-    if util_arg.csr_util.retrieve_value():
-        return util_arg
-    else:
-        return None
+    util_arg.csr_util.retrieve_value()
+    return util_arg
 
 
 def get_session() -> thread_local:
@@ -105,7 +103,7 @@ class CSRUtils():
 
         self.x = x
         self.y = y
-        self.query_srid = srid
+        self.srid_in = srid
         self.generalize_point()
         self.geometry = self.point
 
@@ -130,45 +128,38 @@ class CSRUtils():
         Removes extreme precision to improve point cache hits.
         Default precision for is 4 decimals (~10m)
 
+        :raises ValueError: If coordinate cannot be generalized
+
         :return: point
         :rtype: Point
         """
         # Parse Coordinate try DD / otherwise DMS
         for coord in ['x', 'y']:
             try:
-                setattr(self, coord, float(getattr(self, coord)))
+                coord_dd = float(getattr(self, coord))
             except ValueError:
                 try:
                     degrees, minutes, seconds = parse_dms(getattr(self, coord))
-                    setattr(self, coord, dms_dd(degrees, minutes, seconds))
+                    coord_dd = dms_dd(degrees, minutes, seconds)
                 except ValueError:
                     raise ValueError('Coordinate parse failed: {coord}. Require DD/DMS.')
+            setattr(self, coord, coord_dd)
 
-        # Convert or set coordinate
-        try:
-            self.query_srid = int(self.query_srid)
-        except ValueError:
-            raise ValueError(f"SRID: '{self.query_srid}' not valid")
+        self.point = Point(self.x, self.y, srid=self.srid)
 
-        if self.query_srid != self.srid:
+        if self.point.srid != self.srid:
             try:
-                point = Point(*convert_coordinate(
-                                self.x,
-                                self.y,
-                                self.query_srid,
-                                self.srid
-                              ),
-                              srid=self.srid
-                              )
+                self.point = convert_coordinate(self.point, self.srid)
             except SRSException:
-                raise ValueError(f"SRID: '{self.query_srid}' not valid")
-        else:
-            point = Point(self.x, self.y, srid=self.srid)
+                raise ValueError(f"SRID: '{self.point.srid}' not valid")
 
         # Set precision after projection
+        # if self.resolution:
+            # Calculate decimals depending on base resolution
+            # 1m = 5, 10m = 4, 100m = 3, 1000m = 2, 10000m = 1
         decimals = 4
-        x_round = Decimal(point.x).quantize(Decimal('0.' + '0' * decimals))
-        y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
+        x_round = Decimal(self.point.x).quantize(Decimal('0.' + '0' * decimals))
+        y_round = Decimal(self.point.y).quantize(Decimal('0.' + '0' * decimals))
         self.point = Point(float(x_round), float(y_round), srid=self.srid)
 
     def create_cache(self) -> Cache:
@@ -207,8 +198,6 @@ class CSRUtils():
                 else:
                     return cache
 
-    # Following methods should all be async safe. Serializer utils calls these threaded.
-
     def request_content(self, retries: int = 0) -> requests:
         """Get request content from cache url in request session
 
@@ -222,238 +211,156 @@ class CSRUtils():
                     return response.content
         except requests.exceptions.RequestException as e:
             LOGGER.error(
-                f"'{self.csr_key_key}' url failed: {self.cache_url} with: {e}"
+                f"'{self.csr_key}' url failed: {self.cache_url} with: {e}"
             )
             return None
 
     def retrieve_value(self) -> bool:
-        """Load context value.
+        """Load context value. All exception / null values handled here.
 
         :returns: success
         :rtype: bool
         """
-        if self.query_type == ServiceDefinitions.WMS:
-            try:
-                wms = WebMapService(self.url, self.service_version)
-                response = wms.getfeatureinfo(
-                    layers=[self.layer_typename],
-                    bbox=get_bbox(self.point.x, self.point.y),
-                    size=[101, 101],
-                    xy=[50, 50],
-                    srs='EPSG:' + str(self.point.srid),
-                    info_format='application/vnd.ogc.gml'
-                )
-                wms_content = response.read()
-                self.value = self.parse_request_value(wms_content)
-                self.cache_url = response.geturl()
-            except NotImplementedError as e:
-                self.value = e
-            return True
+        try:
+            if self.query_type == ServiceDefinitions.WMS:
+                self.fetch_wms()
+            elif self.query_type == ServiceDefinitions.WFS:
+                self.fetch_wfs()
+            elif self.query_type == ServiceDefinitions.ARCREST:
+                self.fetch_arcrest()
+            elif self.query_type == ServiceDefinitions.PLACENAME:
+                self.fetch_placename()
+        except Exception as e:
+            LOGGER.error(f"'{self.csr_key}' url failed: {self.cache_url} with: {e}")
+            self.value = None
 
-        if self.query_type in [ServiceDefinitions.ARCREST, ServiceDefinitions.PLACENAME]:
-            self.cache_url = self.box_query_url()
-            build_content = self.request_content()
-            if build_content is not None:
-                self.value = self.parse_request_value(build_content)
-                if self.value is not None:
-                    return True
+    def fetch_wms(self):
+        """Fetch WMS value
+        """
+        wms = WebMapService(self.url, self.service_version)
+        response = wms.getfeatureinfo(
+            layers=[self.layer_typename],
+            bbox=get_bbox(self.point),
+            size=[101, 101],
+            xy=[50, 50],
+            srs='EPSG:' + str(self.point.srid),
+            info_format='application/vnd.ogc.gml'
+        )
+        xmldoc = minidom.parseString(response.read())
+        value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
+        self.value = value_dom.childNodes[0].nodeValue
+        self.cache_url = response.geturl()
 
+    def fetch_wfs(self):
+        """Fetch WFS value
+        """
+        parameters = {
+            'SERVICE': 'WFS',
+            'REQUEST': 'DescribeFeatureType',
+            'VERSION': self.service_version,
+            'TYPENAME': self.layer_typename
+        }
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update(parameters)
+        if '?' in self.url:
+            self.cache_url = f'{self.url}&{query_dict.urlencode()}'
         else:
-            self.cache_url = self.describe_query_url()
-            describe_content = self.request_content()
-            if describe_content is None:
-                return False
-
-            geo_name, geo_type = find_geometry_in_xml(describe_content)
-
-            # Try quick polygon intersection query
-            if 'Polygon' in geo_type:
-                self.cache_url = self.intersect_query_url(geo_name)
-                gml_string = self.request_content()
-                if gml_string is not None:
-                    self.value = self.parse_request_value(gml_string)
-                    if self.value is not None:
-                        self.fetch_geometry(gml_string)
-                        if 'Polygon' in self.geometry.geom_type:
-                            return True
-
-            # Else try boundingbox - needed to fetch geometry?
-            self.cache_url = self.box_query_url()
-            gml_string = self.request_content()
-            if gml_string is not None:
-                # Only replace value if not yet found by poly intersect
-                if self.value is None:
-                    self.value = self.parse_request_value(gml_string)
-                # Only fetch geometry if value was found and not yet updated
-                if self.value is not None and self.geometry.geom_type == 'Point':
-                    self.fetch_geometry(gml_string)
-                return True
-        return False
-
-
-    def describe_query_url(self):
-        """Describe query based on the model and the parameter.
-
-        :return: URL to do query.
-        :rtype: str
-        """
-        describe_url = None
-        if self.query_type == ServiceDefinitions.WFS:
-            parameters = {
-                'SERVICE': 'WFS',
-                'REQUEST': 'DescribeFeatureType',
-                'VERSION': self.service_version,
-                'TYPENAME': self.layer_typename
-            }
-            query_dict = QueryDict('', mutable=True)
-            query_dict.update(parameters)
-            if '?' in self.url:
-                describe_url = f'{self.url}&{query_dict.urlencode()}'
-            else:
-                describe_url = f'{self.url}?{query_dict.urlencode()}'
-        return describe_url
-
-
-    def box_query_url(self) -> str:
-        """Build query with bounding box.
-
-        :return: URL to do query.
-        :rtype: str
-        """
-        url = None
-        bbox = get_bbox(self.point.x, self.point.y)
-        bbox_string = ','.join([str(i) for i in bbox])
-
-        if self.query_type == ServiceDefinitions.WFS:
-            parameters = {
-                'SERVICE': 'WFS',
-                'REQUEST': 'GetFeature',
-                'VERSION': self.service_version,
-                'TYPENAME': self.layer_typename,
-                'OUTPUTFORMAT': 'GML3',
-            }
-            query_dict = QueryDict('', mutable=True)
-            query_dict.update(parameters)
-            if '?' in self.url:
-                url = f'{self.url}&{query_dict.urlencode()}'
-            else:
-                url = f'{self.url}?{query_dict.urlencode()}'
-            if ':' not in self.layer_typename:
-                url += f'&SRSNAME={self.point.srid}'
-            url += '&BBOX=' + bbox_string
-
-        elif self.query_type == ServiceDefinitions.ARCREST:
-            parameters = {
-                'f': 'json',
-                'geometryType': 'esriGeometryPoint',
-                'geometry': f'{{{{x: {self.point.x}, y: {self.point.y}}}}}',
-                'layers': self.layer_typename,
-                'imageDisplay': '581,461,96',
-                'tolerance': '10',
-            }
-            query_dict = QueryDict('', mutable=True)
-            query_dict.update(parameters)
-            if '?' in self.url:
-                url = f'{self.url}&{query_dict.urlencode()}'
-            else:
-                url = f'{self.url}/identify?{query_dict.urlencode()}'
-                url += f'&mapExtent={bbox_string}'
-
-        elif self.query_type == ServiceDefinitions.PLACENAME:
-            parameters = {
-                'lat': str(self.point.y),
-                'lng': str(self.point.x),
-                'username': str(self.api_key),
-            }
-            query_dict = QueryDict('', mutable=True)
-            query_dict.update(parameters)
-            if '?' in self.url:
-                url = f'{self.url}&{query_dict.urlencode()}'
-            else:
-                url = f'{self.url}?{query_dict.urlencode()}'
-        return url
-
-
-    def intersect_query_url(self, geom_name: str) -> str:
-        """Filter query based on the model and the parameter.
-
-        :return: URL to do query.
-        :rtype: str
-        """
-        filter_url = None
-        attribute_name = (self.result_regex[4:])
-        layer_filter = ('<Filter xmlns="http://www.opengis.net/ogc" '
-                        'xmlns:gml="http://www.opengis.net/gml"> '
-                        f'<Intersects><PropertyName>{geom_name}</PropertyName>'
-                        f'<gml:Point srsName="EPSG:{self.point.srid}">'
-                        f'<gml:coordinates>{self.point.x},{self.point.y}'
-                        '</gml:coordinates></gml:Point></Intersects></Filter>'
-                        )
-
-        if self.query_type == ServiceDefinitions.WFS:
+            self.cache_url = f'{self.url}?{query_dict.urlencode()}'
+        geo_name, geo_type = find_geometry_in_xml(self.request_content())
+        if 'Polygon' in geo_type:
+            layer_filter = (
+                '<Filter xmlns="http://www.opengis.net/ogc" '
+                'xmlns:gml="http://www.opengis.net/gml"> '
+                f'<Intersects><PropertyName>{geo_name}</PropertyName>'
+                f'<gml:Point srsName="EPSG:{self.point.srid}">'
+                f'<gml:coordinates>{self.point.x},{self.point.y}'
+                '</gml:coordinates></gml:Point></Intersects></Filter>'
+            )
             parameters = {
                 'SERVICE': 'WFS',
                 'REQUEST': 'GetFeature',
                 'VERSION': self.service_version,
                 'TYPENAME': self.layer_typename,
                 'FILTER': layer_filter,
-                'PROPERTYNAME': f'({attribute_name})',
+                'PROPERTYNAME': f'({self.result_regex[4:]})',
                 'MAXFEATURES': 1,
                 'OUTPUTFORMAT': 'GML3',
             }
             query_dict = QueryDict('', mutable=True)
             query_dict.update(parameters)
             if '?' in self.url:
-                filter_url = f'{self.url}&{query_dict.urlencode()}'
+                self.cache_url = f'{self.url}&{query_dict.urlencode()}'
             else:
-                filter_url = f'{self.url}?{query_dict.urlencode()}'
+                self.cache_url = f'{self.url}?{query_dict.urlencode()}'
             if ':' not in self.layer_typename:
-                filter_url += f'&SRSNAME={self.point.srid}'
-        return filter_url
+                self.cache_url += f'&SRSNAME={self.point.srid}'
+            gml_string = self.request_content()
 
+        else:
 
-    def parse_request_value(self, request_content: str) -> str:
-        """Parse request value from request content.
+            bbox = get_bbox(self.point)
+            parameters = {
+                'SERVICE': 'WFS',
+                'REQUEST': 'GetFeature',
+                'VERSION': self.service_version,
+                'TYPENAME': self.layer_typename,
+                'OUTPUTFORMAT': 'GML3',
+            }
+            query_dict = QueryDict('', mutable=True)
+            query_dict.update(parameters)
+            if '?' in self.url:
+                self.cache_url = f'{self.url}&{query_dict.urlencode()}'
+            else:
+                self.cache_url = f'{self.url}?{query_dict.urlencode()}'
+            if ':' not in self.layer_typename:
+                self.cache_url += f'&SRSNAME={self.point.srid}'
+            self.cache_url += '&BBOX=' + bbox
+            gml_string = self.request_content()
 
-        :param request_content: String that represent content of a request.
-        :type request_content: str
+        xmldoc = minidom.parseString(gml_string)
+        value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
+        self.value = value_dom.childNodes[0].nodeValue
+        new_geometry = parse_gml_geometry(gml_string, self.layer_typename)
+        if new_geometry is not None:
+            self.geometry = new_geometry
+            if not self.geometry.srid:
+                self.geometry.srid = self.point.srid
 
-        :returns: The value of the result_regex in the request_content.
-        :rtype: str
+    def fetch_arcrest(self):
+        """Fetch ArcRest value
         """
-        if self.query_type in [ServiceDefinitions.WFS, ServiceDefinitions.WMS]:
-            xmldoc = minidom.parseString(request_content)
-            try:
-                value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
-                return value_dom.childNodes[0].nodeValue
-            except IndexError:
-                return None
-        # For the ArcREST standard we parse JSON (Above parsed from CSV)
-        elif self.query_type == ServiceDefinitions.ARCREST:
-            json_document = json.loads(request_content)
-            try:
-                json_value = json_document['results'][0][self.result_regex]
-                return json_value
-            except IndexError:
-                return None
-        # PlaceName also parsed from JSONS but document structure differs.
-        elif self.query_type == ServiceDefinitions.PLACENAME:
-            json_document = json.loads(request_content)
-            try:
-                json_value = json_document['geonames'][0][self.result_regex]
-                return json_value
-            except IndexError:
-                return None
+        bbox = get_bbox(self.point)
+        parameters = {
+            'f': 'json',
+            'geometryType': 'esriGeometryPoint',
+            'geometry': f'{{{{x: {self.point.x}, y: {self.point.y}}}}}',
+            'layers': self.layer_typename,
+            'imageDisplay': '581,461,96',
+            'tolerance': '10',
+        }
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update(parameters)
+        if '?' in self.url:
+            self.cache_url = f'{self.url}&{query_dict.urlencode()}'
+        else:
+            self.cache_url = f'{self.url}/identify?{query_dict.urlencode()}'
+            self.cache_url += f'&mapExtent={bbox}'
+        json_document = json.loads(self.request_content())
+        self.value = json_document['results'][0][self.result_regex]
 
-
-    def fetch_geometry(self, gml_string: str):
-        """Load geometry from gml string
-
-        :param gml_string: String that represent full gml document.
-        :type gml_string: unicode
+    def fetch_placename(self):
+        """Fetch Placename value
         """
-        geom = parse_gml_geometry(gml_string, self.layer_typename)
-        if geom is not None:
-            if not geom.srid:
-                geom.srid = self.srid
-            self.geometry = geom
+        parameters = {
+            'lat': str(self.point.y),
+            'lng': str(self.point.x),
+            'username': str(self.api_key),
+        }
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update(parameters)
+        if '?' in self.url:
+            self.cache_url = f'{self.url}&{query_dict.urlencode()}'
+        else:
+            self.cache_url = f'{self.url}?{query_dict.urlencode()}'
+        json_document = json.loads(self.request_content())
+        self.value = json_document['geonames'][0][self.result_regex]

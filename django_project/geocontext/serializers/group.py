@@ -32,4 +32,4 @@ class GroupValueSerializer(serializers.Serializer):
     key = serializers.CharField()
     name = serializers.CharField()
     graphable = serializers.BooleanField()
-    csr_values = serializers.ListSerializer(child=CacheSerializer())
+    service_registry_values = serializers.ListSerializer(child=CacheSerializer())

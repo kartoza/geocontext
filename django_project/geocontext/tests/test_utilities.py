@@ -1,5 +1,6 @@
 import os
 
+from django.contrib.gis.geos import Point
 from django.test import SimpleTestCase
 from geocontext.utilities import (
     convert_coordinate,
@@ -18,7 +19,7 @@ class TestUtilities(SimpleTestCase):
 
     def test_convert_coordinate(self):
         """Test convert_coordinate method."""
-        result = convert_coordinate(1, 1, 4326, 3857)
+        result = convert_coordinate(Point(1, 1, srid=4326), 3857)
         self.assertAlmostEqual(result[0], 111319.49, places=2)
         self.assertAlmostEqual(result[1], 111325.14, places=2)
 
@@ -46,12 +47,14 @@ class TestUtilities(SimpleTestCase):
 
     def test_get_bbox(self):
         """Test get_bbox function."""
-        bbox = get_bbox(1, 10, 0.0001)
-        self.assertEqual([0.9999, 9.9999, 1.0001, 10.0001], bbox)
+        bbox_str = get_bbox(Point(1, 10), 0.0001)
+        bbox = bbox_str.split(',')
+        self.assertEqual('0.9999, 9.9999, 1.0001, 10.0001', bbox)
         self.assertLess(bbox[0], bbox[2])
         self.assertLess(bbox[1], bbox[3])
 
-        bbox = get_bbox(-1, -10, 0.0001)
+        bbox_str = get_bbox(Point(1, 10), 0.0001)
+        bbox = bbox_str.split(',')
         self.assertLess(bbox[0], bbox[2])
         self.assertLess(bbox[1], bbox[3])
 
