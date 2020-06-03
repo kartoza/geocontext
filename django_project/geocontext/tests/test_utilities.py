@@ -24,14 +24,12 @@ class TestUtilities(SimpleTestCase):
 
     def test_get_bbox(self):
         """Test get_bbox function."""
-        bbox_str = get_bbox(Point(1, 10), 0.0001)
-        bbox = bbox_str.split(',')
+        bbox = get_bbox(Point(1, 10), 0.0001, string=False)
         self.assertEqual('0.9999, 9.9999, 1.0001, 10.0001', bbox)
         self.assertLess(bbox[0], bbox[2])
         self.assertLess(bbox[1], bbox[3])
 
-        bbox_str = get_bbox(Point(1, 10), 0.0001)
-        bbox = bbox_str.split(',')
+        bbox = get_bbox(Point(1, 10), 0.0001, string=False)
         self.assertLess(bbox[0], bbox[2])
         self.assertLess(bbox[1], bbox[3])
 

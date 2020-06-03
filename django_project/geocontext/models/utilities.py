@@ -249,7 +249,7 @@ class CSRUtils():
         wms = WebMapService(self.url, self.service_version)
         response = wms.getfeatureinfo(
             layers=[self.layer_typename],
-            bbox=get_bbox(self.point),
+            bbox=get_bbox(self.point, string=False),
             size=[101, 101],
             xy=[50, 50],
             srs='EPSG:' + str(self.point.srid),

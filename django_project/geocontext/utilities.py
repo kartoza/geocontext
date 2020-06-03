@@ -153,7 +153,7 @@ def round_point(point: Point, decimals: int = 4) -> str:
     return point
 
 
-def get_bbox(point: Point, precision: float = 0.0001) -> str:
+def get_bbox(point: Point, precision: float = 0.0001, string: True = bool) -> str:
     """Get small enough bbox to cover point x,y
 
     precision of 4 == ~10 m on srid=4326 bounding box
@@ -163,6 +163,9 @@ def get_bbox(point: Point, precision: float = 0.0001) -> str:
 
     :param precision: The factor to get the bbox, see the formula.
     :type precision: float
+
+    :param string: Should output be a ',' seperated string - else list
+    :type string: bool
 
     :return: BBOX string
     :rtype: str
@@ -180,4 +183,8 @@ def get_bbox(point: Point, precision: float = 0.0001) -> str:
         bbox_max = convert_coordinate(bbox_max, original_srid)
 
     bbox = [bbox_min.x, bbox_min.y, bbox_max.x, bbox_max.y]
-    return ','.join([str(i) for i in bbox])
+
+    if string:
+        return ','.join([str(i) for i in bbox])
+    else:
+        return bbox
