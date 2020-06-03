@@ -125,9 +125,10 @@ def dms_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
 
 
 def round_point(point: Point, decimals: int = 4) -> str:
-    """Get small enough bbox to cover point x,y
+    """Round coordinate point coordinates to certain decimal places on WGS84.
 
-    precision of 4 == ~10 m on srid=4326 bounding box
+    precision of 4 == ~10 m, 3 == 100m, 2 = 1km
+    https://en.wikipedia.org/wiki/Decimal_degrees
 
     :param point: Point
     :type point: Point
@@ -143,6 +144,7 @@ def round_point(point: Point, decimals: int = 4) -> str:
     if original_srid != 4326:
         point = convert_coordinate(point, 4326)
 
+    # Round with decimal quantize see- https://realpython.com/python-rounding/
     x_round = Decimal(point.x).quantize(Decimal('0.' + '0' * decimals))
     y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
     point = Point(float(x_round), float(y_round), srid=point.srid)
@@ -153,10 +155,11 @@ def round_point(point: Point, decimals: int = 4) -> str:
     return point
 
 
-def get_bbox(point: Point, precision: float = 0.0001, string: True = bool) -> str:
+def get_bbox(point: Point, precision: float = 0.01, string: True = bool) -> str:
     """Get small enough bbox to cover point x,y
 
-    precision of 4 == ~10 m on srid=4326 bounding box
+    precision of 0.0001 == ~10 m, 0.001 = 100m, 0.01 = 1km
+    https://en.wikipedia.org/wiki/Decimal_degrees
 
     :param point: Point
     :type point: Point
