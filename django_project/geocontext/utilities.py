@@ -1,3 +1,4 @@
+from decimal import Decimal
 import logging
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
@@ -137,8 +138,38 @@ def dms_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
     return decimal
 
 
+def round_point(point: Point, decimals: int = 4) -> str:
+    """Get small enough bbox to cover point x,y
+
+    precision of 4 == ~10 m on srid=4326 bounding box
+
+    :param point: Point
+    :type point: Point
+
+    :param precision: Decimals to round
+    :type precision: int (default = 4)
+
+    :return: point
+    :rtype: Point
+    """
+    # Bbox generated in WGS84 for consistent boundingbox and transformed back if needed
+    original_srid = point.srid
+    if original_srid != 4326:
+        point = convert_coordinate(point, 4326)
+
+    x_round = Decimal(point.x).quantize(Decimal('0.' + '0' * decimals))
+    y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
+    point = Point(float(x_round), float(y_round), srid=point.srid)
+
+    if original_srid != 4326:
+        point = convert_coordinate(point, original_srid)
+
+    return point
+
+
 def get_bbox(point: Point, precision: float = 0.0001) -> str:
     """Get small enough bbox to cover point x,y
+
     precision of 4 == ~10 m on srid=4326 bounding box
 
     :param point: Point
@@ -154,11 +185,14 @@ def get_bbox(point: Point, precision: float = 0.0001) -> str:
     # Bbox generated in WGS84 for consistent boundingbox and transformed back if needed
     if original_srid != 4326:
         point = convert_coordinate(point, 4326)
+
     bbox_min = Point((point.x - precision), (point.y - precision), srid=4326)
     bbox_max = Point((point.x + precision), (point.y + precision), srid=4326)
+
     if original_srid != 4326:
         bbox_min = convert_coordinate(bbox_min, original_srid)
         bbox_max = convert_coordinate(bbox_max, original_srid)
+
     bbox = [bbox_min.x, bbox_min.y, bbox_max.x, bbox_max.y]
     return ','.join([str(i) for i in bbox])
 

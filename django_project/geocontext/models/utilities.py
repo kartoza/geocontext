@@ -1,7 +1,6 @@
 from collections import namedtuple
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
-from decimal import Decimal
 import json
 import logging
 import pytz
@@ -22,6 +21,7 @@ from geocontext.utilities import (
     find_geometry_in_xml,
     get_bbox,
     parse_gml_geometry,
+    round_point,
     ServiceDefinitions,
     parse_dms
 )
@@ -195,22 +195,19 @@ class CSRUtils():
         except ValueError:
             raise ValueError(f"SRID: '{self.srid_in}' not valid")
 
+        # TODO Round smartly using base data raster resolution
+        # if self.resolution:
+        #        Calculate decimals depending on base resolution
+        #        decimals = (1m = 5, 10m = 4, 100m = 3, 1000m = 2, 10000m = 1)
+
+        # Round before converting as queries default 4326 - less conversions needed
+        self.point = round_point(self.point, decimals=4)
+
         if self.srid_in != self.srid:
             try:
                 self.point = convert_coordinate(self.point, self.srid)
             except SRSException:
                 raise ValueError(f"SRID: '{self.srid_in}' not valid")
-
-        # TODO Round smartly after projection using base data raster resolution
-        # if self.query_type == ServiceDefinitions.WMS:
-        #    if self.resolution:
-        #        Calculate decimals depending on base resolution
-        #        decimals = (1m = 5, 10m = 4, 100m = 3, 1000m = 2, 10000m = 1)
-
-        decimals = 4
-        x_round = Decimal(self.point.x).quantize(Decimal('0.' + '0' * decimals))
-        y_round = Decimal(self.point.y).quantize(Decimal('0.' + '0' * decimals))
-        self.point = Point(float(x_round), float(y_round), srid=self.srid)
 
     def retrieve_value(self) -> bool:
         """Load context value. All exception / null values handled here.
