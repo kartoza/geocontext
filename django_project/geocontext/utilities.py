@@ -158,7 +158,7 @@ def round_point(point: Point, decimals: int = 4) -> str:
 def get_bbox(point: Point, precision: float = 0.01, string: True = bool) -> str:
     """Get small enough bbox to cover point x,y
 
-    precision of 0.0001 == ~10 m, 0.001 = 100m, 0.01 = 1km
+    precision of 0.0001 == ~10 m, 0.001 = 100m, 0.01 = 1km bbox
     https://en.wikipedia.org/wiki/Decimal_degrees
 
     :param point: Point
@@ -178,8 +178,8 @@ def get_bbox(point: Point, precision: float = 0.01, string: True = bool) -> str:
     if original_srid != 4326:
         point = convert_coordinate(point, 4326)
 
-    bbox_min = Point((point.x - precision), (point.y - precision), srid=4326)
-    bbox_max = Point((point.x + precision), (point.y + precision), srid=4326)
+    bbox_min = Point((point.x - (precision / 2)), (point.y - (precision / 2)), srid=4326)
+    bbox_max = Point((point.x + (precision / 2)), (point.y + (precision / 2)), srid=4326)
 
     if original_srid != 4326:
         bbox_min = convert_coordinate(bbox_min, original_srid)
