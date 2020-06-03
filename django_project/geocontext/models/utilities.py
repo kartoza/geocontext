@@ -224,6 +224,9 @@ class CSRUtils():
                 self.fetch_arcrest()
             elif self.query_type == ServiceDefinitions.PLACENAME:
                 self.fetch_placename()
+            else:
+                LOGGER.error(f"'{self.query_type}' not implimented")
+                self.value = None
         except Exception as e:
             LOGGER.error(f"'{self.csr_key}' url failed: {self.cache_url} with: {e}")
             self.value = None
@@ -235,13 +238,9 @@ class CSRUtils():
         :rtype: unicode
         """
         session = get_session()
-        try:
-            with session.get(self.cache_url) as response:
-                if response.status_code == 200:
-                    return response.content
-        except requests.exceptions.RequestException as e:
-            LOGGER.error(f"'{self.csr_key}' url failed: {self.cache_url} with: {e}")
-            return None
+        with session.get(self.cache_url) as response:
+            if response.status_code == 200:
+                return response.content
 
     def fetch_wms(self):
         """Fetch WMS value
@@ -382,44 +381,6 @@ class CSRUtils():
         json_document = json.loads(content)
         self.value = json_document['geonames'][0][self.result_regex]
 
-    def parse_gml_geometry(self, gml_string: str, tag_name: str = 'qgs:geometry') \
-            -> GEOSGeometry:
-        """Parse geometry from gml document.
-
-        :param gml_string: String that represent full gml document.
-        :type gml_string: unicode
-
-        :param tag_name: gml tag
-        :type tag_name: str
-
-        :returns: GEOGeometry from the gml document, the first one if there are
-            more than one.
-        :rtype: GEOSGeometry
-        """
-        try:
-            xmldoc = minidom.parseString(gml_string)
-        except Exception as e:
-            LOGGER.error(f'Could not parse GML string: {e}')
-            return None
-        try:
-            if tag_name == 'qgs:geometry':
-                geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
-                geometry_gml_dom = geometry_dom.childNodes[1]
-                return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
-            else:
-                tag_name = tag_name.split(':')[0] + ':' + 'geom'
-                geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
-                geometry_gml_dom = geometry_dom.childNodes[0]
-                return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
-
-        except IndexError:
-            LOGGER.error('No geometry found')
-            return None
-        except GDALException:
-            LOGGER.error('GDAL error')
-            return None
-
-
     def find_geometry_in_xml(self, content: str) -> tuple:
         """Find geometry in xml string
 
@@ -458,6 +419,43 @@ class CSRUtils():
             LOGGER.error(f"Could not find geometry in xml: {e}")
             pass
         return geometry_name, geometry_type
+
+    def parse_gml_geometry(self, gml_string: str, tag_name: str = 'qgs:geometry') \
+            -> GEOSGeometry:
+        """Parse geometry from gml document.
+
+        :param gml_string: String that represent full gml document.
+        :type gml_string: unicode
+
+        :param tag_name: gml tag
+        :type tag_name: str
+
+        :returns: GEOGeometry from the gml document, the first one if there are
+            more than one.
+        :rtype: GEOSGeometry
+        """
+        try:
+            xmldoc = minidom.parseString(gml_string)
+        except Exception as e:
+            LOGGER.error(f'Could not parse GML string: {e}')
+            return None
+        try:
+            if tag_name == 'qgs:geometry':
+                geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
+                geometry_gml_dom = geometry_dom.childNodes[1]
+                return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
+            else:
+                tag_name = tag_name.split(':')[0] + ':' + 'geom'
+                geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
+                geometry_gml_dom = geometry_dom.childNodes[0]
+                return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
+
+        except IndexError:
+            LOGGER.error('No geometry found')
+            return None
+        except GDALException:
+            LOGGER.error('GDAL error')
+            return None
 
     def tag_with_version(self, tag: str, version: str) -> str:
         """ Replace version in tag

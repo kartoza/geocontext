@@ -139,7 +139,7 @@ def round_point(point: Point, decimals: int = 4) -> str:
     :return: point
     :rtype: Point
     """
-    # Bbox generated in WGS84 for consistent boundingbox and transformed back if needed
+    # Use WGS84 for consistency
     original_srid = point.srid
     if original_srid != 4326:
         point = convert_coordinate(point, 4326)

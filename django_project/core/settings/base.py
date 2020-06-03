@@ -125,7 +125,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 }
 
-# Allow unlimeted persistent DB connections - required for multithreading.
+# Allow unlimited persistent DB connections - required for multithreading.
 CONN_MAX_AGE = 60
 
 MIDDLEWARE = (
