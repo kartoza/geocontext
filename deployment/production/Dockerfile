@@ -1,6 +1,5 @@
 FROM python:3.8-buster
 
-LABEL maintainer="Dimas Ciputra<dimas@kartoza.com>"
 LABEL maintainer="Andre Theron<andre.theron@kartoza.com>"
 
 RUN export DEBIAN_FRONTEND=noninteractive
@@ -20,6 +19,7 @@ RUN apt-get update -y && apt-get install -y \
 ADD REQUIREMENTS.txt /REQUIREMENTS.txt
 RUN pip3 install --upgrade pip && pip3 install -r /REQUIREMENTS.txt
 
+ARG BRANCH
 RUN git clone --depth=1 git://github.com/kartoza/geocontext.git --branch ${BRANCH} /usr/src/geocontext
 
 WORKDIR /usr/src/geocontext

@@ -1,6 +1,5 @@
 FROM python:3.8-buster
 
-LABEL maintainer="Dimas Ciputra<dimas@kartoza.com>"
 LABEL maintainer="Andre Theron<andre.theron@kartoza.com>"
 
 RUN export DEBIAN_FRONTEND=noninteractive
