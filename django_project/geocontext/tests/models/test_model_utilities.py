@@ -6,9 +6,10 @@ from django.test import TestCase
 
 from geocontext.models.cache import Cache
 from geocontext.models.utilities import (
+    create_cache,
     CSRUtils,
     get_csr,
-    create_cache,
+    parse_gml_geometry,
     retrieve_external_csr,
     UtilArg
 )
@@ -23,6 +24,28 @@ test_data_directory = os.path.join(
 @patch(get_csr)
 class TestCRSUtils(TestCase):
     """Test CSR models."""
+
+    def test_parse_geometry_gml_qgis(self):
+        """Test parse_gml_geometry for wfs from qgis server."""
+        gml_file_path = os.path.join(test_data_directory, 'wfs.xml')
+        self.assertTrue(os.path.exists(gml_file_path))
+        with open(gml_file_path) as file:
+            gml_string = file.read()
+            geom = parse_gml_geometry(gml_string)
+        self.assertIsNotNone(geom)
+        self.assertTrue(geom.valid)
+        self.assertEqual(geom.geom_type, 'Polygon')
+
+    def test_parse_geometry_gml_workspace(self):
+        """Test parse_gml_geometry with workspace"""
+        gml_file_path = os.path.join(test_data_directory, 'wfs_geoserver.xml')
+        self.assertTrue(os.path.exists(gml_file_path))
+        with open(gml_file_path) as file:
+            gml_string = file.read()
+            geom = parse_gml_geometry(gml_string, tag_name='kartoza:test')
+        self.assertIsNotNone(geom)
+        self.assertTrue(geom.valid)
+        self.assertEqual(geom.geom_type, 'MultiPolygon')
 
     def test_retrieve_value1(self, mock_get_csr):
         """Test retrieving value from a point with same CRS."""

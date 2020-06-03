@@ -75,9 +75,7 @@ In settings, django support:
 * Set django project root to the path on your host that holds django code e.g.
   ``<path to code base>/django_project``
 * Set the settings option to your setting profile e.g.
-  ``core/settings/dev_docker.py``. If you need to use custom settings, copy
-  this file e.g. ``dev_docker_tim.py`` and place your modifications in your
-  personalised copy. The first import of your custom file should import from
+  ``core/settings/dev_docker.py``. The first import of your custom file should import from
   dev_docker.
 
 * manage script (leave default)

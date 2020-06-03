@@ -6,21 +6,20 @@ import logging
 import pytz
 import requests
 import threading
+from xml.dom import minidom
+import xml.etree.ElementTree as ET
 
-from django.contrib.gis.gdal.error import SRSException
-from django.contrib.gis.geos import Point
+from django.contrib.gis.gdal.error import GDALException, SRSException
+from django.contrib.gis.geos import GEOSGeometry, Point
 from django.http import QueryDict
 from owslib.wms import WebMapService
-from xml.dom import minidom
 
 from geocontext.models.csr import CSR
 from geocontext.models.cache import Cache
 from geocontext.utilities import (
     convert_coordinate,
     dms_dd,
-    find_geometry_in_xml,
     get_bbox,
-    parse_gml_geometry,
     round_point,
     ServiceDefinitions,
     parse_dms
@@ -98,7 +97,7 @@ def thread_retrieve_external(util_arg_list: list) -> list:
     :rtype: list
     """
     new_result_list = []
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=20) as executor:
         for result in executor.map(retrieve_external_csr, util_arg_list):
             new_result_list.append(result)
     return new_result_list
@@ -196,9 +195,10 @@ class CSRUtils():
             raise ValueError(f"SRID: '{self.srid_in}' not valid")
 
         # TODO Round smartly using base data raster resolution
-        # if self.resolution:
-        #        Calculate decimals depending on base resolution
-        #        decimals = (1m = 5, 10m = 4, 100m = 3, 1000m = 2, 10000m = 1)
+        # if self.query_type == ServiceDefinitions.WMS:
+        #     if self.resolution:
+        #         Calculate decimals depending on base resolution
+        #         decimals = (1m = 5, 10m = 4, 100m = 3, 1000m = 2, 10000m = 1)
 
         # Round before converting as queries default 4326 - less conversions needed
         self.point = round_point(self.point, decimals=4)
@@ -210,7 +210,7 @@ class CSRUtils():
                 raise ValueError(f"SRID: '{self.srid_in}' not valid")
 
     def retrieve_value(self) -> bool:
-        """Load context value. All exception / null values handled here.
+        """Load context value. All exception logging / null values handled here.
 
         :returns: success
         :rtype: bool
@@ -228,7 +228,7 @@ class CSRUtils():
             LOGGER.error(f"'{self.csr_key}' url failed: {self.cache_url} with: {e}")
             self.value = None
 
-    def request_content(self, retries: int = 0) -> requests:
+    def request_content(self) -> requests:
         """Get request content from cache url in request session
 
         :return: URL to do query.
@@ -255,7 +255,8 @@ class CSRUtils():
             srs='EPSG:' + str(self.point.srid),
             info_format='application/vnd.ogc.gml'
         )
-        xmldoc = minidom.parseString(response.read())
+        content = response.read()
+        xmldoc = minidom.parseString(content)
         value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
         self.value = value_dom.childNodes[0].nodeValue
         self.cache_url = response.geturl()
@@ -275,7 +276,10 @@ class CSRUtils():
             self.cache_url = f'{self.url}&{query_dict.urlencode()}'
         else:
             self.cache_url = f'{self.url}?{query_dict.urlencode()}'
-        geo_name, geo_type = find_geometry_in_xml(self.request_content())
+
+        content = self.request_content()
+        geo_name, geo_type = self.find_geometry_in_xml(content)
+
         if 'Polygon' in geo_type:
             layer_filter = (
                 '<Filter xmlns="http://www.opengis.net/ogc" '
@@ -303,7 +307,7 @@ class CSRUtils():
                 self.cache_url = f'{self.url}?{query_dict.urlencode()}'
             if ':' not in self.layer_typename:
                 self.cache_url += f'&SRSNAME={self.point.srid}'
-            gml_string = self.request_content()
+            content = self.request_content()
 
         else:
 
@@ -324,12 +328,14 @@ class CSRUtils():
             if ':' not in self.layer_typename:
                 self.cache_url += f'&SRSNAME={self.point.srid}'
             self.cache_url += '&BBOX=' + bbox
-            gml_string = self.request_content()
+            content = self.request_content()
 
-        xmldoc = minidom.parseString(gml_string)
+        xmldoc = minidom.parseString(content)
         value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
         self.value = value_dom.childNodes[0].nodeValue
-        new_geometry = parse_gml_geometry(gml_string, self.layer_typename)
+
+        # Add new geometry only if found - otherwise keep query point in cache
+        new_geometry = self.parse_gml_geometry(content, self.layer_typename)
         if new_geometry is not None:
             self.geometry = new_geometry
             if not self.geometry.srid:
@@ -354,7 +360,8 @@ class CSRUtils():
         else:
             self.cache_url = f'{self.url}/identify?{query_dict.urlencode()}'
             self.cache_url += f'&mapExtent={bbox}'
-        json_document = json.loads(self.request_content())
+        content = self.request_content()
+        json_document = json.loads(content)
         self.value = json_document['results'][0][self.result_regex]
 
     def fetch_placename(self):
@@ -371,5 +378,93 @@ class CSRUtils():
             self.cache_url = f'{self.url}&{query_dict.urlencode()}'
         else:
             self.cache_url = f'{self.url}?{query_dict.urlencode()}'
-        json_document = json.loads(self.request_content())
+        content = self.request_content()
+        json_document = json.loads(content)
         self.value = json_document['geonames'][0][self.result_regex]
+
+    def parse_gml_geometry(self, gml_string: str, tag_name: str = 'qgs:geometry') \
+            -> GEOSGeometry:
+        """Parse geometry from gml document.
+
+        :param gml_string: String that represent full gml document.
+        :type gml_string: unicode
+
+        :param tag_name: gml tag
+        :type tag_name: str
+
+        :returns: GEOGeometry from the gml document, the first one if there are
+            more than one.
+        :rtype: GEOSGeometry
+        """
+        try:
+            xmldoc = minidom.parseString(gml_string)
+        except Exception as e:
+            LOGGER.error(f'Could not parse GML string: {e}')
+            return None
+        try:
+            if tag_name == 'qgs:geometry':
+                geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
+                geometry_gml_dom = geometry_dom.childNodes[1]
+                return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
+            else:
+                tag_name = tag_name.split(':')[0] + ':' + 'geom'
+                geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
+                geometry_gml_dom = geometry_dom.childNodes[0]
+                return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
+
+        except IndexError:
+            LOGGER.error('No geometry found')
+            return None
+        except GDALException:
+            LOGGER.error('GDAL error')
+            return None
+
+
+    def find_geometry_in_xml(self, content: str) -> tuple:
+        """Find geometry in xml string
+
+        :param content: xml content
+        :type content: str
+        :return: geometry name and geometry type
+        :rtype: tuple
+        """
+        content_parsed = ET.fromstring(content)
+        version = None
+        try:
+            content_parsed.tag.split('}')[1]
+            version = content_parsed.tag.split('}')[0] + '}'
+        except IndexError:
+            pass
+        geometry_name, geometry_type = None, None
+        try:
+            complex_type = content_parsed.find(
+                self.tag_with_version('complexType', version))
+            complex_content = complex_type.find(
+                self.tag_with_version('complexContent', version))
+            extension = complex_content.find(
+                self.tag_with_version('extension', version))
+            sequences = extension.find(
+                self.tag_with_version('sequence', version))
+            for sequence in sequences:
+                try:
+                    if 'gml' in sequence.attrib['type']:
+                        geometry_name = sequence.attrib['name']
+                        geometry_type = sequence.attrib['type'].replace(
+                            'gml:', '').replace('PropertyType', '')
+                except KeyError:
+                    continue
+            pass
+        except Exception as e:
+            LOGGER.error(f"Could not find geometry in xml: {e}")
+            pass
+        return geometry_name, geometry_type
+
+    def tag_with_version(self, tag: str, version: str) -> str:
+        """ Replace version in tag
+
+        :return: tag
+        :rtype: str
+        """
+        if version:
+            return version + tag
+        return tag

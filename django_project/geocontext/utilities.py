@@ -1,13 +1,10 @@
 from decimal import Decimal
 import logging
-from xml.dom import minidom
-import xml.etree.ElementTree as ET
 
 from django.contrib.gis.geos import (
     GEOSGeometry, Point, LineString, LinearRing, Polygon,
     MultiPoint, MultiLineString, MultiPolygon
 )
-from django.contrib.gis.gdal.error import GDALException
 
 logger = logging.getLogger(__name__)
 
@@ -65,17 +62,6 @@ def convert_2d_to_3d(geometry_2d: GEOSGeometry) -> GEOSGeometry:
         raise Exception('Not supported geometry')
 
     return geometry_3d
-
-
-def tag_with_version(tag: str, version: str) -> str:
-    """ Replace version in tag
-
-    :return: tag
-    :rtype: str
-    """
-    if version:
-        return version + tag
-    return tag
 
 
 def convert_coordinate(point, srid_target: int) -> Point:
@@ -195,80 +181,3 @@ def get_bbox(point: Point, precision: float = 0.0001) -> str:
 
     bbox = [bbox_min.x, bbox_min.y, bbox_max.x, bbox_max.y]
     return ','.join([str(i) for i in bbox])
-
-
-def parse_gml_geometry(gml_string, tag_name: str = 'qgs:geometry') -> GEOSGeometry:
-    """Parse geometry from gml document.
-
-    :param gml_string: String that represent full gml document.
-    :type gml_string: unicode
-
-    :param tag_name: gml tag
-    :type tag_name: str
-
-    :returns: GEOGeometry from the gml document, the first one if there are
-        more than one.
-    :rtype: GEOSGeometry
-    """
-    try:
-        xmldoc = minidom.parseString(gml_string)
-    except Exception as e:
-        logger.error(f'Could not parse GML string: {e}')
-        return None
-    try:
-        if tag_name == 'qgs:geometry':
-            geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
-            geometry_gml_dom = geometry_dom.childNodes[1]
-            return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
-        else:
-            tag_name = tag_name.split(':')[0] + ':' + 'geom'
-            geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
-            geometry_gml_dom = geometry_dom.childNodes[0]
-            return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
-
-    except IndexError:
-        logger.error('No geometry found')
-        return None
-    except GDALException:
-        logger.error('GDAL error')
-        return None
-
-
-def find_geometry_in_xml(content: str) -> tuple:
-    """Find geometry in xml string
-
-    :param content: xml content
-    :type content: str
-    :return: geometry name and geometry type
-    :rtype: tuple
-    """
-    content_parsed = ET.fromstring(content)
-    version = None
-    try:
-        content_parsed.tag.split('}')[1]
-        version = content_parsed.tag.split('}')[0] + '}'
-    except IndexError:
-        pass
-    geometry_name, geometry_type = None, None
-    try:
-        complex_type = content_parsed.find(
-            tag_with_version('complexType', version))
-        complex_content = complex_type.find(
-            tag_with_version('complexContent', version))
-        extension = complex_content.find(
-            tag_with_version('extension', version))
-        sequences = extension.find(
-            tag_with_version('sequence', version))
-        for sequence in sequences:
-            try:
-                if 'gml' in sequence.attrib['type']:
-                    geometry_name = sequence.attrib['name']
-                    geometry_type = sequence.attrib['type'].replace(
-                        'gml:', '').replace('PropertyType', '')
-            except KeyError:
-                continue
-        pass
-    except Exception as e:
-        logging.exception(e)
-        pass
-    return geometry_name, geometry_type
