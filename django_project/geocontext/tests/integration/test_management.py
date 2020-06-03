@@ -6,7 +6,7 @@ from django.test import TestCase
 from base.management.commands.utilities import import_data, delete_data
 
 
-class TestGeoContextView(TestCase):
+class TestLoadGeocontext(TestCase):
     """Test for geocontext view."""
 
     def tearDown(self):

@@ -184,7 +184,7 @@ class CSRUtils():
                     degrees, minutes, seconds = parse_dms(coord)
                     coord_dd = dms_dd(degrees, minutes, seconds)
                 except ValueError:
-                    raise ValueError('Coordinate parse failed: {coord}. Require DD/DMS.')
+                    raise ValueError(f"Coord parse for {self.csr_key} failed: {coord}.")
             setattr(self, coord_attr_name, coord_dd)
 
         # Parse srid and create point in crs srid
@@ -207,7 +207,7 @@ class CSRUtils():
             try:
                 self.point = convert_coordinate(self.point, self.srid)
             except SRSException:
-                raise ValueError(f"SRID: '{self.srid_in}' not valid")
+                raise ValueError(f"SRID: '{self.srid_in}' not valid for {self.csr_key}")
 
     def retrieve_value(self) -> bool:
         """Load context value. All exception logging / null values handled here.
@@ -225,10 +225,10 @@ class CSRUtils():
             elif self.query_type == ServiceDefinitions.PLACENAME:
                 self.fetch_placename()
             else:
-                LOGGER.error(f"'{self.query_type}' not implimented")
+                LOGGER.error(f"'{self.query_type}' not implimented for {self.csr_key}")
                 self.value = None
         except Exception as e:
-            LOGGER.error(f"'{self.csr_key}' url failed: {self.cache_url} with: {e}")
+            LOGGER.error(f"{self.cache_url} failed for: {self.csr_key} with: {e}")
             self.value = None
 
     def request_content(self) -> requests:
@@ -416,7 +416,7 @@ class CSRUtils():
                     continue
             pass
         except Exception as e:
-            LOGGER.error(f"Could not find geometry in xml: {e}")
+            LOGGER.error(f"Could not find geometry in xml for {self.csr_key} with {e}")
             pass
         return geometry_name, geometry_type
 
@@ -437,7 +437,7 @@ class CSRUtils():
         try:
             xmldoc = minidom.parseString(gml_string)
         except Exception as e:
-            LOGGER.error(f'Could not parse GML string: {e}')
+            LOGGER.error(f"Could not parse GML string for: {self.csr_key} with {e}")
             return None
         try:
             if tag_name == 'qgs:geometry':
@@ -451,10 +451,10 @@ class CSRUtils():
                 return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
 
         except IndexError:
-            LOGGER.error('No geometry found')
+            LOGGER.error(f"No geometry found for: {self.csr_key}")
             return None
         except GDALException:
-            LOGGER.error('GDAL error')
+            LOGGER.error(f"GDAL error for: {self.csr_key}")
             return None
 
     def tag_with_version(self, tag: str, version: str) -> str:

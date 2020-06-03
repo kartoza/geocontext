@@ -80,6 +80,9 @@ target/
 #PyCharm
 .idea
 
+#Vscode
+.vscode
+
 # Virtual env
 venv
 

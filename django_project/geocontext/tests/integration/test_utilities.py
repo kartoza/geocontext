@@ -8,8 +8,6 @@ from geocontext.models.cache import Cache
 from geocontext.models.utilities import (
     create_cache,
     CSRUtils,
-    get_csr,
-    parse_gml_geometry,
     retrieve_external_csr,
     UtilArg
 )
@@ -21,31 +19,8 @@ test_data_directory = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), '../data')
 
 
-@patch(get_csr)
+@patch.object(CSRUtils, 'get_csr')
 class TestCRSUtils(TestCase):
-    """Test CSR models."""
-
-    def test_parse_geometry_gml_qgis(self):
-        """Test parse_gml_geometry for wfs from qgis server."""
-        gml_file_path = os.path.join(test_data_directory, 'wfs.xml')
-        self.assertTrue(os.path.exists(gml_file_path))
-        with open(gml_file_path) as file:
-            gml_string = file.read()
-            geom = parse_gml_geometry(gml_string)
-        self.assertIsNotNone(geom)
-        self.assertTrue(geom.valid)
-        self.assertEqual(geom.geom_type, 'Polygon')
-
-    def test_parse_geometry_gml_workspace(self):
-        """Test parse_gml_geometry with workspace"""
-        gml_file_path = os.path.join(test_data_directory, 'wfs_geoserver.xml')
-        self.assertTrue(os.path.exists(gml_file_path))
-        with open(gml_file_path) as file:
-            gml_string = file.read()
-            geom = parse_gml_geometry(gml_string, tag_name='kartoza:test')
-        self.assertIsNotNone(geom)
-        self.assertTrue(geom.valid)
-        self.assertEqual(geom.geom_type, 'MultiPolygon')
 
     def test_retrieve_value1(self, mock_get_csr):
         """Test retrieving value from a point with same CRS."""
@@ -295,3 +270,43 @@ class TestCRSUtils(TestCase):
 
         self.assertIsNotNone(value)
         self.assertEqual('746.0', value)
+
+
+class TestGeoContextView(TestCase):
+    """Test for geocontext view."""
+
+    def setUp(self):
+        """Setup test data."""
+        test_geocontext_file = os.path.join(
+            test_data_directory, 'test_geocontext.json')
+        import_data(test_geocontext_file)
+        pass
+
+    def tearDown(self):
+        """Delete all service registry data."""
+        csr_lisr = CSR.objects.all()
+        for csr in csr_lisr:
+            csr.delete()
+
+    def test_cache_retrieval(self):
+        """Test for retrieving from service registry and cache."""
+        x = 27.8
+        y = -32.1
+        csr_key = 'quaternary_catchment_area'
+
+        start_direct = datetime.now()
+        csr_util = CSRUtils(csr_key, x, y)
+        retrieve_cache(csr_util)
+
+        end_direct = datetime.now()
+
+        start_cache = datetime.now()
+        retrieve_cache(csr_util)
+        end_cache = datetime.now()
+
+        duration_direct = end_direct - start_direct
+        duration_cache = end_cache - start_cache
+        direct_time = duration_direct.total_seconds()
+        cache_time = duration_cache.total_seconds()
+        message = f'Direct: {direct_time:.5f}. Cache: {cache_time:.5f}'
+        self.assertGreater(duration_direct, duration_cache, message)
