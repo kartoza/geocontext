@@ -1,15 +1,11 @@
-# coding=utf-8
-"""Test views."""
-
 from datetime import datetime
 import os
 
 from django.test import TestCase
 
-from geocontext.models.context_service_registry import ContextServiceRegistry
-
-from geocontext.models.utilities import CSRUtils
 from base.management.commands.utilities import import_data
+from geocontext.models.csr import CSR
+from geocontext.models.utilities import CSRUtils, retrieve_cache
 
 test_data_directory = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), 'data')
@@ -27,9 +23,9 @@ class TestGeoContextView(TestCase):
 
     def tearDown(self):
         """Delete all service registry data."""
-        service_registries = ContextServiceRegistry.objects.all()
-        for service_registry in service_registries:
-            service_registry.delete()
+        csr_lisr = CSR.objects.all()
+        for csr in csr_lisr:
+            csr.delete()
 
     def test_cache_retrieval(self):
         """Test for retrieving from service registry and cache."""
@@ -39,16 +35,17 @@ class TestGeoContextView(TestCase):
 
         start_direct = datetime.now()
         csr_util = CSRUtils(csr_key, x, y)
-        csr_util.retrieve_context_cache()
+        retrieve_cache(csr_util)
 
         end_direct = datetime.now()
 
         start_cache = datetime.now()
-        csr_util.retrieve_context_cache()
+        retrieve_cache(csr_util)
         end_cache = datetime.now()
 
         duration_direct = end_direct - start_direct
         duration_cache = end_cache - start_cache
-        message = 'Direct: %.5f. Cache: %.5f' % (
-            duration_direct.total_seconds(), duration_cache.total_seconds())
+        direct_time = duration_direct.total_seconds()
+        cache_time = duration_cache.total_seconds()
+        message = f'Direct: {direct_time:.5f}. Cache: {cache_time:.5f}'
         self.assertGreater(duration_direct, duration_cache, message)

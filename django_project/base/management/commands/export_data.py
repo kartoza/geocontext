@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Management command to export GeoContext data to JSON file."""
-
 import os
 
 from django.core.management.base import BaseCommand

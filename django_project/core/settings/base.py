@@ -1,7 +1,3 @@
-# coding=utf-8
-"""
-core.settings.base
-"""
 # Django settings for geocontext project.
 
 from .utils import absolute_path
@@ -39,7 +35,7 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-# Base directory, refers to /home/web/django_project/core
+# Base directory, refers to django_project/core
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.

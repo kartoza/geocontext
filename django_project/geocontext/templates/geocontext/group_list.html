@@ -1,36 +1,35 @@
 {% extends 'main_base.html' %}
 
 {% block title %}
-    Context Service Registry
+    Geocontext Group
 {% endblock %}
 
 {% block body_content %}
     <div class="row justify-content-center">
         <div class="col-10">
-            <h1>Context Service Registries</h1>
+            <h1>Geocontext Groups</h1>
         </div>
     </div>
     <div class="row justify-content-center">
       <div class="col-3">
         <div class="list-group" id="list-tab" role="tablist">
-            {% for csr in csr_list %}
+            {% for group in group_list %}
                 <a class="list-group-item list-group-item-action
-                    {% if csr == csr_list.0 %}active{% endif %}"
-                   id="list-{{ csr.key }}-list" data-toggle="list"
-                   href="#list-{{ csr.key }}"
-                   role="tab" aria-controls="home">{{ csr.name }}</a>
-
+                    {% if group == group_list.0 %}active{% endif %}"
+                   id="list-{{ group.key }}-list" data-toggle="list"
+                   href="#list-{{ group.key }}"
+                   role="tab" aria-controls="home">{{ group.name }}</a>
             {% endfor %}
         </div>
       </div>
       <div class="col-7">
         <div class="tab-content" id="nav-tabContent">
-            {% for csr in csr_list %}
+            {% for group in group_list %}
                 <div class="tab-pane fade
-                    {% if csr == csr_list.0 %}show active{% endif %}"
-                     id="list-{{ csr.key }}" role="tabpanel"
-                     aria-labelledby="list-{{ csr.key }}-list">
-                    {% include "geocontext/includes/context_service_registry_content.html" %}
+                    {% if group == group_list.0 %}show active{% endif %}"
+                     id="list-{{ group.key }}" role="tabpanel"
+                     aria-labelledby="list-{{ group.key }}-list">
+                    {% include "geocontext/includes/group_content.html" %}
                 </div>
             {% endfor %}
         </div>

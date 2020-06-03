@@ -32,8 +32,6 @@ The latest source code is available at
 [![Code Health](https://landscape.io/github/kartoza/geocontext/develop/landscape.svg?style=flat)](https://landscape.io/github/kartoza/geocontext/develop)
 
 
-
-
 ## Quick Installation Guide
 
 For deployment we use [docker](http://docker.com) so you need to have docker
@@ -47,7 +45,6 @@ cp btsync-db.env.EXAMPLE btsync-db.env
 cp btsync-media.env.EXAMPLE btsync-media.env
 make run
 ```
-
 
 So as to create your admin account:
 ```
@@ -80,6 +77,28 @@ After you have working geocontext instance, you can then check the available
 API from the API documentation links (you can find it in the main page) or 
 see the content and the hierarchy of context service registry (you can also 
 find the link in the main page)
+
+
+## Quickstart with Docker and VSCode
+
+An easy way to set up a locally development environment is with Docker and VSCode.
+
+1. For local DB access first uncomment the ports section in the db app in the docker-compose.yml 
+2. For river-name specific queries you should add the river database details to the uwsgi environment
+  (RIVER_DATABASE_USER, RIVER_DATABASE_HOST, RIVER_DATABASE_PASSWORD, RIVER_DATABASE_NAME)
+3. Use setup-dev to build the production and development containers, create superuser,
+and import default registries.
+```
+make setup-dev
+```
+4. Geocontext should now be running at localhost.
+5. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
+7. Attach a VSCode session by right clicking on the running geocontext_devweb container in the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension
+6. Now we can get into the running containers to run management commands, run another server at another port, debug etc.
+7. Tests can be run using the development environment using
+```
+make test
+```
 
 
 ## Participation

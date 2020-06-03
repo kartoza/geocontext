@@ -1,30 +1,28 @@
-#--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
-# Note this base image is based on debian
 FROM python:3.8-buster
 
-LABEL maintainer="Dimas Ciputra<dimas@kartoza.com>"
 LABEL maintainer="Andre Theron<andre.theron@kartoza.com>"
 
 RUN export DEBIAN_FRONTEND=noninteractive
 ENV DEBIAN_FRONTEND noninteractive
 RUN dpkg-divert --local --rename --add /sbin/initctl
 
-RUN apt-get update -y && \
-    apt-get install -y python3-pip \
+RUN apt-get update -y && apt-get install -y \
+    binutils gdal-bin \
+    libproj-dev \
+    libgdal-dev \
     python3-gdal \
     python3-geoip \
-    python3-setuptools \ 
-    uwsgi-plugin-python3
-
+    python3-setuptools \
+    uwsgi-plugin-python3 \
+    && rm -rf /var/lib/apt/lists/*
+ 
 ADD REQUIREMENTS.txt /REQUIREMENTS.txt
-RUN pip install -r /REQUIREMENTS.txt
+RUN pip3 install --upgrade pip && pip3 install -r /REQUIREMENTS.txt
 
 ADD uwsgi.conf /uwsgi.conf
 
-# Open port 8080 as we will be running our uwsgi socket on that
 EXPOSE 8080
 
-#USER www-data
-WORKDIR /home/web/django_project
+WORKDIR /usr/src/geocontext
 
 CMD ["uwsgi", "--ini", "/uwsgi.conf"]

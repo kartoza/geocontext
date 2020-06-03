@@ -1,39 +1,37 @@
-# coding=utf-8
-"""Factories for building model instances for testing."""
-
 import factory
-from geocontext.models.context_service_registry import ContextServiceRegistry
-from geocontext.models.context_group_services import ContextGroupServices
-from geocontext.models.context_group import ContextGroup
+
+from geocontext.models.csr import CSR
+from geocontext.models.group import Group
+from geocontext.models.group_services import GroupServices
+from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
-from geocontext.models.context_collection import ContextCollection
 
 
-class ContextServiceRegistryF(factory.DjangoModelFactory):
+class CSRF(factory.DjangoModelFactory):
     class Meta:
-        model = ContextServiceRegistry
+        model = CSR
 
     key = factory.sequence(
-        lambda n: u'TestCSRKey%s' % n)
+        lambda n: f'TestCSRKey{n}')
     name = factory.sequence(
-        lambda n: u'Test CSR name %s' % n)
+        lambda n: f'Test CSR name {n}')
     description = factory.sequence(
-        lambda n: u'Test CSR description %s' % n)
+        lambda n: f'Test CSR description {n}')
 
 
-class ContextGroupServicesF(factory.DjangoModelFactory):
+class GroupServicesF(factory.DjangoModelFactory):
     class Meta:
-        model = ContextGroupServices
+        model = GroupServices
 
 
-class ContextGroupF(factory.DjangoModelFactory):
+class GroupF(factory.DjangoModelFactory):
     class Meta:
-        model = ContextGroup
+        model = Group
 
     key = factory.sequence(
-        lambda n: u'TestContextGroupKey%s' % n)
+        lambda n: f'TestGroupKey{n}')
     name = factory.sequence(
-        lambda n: u'Test Context Group name %s' % n)
+        lambda n: f'Test Group name {n}')
 
 
 class CollectionGroupsF(factory.DjangoModelFactory):
@@ -41,11 +39,11 @@ class CollectionGroupsF(factory.DjangoModelFactory):
         model = CollectionGroups
 
 
-class ContextCollectionF(factory.DjangoModelFactory):
+class CollectionF(factory.DjangoModelFactory):
     class Meta:
-        model = ContextCollection
+        model = Collection
 
     key = factory.sequence(
-        lambda n: u'TestContextCollectionKey%s' % n)
+        lambda n: f'TestCollectionKey{n}')
     name = factory.sequence(
-        lambda n: u'Test Context Collection name %s' % n)
+        lambda n: f'Test Collection name {n}')

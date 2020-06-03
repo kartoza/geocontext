@@ -1,6 +1,3 @@
-# coding=utf-8
-"""Management command to delete all data."""
-
 from django.core.management.base import BaseCommand
 import logging
 from .utilities import delete_data

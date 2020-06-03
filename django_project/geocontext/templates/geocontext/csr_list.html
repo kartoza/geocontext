@@ -1,0 +1,40 @@
+{% extends 'main_base.html' %}
+
+{% block title %}
+    Geocontext Service Registry
+{% endblock %}
+
+{% block body_content %}
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <h1>Geocontext Service Registries</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-3">
+        <div class="list-group" id="list-tab" role="tablist">
+            {% for csr in csr_list %}
+                <a class="list-group-item list-group-item-action
+                    {% if csr == csr_list.0 %}active{% endif %}"
+                   id="list-{{ csr.key }}-list" data-toggle="list"
+                   href="#list-{{ csr.key }}"
+                   role="tab" aria-controls="home">{{ csr.name }}</a>
+
+            {% endfor %}
+        </div>
+      </div>
+      <div class="col-7">
+        <div class="tab-content" id="nav-tabContent">
+            {% for csr in csr_list %}
+                <div class="tab-pane fade
+                    {% if csr == csr_list.0 %}show active{% endif %}"
+                     id="list-{{ csr.key }}" role="tabpanel"
+                     aria-labelledby="list-{{ csr.key }}-list">
+                    {% include "geocontext/includes/csr_content.html" %}
+                </div>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% include "includes/pagination.html" %}
+{% endblock body_content %}

@@ -1,4 +1,3 @@
-# coding=utf-8
 import factory
 
 from django.contrib.auth.models import User
@@ -9,10 +8,10 @@ class UserF(factory.DjangoModelFactory):
     class Meta:
         model = User
 
-    username = factory.Sequence(lambda n: "username%s" % n)
-    first_name = factory.Sequence(lambda n: "first_name%s" % n)
-    last_name = factory.Sequence(lambda n: "last_name%s" % n)
-    email = factory.Sequence(lambda n: "email%s@example.com" % n)
+    username = factory.Sequence(lambda n: f"username{n}")
+    first_name = factory.Sequence(lambda n: f"first_name{n}")
+    last_name = factory.Sequence(lambda n: f"last_name{n}")
+    email = factory.Sequence(lambda n: f"email{n}@example.com")
     password = ''
     is_staff = False
     is_active = True

@@ -1,15 +1,12 @@
-# coding=utf-8
-"""Serializer for context service registry."""
-
 from rest_framework import serializers
-from geocontext.models.context_service_registry import ContextServiceRegistry
+from geocontext.models.csr import CSR
 
 
-class ContextServiceRegistrySerializer(serializers.ModelSerializer):
+class CSRSerializer(serializers.ModelSerializer):
     """Serializer class for Context Service Registry."""
 
     class Meta:
-        model = ContextServiceRegistry
+        model = CSR
         fields = (
             'key',
             'name',

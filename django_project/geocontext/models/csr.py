@@ -1,5 +1,3 @@
-# coding=utf-8
-"""Context Service Registry Model."""
 import logging
 
 from django.db import models
@@ -11,7 +9,7 @@ from geocontext.utilities import ServiceDefinitions
 LOGGER = logging.getLogger(__name__)
 
 
-class ContextServiceRegistry(models.Model):
+class CSR(models.Model):
     """Context Service Registry"""
     key = models.CharField(
         help_text=_('Key of Context Service.'),
@@ -81,7 +79,6 @@ class ContextServiceRegistry(models.Model):
         choices=ServiceDefinitions.QUERY_TYPES,
     )
 
-    # I will try to use CharField first, if not I will use django-regex-field
     result_regex = models.CharField(
         help_text=_('Regex to retrieve the desired value.'),
         blank=False,
@@ -138,6 +135,15 @@ class ContextServiceRegistry(models.Model):
         null=True,
         max_length=1000,
     )
+
+    resolution = models.IntegerField(
+        help_text=_('Base data resolution of the source data in meter.'),
+        blank=True,
+        null=True
+    )
+
+    class Meta:
+        ordering = ['key']
 
     def __str__(self):
         return self.name

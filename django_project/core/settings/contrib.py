@@ -1,7 +1,3 @@
-# coding=utf-8
-"""
-core.settings.contrib
-"""
 from .base import *  # noqa
 
 STOP_WORDS = (
@@ -57,7 +53,7 @@ DJANGO_EASY_AUDIT_WATCH_AUTH_EVENTS = True
 DJANGO_EASY_AUDIT_WATCH_REQUEST_EVENTS = True
 
 DJANGO_EASY_AUDIT_UNREGISTERED_CLASSES_EXTRA = (
-    'geocontext.ContextCache',
+    'geocontext.Cache',
 )
 
 SOCIALACCOUNT_PROVIDERS = {

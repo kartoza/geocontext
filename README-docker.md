@@ -1,8 +1,5 @@
 # Managing your docker deployed site
 
-**Note:** This documentation is intentionally generic so that it can
-be copy-pasted between projects - do not put project specific details here.
-
 This document explains how to do various sysadmin related tasks when your
 site has been deployed under docker. Three deployment modes are supported:
 
@@ -10,11 +7,7 @@ site has been deployed under docker. Three deployment modes are supported:
   your production environment in core.settings.prod_docker - this
   DJANGO_SETTINGS_MODULE is used when running in production mode.
 * **development**: Configure your development environment in core.settings.dev_docker -
-  this DJANGO_SETTINGS_MODULE is used when running in production mode. Please see
-  README-dev.md for more information on setting up a developer environment.
-
-**Note:** We really recommend that you use docker 1.8 or greatr so that you
-  can take advantage of the exec command as well as other newer features.
+  Please see README-dev.md for more information on setting up a developer environment.
 
 ## Build your docker images and run them
 
@@ -81,11 +74,9 @@ e.g. ``make web``
 
 #### Arbitrary commands
 
-Running arbitrary management commands is easy (assuming you have docker >= 1.3)
-e.g.:
 
 ```
-docker exec foo_web_1 /usr/local/bin/python /home/web/django_project/manage.py --help
+docker exec foo_web_1 /usr/local/bin/python /usr/src/geocontext/django_project/manage.py --help
 ```
 
 **Note:** rm should not destroy any data since it only removes containers
@@ -118,5 +109,5 @@ we assume there is a dedicated server for deployment.**
 # Configuration options
 
 You can configure the base port used and various other options like the
-image organisation namespace and postgis user/pass by editing the ``docker-compose.yml``
+image organization namespace and postgis user/pass by editing the ``docker-compose.yml``
 files.
