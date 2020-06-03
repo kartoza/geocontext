@@ -18,7 +18,7 @@ RUN apt-get update -y && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
  
 ADD REQUIREMENTS.txt /REQUIREMENTS.txt
-RUN pip3 install --upgrade pip && pip install -r /REQUIREMENTS.txt
+RUN pip3 install --upgrade pip && pip3 install -r /REQUIREMENTS.txt
 
 ADD uwsgi.conf /uwsgi.conf
 
