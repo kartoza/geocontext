@@ -277,8 +277,8 @@ class CSRUtils():
         else:
             self.cache_url = f'{self.url}?{query_dict.urlencode()}'
 
-        content = self.request_content()
-        geo_name, geo_type = self.find_geometry_in_xml(content)
+        describe_content = self.request_content()
+        geo_name, geo_type = self.find_geometry_in_xml(describe_content)
 
         if 'Polygon' in geo_type:
             layer_filter = (
