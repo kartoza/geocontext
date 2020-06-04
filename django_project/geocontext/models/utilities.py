@@ -12,7 +12,6 @@ import xml.etree.ElementTree as ET
 from django.contrib.gis.gdal.error import GDALException, SRSException
 from django.contrib.gis.geos import GEOSGeometry, Point
 from django.http import QueryDict
-from owslib.wms import WebMapService
 
 from geocontext.models.csr import CSR
 from geocontext.models.cache import Cache
@@ -75,6 +74,7 @@ def retrieve_cache(csr_util) -> Cache:
     :returns: cache on None
     :rtype: cache or None
     """
+    return
     caches = Cache.objects.filter(csr=get_csr(csr_util.csr_key))
     for cache in caches:
         if cache.geometry and cache.geometry.contains(csr_util.point):
@@ -231,37 +231,59 @@ class CSRUtils():
             LOGGER.error(f"{self.cache_url} failed for: {self.csr_key} with: {e}")
             self.value = None
 
-    def request_content(self) -> requests:
-        """Get request content from cache url in request session
+    def request_content(self, url: str) -> requests:
+        """Get request content from url in request session
+
+        :param url: Url
+        :type url: str
 
         :return: URL to do query.
         :rtype: unicode
         """
         session = get_session()
-        with session.get(self.cache_url) as response:
+        with session.get(url) as response:
             if response.status_code == 200:
                 return response.content
 
     def fetch_wms(self):
         """Fetch WMS value
         """
-        wms = WebMapService(self.url, self.service_version)
-        response = wms.getfeatureinfo(
-            layers=[self.layer_typename],
-            bbox=get_bbox(self.point, string=False),
-            size=[101, 101],
-            xy=[50, 50],
-            srs='EPSG:' + str(self.point.srid),
-            info_format='application/vnd.ogc.gml'
-        )
-        content = response.read()
-        xmldoc = minidom.parseString(content)
-        value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
-        self.value = value_dom.childNodes[0].nodeValue
-        self.cache_url = response.geturl()
+        parameters = {
+            "SERVICE": self.query_type,
+            "LAYERS": self.layer_typename,
+            "QUERY_LAYERS": self.layer_typename,
+            "BBOX": get_bbox(self.point),
+            "WIDTH": 101,
+            "HEIGHT": 101,
+            'FORMAT': 'image/png',
+            "INFO_FORMAT": 'application/json',
+            "FEATURE_COUNT": 50
+        }
+        if self.service_version in ['1.0.0', '1.1.0']:
+            parameters['WMTVER'] = self.service_version
+            parameters['REQUEST'] = 'feature_info'
+            parameters['SRS'] = 'EPSG:' + str(self.point.srid)
+            parameters['X'] = 50
+            parameters['Y'] = 50
+        else:
+            parameters['VERSION'] = self.service_version
+            parameters['REQUEST'] = 'GetFeatureInfo'
+            parameters['CRS'] = 'EPSG:' + str(self.point.srid)
+            parameters['I'] = 50
+            parameters['j'] = 50
+
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update(parameters)
+        if '?' in self.url:
+            self.cache_url = f'{self.url}&{query_dict.urlencode()}'
+        else:
+            self.cache_url = f'{self.url}?{query_dict.urlencode()}'
+
+        getmap_content = self.request_content(self.cache_url)
+        self.value = getmap_content["Features"][0][self.result_regex]
 
     def fetch_wfs(self):
-        """Fetch WFS value
+        """Fetch WFS value - use intersect if polygon type else buffer
         """
         parameters = {
             'SERVICE': 'WFS',
@@ -276,8 +298,8 @@ class CSRUtils():
         else:
             self.cache_url = f'{self.url}?{query_dict.urlencode()}'
 
-        describe_content = self.request_content()
-        geo_name, geo_type = self.find_geometry_in_xml(describe_content)
+        describe_content = self.request_content(self.cache_url)
+        geo_name, geo_type = self.parse_geometry_xml(describe_content)
 
         if 'Polygon' in geo_type:
             layer_filter = (
@@ -306,7 +328,7 @@ class CSRUtils():
                 self.cache_url = f'{self.url}?{query_dict.urlencode()}'
             if ':' not in self.layer_typename:
                 self.cache_url += f'&SRSNAME={self.point.srid}'
-            content = self.request_content()
+            content = self.request_content(self.cache_url)
 
         else:
 
@@ -327,14 +349,14 @@ class CSRUtils():
             if ':' not in self.layer_typename:
                 self.cache_url += f'&SRSNAME={self.point.srid}'
             self.cache_url += '&BBOX=' + bbox
-            content = self.request_content()
+            content = self.request_content(self.cache_url)
 
         xmldoc = minidom.parseString(content)
         value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
         self.value = value_dom.childNodes[0].nodeValue
 
         # Add new geometry only if found - otherwise keep query point in cache
-        new_geometry = self.parse_gml_geometry(content, self.layer_typename)
+        new_geometry = self.parse_geometry_gml(content, self.layer_typename)
         if new_geometry is not None:
             self.geometry = new_geometry
             if not self.geometry.srid:
@@ -359,7 +381,7 @@ class CSRUtils():
         else:
             self.cache_url = f'{self.url}/identify?{query_dict.urlencode()}'
             self.cache_url += f'&mapExtent={bbox}'
-        content = self.request_content()
+        content = self.request_content(self.cache_url)
         json_document = json.loads(content)
         self.value = json_document['results'][0][self.result_regex]
 
@@ -377,11 +399,11 @@ class CSRUtils():
             self.cache_url = f'{self.url}&{query_dict.urlencode()}'
         else:
             self.cache_url = f'{self.url}?{query_dict.urlencode()}'
-        content = self.request_content()
+        content = self.request_content(self.cache_url)
         json_document = json.loads(content)
         self.value = json_document['geonames'][0][self.result_regex]
 
-    def find_geometry_in_xml(self, content: str) -> tuple:
+    def parse_geometry_xml(self, content: str) -> tuple:
         """Find geometry in xml string
 
         :param content: xml content
@@ -420,7 +442,7 @@ class CSRUtils():
             pass
         return geometry_name, geometry_type
 
-    def parse_gml_geometry(self, gml_string: str, tag_name: str = 'qgs:geometry') \
+    def parse_geometry_gml(self, gml_string: str, tag_name: str = 'qgs:geometry') \
             -> GEOSGeometry:
         """Parse geometry from gml document.
 
