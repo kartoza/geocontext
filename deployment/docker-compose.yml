@@ -74,7 +74,7 @@ db:
 dbbackups:
   # Note you cannot scale if you use container_name
   container_name: geocontext-db-backups
-  image: kartoza/pg-backup:12.1
+  image: kartoza/pg-backup:12.0
   hostname: pg-backups
   volumes:
     - ./backups:/backups
