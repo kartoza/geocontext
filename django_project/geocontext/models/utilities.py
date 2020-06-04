@@ -258,18 +258,15 @@ class CSRUtils():
             "BBOX": get_bbox(self.point),
             "WIDTH": 101,
             "HEIGHT": 101,
-            'FORMAT': 'image/png',
             "INFO_FORMAT": 'application/json',
-            "FEATURE_COUNT": 50
+            "FEATURE_COUNT": 10
         }
         if self.service_version in ['1.0.0', '1.1.0']:
-            parameters['WMTVER'] = self.service_version
             parameters['REQUEST'] = 'feature_info'
             parameters['SRS'] = 'EPSG:' + str(self.point.srid)
             parameters['X'] = 50
             parameters['Y'] = 50
         else:
-            parameters['VERSION'] = self.service_version
             parameters['REQUEST'] = 'GetFeatureInfo'
             parameters['CRS'] = 'EPSG:' + str(self.point.srid)
             parameters['I'] = 50
@@ -282,8 +279,14 @@ class CSRUtils():
         else:
             self.cache_url = f'{self.url}?{query_dict.urlencode()}'
 
-        getmap_content = self.request_content(self.cache_url)
-        self.value = getmap_content["Features"][0][self.result_regex]
+        response = json.loads(self.request_content(self.cache_url))
+
+        # Result regex contains actual name to look for - but may include ":"
+        try:
+            self.value = response["features"][0]["properties"][self.result_regex]
+        except KeyError:
+            key = self.result_regex.split(":")[1]
+            self.value = response["features"][0]["properties"][key]
 
     def fetch_wfs(self):
         """Fetch WFS value - use intersect if polygon type else buffer

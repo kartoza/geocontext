@@ -29,7 +29,7 @@ class GroupValues(object):
         """Populate GroupValue with service registry values.
         First identify values not in cache.
         Then fetch all external values using threaded CSRUtil.
-        Finally add new values to cache.
+        Finally add new values to cache and to instance to serialize
         Ensures ORM is not touched during threading
         """
         util_arg_list = []
@@ -72,8 +72,8 @@ class CollectionValues(GroupValues):
         """Populate CollectionValue with service registry values.
         First identify values not in cache.
         Then fetch all external values using threaded CSRUtil.
-        Finally add new values to cache.
-        Ensures ORM is not touched during threading
+        Finally add new values to cache and add these to a list of group instances
+        to serialize. Ensures ORM is not touched during threading
         """
         util_arg_list = []
         group_caches = {}
