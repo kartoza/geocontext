@@ -11,7 +11,6 @@ uwsgi:
     - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
     - VIRTUAL_HOST=geocontext.kartoza.com
     - VIRTUAL_PORT=8080
-
   volumes:
     - ../django_project:/usr/src/geocontext
     - ./static:/home/web/static:rw
@@ -75,7 +74,7 @@ db:
 dbbackups:
   # Note you cannot scale if you use container_name
   container_name: geocontext-db-backups
-  image: kartoza/pg-backup:9.6
+  image: kartoza/pg-backup:12.1
   hostname: pg-backups
   volumes:
     - ./backups:/backups
