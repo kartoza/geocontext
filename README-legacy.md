@@ -1,4 +1,4 @@
-# Developer Documentation
+# Additional Developer Documentation
 
 ## Application architecture under docker
 
@@ -27,18 +27,14 @@ This image extends the production one, adding ssh to it. You must
 have built the production one first by following the "Quick Installation Guide"!
 When it's done, you can continue with this command:
 
-Linux and MacOS:
-
 ```
-make build-devweb
-make devweb
-```
-
-Windows:
-
-```
-make-devbuild.bat
-make-devweb.bat
+cd deployment
+make build
+make permissions
+make web
+# Wait a few seconds for the DB to start before to do the next command
+make migrate
+make collectstatic
 ```
 
 ### Create a remote interpreter in pycharm
@@ -114,6 +110,57 @@ I made a general overview screencast describing this process here:
 
 [![YouTube Screencast](http://img.youtube.com/vi/n-wwp17MqhU/0.jpg)](https://www.youtube.com/watch?v=n-wwp17MqhU "YouTube Screencast")
 
+# Managing your docker deployed site
+
+This document explains how to do various sysadmin related tasks when your
+site has been deployed under docker. Two deployment modes are supported:
+
+* **production**: no debug etc is enabled, has its own discrete database. Configure
+  your production environment in core.settings.prod_docker - this
+  DJANGO_SETTINGS_MODULE is used when running in production mode.
+* **development**: Configure your development environment in core.settings.dev_docker -
+  Please see README-dev.md for more information on setting up a developer environment.
+
+## Build your docker images and run them
+
+### Production
+
+You can simply run the provided Makefile commands and it will build and deploy the docker
+images for you in **production mode**.  Use `make help` to see usage
+
+```
+cd deployment
+make setup-dev
+```
+
+## Setup nginx reverse proxy
+
+You should create a new nginx virtual host - please see
+``*-nginx.conf`` in the deployment directory of the source for an example.
+
+Simply add the example file (symlinking is best) to your ``/etc/nginx/sites-enabled/`` directory
+and then modify the contents to match your domain. Then use
+
+```
+sudo nginx -t
+```
+
+To verify that your configuration is correct and then reload / restart nginx
+e.g.
+
+```
+sudo /etc/init.d/nginx restart
+```
+
+**Note that the default configuration runs the service directly on port 80 since
+we assume there is a dedicated server for deployment.**
+
+# Configuration options
+
+You can configure the base port used and various other options like the
+image organization namespace and postgis user/pass by editing the ``docker-compose.yml``
+files.
+
 ## Developer FAQ
 
 **Q**: I get ``ImportError: Could not import settings core.settings.dev_docker``
@@ -124,5 +171,3 @@ have permissions to read it as the user you are running ``runserver`` as. A
 common cause of this is if you are running the server in both production
 mode and developer mode on the same host. Simply remove the file or change
 ownership permissions so that you can read/write it.
-
-
