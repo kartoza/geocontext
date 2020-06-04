@@ -128,7 +128,9 @@ class CSRUtils():
     """Threadsafe context service registry model object + utility methods.
     """
     def __init__(self, csr_key: str, x: float, y: float, srid_in: int = 4326):
-        """Load threadsafe csr object. Transform user query to CSR geometry
+        """Load object. Transform user query to CSR geometry.
+
+        Init method is not threadsafe so should be done before async logic
 
         :param csr_key: csr_key
         :type csr_key: str
