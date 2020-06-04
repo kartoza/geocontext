@@ -52,8 +52,6 @@ should be run from in the ``deployment`` directory.
 * **enable-machine** - 
 * **kill** - kills all running containers. Does not remove them.
 * **logs** - view the logs of all running containers. Note that you can also view individual logs in the deployment/logs directory.
-* **mailerrorlogs** - View the error logs from the mail server.
-* **maillogs** - view the transaction logs from the mail server.
 * **mediasync** - use this from a development or offsite machine. It will rsync all media backups from deployment/media to your offsite machine.
 * **migrate** - run any pending migrations. 
 * **nginx** - builds and runs the nginx container.

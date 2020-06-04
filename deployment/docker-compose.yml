@@ -1,40 +1,3 @@
-#
-# Production server with UWSGI configured to run on port 8080
-# and web configured to run directly on port 80
-#
-# docker-compose build
-# docker-compose up -d web
-#
-# See accompanying Make commands for easy collectstatic etc.
-
-smtp:
-  # Note you cannot scale if you use container_name
-  container_name: geocontext-smtp
-  image: catatnight/postfix
-  hostname: postfix
-  environment:
-    # You could change this to something more suitable
-    - maildomain=kartoza.com
-    - smtp_user=noreply:docker
-  restart: unless-stopped
-
-db:
-  # Note you cannot scale if you use container_name
-  container_name: geocontext-db
-  image: kartoza/postgis:9.6-2.4
-  volumes:
-    #- ./pg/postgres_data:/var/lib/postgresql
-    - ./backups:/backups
-    - ./sql:/sql
-  environment:
-    - USERNAME=docker
-    - PASS=docker
-  restart: unless-stopped
-#  Uncomment the next line to have an access with PGAdmin using localhost and port 25432 on your computer.
-#  Only for development !
-  ports:
-    - "25432:5432"
-
 uwsgi:
   # Note you cannot scale if you use container_name
   container_name: geocontext-uwsgi
@@ -48,6 +11,7 @@ uwsgi:
     - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
     - VIRTUAL_HOST=geocontext.kartoza.com
     - VIRTUAL_PORT=8080
+
   volumes:
     - ../django_project:/usr/src/geocontext
     - ./static:/home/web/static:rw
@@ -55,10 +19,58 @@ uwsgi:
     - ./reports:/home/web/reports
     - ./logs:/var/log/
   links:
-    - smtp:smtp
     - db:db
   restart: on-failure:5
   user: root
+
+# This is the entry point for a development server.
+# Run with --no-deps to run attached to the services
+# from produ environment if wanted
+devweb:
+  # Note you cannot scale if you use container_name
+  container_name: geocontext-dev-web
+  build: docker
+  dockerfile: Dockerfile-dev
+  hostname: uwsgi
+  environment:
+    - DATABASE_NAME=gis
+    - DATABASE_USERNAME=docker
+    - DATABASE_PASSWORD=docker
+    - DATABASE_HOST=db
+    - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
+    - PYTHONPATH=/usr/src/geocontext
+    - VIRTUAL_HOST=geocontext.kartoza.com
+    - VIRTUAL_PORT=8080
+  volumes:
+    - ../django_project:/usr/src/geocontext
+    - ./static:/home/web/static
+    - ./media:/home/web/media
+    - ./reports:/home/web/reports
+    - ./logs:/var/log/
+  links:
+    - db:db
+  ports:
+    # for django test server
+    - "65402:8080"
+    # for ssh
+    - "65403:22"
+
+db:
+  # Note you cannot scale if you use container_name
+  container_name: geocontext-db
+  image: kartoza/postgis:12.1
+  volumes:
+    #- ./pg/postgres_data:/var/lib/postgresql
+    - ./backups:/backups
+    - ./sql:/sql
+  environment:
+    - USERNAME=docker
+    - PASS=docker
+  restart: unless-stopped
+#  Uncomment the next line to have an access with PGAdmin using localhost and port 25432 on your computer.
+#  Only for development !
+#  ports:
+#    - "25432:5432"
 
 dbbackups:
   # Note you cannot scale if you use container_name
@@ -100,39 +112,6 @@ web:
     - "80:8080"
   restart: unless-stopped
 
-# This is the entry point for a development server.
-# Run with --no-deps to run attached to the services
-# from produ environment if wanted
-devweb:
-  # Note you cannot scale if you use container_name
-  container_name: geocontext-dev-web
-  build: docker
-  dockerfile: Dockerfile-dev
-  hostname: uwsgi
-  environment:
-    - DATABASE_NAME=gis
-    - DATABASE_USERNAME=docker
-    - DATABASE_PASSWORD=docker
-    - DATABASE_HOST=db
-    - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
-    - PYTHONPATH=/usr/src/geocontext
-    - VIRTUAL_HOST=geocontext.kartoza.com
-    - VIRTUAL_PORT=8080
-  volumes:
-    - ../django_project:/usr/src/geocontext
-    - ./static:/home/web/static
-    - ./media:/home/web/media
-    - ./reports:/home/web/reports
-    - ./logs:/var/log/
-  links:
-    - smtp:smtp
-    - db:db
-  ports:
-    # for django test server
-    - "65402:8080"
-    # for ssh
-    - "65403:22"
-
 btsync-db:
   # BTSync backups for database dumps
   image: kartoza/btsync
@@ -168,5 +147,3 @@ btsync-media:
     # Do not version control the env file as anyone else could peer it and sync
     # our media backups etc.
     - btsync-media.env
-
-

@@ -14,7 +14,7 @@ from geocontext.models.utilities import (
 
 
 class GroupValues(object):
-    """Class for holding values of context group."""
+    """Class for holding values of context group to be serialized."""
     def __init__(self, x, y, group_key, srid):
         self.x = x
         self.y = y
@@ -35,6 +35,7 @@ class GroupValues(object):
         util_arg_list = []
         group_services = GroupServices.objects.filter(group=self.group).order_by('order')
         for group_service in group_services:
+            # Init CSRUtil and check if it is in cache
             csr_util = CSRUtils(group_service.csr.key, self.x, self.y, self.srid)
             cache = retrieve_cache(csr_util)
 
@@ -47,13 +48,16 @@ class GroupValues(object):
 
         # Parallel request external resources not found locally and add to cache
         if len(util_arg_list) > 0:
+            # Summon parallel requests for external requests
             new_util_arg_list = thread_retrieve_external(util_arg_list)
+
+            # Add new values to cache
             for new_util_arg in new_util_arg_list:
                 self.service_registry_values.append(create_cache(new_util_arg.csr_util))
 
 
 class CollectionValues(GroupValues):
-    """Class for holding values of collection of group values."""
+    """Class for holding values of collection of group values to be serialized."""
     def __init__(self, x, y, collection_key, srid):
         """Initialize method for context collection value."""
         self.x = x
@@ -81,6 +85,7 @@ class CollectionValues(GroupValues):
             group = get_object_or_404(Group, key=collection_group.group.key)
             group_services = GroupServices.objects.filter(group=group).order_by('order')
             for group_service in group_services:
+                # Init CSRUtil and check if it is in cache
                 csr_util = CSRUtils(group_service.csr.key, self.x, self.y, self.srid)
                 cache = retrieve_cache(csr_util)
 
@@ -94,17 +99,20 @@ class CollectionValues(GroupValues):
                     else:
                         group_caches[group.key] = [cache]
 
-        # Parallel request external resources not in cache to dict with group: [cache]
+
         if len(util_arg_list) > 0:
+            # Summon parallel requests for external requests
             new_util_arg_list = thread_retrieve_external(util_arg_list)
+
             for new_util_arg in new_util_arg_list:
+                # Add new values to cache
                 cache = create_cache(new_util_arg.csr_util)
                 if new_util_arg.group_key in group_caches:
                     group_caches[new_util_arg.group_key].append(cache)
                 else:
                     group_caches[new_util_arg.group_key] = [cache]
 
-        # Init contextgroup add GroupValues
+        # Init contextgroup add GroupValues to be serialized
         for group_key, cache_list in group_caches.items():
             group_values = GroupValues(self.x, self.y, group_key, self.srid)
             for cache in cache_list:

@@ -108,7 +108,7 @@ def retrieve_external_csr(util_arg: namedtuple) -> namedtuple:
     using threadlocal request session if found.
 
     :param namedtuple: (group_key, csr_util)
-    :type util_arg: namedtuple(int, CSRUtils)
+    :type util_arg: namedtuple(str, CSRUtils)
 
     :return: (group_key and CSRUtils)
     :rtype: namedtuple or None
@@ -130,7 +130,7 @@ class CSRUtils():
     def __init__(self, csr_key: str, x: float, y: float, srid_in: int = 4326):
         """Load object. Transform user query to CSR geometry.
 
-        Init method is not threadsafe so should be done before async logic
+        Init method calls ORM so not threadsafe and should be done before async logic
 
         :param csr_key: csr_key
         :type csr_key: str
@@ -157,6 +157,7 @@ class CSRUtils():
         self.value = None
         csr = None
 
+        # Geometry defaults to rounded querypoint - cache hits at least on point
         self.x = x
         self.y = y
         self.srid_in = srid_in
