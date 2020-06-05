@@ -256,21 +256,21 @@ class CSRUtils():
             "LAYERS": self.layer_typename,
             "QUERY_LAYERS": self.layer_typename,
             "BBOX": get_bbox(self.point),
-            "WIDTH": 101,
-            "HEIGHT": 101,
+            "WIDTH": 11,
+            "HEIGHT": 11,
             "INFO_FORMAT": 'application/json',
             "FEATURE_COUNT": 10
         }
         if self.service_version in ['1.0.0', '1.1.0']:
             parameters['REQUEST'] = 'feature_info'
             parameters['SRS'] = 'EPSG:' + str(self.point.srid)
-            parameters['X'] = 50
-            parameters['Y'] = 50
+            parameters['X'] = 5
+            parameters['Y'] = 5
         else:
             parameters['REQUEST'] = 'GetFeatureInfo'
             parameters['CRS'] = 'EPSG:' + str(self.point.srid)
-            parameters['I'] = 50
-            parameters['j'] = 50
+            parameters['I'] = 5
+            parameters['j'] = 5
 
         query_dict = QueryDict('', mutable=True)
         query_dict.update(parameters)

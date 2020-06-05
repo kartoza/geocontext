@@ -147,22 +147,6 @@ test:
 # Server Administration
 # ----------------------------------------------------------------------------
 
-rm: dbbackup rm-only
-
-kill:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Killing in production mode"
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) kill
-
-rm-only: kill
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Removing production instance!!! "
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) rm
-
 reload:
 	@echo
 	@echo "------------------------------------------------------------------"
@@ -192,6 +176,22 @@ nginx:
 # Docker administration
 # ----------------------------------------------------------------------------
 
+rm: dbbackup rm-only
+
+kill:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Killing in production mode"
+	@echo "------------------------------------------------------------------"
+	@docker-compose -p $(PROJECT_ID) kill
+
+rm-only: kill
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Removing production instance!!! "
+	@echo "------------------------------------------------------------------"
+	@docker-compose -p $(PROJECT_ID) rm
+
 status:
 	@echo
 	@echo "------------------------------------------------------------------"
@@ -217,8 +217,6 @@ mediasync:
 	@echo "------------------------------------------------------------------"
 	@rsync -av --progress $(PROD_SERVER):/home/$(PROJECT_ID)/deployment/media/ media
 	@rsync -av --progress $(PROD_SERVER):/home/$(PROJECT_ID)/django_project/core/settings/secret.py ../django_project/core/settings/
-#	@rsync -av --progress $(PROD_SERVER):/home/$(PROJECT_ID)/deployment/btsync-db.env btsync-db.env.PRODUCTION
-#	@rsync -av --progress $(PROD_SERVER):/home/$(PROJECT_ID)/deployment/btsync-media.env btsync-media.env.PRODUCTION
 
 dblogs:
 	@echo
@@ -297,7 +295,7 @@ dbbackup:
 	@docker exec $(PROJECT_ID)-db-backups cat /var/log/cron.log | tail -2 | head -1 | awk '{print $4}'
 	@if [ -f "backups/latest.dmp" ]; then rm backups/latest.dmp; fi
 	# backups is intentionally missing from front of first clause below otherwise symlink comes out with wrong path...
-	@ln -s `date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp backups/latest.dmp
+	-@ln -s `date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp backups/latest.dmp
 	@echo "Backup should be at: backups/`date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp"
 
 # ----------------------------------------------------------------------------
@@ -349,5 +347,3 @@ help:
 	@echo "dbschema         :Dump the current db schema (without data) to stdio. Useful if you want to compare changes between instances."
 	@echo "dbshell          :Get a psql prompt into the db container. "
 	@echo "dbsnapshot       :As above but makes the backup as deployment/snapshot.smp - replacing any pre-existing snapshot."
-	@echo "dbsync           :Use this from a development or offsite machine. It will rsync all database backups from deployment/backups to your offsite machine."
-	@echo "mediasync        :Use this from a development or offsite machine. It will rsync all media backups from deployment/media to your offsite machine."
