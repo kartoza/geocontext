@@ -1,5 +1,21 @@
+# This is normally the main entry point for a production server
+web:
+  container_name: geocontext-web
+  image: nginx
+  hostname: nginx
+  volumes:
+    - ./sites-enabled:/etc/nginx/conf.d:ro
+    - ./static:/home/web/static:ro
+    - ./media:/home/web/media:ro
+    - ./logs:/var/log/nginx
+  links:
+    - uwsgi:uwsgi
+  ports:
+    - "80:8080"
+  restart: unless-stopped
+
+
 uwsgi:
-  # Note you cannot scale if you use container_name
   container_name: geocontext-uwsgi
   build: docker
   hostname: uwsgi
@@ -23,10 +39,7 @@ uwsgi:
   user: root
 
 # This is the entry point for a development server.
-# Run with --no-deps to run attached to the services
-# from produ environment if wanted
 devweb:
-  # Note you cannot scale if you use container_name
   container_name: geocontext-dev-web
   build: docker
   dockerfile: Dockerfile-dev
@@ -55,24 +68,20 @@ devweb:
     - "65403:22"
 
 db:
-  # Note you cannot scale if you use container_name
   container_name: geocontext-db
   image: kartoza/postgis:12.1
   volumes:
-    #- ./pg/postgres_data:/var/lib/postgresql
     - ./backups:/backups
     - ./sql:/sql
   environment:
     - USERNAME=docker
     - PASS=docker
   restart: unless-stopped
-#  Uncomment the next line to have an access with PGAdmin using localhost and port 25432 on your computer.
-#  Only for development !
+#  Only for development! Uncomment ports for DB access on localhost:25432.
 #  ports:
 #    - "25432:5432"
 
 dbbackups:
-  # Note you cannot scale if you use container_name
   container_name: geocontext-db-backups
   image: kartoza/pg-backup:12.0
   hostname: pg-backups
@@ -81,68 +90,11 @@ dbbackups:
   links:
     - db:db
   environment:
-    # take care to let the project name below match that
-    # declared in the top of the makefile
+    # Project name below must match that declared in the top of the makefile
     - DUMPPREFIX=PG_geocontext
-    # These are all defaults anyway, but setting explicitly in
-    # case we ever want to ever use different credentials
     - PGUSER=docker
     - PGPASSWORD=docker
     - PGPORT=5432
     - PGHOST=db
     - PGDATABASE=gis
   restart: unless-stopped
-
-# This is normally the main entry point for a production server
-web:
-  # Note you cannot scale if you use container_name
-  container_name: geocontext-web
-  image: nginx
-  hostname: nginx
-  volumes:
-    - ./sites-enabled:/etc/nginx/conf.d:ro
-    # I dont use volumes_from as I want to use the ro modifier
-    - ./static:/home/web/static:ro
-    - ./media:/home/web/media:ro
-    - ./logs:/var/log/nginx
-  links:
-    - uwsgi:uwsgi
-  ports:
-    - "80:8080"
-  restart: unless-stopped
-
-btsync-db:
-  # BTSync backups for database dumps
-  image: kartoza/btsync
-  restart: unless-stopped
-  volumes:
-    # We mount RW so that we can use remove peer to clean up old backups off the server
-    - ./backups:/web:rw
-  env_file:
-    # The environment file should define two variables:
-    # SECRET: a RW btsync key if the server is a production server
-    #         a RO btsync key if it is staging or development machine
-    # DEVICE: a unique device name so you can recognise which host is being peered with in btsync
-    # See the btsync example env in this folder for a template
-    # NOTE:
-    # Do not version control the env file as anyone else could peer it and sync
-    # our database backups etc.
-    - btsync-db.env
-
-btsync-media:
-  # BTSync backups for django media
-  image: kartoza/btsync
-  restart: unless-stopped
-  volumes:
-    # We mount RO as we do not really want peers to change this data
-    - ./media:/web:ro
-  env_file:
-    # The environment file should define two variables:
-    # SECRET: a RW btsync key if the server is a production server
-    #         a RO btsync key if it is staging or development machine
-    # DEVICE: a unique device name so you can recognise which host is being peered with in btsync
-    # See the btsync example env in this folder for a template
-    # NOTE:
-    # Do not version control the env file as anyone else could peer it and sync
-    # our media backups etc.
-    - btsync-media.env
