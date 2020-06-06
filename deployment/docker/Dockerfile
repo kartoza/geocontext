@@ -22,5 +22,5 @@ RUN pip3 install --upgrade pip setuptools \
 
 EXPOSE 8080
 WORKDIR /usr/src/geocontext
-COPY uwsgi.conf /etc/geocontext/
+COPY uwsgi.conf /etc/geocontext/uwsgi.conf
 CMD ["uwsgi", "--ini", "/etc/geocontext/uwsgi.conf"]

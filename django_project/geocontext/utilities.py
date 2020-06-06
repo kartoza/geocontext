@@ -1,3 +1,4 @@
+import re
 from decimal import Decimal
 import logging
 
@@ -81,7 +82,7 @@ def convert_coordinate(point, srid_target: int) -> Point:
 
 
 def parse_dms(coord: str) -> tuple:
-    """Parse ':' seperated degree:minute:second:direction input.
+    """Parse DMS input. (Split by °,',", or :)
 
     :param coord: Coord string
     :type coord: str
@@ -89,9 +90,9 @@ def parse_dms(coord: str) -> tuple:
     :return: degrees, minutes, seconds
     :rtype: int, int, float
     """
-    coord_parts = coord.split(':')
+    coord_parts = re.split(r'[°\'"\:]+', coord)
     if len(coord_parts) > 4:
-        raise ValueError("Could not parse DMS format input (need dd:mm:ss:DIRECTION")
+        raise ValueError("Could not parse DMS format input")
 
     degrees = int(coord_parts[0])
     minutes = int(coord_parts[1])
@@ -122,37 +123,6 @@ def dms_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
     else:
         decimal = degrees - (minutes / 60.0) - (seconds / 3600.0)
     return decimal
-
-
-def round_point(point: Point, decimals: int = 4) -> str:
-    """Round coordinate point coordinates to certain decimal places on WGS84.
-
-    precision of 4 == ~10 m, 3 == 100m, 2 = 1km
-    https://en.wikipedia.org/wiki/Decimal_degrees
-
-    :param point: Point
-    :type point: Point
-
-    :param precision: Decimals to round
-    :type precision: int (default = 4)
-
-    :return: point
-    :rtype: Point
-    """
-    # Use WGS84 for consistency
-    original_srid = point.srid
-    if original_srid != 4326:
-        point = convert_coordinate(point, 4326)
-
-    # Round with decimal quantize see- https://realpython.com/python-rounding/
-    x_round = Decimal(point.x).quantize(Decimal('0.' + '0' * decimals))
-    y_round = Decimal(point.y).quantize(Decimal('0.' + '0' * decimals))
-    point = Point(float(x_round), float(y_round), srid=point.srid)
-
-    if original_srid != 4326:
-        point = convert_coordinate(point, original_srid)
-
-    return point
 
 
 def get_bbox(point: Point, precision: float = 0.01, string: True = bool) -> str:

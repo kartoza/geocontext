@@ -24,7 +24,7 @@ addons:
 
 install:
   - pip install codecov
-  - pip install -r REQUIREMENTS-dev.txt
+  - pip install -r requirements-dev.txt
 
 
 before_script:

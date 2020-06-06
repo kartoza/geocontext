@@ -135,16 +135,10 @@ class CSR(models.Model):
         max_length=1000,
     )
 
-    resolution = models.FloatField(
-        help_text=_('Base data resolution of the source data in meter.'),
-        blank=True,
-        null=True
-    )
-
-    search_dist = models.FloatField(
+    buffer_dist = models.FloatField(
         help_text=_(
-            'Distance to search for feature around query point in meter. '
-            'Helpful for linear features'),
+            'Search distance around query point in meters. Helpful for non-polygon '
+            'features. Also determines cache hit range for rasters'),
         blank=True,
         null=True
     )

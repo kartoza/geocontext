@@ -22,9 +22,4 @@ class Migration(migrations.Migration):
             name='group',
             options={'ordering': ['key']},
         ),
-        migrations.AddField(
-            model_name='csr',
-            name='resolution',
-            field=models.IntegerField(blank=True, help_text='Fundamental resolution of the source data in m.', null=True),
-        ),
     ]

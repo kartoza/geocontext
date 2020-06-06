@@ -6,10 +6,8 @@ import logging
 import pytz
 import requests
 import threading
-from xml.dom import minidom
-import xml.etree.ElementTree as ET
 
-from django.contrib.gis.gdal.error import GDALException, SRSException
+from django.contrib.gis.gdal.error import SRSException
 from django.contrib.gis.geos import GEOSGeometry, Point
 from django.http import QueryDict
 
@@ -19,7 +17,6 @@ from geocontext.utilities import (
     convert_coordinate,
     dms_dd,
     get_bbox,
-    round_point,
     ServiceDefinitions,
     parse_dms
 )
@@ -153,23 +150,29 @@ class CSRUtils():
         self.api_key = csr.api_key
         self.url = csr.url
         self.srid = csr.srid
+        self.search_dist = csr.search_dist
         self.cache_url = None
         self.value = None
         csr = None
 
-        # Geometry defaults to rounded querypoint - cache hits at least on point
+        # Layer names either equals result_regex or come after ":" in regex (geoserver)
+        try:
+            self.layer_name = self.result_regex.split(":")[1]
+        except IndexError:
+            self.layer_name = self.result_regex
+
+        # Geometry defaults to query point - cache hits at least search_dist from point
         self.x = x
         self.y = y
         self.srid_in = srid_in
-        self.generalize_point()
+        self.load_point()
         self.geometry = self.point
 
-    def generalize_point(self) -> Point:
+    def load_point(self) -> Point:
         """Generalize coordinate to the registry instance geometry.
 
         Converts DMS (degree:minute:second:direction) to decimal degree.
         Converts to SRID of the context registry
-        Removes extreme precision to improve point cache hits.
         Default precision for is 4 decimals (~10m)
 
         :raises ValueError: If coordinate cannot be parsed
@@ -196,15 +199,6 @@ class CSRUtils():
             self.point = Point(self.x, self.y, srid=self.srid_in)
         except ValueError:
             raise ValueError(f"SRID: '{self.srid_in}' not valid")
-
-        # TODO Round smartly using base data raster resolution
-        # if self.query_type == ServiceDefinitions.WMS:
-        #     if self.resolution:
-        #         Calculate decimals depending on base resolution
-        #         decimals = (1m = 5, 10m = 4, 100m = 3, 1000m = 2, 10000m = 1)
-
-        # Round before converting as queries default 4326 - less conversions needed
-        self.point = round_point(self.point, decimals=4)
 
         if self.srid_in != self.srid:
             try:
@@ -234,20 +228,6 @@ class CSRUtils():
             LOGGER.error(f"{self.cache_url} failed for: {self.csr_key} with: {e}")
             self.value = None
 
-    def request_content(self, url: str) -> requests:
-        """Get request content from url in request session
-
-        :param url: Url
-        :type url: str
-
-        :return: URL to do query.
-        :rtype: unicode
-        """
-        session = get_session()
-        with session.get(url) as response:
-            if response.status_code == 200:
-                return response.content
-
     def fetch_wms(self):
         """Fetch WMS value
         """
@@ -259,7 +239,7 @@ class CSRUtils():
             "WIDTH": 11,
             "HEIGHT": 11,
             "INFO_FORMAT": 'application/json',
-            "FEATURE_COUNT": 10
+            "FEATURE_COUNT": 1
         }
         if self.service_version in ['1.0.0', '1.1.0']:
             parameters['REQUEST'] = 'feature_info'
@@ -272,106 +252,59 @@ class CSRUtils():
             parameters['I'] = 5
             parameters['j'] = 5
 
-        query_dict = QueryDict('', mutable=True)
-        query_dict.update(parameters)
-        if '?' in self.url:
-            self.cache_url = f'{self.url}&{query_dict.urlencode()}'
-        else:
-            self.cache_url = f'{self.url}?{query_dict.urlencode()}'
-
-        response = json.loads(self.request_content(self.cache_url))
-
-        # Result regex contains actual name to look for - but may include ":"
-        try:
-            self.value = response["features"][0]["properties"][self.result_regex]
-        except KeyError:
-            key = self.result_regex.split(":")[1]
-            self.value = response["features"][0]["properties"][key]
+        json_response = self.request_data(parameters)
+        self.value = json_response["features"][0]["properties"][self.layer_name]
 
     def fetch_wfs(self):
-        """Fetch WFS value - use intersect if polygon type else buffer
+        """Fetch WFS value - Try intersect else buffer with search distance
         """
+        layer_filter = (
+            '<Filter xmlns="http://www.opengis.net/ogc" '
+            'xmlns:gml="http://www.opengis.net/gml"> '
+            f'<Intersects><PropertyName>geom</PropertyName>'
+            f'<gml:Point srsName="EPSG:{self.point.srid}">'
+            f'<gml:coordinates>{self.point.x},{self.point.y}'
+            '</gml:coordinates></gml:Point></Intersects></Filter>'
+        )
         parameters = {
             'SERVICE': 'WFS',
-            'REQUEST': 'DescribeFeatureType',
+            'REQUEST': 'GetFeature',
             'VERSION': self.service_version,
-            'TYPENAME': self.layer_typename
+            'TYPENAME': self.layer_typename,
+            'FILTER': layer_filter,
+            'PROPERTYNAME': f'({self.layer_name})',
+            'MAXFEATURES': 1,
+            'OUTPUTFORMAT': 'application/json',
         }
-        query_dict = QueryDict('', mutable=True)
-        query_dict.update(parameters)
-        if '?' in self.url:
-            self.cache_url = f'{self.url}&{query_dict.urlencode()}'
-        else:
-            self.cache_url = f'{self.url}?{query_dict.urlencode()}'
+        json_response = self.request_data(parameters)
 
-        describe_content = self.request_content(self.cache_url)
-        geo_name, geo_type = self.parse_geometry_xml(describe_content)
-
-        if 'Polygon' in geo_type:
-            layer_filter = (
-                '<Filter xmlns="http://www.opengis.net/ogc" '
-                'xmlns:gml="http://www.opengis.net/gml"> '
-                f'<Intersects><PropertyName>{geo_name}</PropertyName>'
-                f'<gml:Point srsName="EPSG:{self.point.srid}">'
-                f'<gml:coordinates>{self.point.x},{self.point.y}'
-                '</gml:coordinates></gml:Point></Intersects></Filter>'
-            )
+        try:
+            self.value = json_response["features"][0]["properties"][self.layer_name]
+        except IndexError:
             parameters = {
                 'SERVICE': 'WFS',
                 'REQUEST': 'GetFeature',
                 'VERSION': self.service_version,
                 'TYPENAME': self.layer_typename,
-                'FILTER': layer_filter,
-                'PROPERTYNAME': f'({self.result_regex[4:]})',
-                'MAXFEATURES': 1,
-                'OUTPUTFORMAT': 'GML3',
+                'OUTPUTFORMAT': 'application/json',
             }
-            query_dict = QueryDict('', mutable=True)
-            query_dict.update(parameters)
-            if '?' in self.url:
-                self.cache_url = f'{self.url}&{query_dict.urlencode()}'
-            else:
-                self.cache_url = f'{self.url}?{query_dict.urlencode()}'
-            if ':' not in self.layer_typename:
-                self.cache_url += f'&SRSNAME={self.point.srid}'
-            content = self.request_content(self.cache_url)
-
-        else:
-
             bbox = get_bbox(self.point)
-            parameters = {
-                'SERVICE': 'WFS',
-                'REQUEST': 'GetFeature',
-                'VERSION': self.service_version,
-                'TYPENAME': self.layer_typename,
-                'OUTPUTFORMAT': 'GML3',
-            }
-            query_dict = QueryDict('', mutable=True)
-            query_dict.update(parameters)
-            if '?' in self.url:
-                self.cache_url = f'{self.url}&{query_dict.urlencode()}'
-            else:
-                self.cache_url = f'{self.url}?{query_dict.urlencode()}'
-            if ':' not in self.layer_typename:
-                self.cache_url += f'&SRSNAME={self.point.srid}'
-            self.cache_url += '&BBOX=' + bbox
-            content = self.request_content(self.cache_url)
+            json_response = self.request_data(parameters, append=f'&BBOX={bbox}')
+            self.value = json_response["features"][0]["properties"][self.layer_name]
 
-        xmldoc = minidom.parseString(content)
-        value_dom = xmldoc.getElementsByTagName(self.result_regex)[0]
-        self.value = value_dom.childNodes[0].nodeValue
-
-        # Add new geometry only if found - otherwise keep query point in cache
-        new_geometry = self.parse_geometry_gml(content, self.layer_typename)
-        if new_geometry is not None:
-            self.geometry = new_geometry
-            if not self.geometry.srid:
-                self.geometry.srid = self.point.srid
+        # Add new geometry only if found
+        if self.value is not None:
+            try:
+                new_geometry = json_response["features"][0]["geometry"]
+                if new_geometry is not None:
+                    self.geometry = GEOSGeometry(str(new_geometry))
+                    self.geometry.srid = self.point.srid
+            except IndexError:
+                pass
 
     def fetch_arcrest(self):
         """Fetch ArcRest value
         """
-        bbox = get_bbox(self.point)
         parameters = {
             'f': 'json',
             'geometryType': 'esriGeometryPoint',
@@ -380,16 +313,10 @@ class CSRUtils():
             'imageDisplay': '581,461,96',
             'tolerance': '10',
         }
-        query_dict = QueryDict('', mutable=True)
-        query_dict.update(parameters)
-        if '?' in self.url:
-            self.cache_url = f'{self.url}&{query_dict.urlencode()}'
-        else:
-            self.cache_url = f'{self.url}/identify?{query_dict.urlencode()}'
-            self.cache_url += f'&mapExtent={bbox}'
-        content = self.request_content(self.cache_url)
-        json_document = json.loads(content)
-        self.value = json_document['results'][0][self.result_regex]
+        bbox = get_bbox(self.point)
+        bbox_str = f'&mapExtent={bbox}'
+        json_response = self.request_data(parameters, query='/identify?', append=bbox_str)
+        self.value = json_response['results'][0][self.layer_name]
 
     def fetch_placename(self):
         """Fetch Placename value
@@ -399,98 +326,38 @@ class CSRUtils():
             'lng': str(self.point.x),
             'username': str(self.api_key),
         }
+        json_response = self.request_data(parameters)
+        self.value = json_response['geonames'][0][self.layer_name]
+
+    def request_data(
+            self, parameters: dict, query: str = "?", append: str = None) -> dict:
+        """Generates final query URL and fetches data.
+
+        :param parameters: parameters to urlencode
+        :type parameters: dict
+        :param query: Url query delimiter
+        :type query: str (default '?')
+        :param append: additional string to append to url
+        :type append: str
+        :return: json response
+        :rtype: dict
+        """
         query_dict = QueryDict('', mutable=True)
         query_dict.update(parameters)
         if '?' in self.url:
-            self.cache_url = f'{self.url}&{query_dict.urlencode()}'
+            query_url = f'{self.url}&{query_dict.urlencode()}'
         else:
-            self.cache_url = f'{self.url}?{query_dict.urlencode()}'
-        content = self.request_content(self.cache_url)
-        json_document = json.loads(content)
-        self.value = json_document['geonames'][0][self.result_regex]
+            query_url = f'{self.url}{query}{query_dict.urlencode()}'
 
-    def parse_geometry_xml(self, content: str) -> tuple:
-        """Find geometry in xml string
+        if append is not None:
+            query_url += append
 
-        :param content: xml content
-        :type content: str
-        :return: geometry name and geometry type
-        :rtype: tuple
-        """
-        content_parsed = ET.fromstring(content)
-        version = None
-        try:
-            content_parsed.tag.split('}')[1]
-            version = content_parsed.tag.split('}')[0] + '}'
-        except IndexError:
-            pass
-        geometry_name, geometry_type = None, None
-        try:
-            complex_type = content_parsed.find(
-                self.tag_with_version('complexType', version))
-            complex_content = complex_type.find(
-                self.tag_with_version('complexContent', version))
-            extension = complex_content.find(
-                self.tag_with_version('extension', version))
-            sequences = extension.find(
-                self.tag_with_version('sequence', version))
-            for sequence in sequences:
-                try:
-                    if 'gml' in sequence.attrib['type']:
-                        geometry_name = sequence.attrib['name']
-                        geometry_type = sequence.attrib['type'].replace(
-                            'gml:', '').replace('PropertyType', '')
-                except KeyError:
-                    continue
-            pass
-        except Exception as e:
-            LOGGER.error(f"Could not find geometry in xml for {self.csr_key} with {e}")
-            pass
-        return geometry_name, geometry_type
+        # Only add SRS if there is no workspace
+        if ':' not in self.layer_typename:
+            query_url += f'&SRSNAME={self.point.srid}'
 
-    def parse_geometry_gml(self, gml_string: str, tag_name: str = 'qgs:geometry') \
-            -> GEOSGeometry:
-        """Parse geometry from gml document.
-
-        :param gml_string: String that represent full gml document.
-        :type gml_string: unicode
-
-        :param tag_name: gml tag
-        :type tag_name: str
-
-        :returns: GEOGeometry from the gml document, the first one if there are
-            more than one.
-        :rtype: GEOSGeometry
-        """
-        try:
-            xmldoc = minidom.parseString(gml_string)
-        except Exception as e:
-            LOGGER.error(f"Could not parse GML string for: {self.csr_key} with {e}")
-            return None
-        try:
-            if tag_name == 'qgs:geometry':
-                geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
-                geometry_gml_dom = geometry_dom.childNodes[1]
-                return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
-            else:
-                tag_name = tag_name.split(':')[0] + ':' + 'geom'
-                geometry_dom = xmldoc.getElementsByTagName(tag_name)[0]
-                geometry_gml_dom = geometry_dom.childNodes[0]
-                return GEOSGeometry.from_gml(geometry_gml_dom.toxml())
-
-        except IndexError:
-            LOGGER.error(f"No geometry found for: {self.csr_key}")
-            return None
-        except GDALException:
-            LOGGER.error(f"GDAL error for: {self.csr_key}")
-            return None
-
-    def tag_with_version(self, tag: str, version: str) -> str:
-        """ Replace version in tag
-
-        :return: tag
-        :rtype: str
-        """
-        if version:
-            return version + tag
-        return tag
+        session = get_session()
+        with session.get(query_url) as response:
+            if response.status_code == 200:
+                self.cache_url = query_url
+                return json.loads(response.content)
