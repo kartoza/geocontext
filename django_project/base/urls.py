@@ -5,14 +5,16 @@ from django.conf.urls import url, include
 from rest_framework.documentation import include_docs_urls
 
 from geocontext.urls import urlpatterns as geocontext_urls
-from geocontext.urls import urlpatterns_api as geocontext_url_api
+from geocontext.urls import urlpatterns_api_v1 as urlpatterns_api_v1
+from geocontext.urls import urlpatterns_api_v2 as urlpatterns_api_v2
 
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='landing_page.html')),
     url('^getting_started/', TemplateView.as_view(
         template_name='getting_started.html')),
-    url('^api/v1/', include(geocontext_url_api)),
+    url('^api/v1/', include(urlpatterns_api_v1)),
+    url('^api/v2/', include(urlpatterns_api_v2)),
     url('', include(geocontext_urls)),
     url(r'^docs/', include_docs_urls(title='GeoContext API'))
 ]

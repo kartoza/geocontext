@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# This is intended to be placed in the docker dev environment so
-# that the django project is in the path when you log in
-
+# Django project dev bashrc
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi

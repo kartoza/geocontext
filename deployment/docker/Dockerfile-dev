@@ -22,8 +22,8 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 # End of cut & paste section
 
-ADD REQUIREMENTS-dev.txt /REQUIREMENTS-dev.txt
-RUN pip install -r /REQUIREMENTS-dev.txt
+ADD requirements-dev.txt /etc/geocontext/requirements-dev.txt
+RUN pip install -r /etc/geocontext/requirements-dev.txt
 ADD bashrc /root/.bashrc
 
 # --------------------------------------------------------

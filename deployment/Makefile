@@ -2,11 +2,8 @@ PROJECT_ID := geocontext
 PROD_SERVER := geocontext.kartoza.com
 SHELL := /bin/bash
 
-# ----------------------------------------------------------------------------
-# Production 
-# ----------------------------------------------------------------------------
 default: web
-run: build permissions web pause migrate collectstatic
+setup-web: build permissions web pause migrate collectstatic
 
 build:
 	@echo
@@ -14,6 +11,17 @@ build:
 	@echo "Building in production mode"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) build uwsgi
+
+permissions:
+	@if [ ! -d "logs" ]; then mkdir logs; fi
+	@if [ ! -d "media" ]; then mkdir media; fi
+	@if [ ! -d "static" ]; then mkdir static; fi
+	@if [ ! -d "backups" ]; then mkdir backups; fi
+	@if [ -d "logs" ]; then sudo chmod -R a+rwx logs; fi
+	@if [ -d "media" ]; then sudo chmod -R a+rwx media; fi
+	@if [ -d "static" ]; then sudo chmod -R a+rwx static; fi
+	@if [ -d "pg" ]; then sudo chmod -R a+rwx pg; fi
+	@if [ -d "backups" ]; then sudo chmod -R a+rwx backups; fi
 
 web:
 	@echo
@@ -31,10 +39,21 @@ pause:
 	@sleep 10
 
 # ----------------------------------------------------------------------------
+# Production 
+# ----------------------------------------------------------------------------
+deploy:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Pushing image to production"
+	@echo "------------------------------------------------------------------"
+	@./production/push-production.sh
+
+# ----------------------------------------------------------------------------
 #  Development
 # ----------------------------------------------------------------------------
 
-setup-dev: run superuser import-data build-devweb devweb
+setup-dev: setup-web superuser import-data build-devweb devweb
+run-dev: devweb
 
 devweb: db
 	@echo
@@ -50,18 +69,6 @@ build-devweb: db
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) build devweb
 
-permissions:
-	# Your sudo to set the file permissions on logs, media, static and pg dirs
-	@if [ ! -d "logs" ]; then mkdir logs; fi
-	@if [ ! -d "media" ]; then mkdir media; fi
-	@if [ ! -d "static" ]; then mkdir static; fi
-	@if [ ! -d "backups" ]; then mkdir backups; fi
-	@if [ -d "logs" ]; then sudo chmod -R a+rwx logs; fi
-	@if [ -d "media" ]; then sudo chmod -R a+rwx media; fi
-	@if [ -d "static" ]; then sudo chmod -R a+rwx static; fi
-	@if [ -d "pg" ]; then sudo chmod -R a+rwx pg; fi
-	@if [ -d "backups" ]; then sudo chmod -R a+rwx backups; fi
-
 # ----------------------------------------------------------------------------
 # Django administration
 # ----------------------------------------------------------------------------
@@ -72,6 +79,13 @@ shell:
 	@echo "Shelling in in production mode"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec uwsgi /bin/bash
+
+pyshell:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running Python Django interpreter"
+	@echo "------------------------------------------------------------------"
+	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py shell
 
 superuser:
 	@echo
@@ -210,14 +224,6 @@ db:
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) up -d db
 
-mediasync:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Syncing media files and secret.py from live server"
-	@echo "------------------------------------------------------------------"
-	@rsync -av --progress $(PROD_SERVER):/home/$(PROJECT_ID)/deployment/media/ media
-	@rsync -av --progress $(PROD_SERVER):/home/$(PROJECT_ID)/django_project/core/settings/secret.py ../django_project/core/settings/
-
 dblogs:
 	@echo
 	@echo "------------------------------------------------------------------"
@@ -286,8 +292,7 @@ dbbackup:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Create `date +%d-%B-%Y`.dmp in production mode"
-	@echo "Warning: backups/latest.dmp will be replaced with a symlink to "
-	@echo "the new backup."
+	@echo "Warning: backups/latest.dmp will be replaced with a symlink to the new backup."
 	@echo "------------------------------------------------------------------"
 	@# - prefix causes command to continue even if it fails
 	@# Explicitly don't use -it so we can call this make target over a remote ssh session
@@ -304,17 +309,17 @@ help:
 	@echo ""
 	@echo "---------------------------------SETUP-----------------------------------------"
 	@echo ""
-	@echo "setup-dev        :Dev shortcut - builds and runs all containers, configure, load data and run app on localhost."
+	@echo "setup-dev        :Dev shortcut - builds web + dev containers, configure & load data."
+	@echo "run-dev          :Start up dev container"
+	@echo "setup-web        :Builds, configures and runs the production containers"
+	@echo "web              :Default - runs the production site."
+	@echo "deploy           :Extends uwsgi image with production, tag and push."
 	@echo ""
-	@echo "build            :Builds all required containers."
-	@echo "build-devweb     :Build the development container. See [development notes](README-dev.md)."
-	@echo "devweb           :Create an ssh container derived from uwsgi that can be used as a remote interpreter for PyCharm. See [development notes](README-dev.md)."
-	@echo "web              :Same as **run** - runs the production site."
-	@echo "run              :Builds and runs the complete orchestrated set of containers."
 	@echo ""
 	@echo "-----------------------------Django Administration-----------------------------"
 	@echo ""
-	@echo "shell            :Open a bash shell in the uwsgi (where django runs) container."
+	@echo "shell            :Open a bash shell in the uwsgi container."
+	@echo "pyshell          :Open a Python Django session in the uwsgi container."
 	@echo "superuser        :Create a django superuser account."
 	@echo "test             :Run tests on development."
 	@echo "flake8           :Check flake8."
@@ -325,6 +330,9 @@ help:
 	@echo "-----------------------------Docker Administration-----------------------------"
 	@echo ""
 	@echo "reload           :Reload the uwsgi process. Useful when you need django to pick up any changes you may have deployed."
+	@echo "build            :Builds all required containers."
+	@echo "build-devweb     :Build the development container. See [development notes](README-dev.md)."
+	@echo "devweb           :Create an ssh container derived from uwsgi that can be used as a remote interpreter for PyCharm. See [development notes](README-dev.md)."
 	@echo "rm               :Remove all containers."
 	@echo "rm-only          :Remove any containers without trying to kill them first. "
 	@echo "logs             :View the logs of all running containers. Note that you can also view individual logs in the deployment/logs directory."

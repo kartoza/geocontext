@@ -13,7 +13,7 @@ if [ -z "$TAG_NAME" ]; then
 fi
 
 if [ -z "$BUILD_ARGS" ]; then
-	BUILD_ARGS="--pull --no-cache"
+	BUILD_ARGS="--no-cache"
 fi
 
 # Build Args Environment
@@ -26,6 +26,7 @@ echo "BRANCH=${BRANCH}"
 
 echo "Build: $REPO_NAME/$IMAGE_NAME:$TAG_NAME"
 
-docker build -t ${REPO_NAME}/${IMAGE_NAME} --build-arg BRANCH=${BRANCH} ${BUILD_ARGS} .
+cd production
+docker build -f Dockerfile-prod -t ${REPO_NAME}/${IMAGE_NAME} --build-arg BRANCH=${BRANCH} ${BUILD_ARGS} .
 docker tag ${REPO_NAME}/${IMAGE_NAME}:latest ${REPO_NAME}/${IMAGE_NAME}:${TAG_NAME}
 docker push ${REPO_NAME}/${IMAGE_NAME}:${TAG_NAME}

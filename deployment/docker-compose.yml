@@ -1,100 +1,107 @@
-# This is normally the main entry point for a production server
-web:
-  container_name: geocontext-web
-  image: nginx
-  hostname: nginx
-  volumes:
-    - ./sites-enabled:/etc/nginx/conf.d:ro
-    - ./static:/home/web/static:ro
-    - ./media:/home/web/media:ro
-    - ./logs:/var/log/nginx
-  links:
-    - uwsgi:uwsgi
-  ports:
-    - "80:8080"
-  restart: unless-stopped
+version: '2.1'
+services:
+  web:
+    container_name: geocontext-web
+    image: nginx
+    hostname: nginx
+    volumes:
+      - ./sites-enabled:/etc/nginx/conf.d:ro
+      - ./static:/home/web/static:ro
+      - ./media:/home/web/media:ro
+      - ./logs:/var/log/nginx
+    links:
+      - uwsgi:uwsgi
+    ports:
+      - "80:8080"
+    restart: unless-stopped
 
+  uwsgi:
+    container_name: geocontext-uwsgi
+    build: 
+      context: ./docker
+      dockerfile: Dockerfile
+    hostname: uwsgi
+    env_file: .env
+    environment:
+      - DATABASE_NAME=gis
+      - DATABASE_USERNAME=docker
+      - DATABASE_PASSWORD=docker
+      - DATABASE_HOST=db
+      - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
+      - PYTHONPATH=/usr/src/geocontext
+      - VIRTUAL_HOST=geocontext.kartoza.com
+      - VIRTUAL_PORT=8080
+    volumes:
+      - ../django_project:/usr/src/geocontext
+      - ./static:/home/web/static:rw
+      - ./media:/home/web/media:rw
+      - ./reports:/home/web/reports
+      - ./logs:/var/log/
+    links:
+      - db:db
+    restart: on-failure:5
+    user: root
 
-uwsgi:
-  container_name: geocontext-uwsgi
-  build: docker
-  hostname: uwsgi
-  environment:
-    - DATABASE_NAME=gis
-    - DATABASE_USERNAME=docker
-    - DATABASE_PASSWORD=docker
-    - DATABASE_HOST=db
-    - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
-    - VIRTUAL_HOST=geocontext.kartoza.com
-    - VIRTUAL_PORT=8080
-  volumes:
-    - ../django_project:/usr/src/geocontext
-    - ./static:/home/web/static:rw
-    - ./media:/home/web/media:rw
-    - ./reports:/home/web/reports
-    - ./logs:/var/log/
-  links:
-    - db:db
-  restart: on-failure:5
-  user: root
+  devweb:
+    container_name: geocontext-uwsgi-dev
+    build: 
+      context: ./docker
+      dockerfile: Dockerfile-dev
+    hostname: uwsgi
+    env_file: .env
+    environment:
+      - DATABASE_NAME=gis
+      - DATABASE_USERNAME=docker
+      - DATABASE_PASSWORD=docker
+      - DATABASE_HOST=db
+      - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
+      - PYTHONPATH=/usr/src/geocontext
+      - VIRTUAL_HOST=geocontext.kartoza.com
+      - VIRTUAL_PORT=8080
+    volumes:
+      - ../django_project:/usr/src/geocontext
+      - ./static:/home/web/static
+      - ./media:/home/web/media
+      - ./reports:/home/web/reports
+      - ./logs:/var/log/
+    links:
+      - db:db
+    ports:
+      - "65402:8080" # for django test server
+      - "65403:22" # for ssh
 
-# This is the entry point for a development server.
-devweb:
-  container_name: geocontext-dev-web
-  build: docker
-  dockerfile: Dockerfile-dev
-  hostname: uwsgi
-  environment:
-    - DATABASE_NAME=gis
-    - DATABASE_USERNAME=docker
-    - DATABASE_PASSWORD=docker
-    - DATABASE_HOST=db
-    - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
-    - PYTHONPATH=/usr/src/geocontext
-    - VIRTUAL_HOST=geocontext.kartoza.com
-    - VIRTUAL_PORT=8080
-  volumes:
-    - ../django_project:/usr/src/geocontext
-    - ./static:/home/web/static
-    - ./media:/home/web/media
-    - ./reports:/home/web/reports
-    - ./logs:/var/log/
-  links:
-    - db:db
-  ports:
-    # for django test server
-    - "65402:8080"
-    # for ssh
-    - "65403:22"
+  db:
+    container_name: geocontext-db
+    image: kartoza/postgis:12.1
+    volumes:
+      - ./backups:/backups
+    environment:
+      - ALLOW_IP_RANGE=0.0.0.0/0
+      - POSTGRES_USER=docker
+      - POSTGRES_PASS=docker
+      - POSTGRES_DB=gis
+    restart: on-failure
+    healthcheck:
+      test: "exit 0"
+#    ports:
+#      - "25432:5432"
 
-db:
-  container_name: geocontext-db
-  image: kartoza/postgis:12.1
-  volumes:
-    - ./backups:/backups
-    - ./sql:/sql
-  environment:
-    - USERNAME=docker
-    - PASS=docker
-  restart: unless-stopped
-#  Only for development! Uncomment ports for DB access on localhost:25432.
-#  ports:
-#    - "25432:5432"
-
-dbbackups:
-  container_name: geocontext-db-backups
-  image: kartoza/pg-backup:12.0
-  hostname: pg-backups
-  volumes:
-    - ./backups:/backups
-  links:
-    - db:db
-  environment:
-    # Project name below must match that declared in the top of the makefile
-    - DUMPPREFIX=PG_geocontext
-    - PGUSER=docker
-    - PGPASSWORD=docker
-    - PGPORT=5432
-    - PGHOST=db
-    - PGDATABASE=gis
-  restart: unless-stopped
+  dbbackups:
+    container_name: geocontext-db-backups
+    image: kartoza/pg-backup:12.0
+    hostname: pg-backups
+    volumes:
+      - ./backups:/backups
+    links:
+      - db:db
+    environment:
+      - DUMPPREFIX=PG_geocontext
+      - POSTGRES_USER=docker
+      - POSTGRES_PASS=docker
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=db
+      - POSTGRES_DBNAME=gis
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy

@@ -88,8 +88,7 @@ class CSR(models.Model):
 
     time_to_live = models.IntegerField(
         help_text=_(
-            'Time to live of Context Service to be used in caching in '
-            'seconds unit.'),
+            'Time to live of Context Service to be used in caching in seconds unit.'),
         blank=True,
         null=True,
         default=604800  # 7 days
@@ -136,8 +135,16 @@ class CSR(models.Model):
         max_length=1000,
     )
 
-    resolution = models.IntegerField(
+    resolution = models.FloatField(
         help_text=_('Base data resolution of the source data in meter.'),
+        blank=True,
+        null=True
+    )
+
+    search_dist = models.FloatField(
+        help_text=_(
+            'Distance to search for feature around query point in meter. '
+            'Helpful for linear features'),
         blank=True,
         null=True
     )
