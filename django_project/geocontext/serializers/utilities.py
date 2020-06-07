@@ -15,10 +15,12 @@ from geocontext.models.utilities import (
 
 class GroupValues(object):
     """Class for holding values of context group to be serialized."""
-    def __init__(self, x, y, group_key, srid):
+    def __init__(
+        self, x: str, y: str, group_key: str, srid: int = 4326, dist: float = 10.0):
         self.x = x
         self.y = y
         self.srid = srid
+        self.dist = dist
         self.group = get_object_or_404(Group, key=group_key)
         self.key = self.group.key
         self.name = self.group.name
@@ -30,13 +32,14 @@ class GroupValues(object):
         First identify values not in cache.
         Then fetch all external values using threaded CSRUtil.
         Finally add new values to cache and to instance to serialize
-        Ensures ORM is not touched during threading
+        Ensures ORM is not touched during async network data request
         """
         util_arg_list = []
         group_services = GroupServices.objects.filter(group=self.group).order_by('order')
         for group_service in group_services:
             # Init CSRUtil and check if it is in cache
-            csr_util = CSRUtils(group_service.csr.key, self.x, self.y, self.srid)
+            csr_util = CSRUtils(
+                group_service.csr.key, self.x, self.y, self.srid, self.dist)
             cache = retrieve_cache(csr_util)
 
             # Append all the caches found locally - list still needed
@@ -58,11 +61,13 @@ class GroupValues(object):
 
 class CollectionValues(GroupValues):
     """Class for holding values of collection of group values to be serialized."""
-    def __init__(self, x, y, collection_key, srid):
+    def __init__(
+        self, x: str, y: str, collection_key: str, srid: int = 4326, dist: float = 10.0):
         """Initialize method for context collection value."""
         self.x = x
         self.y = y
         self.srid = srid
+        self.dist = dist
         self.collection = get_object_or_404(Collection, key=collection_key)
         self.key = self.collection.key
         self.name = self.collection.name
@@ -73,7 +78,7 @@ class CollectionValues(GroupValues):
         First identify values not in cache.
         Then fetch all external values using threaded CSRUtil.
         Finally add new values to cache and add these to a list of group instances
-        to serialize. Ensures ORM is not touched during threading
+        to serialize. Ensures ORM is not touched during async network data request
         """
         util_arg_list = []
         group_caches = {}
@@ -86,7 +91,8 @@ class CollectionValues(GroupValues):
             group_services = GroupServices.objects.filter(group=group).order_by('order')
             for group_service in group_services:
                 # Init CSRUtil and check if it is in cache
-                csr_util = CSRUtils(group_service.csr.key, self.x, self.y, self.srid)
+                csr_util = CSRUtils(
+                    group_service.csr.key, self.x, self.y, self.srid, self.dist)
                 cache = retrieve_cache(csr_util)
 
                 # Append all the caches found locally - list still needed
@@ -114,7 +120,7 @@ class CollectionValues(GroupValues):
 
         # Init contextgroup add GroupValues to be serialized
         for group_key, cache_list in group_caches.items():
-            group_values = GroupValues(self.x, self.y, group_key, self.srid)
+            group_values = GroupValues(self.x, self.y, group_key, self.srid, self.dist)
             for cache in cache_list:
                 group_values.service_registry_values.append(cache)
             self.context_group_values.append(group_values)

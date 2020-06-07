@@ -68,6 +68,7 @@ class CacheListAPI(views.APIView):
 
 class GroupAPIView(views.APIView):
     """Retrieve values from context group matching:  x (long), y (lat) group key.
+    Catch any exception in populating values
     """
     def get(self, request, x, y, group_key, srid=4326):
         group_values = GroupValues(x, y, group_key, srid)
@@ -81,6 +82,7 @@ class GroupAPIView(views.APIView):
 
 class CollectionAPIView(views.APIView):
     """Retrieve values from context collection matching: x (long), y (lat) collection key.
+    Catch any exception in populating values
     """
     def get(self, request, x, y, collection_key, srid=4326):
         collection_values = CollectionValues(x, y, collection_key, srid)

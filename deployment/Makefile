@@ -53,7 +53,7 @@ deploy:
 # ----------------------------------------------------------------------------
 
 setup-dev: setup-web superuser import-data build-devweb devweb
-run-dev: devweb
+run-dev: web devweb
 
 devweb: db
 	@echo

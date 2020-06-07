@@ -1,7 +1,8 @@
 import re
-from decimal import Decimal
 import logging
 
+import geopy
+import geopy.distance
 from django.contrib.gis.geos import (
     GEOSGeometry, Point, LineString, LinearRing, Polygon,
     MultiPoint, MultiLineString, MultiPolygon
@@ -86,7 +87,9 @@ def parse_dms(coord: str) -> tuple:
 
     :param coord: Coord string
     :type coord: str
+
     :raises ValueError: If string could not be parsed
+
     :return: degrees, minutes, seconds
     :rtype: int, int, float
     """
@@ -110,8 +113,10 @@ def dms_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
 
     :param degrees: degrees
     :type degrees: int
+
     :param minutes: minutes, defaults to 0.0
     :type minutes: int, optional
+
     :param seconds: seconds, defaults to 0.0
     :type seconds: float, optional
 
@@ -125,39 +130,46 @@ def dms_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
     return decimal
 
 
-def get_bbox(point: Point, precision: float = 0.01, string: True = bool) -> str:
-    """Get small enough bbox to cover point x,y
-
-    precision of 0.0001 == ~10 m, 0.001 = 100m, 0.01 = 1km bbox
-    https://en.wikipedia.org/wiki/Decimal_degrees
+def get_bbox(point: Point, min_distance: float = 10, order_latlon: bool = True) -> str:
+    """
+    Get bbox that is guaranteed to be {min_distance} meters from point. BBOX corners will
+    be futher but the distance in cardinal directions from point will equal min_distance.
+    Lower corner specified first. Lon/lat (x,y) order can be flipped for CRS if needed.
 
     :param point: Point
     :type point: Point
 
-    :param precision: The factor to get the bbox, see the formula.
-    :type precision: float
+    :param min_distance: Minimum distance that the bbox should include in meter.
+    :type min_distance: float
 
-    :param string: Should output be a ',' seperated string - else list
-    :type string: bool
+    :param order_latlon: bbox order depends on CRS.
+    :type order_latlon: bool (default True)
 
-    :return: BBOX string
+    :return: BBOX string: 'lower corner x, lower corner y, upper corner x, upper corner y'
     :rtype: str
     """
-    original_srid = point.srid
-    # Bbox generated in WGS84 for consistent boundingbox and transformed back if needed
-    if original_srid != 4326:
+    # Distance calculation is done on WGS84 - and converted back if needed
+    if point.srid != 4326:
         point = convert_coordinate(point, 4326)
 
-    bbox_min = Point((point.x - (precision / 2)), (point.y - (precision / 2)), srid=4326)
-    bbox_max = Point((point.x + (precision / 2)), (point.y + (precision / 2)), srid=4326)
+    start_point = geopy.Point(longitude=point.x, latitude=point.y)
+    distance = geopy.distance.distance(meters=min_distance)
 
-    if original_srid != 4326:
-        bbox_min = convert_coordinate(bbox_min, original_srid)
-        bbox_max = convert_coordinate(bbox_max, original_srid)
+    north = distance.destination(point=start_point, bearing=0)
+    east = distance.destination(point=start_point, bearing=90)
+    south = distance.destination(point=start_point, bearing=180)
+    west = distance.destination(point=start_point, bearing=270)
 
-    bbox = [bbox_min.x, bbox_min.y, bbox_max.x, bbox_max.y]
+    lower_left = Point(west.longitude, south.latitude, srid=4326)
+    upper_right = Point(east.longitude, north.latitude, srid=4326)
 
-    if string:
-        return ','.join([str(i) for i in bbox])
+    if point.srid != 4326:
+        lower_left = convert_coordinate(lower_left, point.srid)
+        upper_right = convert_coordinate(upper_right, point.srid)
+
+    if order_latlon:
+        bbox = [lower_left.x, lower_left.y, upper_right.x, upper_right.y]
     else:
-        return bbox
+        bbox = [lower_left.y, lower_left.x, upper_right.y, upper_right.x]
+
+    return ','.join([str(i) for i in bbox])

@@ -135,7 +135,7 @@ class CSR(models.Model):
         max_length=1000,
     )
 
-    buffer_dist = models.FloatField(
+    search_dist = models.FloatField(
         help_text=_(
             'Search distance around query point in meters. Helpful for non-polygon '
             'features. Also determines cache hit range for rasters'),
