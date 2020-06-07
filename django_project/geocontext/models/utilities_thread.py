@@ -1,12 +1,21 @@
-import aiohttp
-import asyncio
+""" Depreciated duplicate of utilities that uses threading instead of async.
+Async with aoihttp speedups is more reliable than threading and shares a single session
+Threading requires uwsgi config - which has a performance impact:
+uwsgi.config
+enable-threads = True
+threads = 20
+processes = 4
+"""
+
 from collections import namedtuple
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
-from functools import partial
+import json
 import logging
 import pytz
+import requests
+import threading
 
-from asgiref.sync import async_to_sync
 from django.contrib.gis.gdal.error import SRSException
 from django.contrib.gis.geos import GEOSGeometry, Point
 from django.contrib.gis.measure import Distance
@@ -24,6 +33,7 @@ from geocontext.utilities import (
 )
 
 LOGGER = logging.getLogger(__name__)
+thread_local = threading.local()
 UtilArg = namedtuple('UtilArgs', ['group_key', 'csr_util'])
 
 
@@ -69,12 +79,29 @@ def retrieve_cache(csr_util) -> Cache:
         expired_time__lte=current_time,
         geometry__distance_lte=(csr_util.point, Distance(m=csr_util.search_dist))
     )
+    # Only expect one cache hit (there may be edge cases) - returns None if empty
     return caches.first()
 
 
-@async_to_sync
-async def async_retrieve_csr(util_arg_list: list) -> list:
-    """Fetch data and loads into CSRUtils instance using async session.
+def thread_retrieve_external(util_arg_list: list) -> list:
+    """Threading master function for loading external service data
+
+    :param util_arg_list: List with Registry util argument tuples
+    :type util_arg_list: CSRUtils
+
+    :return: list of threading tuple results
+    :rtype: list
+    """
+    new_result_list = []
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        for result in executor.map(retrieve_external_csr, util_arg_list):
+            new_result_list.append(result)
+    return new_result_list
+
+
+def retrieve_external_csr(util_arg: namedtuple) -> namedtuple:
+    """Fetch data and loads into CSRUtils instance
+    using threadlocal request session if found.
 
     :param namedtuple: (group_key, csr_util)
     :type util_arg: namedtuple(str, CSRUtils)
@@ -82,33 +109,19 @@ async def async_retrieve_csr(util_arg_list: list) -> list:
     :return: (group_key and CSRUtils)
     :rtype: namedtuple or None
     """
-    conn = aiohttp.TCPConnector(limit=100)
-    timeout = aiohttp.ClientTimeout(total=60, connect=2)
-    async with aiohttp.ClientSession(connector=conn, timeout=timeout) as session:
-        tasks = []
-        for util_arg in util_arg_list:
-            util_arg.csr_util.session = session
-            task = asyncio.ensure_future(async_worker(util_arg))
-            tasks.append(task)
-        new_util_arg_list = await asyncio.gather(*tasks)
-        return new_util_arg_list
-
-
-async def async_worker(util_arg: namedtuple) -> namedtuple:
-    """Fetch data and loads into CSRUtils instance using aiohttp shared clientsession.
-
-    :param namedtuple: (group_key, csr_util)
-    :type util_arg: namedtuple(str, CSRUtils)
-
-    :return: (group_key and CSRUtils)
-    :rtype: namedtuple or None
-    """
-    await util_arg.csr_util.retrieve_value()
+    util_arg.csr_util.retrieve_value()
     return util_arg
 
 
+def get_session() -> thread_local:
+    """Get thread local request session"""
+    if not hasattr(thread_local, "session"):
+        thread_local.session = requests.Session()
+    return thread_local.session
+
+
 class CSRUtils():
-    """Async context service registry model mock object + utility methods.
+    """Async/Threadsafe context service registry model mock object + utility methods.
     Init method calls ORM / blocking functions so should be done before async logic
     """
     def __init__(
@@ -141,7 +154,6 @@ class CSRUtils():
         self.srid = csr.srid
         self.cache_url = None
         self.value = None
-        self.session = None
 
         # Search distance query overrides csr in model - else default 10m
         if dist == 10.0 and csr.search_dist is not None:
@@ -207,18 +219,21 @@ class CSRUtils():
             except SRSException:
                 raise ValueError(f"SRID: '{self.srid_in}' not valid for {self.csr_key}")
 
-    async def retrieve_value(self) -> bool:
+    def retrieve_value(self) -> bool:
         """Load context value. All exception / logging / null values handled here.
+
+        :returns: success
+        :rtype: bool
         """
         try:
             if self.query_type == ServiceDefinitions.WMS:
-                await self.fetch_wms()
+                self.fetch_wms()
             elif self.query_type == ServiceDefinitions.WFS:
-                await self.fetch_wfs()
+                self.fetch_wfs()
             elif self.query_type == ServiceDefinitions.ARCREST:
-                await self.fetch_arcrest()
+                self.fetch_arcrest()
             elif self.query_type == ServiceDefinitions.PLACENAME:
-                await self.fetch_placename()
+                self.fetch_placename()
             else:
                 LOGGER.error(f"'{self.query_type}' not implimented for {self.csr_key}")
                 self.value = None
@@ -226,7 +241,7 @@ class CSRUtils():
             LOGGER.error(f"{self.cache_url} failed for: {self.csr_key} with: {e}")
             self.value = None
 
-    async def fetch_wms(self):
+    def fetch_wms(self):
         """Fetch WMS value
         """
         parameters = {
@@ -250,10 +265,10 @@ class CSRUtils():
             parameters['I'] = 5
             parameters['j'] = 5
 
-        json_response = await self.request_data(parameters)
+        json_response = self.request_data(parameters)
         self.value = json_response["features"][0]["properties"][self.layer_name]
 
-    async def fetch_wfs(self):
+    def fetch_wfs(self):
         """Fetch WFS value - Try intersect else buffer with search distance
         """
         layer_filter = (
@@ -303,7 +318,7 @@ class CSRUtils():
             except IndexError:
                 LOGGER.error(f"No geometry found for: {self.csr_key}")
 
-    async def fetch_arcrest(self):
+    def fetch_arcrest(self):
         """Fetch ArcRest value
         """
         parameters = {
@@ -318,7 +333,7 @@ class CSRUtils():
         json_response = self.request_data(parameters, query='/identify?')
         self.value = json_response['results'][0][self.layer_name]
 
-    async def fetch_placename(self):
+    def fetch_placename(self):
         """Fetch Placename value
         """
         parameters = {
@@ -329,7 +344,7 @@ class CSRUtils():
         json_response = self.request_data(parameters)
         self.value = json_response['geonames'][0][self.layer_name]
 
-    async def request_data(self, parameters: dict, query: str = "?") -> dict:
+    def request_data(self, parameters: dict, query: str = "?") -> dict:
         """Generates final query URL and fetches data.
 
         :param parameters: parameters to urlencode
@@ -348,7 +363,8 @@ class CSRUtils():
         else:
             query_url = f'{self.url}{query}{query_dict.urlencode()}'
 
-        # We are using another async session context manager
-        async with self.session.get(query_url) as response:
-            # Using aiohttp's async json parser
-            return await response.json()
+        session = get_session()
+        with session.get(query_url) as response:
+            if response.status_code == 200:
+                self.cache_url = query_url
+                return json.loads(response.content)

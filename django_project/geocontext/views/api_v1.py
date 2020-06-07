@@ -18,7 +18,7 @@ from geocontext.models.utilities import (
     CSRUtils,
     create_cache,
     retrieve_cache,
-    retrieve_external_csr,
+    async_retrieve_csr,
     UtilArg
 )
 from geocontext.forms import GeoContextForm
@@ -74,8 +74,8 @@ class GroupAPIView(views.APIView):
         group_values = GroupValues(x, y, group_key, srid)
         try:
             group_values.populate_group_values()
-        except Exception:
-            return Response("Could not fetch data", status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(f"Could not fetch data {e}", status.HTTP_400_BAD_REQUEST)
         group_value_serializer = GroupValueSerializer(group_values)
         return Response(group_value_serializer.data)
 

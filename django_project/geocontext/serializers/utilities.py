@@ -8,7 +8,7 @@ from geocontext.models.utilities import (
     CSRUtils,
     create_cache,
     retrieve_cache,
-    thread_retrieve_external,
+    async_retrieve_csr,
     UtilArg
 )
 
@@ -42,7 +42,7 @@ class GroupValues(object):
                 group_service.csr.key, self.x, self.y, self.srid, self.dist)
             cache = retrieve_cache(csr_util)
 
-            # Append all the caches found locally - list still needed
+            # Append all the caches found locally - add session and list values not found
             if cache is None:
                 util_arg = UtilArg(group_key=None, csr_util=csr_util)
                 util_arg_list.append(util_arg)
@@ -51,8 +51,8 @@ class GroupValues(object):
 
         # Parallel request external resources not found locally and add to cache
         if len(util_arg_list) > 0:
-            # Summon parallel requests for external requests
-            new_util_arg_list = thread_retrieve_external(util_arg_list)
+            # Async external requests
+            new_util_arg_list = async_retrieve_csr(util_arg_list)
 
             # Add new values to cache
             for new_util_arg in new_util_arg_list:
@@ -107,8 +107,8 @@ class CollectionValues(GroupValues):
 
 
         if len(util_arg_list) > 0:
-            # Summon parallel requests for external requests
-            new_util_arg_list = thread_retrieve_external(util_arg_list)
+            # Async external requests
+            new_util_arg_list = async_retrieve_csr(util_arg_list)
 
             for new_util_arg in new_util_arg_list:
                 # Add new values to cache

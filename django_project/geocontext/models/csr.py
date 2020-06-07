@@ -80,7 +80,9 @@ class CSR(models.Model):
     )
 
     result_regex = models.CharField(
-        help_text=_('Regex to retrieve the desired value.'),
+        help_text=_(
+            'Regex to retrieve the desired value. Can be the data layer name. '
+            'For geoserver it may be workspace:layer_name'),
         blank=False,
         null=False,
         max_length=200,
@@ -88,7 +90,7 @@ class CSR(models.Model):
 
     time_to_live = models.IntegerField(
         help_text=_(
-            'Time to live of Context Service to be used in caching in seconds unit.'),
+            'Refresh timeof the context in seconds - determines Cache persistence'),
         blank=True,
         null=True,
         default=604800  # 7 days
@@ -99,6 +101,14 @@ class CSR(models.Model):
         blank=True,
         null=True,
         default=4326
+    )
+
+    search_dist = models.FloatField(
+        help_text=_(
+            'Search distance around query point in meters. Helpful for non-polygon '
+            'features. Also determines cache hit range for rasters'),
+        blank=True,
+        null=True
     )
 
     layer_typename = models.CharField(
@@ -133,14 +143,6 @@ class CSR(models.Model):
         blank=True,
         null=True,
         max_length=1000,
-    )
-
-    search_dist = models.FloatField(
-        help_text=_(
-            'Search distance around query point in meters. Helpful for non-polygon '
-            'features. Also determines cache hit range for rasters'),
-        blank=True,
-        null=True
     )
 
     class Meta:

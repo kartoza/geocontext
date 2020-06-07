@@ -56,8 +56,7 @@ class Group(models.Model):
 
     graphable = models.BooleanField(
         help_text=_(
-            'Indicates if this registry returns data from which a graph can '
-            'be drawn.'),
+            'Indicates if this registry returns data from which a graph can be drawn.'),
         blank=True,
         null=False,
         default=False,
