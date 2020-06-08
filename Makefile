@@ -3,10 +3,13 @@ PROJECT_ID := geocontext
 PROD_SERVER := geocontext.kartoza.com
 SHELL := /bin/bash
 
-# SPECIFY DEPLOYMENT CONFIG HERE
-TAG := 2.0
-REPO := andretheronsa
-BRANCH := 2.0
+# DEPLOY CONFIG HERE
+export GIT := andretheronsa  # Default kartoza
+export REPO := geocontext  # Default geocontext
+export BRANCH := 2.0  # Default master
+export DOCKER := andretheronsa  # Default andretheronsa
+export IMAGE := geocontext  # Default geocontext
+export TAG := 2.0  # Default latest
 
 default: web
 setup-web: build web pause migrate collectstatic
@@ -14,7 +17,7 @@ setup-web: build web pause migrate collectstatic
 build:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Building in production mode"
+	@echo "Building uwsgi"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) build uwsgi
 
@@ -29,10 +32,17 @@ permissions:
 	@if [ -d "pg" ]; then sudo chmod -R a+rwx pg; fi
 	@if [ -d "backups" ]; then sudo chmod -R a+rwx backups; fi
 
+uwsgi:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Spin up UWSGI container"
+	@echo "------------------------------------------------------------------"
+	@docker-compose -p $(PROJECT_ID) up -d uwsgi
+
 web:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running in production mode"
+	@echo "Spin up NGINX web and DB backups"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) up -d web
 	@# Dont confuse this with the dbbackup make command below
@@ -52,17 +62,14 @@ deploy:
 	@echo "------------------------------------------------------------------"
 	@echo "Pushing image to production"
 	@echo "------------------------------------------------------------------"
-	@export TAG = $(TAG)
-	@export REPO = $(REPO)
-	@export BRANCH = $(BRANCH)
-	@./production/push-production.sh 
+	@./deployment/production/push-production.sh
 
 # ----------------------------------------------------------------------------
 #  Development
 # ----------------------------------------------------------------------------
 
-setup-dev: setup-web superuser import-data build-devweb devweb
-run-dev: web devweb
+setup-dev: build uwsgi pause migrate collectstatic import-data build-devweb devweb
+run-dev: devweb
 
 devweb: db
 	@echo
@@ -85,7 +92,7 @@ build-devweb: db
 shell:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Shelling in in production mode"
+	@echo "Shelling in uwsgi"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec uwsgi /bin/bash
 
@@ -99,28 +106,28 @@ pyshell:
 superuser:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Creating a superuser in production mode"
+	@echo "Creating a superuser"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py createsuperuser
 
 migrate:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running migrate in production mode"
+	@echo "Running migrate"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py migrate
 
 makemigrations:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running update migrations in production mode"
+	@echo "Running update migrations"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py makemigrations
 
 collectstatic:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Collecting static in production mode"
+	@echo "Collecting static"
 	@echo "------------------------------------------------------------------"
 	@docker exec $(PROJECT_ID)-uwsgi python manage.py collectstatic --noinput
 
@@ -173,24 +180,21 @@ test:
 reload:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Reload django project in production mode"
+	@echo "Reload Django"
 	@echo "------------------------------------------------------------------"
 	@docker exec $(PROJECT_ID)-uwsgi uwsgi --reload  /tmp/django.pid
 
 logs:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Showing uwsgi logs in production mode"
+	@echo "Showing uwsgi logs"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) logs uwsgi
 
 nginx:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running nginx in production mode"
-	@echo "Normally you should use this only for testing"
-	@echo "In a production environment you will typically use nginx running"
-	@echo "on the host rather if you have a multi-site host."
+	@echo "Running nginx"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) up -d nginx
 	@echo "Site should now be available at http://localhost"
@@ -204,14 +208,14 @@ rm: dbbackup rm-only
 kill:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Killing in production mode"
+	@echo "Killing"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) kill
 
 rm-only: kill
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Removing production instance!!! "
+	@echo "Remove all containers"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) rm
 
@@ -229,21 +233,21 @@ status:
 db:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running db in production mode"
+	@echo "Running db"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) up -d db
 
 dblogs:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Showing db logs in production mode"
+	@echo "Showing db logs"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) logs db
 
 nginxlogs:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Showing nginx logs in production mode"
+	@echo "Showing nginx logs"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) logs web
 
@@ -281,7 +285,7 @@ dbshell:
 dbrestore:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Restore dump from backups/latest.dmp in production mode"
+	@echo "Restore dump from backups/latest.dmp"
 	@echo "------------------------------------------------------------------"
 	@# - prefix causes command to continue even if it fails
 	-@docker exec -t -i $(PROJECT_ID)-db su - postgres -c "dropdb gis"
@@ -291,7 +295,7 @@ dbrestore:
 db-fresh-restore:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Restore dump from backups/latest.dmp in production mode"
+	@echo "Restore dump from backups/latest.dmp"
 	@echo "------------------------------------------------------------------"
 	-@docker exec -t -i $(PROJECT_ID)-db su - postgres -c "dropdb gis"
 	@docker exec -t -i $(PROJECT_ID)-db su - postgres -c "createdb -O docker -T template_postgis gis"
@@ -300,7 +304,7 @@ db-fresh-restore:
 dbbackup:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Create `date +%d-%B-%Y`.dmp in production mode"
+	@echo "Create `date +%d-%B-%Y`.dmp"
 	@echo "Warning: backups/latest.dmp will be replaced with a symlink to the new backup."
 	@echo "------------------------------------------------------------------"
 	@# - prefix causes command to continue even if it fails
@@ -320,9 +324,9 @@ help:
 	@echo ""
 	@echo "setup-dev        :Dev shortcut - builds web + dev containers, configure & load data."
 	@echo "run-dev          :Start up dev container"
-	@echo "setup-web        :Builds, configures and runs the production containers"
-	@echo "web              :Default - runs the production site."
-	@echo "deploy           :Extends uwsgi image with production, tag and push."
+	@echo "setup-web        :Builds, configures and runs the production containers + web server"
+	@echo "web              :Default - runs the web server."
+	@echo "deploy           :Extends uwsgi image with production, tag and push. Config in Makefile. Default=kartoza/geocontext:master."
 	@echo ""
 	@echo ""
 	@echo "-----------------------------Django Administration-----------------------------"

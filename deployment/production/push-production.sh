@@ -1,32 +1,43 @@
 #!/usr/bin/env bash
 
-if [ -z "$REPO_NAME" ]; then
-	REPO_NAME=kartoza
+if [[ -z "${GIT}" ]]; then
+	GIT=kartoza
 fi
 
-if [ -z "$IMAGE_NAME" ]; then
-	IMAGE_NAME=geocontext
+if [[ -z "${REPO}" ]]; then
+	REPO=geocontext
 fi
 
-if [ -z "$TAG_NAME" ]; then
-	TAG_NAME=latest
-fi
-
-if [ -z "$BUILD_ARGS" ]; then
-	BUILD_ARGS="--no-cache"
-fi
-
-# Build Args Environment
-
-if [ -z "$BRANCH" ]; then
+if [[ -z "${BRANCH}" ]]; then
 	BRANCH=master
 fi
 
-echo "BRANCH=${BRANCH}"
+if [[ -z "${DOCKER}" ]]; then
+	DOCKER=kartoza
+fi
 
-echo "Build: $REPO_NAME/$IMAGE_NAME:$TAG_NAME"
+if [[ -z "${IMAGE}" ]]; then
+	IMAGE=geocontext
+fi
 
-cd production
-docker build -f Dockerfile-prod -t ${REPO_NAME}/${IMAGE_NAME} --build-arg BRANCH=${BRANCH} ${BUILD_ARGS} .
-docker tag ${REPO_NAME}/${IMAGE_NAME}:latest ${REPO_NAME}/${IMAGE_NAME}:${TAG_NAME}
-docker push ${REPO_NAME}/${IMAGE_NAME}:${TAG_NAME}
+if [[ -z "${TAG}" ]]; then
+	TAG=latest
+fi
+
+if [[ -z "${BUILD_ARGS}" ]]; then
+	BUILD_ARGS="--no-cache"
+fi
+
+echo "Building from: git://github.com/${GIT}/${REPO}/${BRANCH}.git"
+echo "Pushing to: https://hub.docker.com/r/${DOCKER}/${IMAGE}:${TAG}"
+
+docker build \
+	-f deployment/production/Dockerfile-prod \
+	-t ${DOCKER}/${IMAGE}:${TAG} \
+	--build-arg GIT=${GIT} \
+	--build-arg REPO=${REPO} \
+	--build-arg BRANCH=${BRANCH} \
+	${BUILD_ARGS} \
+	.
+docker tag ${DOCKER}/${IMAGE}:latest ${DOCKER}/${IMAGE}:${TAG}
+docker push ${DOCKER}/${IMAGE}:${TAG}

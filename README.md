@@ -49,7 +49,7 @@ make permissions
 ```bash
 make setup-web
 ```
-3. Create a superuser for Django admin access on `http://localhost/admin/` - here you can manually modify data
+4. Create a superuser for Django admin access on `http://localhost/admin/` - here you can manually modify data
 ```bash
 make superuser
 ```
@@ -115,8 +115,8 @@ make test
 
 ## Deployment
 
-1. Run make deploy to build and push the production image
-2. It will use the tag specified on top of makefile to fetch the correct github branch and tag image
+1. Config git repo/branch and dockerhub/image:tag to use for deploy in top of Makefile
+2. Run make command to build and push image
 ```
 make deploy
 ```
@@ -124,7 +124,6 @@ make deploy
 
 
 ## Participation
-
 
 We work under the philosophy that stakeholders should have access to the
 development and source code, and be able to participate in every level of the
