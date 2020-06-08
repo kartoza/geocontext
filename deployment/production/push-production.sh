@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ -z "$REPO_NAME" ]; then
-	REPO_NAME=andretheronsa
+	REPO_NAME=kartoza
 fi
 
 if [ -z "$IMAGE_NAME" ]; then
@@ -9,7 +9,7 @@ if [ -z "$IMAGE_NAME" ]; then
 fi
 
 if [ -z "$TAG_NAME" ]; then
-	TAG_NAME=2.0
+	TAG_NAME=latest
 fi
 
 if [ -z "$BUILD_ARGS" ]; then
@@ -19,7 +19,7 @@ fi
 # Build Args Environment
 
 if [ -z "$BRANCH" ]; then
-	BRANCH=2.0
+	BRANCH=master
 fi
 
 echo "BRANCH=${BRANCH}"

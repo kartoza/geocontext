@@ -37,9 +37,20 @@ For deployment we use [docker](http://docker.com) so you need to have docker
 running on the host. GeoContext is a django app so it will help if you have
 some knowledge of running a django site.
 
-```
+1. Clone the project
+```bash
 git clone git://github.com/kartoza/geocontext.git
+```
+2. Ensure shared volume permissions are set
+```bash
+make permissions
+```
+3. Setup and run the web service: available on `http://localhost/`
+```bash
 make setup-web
+```
+3. Create a superuser for Django admin access on `http://localhost/admin/` - here you can manually modify data
+```bash
 make superuser
 ```
 
@@ -82,25 +93,32 @@ An easy way to set up a locally development environment is with Docker and VSCod
 1. Add any ENV variables needed to for uwsgi & dvweb to `/deployment/.env`
 2. Use setup-dev to build the production and development containers, create superuser,
 and import default services.
-```
+```bash
 make setup-dev
 ```
 3. Geocontext should now be running at localhost.
 4. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
 5. Attach a VSCode session by right clicking on the running geocontext_devweb container in the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension
 6. Now we can get into the running containers to run management commands, run another server at another port, debug etc.
-7. Flak8 and Tests can be run using the development environment using
+7. In the geocontext_devweb container terminal you can run a test server as follows:
 ```
+python manage.py runserver 8001
+```
+7. Flake8 linting can be run with:
+```bash
 make flake8
+```
+8. Automated tests can be run with:
+```bash
 make test
 ```
 
 ## Deployment
 
 1. Run make deploy to build and push the production image
-2. It will use the makefile tag to fetch the correct github branch and tag image
+2. It will use the tag specified on top of makefile to fetch the correct github branch and tag image
 ```
-make setup-dev
+make deploy
 ```
 * Note the UWSGI image must be available (setup-dev / setup-web)
 
