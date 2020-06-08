@@ -79,18 +79,17 @@ find the link in the main page)
 
 An easy way to set up a locally development environment is with Docker and VSCode.
 
-1. For local DB access first uncomment the ports section in the db app in the docker-compose.yml
-2. Add any ENV variables needed to for uwsgi & dvweb to `/deployment/.env`
-3. Use setup-dev to build the production and development containers, create superuser,
+1. Add any ENV variables needed to for uwsgi & dvweb to `/deployment/.env`
+2. Use setup-dev to build the production and development containers, create superuser,
 and import default services.
 ```
 make setup-dev
 ```
-4. Geocontext should now be running at localhost.
-5. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
-6. Attach a VSCode session by right clicking on the running geocontext_devweb container in the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension
-7. Now we can get into the running containers to run management commands, run another server at another port, debug etc.
-8. Flak8 and Tests can be run using the development environment using
+3. Geocontext should now be running at localhost.
+4. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
+5. Attach a VSCode session by right clicking on the running geocontext_devweb container in the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension
+6. Now we can get into the running containers to run management commands, run another server at another port, debug etc.
+7. Flak8 and Tests can be run using the development environment using
 ```
 make flake8
 make test

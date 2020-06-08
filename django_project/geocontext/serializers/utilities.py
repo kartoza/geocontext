@@ -1,5 +1,3 @@
-from django.shortcuts import get_object_or_404
-
 from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
 from geocontext.models.group import Group
@@ -21,7 +19,7 @@ class GroupValues(object):
         self.y = y
         self.srid = srid
         self.dist = dist
-        self.group = get_object_or_404(Group, key=group_key)
+        self.group = Group.objects.get(key=group_key)
         self.key = self.group.key
         self.name = self.group.name
         self.graphable = self.group.graphable
@@ -69,7 +67,7 @@ class CollectionValues(GroupValues):
         self.y = y
         self.srid = srid
         self.dist = dist
-        self.collection = get_object_or_404(Collection, key=collection_key)
+        self.collection = Collection.objects.get(key=collection_key)
         self.key = self.collection.key
         self.name = self.collection.name
         self.context_group_values = []  # I would like to rename to 'group_values'
@@ -88,7 +86,7 @@ class CollectionValues(GroupValues):
 
         # We need to find CRS not in cache in all groups
         for collection_group in collection_groups:
-            group = get_object_or_404(Group, key=collection_group.group.key)
+            group = Group.objects.get(key=collection_group.group.key)
             group_services = GroupServices.objects.filter(group=group).order_by('order')
             for group_service in group_services:
                 # Init ServiceUtil and check if it is in cache

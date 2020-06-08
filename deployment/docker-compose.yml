@@ -83,8 +83,8 @@ services:
     restart: on-failure
     healthcheck:
       test: "exit 0"
-#    ports:
-#      - "25432:5432"
+    ports:
+      - "25432:5432"
 
   dbbackups:
     container_name: geocontext-db-backups
