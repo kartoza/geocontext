@@ -13,46 +13,46 @@ from rest_framework import generics
 from rest_framework import views
 from rest_framework.response import Response
 
-from geocontext.models.csr import CSR
+from geocontext.models.service import Service
 from geocontext.models.utilities import (
-    CSRUtils,
+    ServiceUtils,
     create_cache,
     retrieve_cache,
-    async_retrieve_csr,
+    async_retrieve_service,
     UtilArg
 )
 from geocontext.forms import GeoContextForm
 from geocontext.serializers.cache import CacheGeoJSONSerializer, CacheSerializer
 from geocontext.serializers.collection import CollectionValueSerializer
-from geocontext.serializers.csr import CSRSerializer
+from geocontext.serializers.service import ServiceSerializer
 from geocontext.serializers.group import GroupValueSerializer
 from geocontext.serializers.utilities import CollectionValues, GroupValues
 
 
-class CSRListAPIView(generics.ListAPIView):
-    """List all context service registries."""
-    queryset = CSR.objects.all()
-    serializer_class = CSRSerializer
+class ServiceListAPIView(generics.ListAPIView):
+    """List all context services."""
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
 
 
-class CSRDetailAPIView(generics.RetrieveAPIView):
-    """Retrieve details of a context service registry."""
+class ServiceDetailAPIView(generics.RetrieveAPIView):
+    """Retrieve details of a context service."""
     lookup_field = 'key'
-    queryset = CSR.objects.all()
-    serializer_class = CSRSerializer
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
 
 
 class CacheListAPI(views.APIView):
     """Retrieving values from cache matching: x (long), y (lat)
     """
     def get(self, request, x, y, srid=4326):
-        csr_list = CSR.objects.all()
-        csr_keys = [o.key for o in csr_list]
+        services = Service.objects.all()
+        service_keys = [o.key for o in services]
         caches = []
         try:
-            for csr_key in csr_keys:
-                csr_util = CSRUtils(csr_key, x, y, srid)
-                cache = retrieve_cache(csr_util)
+            for service_key in service_keys:
+                service_util = ServiceUtils(service_key, x, y, srid)
+                cache = retrieve_cache(service_util)
                 caches.append(cache)
         except Exception:
             return Response("Server error", status.HTTP_400_BAD_REQUEST)
@@ -124,8 +124,8 @@ class RiverNameAPIView(views.APIView):
             raise Http404()
 
 
-def get_csr(request):
-    """Get get_csr view.
+def get_service(request):
+    """Get get_service view.
 
     :raises Http404: Can not find context
     :return: Form
@@ -141,14 +141,14 @@ def get_csr(request):
             x = cleaned_data['x']
             y = cleaned_data['y']
             srid = cleaned_data.get('srid', 4326)
-            csr_key = cleaned_data['csr_key_key']
-            csr_util = CSRUtils(csr_key, x, y, srid)
-            cache = retrieve_cache(csr_util)
+            service_key = cleaned_data['service_key']
+            service_util = ServiceUtils(service_key, x, y, srid)
+            cache = retrieve_cache(service_util)
             if cache is None:
-                util_arg = UtilArg(group_key=None, csr_util=csr_util)
-                new_util_arg = retrieve_external_csr(util_arg)
-                if new_util_arg.csr_util.value is not None:
-                    cache = create_cache(new_util_arg.csr_util)
+                util_arg = UtilArg(group_key=None, service_util=service_util)
+                new_util_arg = retrieve_external_service(util_arg)
+                if new_util_arg.service_util.value is not None:
+                    cache = create_cache(new_util_arg.service_util)
             fields = ('value', 'key')
             if cache:
                 return HttpResponse(
@@ -165,4 +165,4 @@ def get_csr(request):
     else:
         form = GeoContextForm(initial={'srid': 4326})
 
-    return render(request, 'geocontext/get_csr.html', {'form': form})
+    return render(request, 'geocontext/get_service.html', {'form': form})

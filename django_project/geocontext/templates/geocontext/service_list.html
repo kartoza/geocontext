@@ -1,36 +1,36 @@
 {% extends 'main_base.html' %}
 
 {% block title %}
-    Geocontext Service Registry
+    Geocontext Services
 {% endblock %}
 
 {% block body_content %}
     <div class="row justify-content-center">
         <div class="col-10">
-            <h1>Geocontext Service Registries</h1>
+            <h1>Geocontext Services</h1>
         </div>
     </div>
     <div class="row justify-content-center">
       <div class="col-3">
         <div class="list-group" id="list-tab" role="tablist">
-            {% for csr in csr_list %}
+            {% for service in service_list %}
                 <a class="list-group-item list-group-item-action
-                    {% if csr == csr_list.0 %}active{% endif %}"
-                   id="list-{{ csr.key }}-list" data-toggle="list"
-                   href="#list-{{ csr.key }}"
-                   role="tab" aria-controls="home">{{ csr.name }}</a>
+                    {% if service == service_list.0 %}active{% endif %}"
+                   id="list-{{ service.key }}-list" data-toggle="list"
+                   href="#list-{{ service.key }}"
+                   role="tab" aria-controls="home">{{ service.name }}</a>
 
             {% endfor %}
         </div>
       </div>
       <div class="col-7">
         <div class="tab-content" id="nav-tabContent">
-            {% for csr in csr_list %}
+            {% for service in service_list %}
                 <div class="tab-pane fade
-                    {% if csr == csr_list.0 %}show active{% endif %}"
-                     id="list-{{ csr.key }}" role="tabpanel"
-                     aria-labelledby="list-{{ csr.key }}-list">
-                    {% include "geocontext/includes/csr_content.html" %}
+                    {% if service == service_list.0 %}show active{% endif %}"
+                     id="list-{{ service.key }}" role="tabpanel"
+                     aria-labelledby="list-{{ service.key }}-list">
+                    {% include "geocontext/includes/service_content.html" %}
                 </div>
             {% endfor %}
         </div>

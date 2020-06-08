@@ -1,6 +1,8 @@
+export COMPOSE_FILE=deployment/docker-compose.yml
 PROJECT_ID := geocontext
 PROD_SERVER := geocontext.kartoza.com
 SHELL := /bin/bash
+image_tag := 2.0
 
 default: web
 setup-web: build permissions web pause migrate collectstatic

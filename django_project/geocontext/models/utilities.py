@@ -2,7 +2,6 @@ import aiohttp
 import asyncio
 from collections import namedtuple
 from datetime import datetime, timedelta
-from functools import partial
 import logging
 import pytz
 
@@ -12,7 +11,7 @@ from django.contrib.gis.geos import GEOSGeometry, Point
 from django.contrib.gis.measure import Distance
 from django.http import QueryDict
 
-from geocontext.models.csr import CSR
+from geocontext.models.service import Service
 from geocontext.models.cache import Cache
 from geocontext.utilities import (
     convert_2d_to_3d,
@@ -24,62 +23,67 @@ from geocontext.utilities import (
 )
 
 LOGGER = logging.getLogger(__name__)
-UtilArg = namedtuple('UtilArgs', ['group_key', 'csr_util'])
+UtilArg = namedtuple('UtilArgs', ['group_key', 'service_util'])
 
 
-def create_cache(csr_util) -> Cache:
+def create_cache(service_util) -> Cache:
     """Add context value to cache
 
-    :param csr_util: CSRUtils instance
-    :type csr_util: CSRUtils
+    :param service_util: ServiceUtils instance
+    :type service_util: ServiceUtils
 
     :return: Context cache instance
     :rtype: Cache
     """
-    csr = CSR.objects.get(key=csr_util.csr_key)
-    expired_time = (datetime.utcnow() + timedelta(seconds=csr.time_to_live))
+    service = Service.objects.get(key=service_util.service_key)
+    expired_time = (datetime.utcnow() + timedelta(seconds=service.time_to_live))
     expired_time = expired_time.replace(tzinfo=pytz.UTC)
-    cache = Cache(csr=csr, name=csr.key, value=csr_util.value, expired_time=expired_time)
-    if csr_util.cache_url:
-        cache.source_uri = csr_util.cache_url
-    if csr_util.geometry:
-        if csr_util.geometry.hasz:
-            cache.geometry = csr_util.geometry
+    cache = Cache(
+        service=service,
+        name=service.key,
+        value=service_util.value,
+        expired_time=expired_time
+    )
+    if service_util.cache_url:
+        cache.source_uri = service_util.cache_url
+    if service_util.geometry:
+        if service_util.geometry.hasz:
+            cache.geometry = service_util.geometry
         else:
-            cache.geometry = convert_2d_to_3d(csr_util.geometry)
+            cache.geometry = convert_2d_to_3d(service_util.geometry)
     cache.save()
     cache.refresh_from_db()
     return cache
 
 
-def retrieve_cache(csr_util) -> Cache:
-    """Try to retrieve csr cache from query point input.
+def retrieve_cache(service_util) -> Cache:
+    """Try to retrieve service cache from query point input.
     Filters for search distance and expiry date.
 
-    :param csr_util: CSRUtils instance
-    :type csr_util: CSRUtils
+    :param service_util: ServiceUtils instance
+    :type service_util: ServiceUtils
 
     :returns: cache on None
     :rtype: cache or None
     """
     current_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
-    csr = CSR.objects.get(key=csr_util.csr_key)
+    service = Service.objects.get(key=service_util.service_key)
     caches = Cache.objects.filter(
-        csr=csr,
+        service=service,
         expired_time__lte=current_time,
-        geometry__distance_lte=(csr_util.point, Distance(m=csr_util.search_dist))
+        geometry__distance_lte=(service_util.point, Distance(m=service_util.search_dist))
     )
     return caches.first()
 
 
 @async_to_sync
-async def async_retrieve_csr(util_arg_list: list) -> list:
-    """Fetch data and loads into CSRUtils instance using async session.
+async def async_retrieve_service(util_arg_list: list) -> list:
+    """Fetch data and loads into ServiceUtils instance using async session.
 
-    :param namedtuple: (group_key, csr_util)
-    :type util_arg: namedtuple(str, CSRUtils)
+    :param namedtuple: (group_key, service_util)
+    :type util_arg: namedtuple(str, ServiceUtils)
 
-    :return: (group_key and CSRUtils)
+    :return: (group_key and ServiceUtils)
     :rtype: namedtuple or None
     """
     conn = aiohttp.TCPConnector(limit=100)
@@ -87,7 +91,7 @@ async def async_retrieve_csr(util_arg_list: list) -> list:
     async with aiohttp.ClientSession(connector=conn, timeout=timeout) as session:
         tasks = []
         for util_arg in util_arg_list:
-            util_arg.csr_util.session = session
+            util_arg.service_util.session = session
             task = asyncio.ensure_future(async_worker(util_arg))
             tasks.append(task)
         new_util_arg_list = await asyncio.gather(*tasks)
@@ -95,28 +99,28 @@ async def async_retrieve_csr(util_arg_list: list) -> list:
 
 
 async def async_worker(util_arg: namedtuple) -> namedtuple:
-    """Fetch data and loads into CSRUtils instance using aiohttp shared clientsession.
+    """Fetch data and loads into ServiceUtils instance using aiohttp shared clientsession.
 
-    :param namedtuple: (group_key, csr_util)
-    :type util_arg: namedtuple(str, CSRUtils)
+    :param namedtuple: (group_key, service_util)
+    :type util_arg: namedtuple(str, ServiceUtils)
 
-    :return: (group_key and CSRUtils)
+    :return: (group_key and ServiceUtils)
     :rtype: namedtuple or None
     """
-    await util_arg.csr_util.retrieve_value()
+    await util_arg.service_util.retrieve_value()
     return util_arg
 
 
-class CSRUtils():
-    """Async context service registry model mock object + utility methods.
+class ServiceUtils():
+    """Async context service model mock object + utility methods.
     Init method calls ORM / blocking functions so should be done before async logic
     """
-    def __init__(
-        self, csr_key: str, x: float, y: float, srid_in: int = 4326, dist: float = 10.0):
+    def __init__(self, service_key: str, x: float, y: float,
+                 srid_in: int = 4326, dist: float = 10.0):
         """Load object. Prepare geometry. This __init__ is async blocking.
 
-        :param csr_key: csr_key
-        :type csr_key: str
+        :param service_key: service_key
+        :type service_key: str
 
         :param x: (longitude)
         :type x: float
@@ -127,25 +131,25 @@ class CSRUtils():
         :param srid: SRID (default=4326).
         :type srid: int
 
-        :param dist: Search distance query overide csr (default=10.0).
+        :param dist: Search distance query overide service (default=10.0).
         :type dist: int
         """
-        csr = CSR.objects.get(key=csr_key)
-        self.csr_key = csr_key
-        self.query_type = csr.query_type
-        self.service_version = csr.service_version
-        self.layer_typename = csr.layer_typename
-        self.result_regex = csr.result_regex
-        self.api_key = csr.api_key
-        self.url = csr.url
-        self.srid = csr.srid
+        service = Service.objects.get(key=service_key)
+        self.service_key = service_key
+        self.query_type = service.query_type
+        self.service_version = service.service_version
+        self.layer_typename = service.layer_typename
+        self.result_regex = service.result_regex
+        self.api_key = service.api_key
+        self.url = service.url
+        self.srid = service.srid
         self.cache_url = None
         self.value = None
         self.session = None
 
-        # Search distance query overrides csr in model - else default 10m
-        if dist == 10.0 and csr.search_dist is not None:
-            self.search_dist = csr.search_dist
+        # Search distance query overrides service in model - else default 10m
+        if dist == 10.0 and service.search_dist is not None:
+            self.search_dist = service.search_dist
         else:
             self.search_dist = dist
 
@@ -168,13 +172,13 @@ class CSRUtils():
         self.bbox = get_bbox(self.point)
 
         # Remove ORM model from instance object for in case...
-        csr = None
+        service = None
 
     def load_point(self) -> Point:
-        """Transform coordinate to the registry instance srid in decimal degrees.
+        """Transform coordinate to the service instance srid in decimal degrees.
 
         Converts DMS (Split by °,',", or :) to decimal degree.
-        Converts to SRID of the context registry
+        Converts to SRID of the service 
 
         :raises ValueError: If coordinate cannot be parsed
 
@@ -191,7 +195,7 @@ class CSRUtils():
                     degrees, minutes, seconds = parse_dms(coord)
                     coord_dd = dms_dd(degrees, minutes, seconds)
                 except ValueError:
-                    raise ValueError(f"Coord parse for {self.csr_key} failed: {coord}.")
+                    raise ValueError(f"Coord '{coord}' parse failed: {self.service_key} ")
             setattr(self, coord_attr_name, coord_dd)
 
         # Parse srid and create point in crs srid
@@ -205,7 +209,7 @@ class CSRUtils():
             try:
                 self.point = convert_coordinate(self.point, self.srid)
             except SRSException:
-                raise ValueError(f"SRID: '{self.srid_in}' not valid for {self.csr_key}")
+                raise ValueError(f"SRID '{self.srid_in}' not valid: {self.service_key}")
 
     async def retrieve_value(self) -> bool:
         """Load context value. All exception / logging / null values handled here.
@@ -220,10 +224,10 @@ class CSRUtils():
             elif self.query_type == ServiceDefinitions.PLACENAME:
                 await self.fetch_placename()
             else:
-                LOGGER.error(f"'{self.query_type}' not implimented for {self.csr_key}")
+                LOGGER.error(f"'{self.query_type}' not implimented: {self.service_key}")
                 self.value = None
         except Exception as e:
-            LOGGER.error(f"{self.cache_url} failed for: {self.csr_key} with: {e}")
+            LOGGER.error(f"{self.cache_url} failed for: {self.service_key} with: {e}")
             self.value = None
 
     async def fetch_wms(self):
@@ -280,7 +284,7 @@ class CSRUtils():
         if len(json_response["features"]) > 0:
             self.value = json_response["features"][0]["properties"][self.layer_name]
         else:
-            LOGGER.info(f"WFS intersect filter failed for: {self.csr_key} - attempt bbox")
+            LOGGER.info(f"WFS intersect filter failed: {self.service_key} - attempt bbox")
             parameters = {
                 'SERVICE': 'WFS',
                 'REQUEST': 'GetFeature',
@@ -301,7 +305,7 @@ class CSRUtils():
                     self.geometry = GEOSGeometry(str(new_geometry))
                     self.geometry.srid = self.point.srid
             except IndexError:
-                LOGGER.error(f"No geometry found for: {self.csr_key}")
+                LOGGER.error(f"No geometry found for: {self.service_key}")
 
     async def fetch_arcrest(self):
         """Fetch ArcRest value

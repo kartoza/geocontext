@@ -9,10 +9,9 @@ from geocontext.utilities import ServiceDefinitions
 LOGGER = logging.getLogger(__name__)
 
 
-class CSR(models.Model):
-    """Context Service Registry"""
+class Service(models.Model):
     key = models.CharField(
-        help_text=_('Key of Context Service.'),
+        help_text=_('Key of Service.'),
         blank=False,
         null=False,
         max_length=200,
@@ -21,35 +20,35 @@ class CSR(models.Model):
     )
 
     name = models.CharField(
-        help_text=_('Name of Context Service.'),
+        help_text=_('Name of Service.'),
         blank=False,
         null=False,
         max_length=200,
     )
 
     description = models.CharField(
-        help_text=_('Description of Context Service.'),
+        help_text=_('Description of Service.'),
         blank=True,
         null=True,
         max_length=1000,
     )
 
     url = models.CharField(
-        help_text=_('URL of Context Service.'),
+        help_text=_('URL of Service.'),
         blank=False,
         null=False,
         max_length=1000,
     )
 
     user = models.CharField(
-        help_text=_('User name for accessing Context Service.'),
+        help_text=_('User name for accessing Service.'),
         blank=True,
         null=True,
         max_length=200,
     )
 
     password = models.CharField(
-        help_text=_('Password for accessing Context Service.'),
+        help_text=_('Password for accessing Service.'),
         blank=True,
         null=True,
         max_length=200,
@@ -57,7 +56,7 @@ class CSR(models.Model):
 
     api_key = models.CharField(
         help_text=_(
-            'API key for accessing Context Service. For PlaceName queries '
+            'API key for accessing Service. For PlaceName queries '
             'this is your username.'),
         blank=True,
         null=True,
@@ -65,14 +64,14 @@ class CSR(models.Model):
     )
 
     query_url = models.CharField(
-        help_text=_('Query URL for accessing Context Service.'),
+        help_text=_('Query URL for accessing Service.'),
         blank=True,
         null=True,
         max_length=1000,
     )
 
     query_type = models.CharField(
-        help_text=_('Query type of the Context Service.'),
+        help_text=_('Query type of the Service.'),
         blank=False,
         null=False,
         max_length=200,
@@ -90,14 +89,14 @@ class CSR(models.Model):
 
     time_to_live = models.IntegerField(
         help_text=_(
-            'Refresh timeof the context in seconds - determines Cache persistence'),
+            'Refresh timeof the service in seconds - determines Cache persistence'),
         blank=True,
         null=True,
         default=604800  # 7 days
     )
 
     srid = models.IntegerField(
-        help_text=_('The Spatial Reference ID of the service registry.'),
+        help_text=_('The Spatial Reference ID of the service.'),
         blank=True,
         null=True,
         default=4326
@@ -112,7 +111,7 @@ class CSR(models.Model):
     )
 
     layer_typename = models.CharField(
-        help_text=_('Layer type name to get the context.'),
+        help_text=_('Layer type name to get the service.'),
         blank=False,
         null=False,
         max_length=200,
@@ -126,20 +125,20 @@ class CSR(models.Model):
     )
 
     provenance = models.CharField(
-        help_text=_('The origin or source of the Context Service Registry.'),
+        help_text=_('The origin or source of the Service.'),
         blank=True,
         null=True,
         max_length=1000,
     )
 
     notes = models.TextField(
-        help_text=_('Notes for the Context Service Registry.'),
+        help_text=_('Notes for the Service.'),
         blank=True,
         null=True,
     )
 
     licensing = models.CharField(
-        help_text=_('The licensing scheme for the Context Service Registry.'),
+        help_text=_('The licensing scheme for the Service.'),
         blank=True,
         null=True,
         max_length=1000,

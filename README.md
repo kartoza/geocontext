@@ -14,13 +14,12 @@ The latest source code is available at
 ## Key features
 
 * Stateless and easy to deploy
-* Able to retrieve context information of a point from several sources 
-(context service registries)
+* Able to retrieve geo-context information of a point from several services
+* Optimized for rapid information retrieval
 * Currently work with WFS and WMS sources
 * Using cache mechanism to retrieve context information faster
-* Two level hierarchy (context service registry --> context group --> context
- collection) for easier to manage
-* Simple API
+* Three level hierarchy (service --> group --> collection to sort services to request
+* Simple API returning geojson data
 
 
 ## Project activity
@@ -40,13 +39,12 @@ some knowledge of running a django site.
 
 ```
 git clone git://github.com/kartoza/geocontext.git
-cd geocontext/deployment
-make run
+make setup-web
 make superuser
 ```
 
 **Loading Data**
-GeoContext use a json file to populate the context service registry and its 
+GeoContext use a json file to populate the context service and its 
 group and collection. Everything is stored in [geocontext.json](https://github.com/kartoza/geocontext/blob/develop/django_project/base/management/commands/geocontext.json).
 You can load it by running this command:
 ```bash
@@ -56,12 +54,12 @@ Or if you have your own json file, you can load it with:
 ```bash
 make import-data FILE_URI=path/to/your/json/file
 ```
-Be careful, it will replace your context service registry data (and its 
+Be careful, it will replace your context service data (and its 
 hierarchy) with your new one from the json file. But no worries, when your 
-run this `import-data` command, it will export your context service registry 
+run this `import-data` command, it will export your context service 
 data to a new json file.
 
-You can also export your context service registry to json file by running:
+You can also export your context service to json file by running:
 ```bash
 make export-data
 ```
@@ -69,7 +67,7 @@ make export-data
 ## API
 After you have working geocontext instance, you can then check the available 
 API from the API documentation links (you can find it in the main page) or 
-see the content and the hierarchy of context service registry (you can also 
+see the content and the hierarchy of context service (you can also 
 find the link in the main page)
 
 ### V1
@@ -77,25 +75,35 @@ find the link in the main page)
 ### v2
 
 
-## Develop quickstart with Docker and VSCode
+## Quick start for develops with Docker and VSCode
 
 An easy way to set up a locally development environment is with Docker and VSCode.
 
-1. For local DB access first uncomment the ports section in the db app in the docker-compose.yml 
-2. Use setup-dev to build the production and development containers, create superuser,
-and import default registries.
+1. For local DB access first uncomment the ports section in the db app in the docker-compose.yml
+2. Add any ENV variables needed to for uwsgi & dvweb to `/deployment/.env`
+3. Use setup-dev to build the production and development containers, create superuser,
+and import default services.
 ```
 make setup-dev
 ```
-3. Geocontext should now be running at localhost.
-4. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
-5. Attach a VSCode session by right clicking on the running geocontext_devweb container in the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension
-6. Now we can get into the running containers to run management commands, run another server at another port, debug etc.
-7. Flak8 and Tests can be run using the development environment using
+4. Geocontext should now be running at localhost.
+5. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
+6. Attach a VSCode session by right clicking on the running geocontext_devweb container in the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension
+7. Now we can get into the running containers to run management commands, run another server at another port, debug etc.
+8. Flak8 and Tests can be run using the development environment using
 ```
 make flake8
 make test
 ```
+
+## Deployment
+
+1. Run make deploy to build and push the production image
+2. It will use the makefile tag to fetch the correct github branch and tag image
+```
+make setup-dev
+```
+* Note the UWSGI image must be available (setup-dev / setup-web)
 
 
 ## Participation

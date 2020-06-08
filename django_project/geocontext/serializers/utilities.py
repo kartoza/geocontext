@@ -5,10 +5,10 @@ from geocontext.models.collection_groups import CollectionGroups
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
 from geocontext.models.utilities import (
-    CSRUtils,
+    ServiceUtils,
     create_cache,
     retrieve_cache,
-    async_retrieve_csr,
+    async_retrieve_service,
     UtilArg
 )
 
@@ -25,26 +25,26 @@ class GroupValues(object):
         self.key = self.group.key
         self.name = self.group.name
         self.graphable = self.group.graphable
-        self.service_registry_values = []
+        self.service_registry_values = []  # I would like to rename to 'service_values'
 
     def populate_group_values(self):
-        """Populate GroupValue with service registry values.
+        """Populate GroupValue with service values.
         First identify values not in cache.
-        Then fetch all external values using threaded CSRUtil.
+        Then fetch all external values using threaded ServiceUtil.
         Finally add new values to cache and to instance to serialize
         Ensures ORM is not touched during async network data request
         """
         util_arg_list = []
         group_services = GroupServices.objects.filter(group=self.group).order_by('order')
         for group_service in group_services:
-            # Init CSRUtil and check if it is in cache
-            csr_util = CSRUtils(
-                group_service.csr.key, self.x, self.y, self.srid, self.dist)
-            cache = retrieve_cache(csr_util)
+            # Init ServiceUtil and check if it is in cache
+            service_util = ServiceUtils(
+                group_service.service.key, self.x, self.y, self.srid, self.dist)
+            cache = retrieve_cache(service_util)
 
             # Append all the caches found locally - add session and list values not found
             if cache is None:
-                util_arg = UtilArg(group_key=None, csr_util=csr_util)
+                util_arg = UtilArg(group_key=None, service_util=service_util)
                 util_arg_list.append(util_arg)
             else:
                 self.service_registry_values.append(cache)
@@ -52,11 +52,12 @@ class GroupValues(object):
         # Parallel request external resources not found locally and add to cache
         if len(util_arg_list) > 0:
             # Async external requests
-            new_util_arg_list = async_retrieve_csr(util_arg_list)
+            new_util_arg_list = async_retrieve_service(util_arg_list)
 
             # Add new values to cache
             for new_util_arg in new_util_arg_list:
-                self.service_registry_values.append(create_cache(new_util_arg.csr_util))
+                cache = create_cache(new_util_arg.service_util)
+                self.service_registry_values.append(cache)
 
 
 class CollectionValues(GroupValues):
@@ -71,12 +72,12 @@ class CollectionValues(GroupValues):
         self.collection = get_object_or_404(Collection, key=collection_key)
         self.key = self.collection.key
         self.name = self.collection.name
-        self.context_group_values = []
+        self.context_group_values = []  # I would like to rename to 'group_values'
 
     def populate_collection_values(self):
-        """Populate CollectionValue with service registry values.
+        """Populate CollectionValue with service values.
         First identify values not in cache.
-        Then fetch all external values using threaded CSRUtil.
+        Then fetch all external values using threaded ServiceUtils.
         Finally add new values to cache and add these to a list of group instances
         to serialize. Ensures ORM is not touched during async network data request
         """
@@ -90,14 +91,14 @@ class CollectionValues(GroupValues):
             group = get_object_or_404(Group, key=collection_group.group.key)
             group_services = GroupServices.objects.filter(group=group).order_by('order')
             for group_service in group_services:
-                # Init CSRUtil and check if it is in cache
-                csr_util = CSRUtils(
-                    group_service.csr.key, self.x, self.y, self.srid, self.dist)
-                cache = retrieve_cache(csr_util)
+                # Init ServiceUtil and check if it is in cache
+                service_util = ServiceUtils(
+                    group_service.service.key, self.x, self.y, self.srid, self.dist)
+                cache = retrieve_cache(service_util)
 
                 # Append all the caches found locally - list still needed
                 if cache is None:
-                    util_arg = UtilArg(group_key=group.key, csr_util=csr_util)
+                    util_arg = UtilArg(group_key=group.key, service_util=service_util)
                     util_arg_list.append(util_arg)
                 else:
                     if group.key in group_caches:
@@ -108,11 +109,11 @@ class CollectionValues(GroupValues):
 
         if len(util_arg_list) > 0:
             # Async external requests
-            new_util_arg_list = async_retrieve_csr(util_arg_list)
+            new_util_arg_list = async_retrieve_service(util_arg_list)
 
             for new_util_arg in new_util_arg_list:
                 # Add new values to cache
-                cache = create_cache(new_util_arg.csr_util)
+                cache = create_cache(new_util_arg.service_util)
                 if new_util_arg.group_key in group_caches:
                     group_caches[new_util_arg.group_key].append(cache)
                 else:

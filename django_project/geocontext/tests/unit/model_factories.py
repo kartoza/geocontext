@@ -3,7 +3,7 @@ import factory
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-from geocontext.models.csr import CSR
+from geocontext.models.service import Service
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
 from geocontext.models.collection import Collection
@@ -37,16 +37,16 @@ class UserF(factory.DjangoModelFactory):
         return user
 
 
-class CSRF(factory.DjangoModelFactory):
+class ServiceF(factory.DjangoModelFactory):
     class Meta:
-        model = CSR
+        model = Service
 
     key = factory.sequence(
-        lambda n: f'TestCSRKey{n}')
+        lambda n: f'TestServiceKey{n}')
     name = factory.sequence(
-        lambda n: f'Test CSR name {n}')
+        lambda n: f'Test Service name {n}')
     description = factory.sequence(
-        lambda n: f'Test CSR description {n}')
+        lambda n: f'Test Service description {n}')
 
 
 class GroupServicesF(factory.DjangoModelFactory):

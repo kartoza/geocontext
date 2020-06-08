@@ -4,7 +4,7 @@ from django.contrib.gis.admin import OSMGeoAdmin
 from geocontext.models.cache import Cache
 from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
-from geocontext.models.csr import CSR
+from geocontext.models.service import Service
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
 
@@ -25,14 +25,14 @@ class CollectionGroupsInLine(admin.TabularInline):
     extra = 0
 
 
-class CSRAdmin(admin.ModelAdmin):
-    """Service Registry admin model."""
+class ServiceAdmin(admin.ModelAdmin):
+    """Service admin model."""
     list_display = ('key', 'name', 'query_type', 'url')
 
 
 class CacheAdmin(OSMGeoAdmin):
     """Cache admin model."""
-    list_display = ('name', 'csr', 'value', 'expired_time')
+    list_display = ('name', 'service', 'value', 'expired_time')
 
 
 class GroupAdmin(admin.ModelAdmin):
@@ -47,7 +47,7 @@ class CollectionAdmin(admin.ModelAdmin):
     inlines = [CollectionGroupsInLine]
 
 
-admin.site.register(CSR, CSRAdmin)
+admin.site.register(Service, ServiceAdmin)
 admin.site.register(Cache, CacheAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Collection, CollectionAdmin)

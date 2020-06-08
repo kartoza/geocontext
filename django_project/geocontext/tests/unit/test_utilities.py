@@ -1,11 +1,5 @@
 import os
 
-from unittest.mock import patch
-
-from django.test import TestCase
-
-from geocontext.models.utilities import CSRUtils
-
 from django.contrib.gis.geos import Point
 from django.test import SimpleTestCase
 from geocontext.utilities import (
@@ -72,30 +66,3 @@ class TestUtilities(SimpleTestCase):
         self.assertRaises(ValueError, parse_dms, "27:49:23.2:east")
         self.assertRaises(ValueError, parse_dms, "27:49:east")
         self.assertRaises(ValueError, parse_dms, ":27:49:23.2:east:")
-
-
-@patch.object(CSRUtils, 'get_csr')
-class TestCRSUtils(TestCase):
-    """Test CSR models."""
-
-    def test_parse_geometry_gml_qgis(self):
-        """Test parse_gml_geometry for wfs from qgis server."""
-        gml_file_path = os.path.join(test_data_directory, 'wfs.xml')
-        self.assertTrue(os.path.exists(gml_file_path))
-        with open(gml_file_path) as file:
-            gml_string = file.read()
-            geom = parse_gml_geometry(gml_string)
-        self.assertIsNotNone(geom)
-        self.assertTrue(geom.valid)
-        self.assertEqual(geom.geom_type, 'Polygon')
-
-    def test_parse_geometry_gml_workspace(self):
-        """Test parse_gml_geometry with workspace"""
-        gml_file_path = os.path.join(test_data_directory, 'wfs_geoserver.xml')
-        self.assertTrue(os.path.exists(gml_file_path))
-        with open(gml_file_path) as file:
-            gml_string = file.read()
-            geom = parse_gml_geometry(gml_string, tag_name='kartoza:test')
-        self.assertIsNotNone(geom)
-        self.assertTrue(geom.valid)
-        self.assertEqual(geom.geom_type, 'MultiPolygon')

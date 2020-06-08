@@ -6,7 +6,7 @@ from geocontext.serializers.group import GroupValueSerializer
 
 
 class CollectionSerializer(serializers.ModelSerializer):
-    """Serializer class for Context Collection."""
+    """Serializer class for Collection."""
     group_keys = serializers.SerializerMethodField(source='group.key')
 
     class Meta:

@@ -1,13 +1,11 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from geocontext.models.csr import CSR
+from geocontext.models.service import Service
 from geocontext.models.validators import key_validator
 
 
 class Group(models.Model):
-    """Context Group"""
-
     GROUP_TYPE_TEXT = 'text'
     GROUP_TYPE_GRAPH = 'graph'
 
@@ -38,9 +36,9 @@ class Group(models.Model):
         help_text='Description of the Group.'
     )
 
-    csr_list = models.ManyToManyField(
-        CSR,
-        help_text=_('List of context service registry in the context group.'),
+    services = models.ManyToManyField(
+        Service,
+        help_text=_('List of services in the group.'),
         through='GroupServices',
         blank=True,
     )
@@ -56,7 +54,7 @@ class Group(models.Model):
 
     graphable = models.BooleanField(
         help_text=_(
-            'Indicates if this registry returns data from which a graph can be drawn.'),
+            'Indicates if this service returns data from which a graph can be drawn.'),
         blank=True,
         null=False,
         default=False,
@@ -68,6 +66,6 @@ class Group(models.Model):
     def __str__(self):
         return self.name
 
-    def get_ordered_csr_list(self):
-        """Helper to retrieve CSR in order."""
+    def get_ordered_service_list(self):
+        """Helper to retrieve services in order."""
         return self.groupservices_set.all().order_by('order')

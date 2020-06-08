@@ -1,5 +1,5 @@
 {
-    "csr": [
+    "service": [
         {
             "key": "provinces",
             "name": "Provinces",
@@ -88,9 +88,9 @@
     "group": [
         {
             "key": "group_key_1",
-            "name": "Context Group Name 1",
+            "name": "Group Name 1",
             "description": "Aloha make way make way",
-            "csr_keys": [
+            "service_keys": [
                 "provinces",
                 "water_management_area",
                 "primary_catchment_area"
@@ -100,7 +100,7 @@
             "key": "megazord_group",
             "name": "Megazord",
             "description": "Power Rangers",
-            "csr_keys": [
+            "service_keys": [
                 "secondary_catchment_area",
                 "quaternary_catchment_area",
                 "provinces"

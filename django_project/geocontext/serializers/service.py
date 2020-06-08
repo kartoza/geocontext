@@ -1,18 +1,17 @@
 from rest_framework import serializers
-from geocontext.models.csr import CSR
+from geocontext.models.service import Service
 
 
-class CSRSerializer(serializers.ModelSerializer):
-    """Serializer class for Context Service Registry."""
+class ServiceSerializer(serializers.ModelSerializer):
+    """Serializer class for Service."""
 
     class Meta:
-        model = CSR
+        model = Service
         fields = (
             'key',
             'name',
             'description',
             'url',
-            # 'query_url',
             'query_type',
             'result_regex',
             'time_to_live',
@@ -22,4 +21,5 @@ class CSRSerializer(serializers.ModelSerializer):
             'provenance',
             'notes',
             'licensing',
+            'search_dist'
         )

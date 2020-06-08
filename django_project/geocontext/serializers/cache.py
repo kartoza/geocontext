@@ -6,10 +6,10 @@ from geocontext.models.cache import Cache
 
 class CacheSerializer(serializers.ModelSerializer):
     """JSON serializer for cache."""
-    key = serializers.ReadOnlyField(source='csr.key')
-    name = serializers.ReadOnlyField(source='csr.name')
-    description = serializers.ReadOnlyField(source='csr.description')
-    query_type = serializers.ReadOnlyField(source='csr.query_type')
+    key = serializers.ReadOnlyField(source='service.key')
+    name = serializers.ReadOnlyField(source='service.name')
+    description = serializers.ReadOnlyField(source='service.description')
+    query_type = serializers.ReadOnlyField(source='service.query_type')
 
     class Meta:
         model = Cache

@@ -1,0 +1,4 @@
+# /usr/src/geocontext/crontab
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+0 * * * * /bin/bash /usr/src/geocontext/management.sh 'refresh_cache'

@@ -57,6 +57,10 @@ STATIC_ROOT = '/home/web/static'
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
 
+# To avoid easyaudit migrate warning:
+# stackoverflow.com/questions/23925726/django-relation-django-site-does-not-exist
+SITE_ID = 1
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".

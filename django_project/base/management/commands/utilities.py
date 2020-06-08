@@ -4,37 +4,34 @@ import requests
 
 from django.core.exceptions import ValidationError
 
-from geocontext.models.csr import CSR
+from geocontext.models.service import Service
 from geocontext.models.group import Group
 from geocontext.models.collection import Collection
 from geocontext.models.group_services import GroupServices
 from geocontext.models.collection_groups import CollectionGroups
-from geocontext.serializers.csr import CSRSerializer
+from geocontext.serializers.service import ServiceSerializer
 from geocontext.serializers.group import GroupSerializer
 from geocontext.serializers.collection import CollectionSerializer
 
 
 def export_data(file_path):
-    """Export context service data to file_path as json file.
+    """Export service data to file_path as json file.
 
     :param file_path: Path to json file.
     :type file_path: str
     """
-    # Context Service Registries
-    csr_list = CSR.objects.all()
-    csr_serializer = CSRSerializer(csr_list, many=True)
+    services = Service.objects.all()
+    service_serializer = ServiceSerializer(services, many=True)
 
-    # Context Groups
     groups = Group.objects.all()
     group_serializer = GroupSerializer(groups, many=True)
 
-    # Context Collection
     collections = Collection.objects.all()
     collection_serializer = CollectionSerializer(collections, many=True)
 
     # Aggregate Data
     data = {
-        'csr': csr_serializer.data,
+        'service': service_serializer.data,
         'group': group_serializer.data,
         'collection': collection_serializer.data
     }
@@ -44,7 +41,7 @@ def export_data(file_path):
 
 
 def import_data(file_uri):
-    """Import context service data from file_path.
+    """Import service data from file_path.
 
     :param file_uri: Path to json resource.
     :type file_uri: str
@@ -57,40 +54,40 @@ def import_data(file_uri):
         r = requests.get(file_uri)
         data = r.json()
 
-    # Load Context Service Registries
-    csr_list = data['csr']
-    for csr_data in csr_list:
-        csr, created = CSR.objects.get_or_create(key=csr_data['key'])
+    # Load Services
+    services = data['service']
+    for service_data in services:
+        service, created = Service.objects.get_or_create(key=service_data['key'])
         # Change to load from dictionary
-        for k, v in csr_data.items():
-            setattr(csr, k, v)
-        csr.save()
+        for k, v in service_data.items():
+            setattr(service, k, v)
+        service.save()
 
         try:
-            csr.full_clean()
-            csr.save()
+            service.full_clean()
+            service.save()
         except ValidationError as e:
-            print(f'   >>> CSR {csr.name} is not clean because {e} ')
-            csr.delete()
+            print(f'Service {service.name} is not clean because {e} ')
+            service.delete()
 
-    # Load Context Groups
+    # Load Groups
     groups = data['group']
     for group_data in groups:
         group, created = Group.objects. \
             get_or_create(key=group_data['key'])
         # Change to load from dictionary
         for k, v in group_data.items():
-            if k == 'csr_keys':
-                csr_keys = v
+            if k == 'service_keys':
+                service_keys = v
                 i = 0
-                for csr_key in csr_keys:
+                for service_key in service_keys:
                     try:
-                        csr = CSR.objects.get(key=csr_key)
-                    except CSR.DoesNotExist:
-                        print(f'No CSR registered for {csr_key}')
+                        service = Service.objects.get(key=service_key)
+                    except Service.DoesNotExist:
+                        print(f'No service registered for {service_key}')
                         continue
 
-                    group_service = GroupServices(group=group, csr=csr, order=i)
+                    group_service = GroupServices(group=group, service=service, order=i)
                     group_service.save()
                     i += 1
             setattr(group, k, v)
@@ -98,10 +95,10 @@ def import_data(file_uri):
             group.full_clean()
             group.save()
         except ValidationError as e:
-            print(f'   >>> Context Group {group.name} is not clean because {e} ')
+            print(f'Group {group.name} is not clean because {e} ')
             group.delete()
 
-    # Load Context Collections
+    # Load Collections
     collections = data['collection']
     for collection_data in collections:
         collection, created = Collection.objects.get_or_create(key=collection_data['key'])
@@ -124,25 +121,24 @@ def import_data(file_uri):
             collection.full_clean()
             collection.save()
         except ValidationError as e:
-            print(f'   >>> Collection {collection.name} is not clean because: {e}')
+            print(f'Collection {collection.name} is not clean because: {e}')
             collection.delete()
 
-    print('After import data process...')
-    print(f'   Number of CSR {CSR.objects.count()}')
-    print(f'   Number of Group {Group.objects.count()}')
-    print(f'   Number of Collection {Collection.objects.count()}')
+    print('After data import:')
+    print(f'Service count: {Service.objects.count()}')
+    print(f'Group count: {Group.objects.count()}')
+    print(f'Collection count {Collection.objects.count()}')
 
 
 def delete_data():
-    """Delete geocontext data utilities method."""
-    print('Before delete process...')
-    print(f'   Number of CSR {CSR.objects.count()}')
-    print(f'   Number of Group {Group.objects.count()}')
-    print(f'   Number of Collection {Collection.objects.count()}')
+    print('Before delete:')
+    print(f'Service count: {Service.objects.count()}')
+    print(f'Group count: {Group.objects.count()}')
+    print(f'Collection count {Collection.objects.count()}')
 
-    csr_list = CSR.objects.all()
-    for csr in csr_list:
-        csr.delete()
+    services = Service.objects.all()
+    for service in services:
+        service.delete()
 
     groups = Group.objects.all()
     for group in groups:
@@ -152,7 +148,7 @@ def delete_data():
     for collection in collections:
         collection.delete()
 
-    print('After delete process...')
-    print(f'   Number of CSR {CSR.objects.count()}')
-    print(f'   Number of Group {Group.objects.count()}')
-    print(f'   Number of Collection {Collection.objects.count()}')
+    print('After deleting:')
+    print(f'Service count: {Service.objects.count()}')
+    print(f'Group count: {Group.objects.count()}')
+    print(f'Collection count {Collection.objects.count()}')
