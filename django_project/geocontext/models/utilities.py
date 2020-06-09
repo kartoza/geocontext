@@ -238,7 +238,9 @@ class ServiceUtils():
         self.value = json_response["features"][0]["properties"][self.layer_name]
 
     async def fetch_wfs(self):
-        """Fetch WFS value - Try intersect else buffer with search distance.
+        """Fetch WFS value
+
+        Try intersect else buffer with search distance.
         We don't do a describe feature request first as we can just try the
         the intersect and do a bbox if it fails - skipping an extra request.
         """
@@ -260,6 +262,12 @@ class ServiceUtils():
             'MAXFEATURES': 1,
             'OUTPUTFORMAT': 'application/json',
         }
+
+        # TODO Axis order of 1.0.0 services not trusted -- see docs.geoserver.org
+        if self.service_version in ['1.0.0']:
+            pass
+        else:
+            pass
 
         json_response = await self.request_data(parameters)
         if len(json_response["features"]) > 0:
