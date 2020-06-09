@@ -16,7 +16,7 @@ The latest source code is available at
 * Stateless and easy to deploy
 * Able to retrieve geo-context information of a point from several services
 * Optimized for rapid information retrieval
-* Currently work with WFS and WMS sources
+* Currently supports WFS, WMS ArcREST and Placename sources
 * Using cache mechanism to retrieve context information faster
 * Three level hierarchy (service --> group --> collection to sort services to request
 * Simple API returning geojson data

@@ -75,7 +75,8 @@ class GroupAPIView(views.APIView):
         try:
             group_values.populate_group_values()
         except Exception as e:
-            return Response(f"Could not fetch data {e}", status.HTTP_400_BAD_REQUEST)
+            return Response(
+                f"Could not fetch data: Server error {e}", status.HTTP_400_BAD_REQUEST)
         group_value_serializer = GroupValueSerializer(group_values)
         return Response(group_value_serializer.data)
 
@@ -88,8 +89,9 @@ class CollectionAPIView(views.APIView):
         collection_values = CollectionValues(x, y, collection_key, srid)
         try:
             collection_values.populate_collection_values()
-        except Exception:
-            return Response("Could not fetch data", status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(
+                f"Could not fetch data: Server error {e}", status.HTTP_400_BAD_REQUEST)
         collection_value_serializer = CollectionValueSerializer(collection_values)
         return Response(collection_value_serializer.data)
 
@@ -146,7 +148,7 @@ def get_service(request):
             cache = retrieve_cache(service_util)
             if cache is None:
                 util_arg = UtilArg(group_key=None, service_util=service_util)
-                new_util_arg = retrieve_external_service(util_arg)
+                new_util_arg = async_retrieve_service(util_arg)
                 if new_util_arg.service_util.value is not None:
                     cache = create_cache(new_util_arg.service_util)
             fields = ('value', 'key')

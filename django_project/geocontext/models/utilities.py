@@ -140,6 +140,8 @@ class ServiceUtils():
         self.service_version = service.service_version
         self.layer_typename = service.layer_typename
         self.result_regex = service.result_regex
+        self.user = service.user
+        self.password = service.password
         self.api_key = service.api_key
         self.url = service.url
         self.srid = service.srid
@@ -153,7 +155,7 @@ class ServiceUtils():
         else:
             self.search_dist = dist
 
-        # Layer names either equals result_regex after workspace (":")
+        # Layer names either equals result_regex after work/namespace (":")
         try:
             self.layer_name = self.result_regex.split(":")[1]
         except IndexError:
@@ -178,7 +180,7 @@ class ServiceUtils():
         """Transform coordinate to the service instance srid in decimal degrees.
 
         Converts DMS (Split by °,',", or :) to decimal degree.
-        Converts to SRID of the service 
+        Converts to SRID of the service
 
         :raises ValueError: If coordinate cannot be parsed
 
@@ -212,7 +214,8 @@ class ServiceUtils():
                 raise ValueError(f"SRID '{self.srid_in}' not valid: {self.service_key}")
 
     async def retrieve_value(self) -> bool:
-        """Load context value. All exception / logging / null values handled here.
+        """Load context value.
+        All exception / logging / nulls for all services handled here.
         """
         try:
             if self.query_type == ServiceDefinitions.WMS:
@@ -226,9 +229,42 @@ class ServiceUtils():
             else:
                 LOGGER.error(f"'{self.query_type}' not implimented: {self.service_key}")
                 self.value = None
+        except IndexError:
+            LOGGER.error(f"{self.cache_url} No features found for: {self.service_key}")
+            self.value = None
         except Exception as e:
             LOGGER.error(f"{self.cache_url} failed for: {self.service_key} with: {e}")
             self.value = None
+
+    async def request_data(self, parameters: dict, query: str = "?") -> dict:
+        """Generates final query URL and fetches json data.
+
+        :param parameters: parameters to urlencode
+        :type parameters: dict
+
+        :param query: Url query delimiter
+        :type query: str (default '?')
+
+        :raises ValueError: If value can not be parsed.
+
+        :return: json response
+        :rtype: dict
+        """
+        query_dict = QueryDict('', mutable=True)
+        query_dict.update(parameters)
+        if '?' in self.url:
+            self.cache_url = f'{self.url}&{query_dict.urlencode()}'
+        else:
+            self.cache_url = f'{self.url}{query}{query_dict.urlencode()}'
+
+        # We are using another async session context manager
+        async with self.session.get(self.cache_url, raise_for_status=True) as response:
+            # Try Using aiohttp response coroutine - else catch text/XML - usually error
+            try:
+                return await response.json()
+            except aiohttp.ContentTypeError:
+                err = await response.text()
+                raise ValueError(f'{self.cache_url} Exception: {err}')
 
     async def fetch_wms(self):
         """Fetch WMS value
@@ -277,10 +313,9 @@ class ServiceUtils():
             'PROPERTYNAME': f'({self.layer_name})',
             'MAXFEATURES': 1,
             'OUTPUTFORMAT': 'application/json',
-            'SRSNAME': self.point.srid
         }
 
-        json_response = self.request_data(parameters)
+        json_response = await self.request_data(parameters)
         if len(json_response["features"]) > 0:
             self.value = json_response["features"][0]["properties"][self.layer_name]
         else:
@@ -291,10 +326,10 @@ class ServiceUtils():
                 'VERSION': self.service_version,
                 'TYPENAME': self.layer_typename,
                 'OUTPUTFORMAT': 'application/json',
-                'SRSNAME': self.point.srid,
+                'SRSNAME': f'EPSG:{self.point.srid}',
                 'BBOX': self.bbox
             }
-            json_response = self.request_data(parameters)
+            json_response = await self.request_data(parameters)
             self.value = json_response["features"][0]["properties"][self.layer_name]
 
         # Add new geometry only if found and don't raise error if geometry isn't found
@@ -319,7 +354,7 @@ class ServiceUtils():
             'tolerance': '10',
             'mapExtent': self.bbox
         }
-        json_response = self.request_data(parameters, query='/identify?')
+        json_response = await self.request_data(parameters, query='/identify?')
         self.value = json_response['results'][0][self.layer_name]
 
     async def fetch_placename(self):
@@ -328,31 +363,7 @@ class ServiceUtils():
         parameters = {
             'lat': str(self.point.y),
             'lng': str(self.point.x),
-            'username': str(self.api_key),
+            'username': str(self.user),
         }
-        json_response = self.request_data(parameters)
+        json_response = await self.request_data(parameters)
         self.value = json_response['geonames'][0][self.layer_name]
-
-    async def request_data(self, parameters: dict, query: str = "?") -> dict:
-        """Generates final query URL and fetches data.
-
-        :param parameters: parameters to urlencode
-        :type parameters: dict
-
-        :param query: Url query delimiter
-        :type query: str (default '?')
-
-        :return: json response
-        :rtype: dict
-        """
-        query_dict = QueryDict('', mutable=True)
-        query_dict.update(parameters)
-        if '?' in self.url:
-            query_url = f'{self.url}&{query_dict.urlencode()}'
-        else:
-            query_url = f'{self.url}{query}{query_dict.urlencode()}'
-
-        # We are using another async session context manager
-        async with self.session.get(query_url) as response:
-            # Using aiohttp's async json parser
-            return await response.json()

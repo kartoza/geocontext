@@ -56,8 +56,7 @@ class Service(models.Model):
 
     api_key = models.CharField(
         help_text=_(
-            'API key for accessing Service. For PlaceName queries '
-            'this is your username.'),
+            'API key for accessing Service.'),
         blank=True,
         null=True,
         max_length=200,
@@ -81,7 +80,16 @@ class Service(models.Model):
     result_regex = models.CharField(
         help_text=_(
             'Regex to retrieve the desired value. Can be the data layer name. '
-            'For geoserver it may be workspace:layer_name'),
+            'For geoserver it may be "workspace:layer_name"'),
+        blank=False,
+        null=False,
+        max_length=200,
+    )
+
+    layer_typename = models.CharField(
+        help_text=_(
+            'Layer type name to get the service. '
+            'For geoserver it may be "namespace:featuretype"'),
         blank=False,
         null=False,
         max_length=200,
@@ -108,13 +116,6 @@ class Service(models.Model):
             'features. Also determines cache hit range for rasters'),
         blank=True,
         null=True
-    )
-
-    layer_typename = models.CharField(
-        help_text=_('Layer type name to get the service.'),
-        blank=False,
-        null=False,
-        max_length=200,
     )
 
     service_version = models.CharField(
