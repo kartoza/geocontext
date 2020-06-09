@@ -75,6 +75,7 @@ services:
     image: kartoza/postgis:12.1
     volumes:
       - ./backups:/backups
+      - ./sql:/sql
     environment:
       - ALLOW_IP_RANGE=0.0.0.0/0
       - POSTGRES_USER=docker
