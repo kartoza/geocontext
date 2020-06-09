@@ -72,6 +72,7 @@ class GroupAPIView(views.APIView):
     """
     def get(self, request, x, y, group_key, srid=4326):
         group_values = GroupValues(x, y, group_key, srid)
+
         try:
             group_values.populate_group_values()
         except Exception as e:

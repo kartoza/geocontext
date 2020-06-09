@@ -1,5 +1,4 @@
 coverage
-django-nose
 factory_boy
 flake8
 pdbpp

@@ -40,7 +40,7 @@ class Service(models.Model):
         max_length=1000,
     )
 
-    user = models.CharField(
+    username = models.CharField(
         help_text=_('User name for accessing Service.'),
         blank=True,
         null=True,
@@ -77,27 +77,36 @@ class Service(models.Model):
         choices=ServiceDefinitions.QUERY_TYPES,
     )
 
-    result_regex = models.CharField(
-        help_text=_(
-            'Regex to retrieve the desired value. Can be the data layer name. '
-            'For geoserver it may be "workspace:layer_name"'),
+    layer_name = models.CharField(
+        help_text=_('Required name of the actual layer/feature to retrieve.'),
         blank=False,
         null=False,
+        max_length=200,
+    )
+
+    layer_namespace = models.CharField(
+        help_text=_('Optional namespace containing the typename to query (WMS/WFS).'),
+        blank=True,
+        null=True,
         max_length=200,
     )
 
     layer_typename = models.CharField(
-        help_text=_(
-            'Layer type name to get the service. '
-            'For geoserver it may be "namespace:featuretype"'),
-        blank=False,
-        null=False,
+        help_text=_('Optional layer type name to get from the service (WMS/WFS).'),
+        blank=True,
+        null=True,
         max_length=200,
     )
 
-    time_to_live = models.IntegerField(
-        help_text=_(
-            'Refresh timeof the service in seconds - determines Cache persistence'),
+    layer_workspace = models.CharField(
+        help_text=_('Optional workspace containing the typename to query (WMS/WFS).'),
+        blank=True,
+        null=True,
+        max_length=200,
+    )
+
+    cache_duration = models.IntegerField(
+        help_text=_('Service refresh time in seconds - determines Cache persistence'),
         blank=True,
         null=True,
         default=604800  # 7 days
@@ -112,10 +121,11 @@ class Service(models.Model):
 
     search_dist = models.FloatField(
         help_text=_(
-            'Search distance around query point in meters. Helpful for non-polygon '
-            'features. Also determines cache hit range for rasters'),
+            'Search distance around query point in meters. Used for bounding box queries.'
+            'Also determines cache hit range for all values'),
         blank=True,
-        null=True
+        null=True,
+        default=10
     )
 
     service_version = models.CharField(

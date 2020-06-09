@@ -1,7 +1,9 @@
 import aiohttp
+from arcgis2geojson import arcgis2geojson
 import asyncio
 from collections import namedtuple
 from datetime import datetime, timedelta
+import json
 import logging
 import pytz
 
@@ -23,7 +25,6 @@ from geocontext.utilities import (
 )
 
 LOGGER = logging.getLogger(__name__)
-UtilArg = namedtuple('UtilArgs', ['group_key', 'service_util'])
 
 
 def create_cache(service_util) -> Cache:
@@ -35,8 +36,8 @@ def create_cache(service_util) -> Cache:
     :return: Context cache instance
     :rtype: Cache
     """
-    service = Service.objects.get(key=service_util.service_key)
-    expired_time = (datetime.utcnow() + timedelta(seconds=service.time_to_live))
+    service = Service.objects.get(key=service_util.key)
+    expired_time = (datetime.utcnow() + timedelta(seconds=service.cache_duration))
     expired_time = expired_time.replace(tzinfo=pytz.UTC)
     cache = Cache(
         service=service,
@@ -67,13 +68,19 @@ def retrieve_cache(service_util) -> Cache:
     :rtype: cache or None
     """
     current_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
-    service = Service.objects.get(key=service_util.service_key)
+    service = Service.objects.get(key=service_util.key)
     caches = Cache.objects.filter(
         service=service,
         expired_time__lte=current_time,
-        geometry__distance_lte=(service_util.point, Distance(m=service_util.search_dist))
+        geometry__distance_lte=(
+            service_util.geometry,
+            Distance(m=service_util.search_dist))
     )
     return caches.first()
+
+
+# Data object to index service utils with associated groups for serializer utils
+UtilArg = namedtuple('UtilArgs', ['group_key', 'service_util'])
 
 
 @async_to_sync
@@ -99,7 +106,7 @@ async def async_retrieve_service(util_arg_list: list) -> list:
 
 
 async def async_worker(util_arg: namedtuple) -> namedtuple:
-    """Fetch data and loads into ServiceUtils instance using aiohttp shared clientsession.
+    """Fetch data and loads into ServiceUtils instance.
 
     :param namedtuple: (group_key, service_util)
     :type util_arg: namedtuple(str, ServiceUtils)
@@ -134,88 +141,55 @@ class ServiceUtils():
         :param dist: Search distance query overide service (default=10.0).
         :type dist: int
         """
-        service = Service.objects.get(key=service_key)
-        self.service_key = service_key
-        self.query_type = service.query_type
-        self.service_version = service.service_version
-        self.layer_typename = service.layer_typename
-        self.result_regex = service.result_regex
-        self.user = service.user
-        self.password = service.password
-        self.api_key = service.api_key
-        self.url = service.url
-        self.srid = service.srid
+        # Unpack model into attributes
+        service_dict = Service.objects.filter(key=service_key).values().first()
+        for key, val in service_dict.items():
+            setattr(self, key, val)
+
+        # Add Cache model params
         self.cache_url = None
         self.value = None
         self.session = None
 
         # Search distance query overrides service in model - else default 10m
-        if dist == 10.0 and service.search_dist is not None:
-            self.search_dist = service.search_dist
-        else:
+        if dist != 10.0:
             self.search_dist = dist
+        elif self.search_dist is None:
+            self.search_dist = 10
 
-        # Layer names either equals result_regex after work/namespace (":")
-        try:
-            self.layer_name = self.result_regex.split(":")[1]
-        except IndexError:
-            self.layer_name = self.result_regex
-
-        # Prepare coordinates
-        self.x = x
-        self.y = y
-        self.srid_in = srid_in
-        self.load_point()
-
-        # Geometry defaults to query point - cache hits at least search_dist from point
-        self.geometry = self.point
-
-        # Calculate bbox - not async func and be blocking so do in __init__
-        self.bbox = get_bbox(self.point)
-
-        # Remove ORM model from instance object for in case...
-        service = None
-
-    def load_point(self) -> Point:
-        """Transform coordinate to the service instance srid in decimal degrees.
-
-        Converts DMS (Split by °,',", or :) to decimal degree.
-        Converts to SRID of the service
-
-        :raises ValueError: If coordinate cannot be parsed
-
-        :return: point
-        :rtype: Point
-        """
         # Parse Coordinate try DD / otherwise DMS
-        for coord_attr_name in ['x', 'y']:
-            coord = getattr(self, coord_attr_name)
+        coords = {'x': x, 'y': y}
+        for coord, val in coords.items():
             try:
-                coord_dd = float(coord)
+                coords[coord] = float(val)
             except ValueError:
                 try:
-                    degrees, minutes, seconds = parse_dms(coord)
-                    coord_dd = dms_dd(degrees, minutes, seconds)
+                    degrees, minutes, seconds = parse_dms(val)
+                    coords[coord] = dms_dd(degrees, minutes, seconds)
                 except ValueError:
-                    raise ValueError(f"Coord '{coord}' parse failed: {self.service_key} ")
-            setattr(self, coord_attr_name, coord_dd)
+                    raise ValueError(
+                        f"Coord '{coords[coord]}' parse failed: {self.key}")
 
         # Parse srid and create point in crs srid
         try:
-            self.srid_in = int(self.srid_in)
-            self.point = Point(self.x, self.y, srid=self.srid_in)
+            srid_in = int(srid_in)
+            self.geometry = Point(coords['x'], coords['y'], srid=srid_in)
         except ValueError:
-            raise ValueError(f"SRID: '{self.srid_in}' not valid")
+            raise ValueError(f"SRID: '{srid_in}' not valid")
 
-        if self.srid_in != self.srid:
+        # Default geometry is point
+        if srid_in != self.srid:
             try:
-                self.point = convert_coordinate(self.point, self.srid)
+                self.geometry = convert_coordinate(self.geometry, self.srid)
             except SRSException:
-                raise ValueError(f"SRID '{self.srid_in}' not valid: {self.service_key}")
+                raise ValueError(f"SRID '{srid_in}' not valid: {self.key}")
+
+        # Calculate bbox
+        self.bbox = get_bbox(self.geometry)
 
     async def retrieve_value(self) -> bool:
         """Load context value.
-        All exception / logging / nulls for all services handled here.
+        All exceptions / logging / nulls for all services handled here.
         """
         try:
             if self.query_type == ServiceDefinitions.WMS:
@@ -227,17 +201,116 @@ class ServiceUtils():
             elif self.query_type == ServiceDefinitions.PLACENAME:
                 await self.fetch_placename()
             else:
-                LOGGER.error(f"'{self.query_type}' not implimented: {self.service_key}")
+                LOGGER.error(f"'{self.query_type}' not implimented: {self.key}")
                 self.value = None
         except IndexError:
-            LOGGER.error(f"{self.cache_url} No features found for: {self.service_key}")
+            LOGGER.error(f"{self.cache_url} No features found for: {self.key}")
             self.value = None
         except Exception as e:
-            LOGGER.error(f"{self.cache_url} failed for: {self.service_key} with: {e}")
+            LOGGER.error(f"{self.cache_url} failed for: {self.key} with: {e}")
             self.value = None
 
+    async def fetch_wms(self):
+        """Fetch WMS value
+        """
+        parameters = {
+            "SERVICE": self.query_type,
+            "LAYERS": self.layer_typename,
+            "QUERY_LAYERS": self.layer_typename,
+            "BBOX": self.bbox,
+            "WIDTH": 11,
+            "HEIGHT": 11,
+            "INFO_FORMAT": 'application/json',
+            "FEATURE_COUNT": 1
+        }
+        if self.service_version in ['1.0.0', '1.1.0']:
+            parameters['REQUEST'] = 'feature_info'
+            parameters['SRS'] = 'EPSG:' + str(self.geometry.srid)
+            parameters['X'] = 5
+            parameters['Y'] = 5
+        else:
+            parameters['REQUEST'] = 'GetFeatureInfo'
+            parameters['CRS'] = 'EPSG:' + str(self.geometry.srid)
+            parameters['I'] = 5
+            parameters['j'] = 5
+
+        json_response = await self.request_data(parameters)
+        self.value = json_response["features"][0]["properties"][self.layer_name]
+
+    async def fetch_wfs(self):
+        """Fetch WFS value - Try intersect else buffer with search distance.
+        We don't do a describe feature request first as we can just try the
+        the intersect and do a bbox if it fails - skipping an extra request.
+        """
+        layer_filter = (
+            '<Filter xmlns="http://www.opengis.net/ogc" '
+            'xmlns:gml="http://www.opengis.net/gml"> '
+            f'<Intersects><PropertyName>geom</PropertyName>'
+            f'<gml:Point srsName="EPSG:{self.geometry.srid}">'
+            f'<gml:coordinates>{self.geometry.x},{self.geometry.y}'
+            '</gml:coordinates></gml:Point></Intersects></Filter>'
+        )
+        parameters = {
+            'SERVICE': 'WFS',
+            'REQUEST': 'GetFeature',
+            'VERSION': self.service_version,
+            'TYPENAME': self.layer_typename,
+            'FILTER': layer_filter,
+            'PROPERTYNAME': f'({self.layer_name})',
+            'MAXFEATURES': 1,
+            'OUTPUTFORMAT': 'application/json',
+        }
+
+        json_response = await self.request_data(parameters)
+        if len(json_response["features"]) > 0:
+            self.value = json_response["features"][0]["properties"][self.layer_name]
+        else:
+            LOGGER.info(f"WFS intersect filter failed: {self.key} - attempt bbox")
+            parameters = {
+                'SERVICE': 'WFS',
+                'REQUEST': 'GetFeature',
+                'VERSION': self.service_version,
+                'TYPENAME': self.layer_typename,
+                'OUTPUTFORMAT': 'application/json',
+                'SRSNAME': f'EPSG:{self.geometry.srid}',
+                'BBOX': self.bbox
+            }
+
+            json_response = await self.request_data(parameters)
+            self.value = json_response["features"][0]["properties"][self.layer_name]
+        await self.extract_geometry(json_response["features"][0]["geometry"])
+
+    async def fetch_arcrest(self):
+        """Fetch ArcRest value
+        """
+        parameters = {
+            'f': 'json',
+            'geometryType': 'esriGeometryPoint',
+            'geometry': f'{{{{x: {self.geometry.x}, y: {self.geometry.y}}}}}',
+            'layers': self.layer_name,
+            'imageDisplay': '581,461,96',
+            'tolerance': '10',
+            'mapExtent': self.bbox
+        }
+
+        json_response = await self.request_data(parameters, query='identify?')
+        self.value = json_response['results'][0][self.layer_name]
+        await self.extract_geometry(json_response['results'][0]['geometry'], arc = True)
+
+    async def fetch_placename(self):
+        """Fetch Placename value
+        """
+        parameters = {
+            'lat': str(self.geometry.y),
+            'lng': str(self.geometry.x),
+            'username': str(self.username),
+        }
+
+        json_response = await self.request_data(parameters)
+        self.value = json_response['geonames'][0][self.layer_name]
+
     async def request_data(self, parameters: dict, query: str = "?") -> dict:
-        """Generates final query URL and fetches json data.
+        """Encodes query URL from querydict and fetches json data with async session.
 
         :param parameters: parameters to urlencode
         :type parameters: dict
@@ -259,111 +332,22 @@ class ServiceUtils():
 
         # We are using another async session context manager
         async with self.session.get(self.cache_url, raise_for_status=True) as response:
-            # Try Using aiohttp response coroutine - else catch text/XML - usually error
-            try:
-                return await response.json()
-            except aiohttp.ContentTypeError:
-                err = await response.text()
-                raise ValueError(f'{self.cache_url} Exception: {err}')
+            # Some servers (Arcrest...) send bad json, so disable validation
+            return await response.json(content_type=None)
 
-    async def fetch_wms(self):
-        """Fetch WMS value
+    async def extract_geometry(self, feature: dict, arc: bool = False):
+        """Extract GEOS geometry from feature. Don't raise error if none found.
+
+        :param parameters: parameters to urlencode
+        :type parameters: dict
+
+        :param arc: If geometry in arcgis format
+        :type arc: bool
         """
-        parameters = {
-            "SERVICE": self.query_type,
-            "LAYERS": self.layer_typename,
-            "QUERY_LAYERS": self.layer_typename,
-            "BBOX": self.bbox,
-            "WIDTH": 11,
-            "HEIGHT": 11,
-            "INFO_FORMAT": 'application/json',
-            "FEATURE_COUNT": 1
-        }
-        if self.service_version in ['1.0.0', '1.1.0']:
-            parameters['REQUEST'] = 'feature_info'
-            parameters['SRS'] = 'EPSG:' + str(self.point.srid)
-            parameters['X'] = 5
-            parameters['Y'] = 5
-        else:
-            parameters['REQUEST'] = 'GetFeatureInfo'
-            parameters['CRS'] = 'EPSG:' + str(self.point.srid)
-            parameters['I'] = 5
-            parameters['j'] = 5
-
-        json_response = await self.request_data(parameters)
-        self.value = json_response["features"][0]["properties"][self.layer_name]
-
-    async def fetch_wfs(self):
-        """Fetch WFS value - Try intersect else buffer with search distance
-        """
-        layer_filter = (
-            '<Filter xmlns="http://www.opengis.net/ogc" '
-            'xmlns:gml="http://www.opengis.net/gml"> '
-            f'<Intersects><PropertyName>geom</PropertyName>'
-            f'<gml:Point srsName="EPSG:{self.point.srid}">'
-            f'<gml:coordinates>{self.point.x},{self.point.y}'
-            '</gml:coordinates></gml:Point></Intersects></Filter>'
-        )
-        parameters = {
-            'SERVICE': 'WFS',
-            'REQUEST': 'GetFeature',
-            'VERSION': self.service_version,
-            'TYPENAME': self.layer_typename,
-            'FILTER': layer_filter,
-            'PROPERTYNAME': f'({self.layer_name})',
-            'MAXFEATURES': 1,
-            'OUTPUTFORMAT': 'application/json',
-        }
-
-        json_response = await self.request_data(parameters)
-        if len(json_response["features"]) > 0:
-            self.value = json_response["features"][0]["properties"][self.layer_name]
-        else:
-            LOGGER.info(f"WFS intersect filter failed: {self.service_key} - attempt bbox")
-            parameters = {
-                'SERVICE': 'WFS',
-                'REQUEST': 'GetFeature',
-                'VERSION': self.service_version,
-                'TYPENAME': self.layer_typename,
-                'OUTPUTFORMAT': 'application/json',
-                'SRSNAME': f'EPSG:{self.point.srid}',
-                'BBOX': self.bbox
-            }
-            json_response = await self.request_data(parameters)
-            self.value = json_response["features"][0]["properties"][self.layer_name]
-
-        # Add new geometry only if found and don't raise error if geometry isn't found
-        if self.value is not None:
-            try:
-                new_geometry = json_response["features"][0]["geometry"]
-                if new_geometry is not None:
-                    self.geometry = GEOSGeometry(str(new_geometry))
-                    self.geometry.srid = self.point.srid
-            except IndexError:
-                LOGGER.error(f"No geometry found for: {self.service_key}")
-
-    async def fetch_arcrest(self):
-        """Fetch ArcRest value
-        """
-        parameters = {
-            'f': 'json',
-            'geometryType': 'esriGeometryPoint',
-            'geometry': f'{{{{x: {self.point.x}, y: {self.point.y}}}}}',
-            'layers': self.layer_typename,
-            'imageDisplay': '581,461,96',
-            'tolerance': '10',
-            'mapExtent': self.bbox
-        }
-        json_response = await self.request_data(parameters, query='/identify?')
-        self.value = json_response['results'][0][self.layer_name]
-
-    async def fetch_placename(self):
-        """Fetch Placename value
-        """
-        parameters = {
-            'lat': str(self.point.y),
-            'lng': str(self.point.x),
-            'username': str(self.user),
-        }
-        json_response = await self.request_data(parameters)
-        self.value = json_response['geonames'][0][self.layer_name]
+        try:
+            if arc:
+                feature = arcgis2geojson(feature)
+            self.geometry = GEOSGeometry(json.dumps(feature))
+            self.geometry.srid = self.geometry.srid
+        except IndexError:
+            LOGGER.error(f"No geometry found for: {self.key}")
