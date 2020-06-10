@@ -79,5 +79,5 @@ class ServiceUtils():
         session = get_session()
         with session.get(query_url) as response:
             if response.status_code == 200:
-                self.cache_url = query_url
+                self.source_uri = query_url
                 return json.loads(response.content)

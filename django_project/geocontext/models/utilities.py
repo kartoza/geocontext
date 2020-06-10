@@ -16,11 +16,12 @@ from django.http import QueryDict
 from geocontext.models.service import Service
 from geocontext.models.cache import Cache
 from geocontext.utilities import (
-    convert_2d_to_3d,
-    convert_coordinate,
+    transform_geometry,
     dms_dd,
+    flatten_geometry,
     get_bbox,
     ServiceDefinitions,
+    simplify_geometry,
     parse_dms
 )
 
@@ -28,7 +29,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 def create_cache(service_util) -> Cache:
-    """Add context value to cache
+    """Add context value and simplified 2d geometry to cache.
+
+    We use projected EPSG:3857 to optimise cache distance queries.
 
     :param service_util: ServiceUtils instance
     :type service_util: ServiceUtils
@@ -45,21 +48,25 @@ def create_cache(service_util) -> Cache:
         value=service_util.value,
         expired_time=expired_time
     )
-    if service_util.cache_url:
-        cache.source_uri = service_util.cache_url
-    if service_util.geometry:
-        if service_util.geometry.hasz:
-            cache.geometry = service_util.geometry
-        else:
-            cache.geometry = convert_2d_to_3d(service_util.geometry)
+    geometry = service_util.geometry
+    if geometry:
+        geometry = transform_geometry(geometry, 3857)
+        geometry = flatten_geometry(geometry)
+        geometry = simplify_geometry(geometry, tolerance=service_util.search_dist)
+        cache.geometry = geometry
+
+    cache.source_uri = service_util.source_uri if service_util.source_uri else None
+
     cache.save()
     cache.refresh_from_db()
     return cache
 
 
 def retrieve_cache(service_util) -> Cache:
-    """Try to retrieve service cache from query point input.
+    """Try to retrieve service cache for service_util point.
+
     Filters for search distance and expiry date.
+    Distance search in meter - only in 2d for now.
 
     :param service_util: ServiceUtils instance
     :type service_util: ServiceUtils
@@ -147,7 +154,7 @@ class ServiceUtils():
             setattr(self, key, val)
 
         # Add Cache model params
-        self.cache_url = None
+        self.source_uri = None
         self.value = None
         self.session = None
 
@@ -177,18 +184,14 @@ class ServiceUtils():
         except ValueError:
             raise ValueError(f"SRID: '{srid_in}' not valid")
 
-        # Default geometry is point
-        if srid_in != self.srid:
-            try:
-                self.geometry = convert_coordinate(self.geometry, self.srid)
-            except SRSException:
-                raise ValueError(f"SRID '{srid_in}' not valid: {self.key}")
+        # Default geometry is point in service SRID - all queries/bbox in native srid
+        self.geometry = transform_geometry(self.geometry, self.srid)
 
         # Calculate bbox
         self.bbox = get_bbox(self.geometry)
 
     async def retrieve_value(self) -> bool:
-        """Load context value.
+        """Load context value and geometry from service.
         All exceptions / logging / nulls for all services handled here.
         """
         try:
@@ -204,10 +207,10 @@ class ServiceUtils():
                 LOGGER.error(f"'{self.query_type}' not implimented: {self.key}")
                 self.value = None
         except IndexError:
-            LOGGER.error(f"{self.cache_url} No features found for: {self.key}")
+            LOGGER.error(f"{self.source_uri} No features found for: {self.key}")
             self.value = None
         except Exception as e:
-            LOGGER.error(f"{self.cache_url} failed for: {self.key} with: {e}")
+            LOGGER.error(f"{self.source_uri} failed for: {self.key} with: {e}")
             self.value = None
 
     async def fetch_wms(self):
@@ -334,12 +337,12 @@ class ServiceUtils():
         query_dict = QueryDict('', mutable=True)
         query_dict.update(parameters)
         if '?' in self.url:
-            self.cache_url = f'{self.url}&{query_dict.urlencode()}'
+            self.source_uri = f'{self.url}&{query_dict.urlencode()}'
         else:
-            self.cache_url = f'{self.url}{query}{query_dict.urlencode()}'
+            self.source_uri = f'{self.url}{query}{query_dict.urlencode()}'
 
         # We are using another async session context manager
-        async with self.session.get(self.cache_url, raise_for_status=True) as response:
+        async with self.session.get(self.source_uri, raise_for_status=True) as response:
             # Some servers (Arcrest...) send bad json, so disable validation
             return await response.json(content_type=None)
 
@@ -356,6 +359,6 @@ class ServiceUtils():
             if arc:
                 feature = arcgis2geojson(feature)
             self.geometry = GEOSGeometry(json.dumps(feature))
-            self.geometry.srid = self.geometry.srid
+            self.geometry.srid = self.srid
         except IndexError:
             LOGGER.error(f"No geometry found for: {self.key}")

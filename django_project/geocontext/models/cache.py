@@ -20,11 +20,11 @@ class Cache(models.Model):
         max_length=1000,
     )
     geometry = models.GeometryField(
-        help_text=_(
-            'Geometry associated with the value. In the same srid as the service.'),
+        help_text=_('2d Geometry associated with the value using EPSG:3857.'),
         blank=True,
         null=True,
-        dim=3
+        srid=3857,
+        dim=2
     )
     service = models.ForeignKey(
         Service,

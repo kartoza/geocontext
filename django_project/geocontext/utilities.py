@@ -31,55 +31,73 @@ class ServiceDefinitions():
     )
 
 
-def convert_2d_to_3d(geometry_2d: GEOSGeometry) -> GEOSGeometry:
-    """Convert 2d geometry to 3d with adding z = 0.
+def transform_geometry(geometry: GEOSGeometry, srid_target: int) -> GEOSGeometry:
+    """Wrapper to transform geometry x y from srid_source to srid_target if required.
 
-    :param geometry_2d: 2D geometry.
-    :type geometry
-
-    :returns: 3D geometry with z = 0.
-    :rtype: geometry
-    """
-    if geometry_2d.geom_type == 'Point':
-        geometry_3d = Point(geometry_2d.x, geometry_2d.y, 0, geometry_2d.srid)
-    elif geometry_2d.geom_type == 'LineString':
-        points = [convert_2d_to_3d(Point(p)) for p in geometry_2d]
-        geometry_3d = LineString(points, srid=geometry_2d.srid)
-    elif geometry_2d.geom_type == 'LinearRing':
-        points = [convert_2d_to_3d(Point(p)) for p in geometry_2d]
-        geometry_3d = LinearRing(points, srid=geometry_2d.srid)
-    elif geometry_2d.geom_type == 'Polygon':
-        linear_rings = [convert_2d_to_3d(p) for p in geometry_2d]
-        geometry_3d = Polygon(*linear_rings, srid=geometry_2d.srid)
-    elif geometry_2d.geom_type == 'MultiPoint':
-        points = [convert_2d_to_3d(p) for p in geometry_2d]
-        geometry_3d = MultiPoint(*points, srid=geometry_2d.srid)
-    elif geometry_2d.geom_type == 'MultiLineString':
-        lines = [convert_2d_to_3d(p) for p in geometry_2d]
-        geometry_3d = MultiLineString(*lines, srid=geometry_2d.srid)
-    elif geometry_2d.geom_type == 'MultiPolygon':
-        polygons = [convert_2d_to_3d(p) for p in geometry_2d]
-        geometry_3d = MultiPolygon(*polygons, srid=geometry_2d.srid)
-    else:
-        raise Exception('Not supported geometry')
-
-    return geometry_3d
-
-
-def convert_coordinate(point, srid_target: int) -> Point:
-    """Convert coordinate x y from srid_source to srid_target.
-
-    :param point: Point
-    :type point: Point
+    :param geometry: GEOSGeometry
+    :type geometry: GEOSGeometry
 
     :param srid_target: The target SRID.
     :type srid_target: int
 
+    :return: transformed geometry
+    :rtype: GEOSGeometry
+    """
+    if geometry.srid != srid_target:
+        geometry.transform(srid_target)
+    return geometry
+
+
+
+def simplify_geometry(geometry: GEOSGeometry, tolerance: float) -> GEOSGeometry:
+    """Wrapper to simplify geometry using GEOS simplify (Douglas-Peucker). 
+
+    Tolerance accepts meters (search_dist in projection of data makes sense).
+    Preserving topology is False to avoid processing overhead
+
+    :param tolerance: meters
+    :type tolerance: float
+
     :return: transformed point
     :rtype: Point
     """
-    point.transform(srid_target)
-    return point
+    geometry.simplify(tolerance=tolerance, preserve_topology=False)
+    return geometry
+
+
+def flatten_geometry(geometry: GEOSGeometry) -> GEOSGeometry:
+    """Convert 3d geometry to 2d. Ignores if already 2d.
+
+    :param geometry: 3D geometry.
+    :type geometry
+
+    :returns: 2D geometry.
+    :rtype: geometry
+    """
+    if geometry.hasz:
+        if geometry.geom_type == 'Point':
+            geometry = Point(geometry.x, geometry.y, geometry.srid)
+        elif geometry.geom_type == 'LineString':
+            points = [flatten_geometry(Point(p)) for p in geometry]
+            geometry = LineString(points, srid=geometry.srid)
+        elif geometry.geom_type == 'LinearRing':
+            points = [flatten_geometry(Point(p)) for p in geometry]
+            geometry = LinearRing(points, srid=geometry.srid)
+        elif geometry.geom_type == 'Polygon':
+            linear_rings = [flatten_geometry(p) for p in geometry]
+            geometry = Polygon(*linear_rings, srid=geometry.srid)
+        elif geometry.geom_type == 'MultiPoint':
+            points = [flatten_geometry(p) for p in geometry]
+            geometry = MultiPoint(*points, srid=geometry.srid)
+        elif geometry.geom_type == 'MultiLineString':
+            lines = [flatten_geometry(p) for p in geometry]
+            geometry = MultiLineString(*lines, srid=geometry.srid)
+        elif geometry.geom_type == 'MultiPolygon':
+            polygons = [flatten_geometry(p) for p in geometry]
+            geometry = MultiPolygon(*polygons, srid=geometry.srid)
+        else:
+            raise Exception('Not supported geometry')
+    return geometry
 
 
 def parse_dms(coord: str) -> tuple:
@@ -148,9 +166,9 @@ def get_bbox(point: Point, min_distance: float = 10, order_latlon: bool = True) 
     :return: BBOX string: 'lower corner x, lower corner y, upper corner x, upper corner y'
     :rtype: str
     """
-    # Distance calculation is done on WGS84 - and converted back if needed
+    # Distance calculation defaults to WGS84 - converted back if needed
     if point.srid != 4326:
-        point = convert_coordinate(point, 4326)
+        point = transform_geometry(point, 4326)
 
     start_point = geopy.Point(longitude=point.x, latitude=point.y)
     distance = geopy.distance.distance(meters=min_distance)
@@ -164,8 +182,8 @@ def get_bbox(point: Point, min_distance: float = 10, order_latlon: bool = True) 
     upper_right = Point(east.longitude, north.latitude, srid=4326)
 
     if point.srid != 4326:
-        lower_left = convert_coordinate(lower_left, point.srid)
-        upper_right = convert_coordinate(upper_right, point.srid)
+        lower_left = transform_geometry(lower_left, point.srid)
+        upper_right = transform_geometry(upper_right, point.srid)
 
     if order_latlon:
         bbox = [lower_left.x, lower_left.y, upper_right.x, upper_right.y]

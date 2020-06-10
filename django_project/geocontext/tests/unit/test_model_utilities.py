@@ -3,7 +3,7 @@ import os
 from django.contrib.gis.geos import Point
 from django.test import SimpleTestCase
 from geocontext.utilities import (
-    convert_coordinate,
+    transform_geometry,
     dms_dd,
     get_bbox,
     parse_dms,
@@ -16,9 +16,9 @@ test_data_directory = os.path.join(
 class TestUtilities(SimpleTestCase):
     """Test for utilities module."""
 
-    def test_convert_coordinate(self):
-        """Test convert_coordinate method."""
-        result = convert_coordinate(Point(1, 1, srid=4326), 3857)
+    def test_transform_geometry(self):
+        """Test transform_geometry method."""
+        result = transform_geometry(Point(1, 1, srid=4326), 3857)
         self.assertAlmostEqual(result[0], 111319.49, places=2)
         self.assertAlmostEqual(result[1], 111325.14, places=2)
 
