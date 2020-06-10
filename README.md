@@ -49,7 +49,7 @@ make permissions
 ```bash
 make setup-web
 ```
-4. Create a superuser for Django admin access on `http://localhost/admin/` - here you can manually modify data
+4. If needed, create a superuser for Django admin access on `http://localhost/admin/` - here you can manually modify data
 ```bash
 make superuser
 ```
@@ -86,7 +86,7 @@ find the link in the main page)
 ### v2
 
 
-## Quick start for develops with Docker and VSCode
+## Developers quick start with Docker and VSCode
 
 An easy way to set up a locally development environment is with Docker and VSCode.
 
@@ -100,7 +100,7 @@ make setup-dev
 4. DB can be accessed at port 'localhost:25432', user&password='docker', database=gis
 5. Attach a VSCode session by right clicking on the running geocontext_devweb container in the [VSCode remote - Containers](https://code.visualstudio.com/docs/remote/containers) extension
 6. Now we can get into the running containers to run management commands, run another server at another port, debug etc.
-7. In the geocontext_devweb container terminal you can run a test server as follows:
+7. In the geocontext_devweb container terminal you can run a test server for debugging as follows:
 ```
 python manage.py runserver 8001
 ```
@@ -108,10 +108,11 @@ python manage.py runserver 8001
 ```bash
 make flake8
 ```
-8. Automated tests can be run with:
+8. Pytest is used for testing and and can be run with:
 ```bash
 make test
 ```
+9. See README-legacy for PyCharm and SSH access to devweb container.
 
 ## Deployment
 
