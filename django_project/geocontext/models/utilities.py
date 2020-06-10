@@ -8,7 +8,6 @@ import logging
 import pytz
 
 from asgiref.sync import async_to_sync
-from django.contrib.gis.gdal.error import SRSException
 from django.contrib.gis.geos import GEOSGeometry, Point
 from django.contrib.gis.measure import Distance
 from django.http import QueryDict
