@@ -59,11 +59,10 @@ def retrieve_cache(service_util) -> Cache:
     """
     current_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
     service = Service.objects.get(key=service_util.key)
-    caches = Cache.objects.filter(
-        service=service,
-        expired_time__lte=current_time,
-        geometry__distance_lte=(
-            service_util.geometry,
-            Distance(m=service_util.search_dist))
-    ).first()
-    return caches
+    return Cache.objects.filter(
+                service=service,
+                expired_time__lte=current_time,
+                geometry__distance_lte=(
+                    service_util.geometry,
+                    Distance(m=service_util.search_dist))
+            ).first()

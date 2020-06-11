@@ -31,7 +31,7 @@ async def async_retrieve_service(service_utils: list) -> list:
         tasks = []
         for service_util in service_utils:
             service_util.session = session
-            tasks.append(asyncio.ensure_future(service_util.retrieve_value()))
+            tasks.append(asyncio.ensure_future(service_util.retrieve_value))
         new_service_utils = await asyncio.gather(*tasks)
         return new_service_utils
 
