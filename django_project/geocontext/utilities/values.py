@@ -37,7 +37,7 @@ class GroupValues(object):
 
             # Append all the caches found locally - add session and list values not found
             if cache is None:
-                util_arg = UtilArg(group_key=None, service_util=service_util)
+                util_arg = UtilArg(service_util=service_util)
                 util_arg_list.append(util_arg)
             else:
                 self.service_registry_values.append(cache)

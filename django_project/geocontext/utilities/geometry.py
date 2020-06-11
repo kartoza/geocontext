@@ -18,11 +18,15 @@ def transform(geometry: GEOSGeometry, srid_target: int) -> GEOSGeometry:
     :param srid_target: The target SRID.
     :type srid_target: int
 
+    :raises ValueError: If geometry could not be transformed
+
     :return: transformed geometry
     :rtype: GEOSGeometry
     """
     if geometry.srid != srid_target:
         geometry.transform(srid_target)
+        if geometry.srid != srid_target:
+            raise ValueError("Could not transform geometry")
     return geometry
 
 
