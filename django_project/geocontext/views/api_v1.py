@@ -14,19 +14,22 @@ from rest_framework import views
 from rest_framework.response import Response
 
 from geocontext.models.service import Service
-from geocontext.models.utilities import (
-    ServiceUtils,
-    create_cache,
-    retrieve_cache,
+from geocontext.utilities.service import (
     async_retrieve_service,
+    ServiceUtils,
     UtilArg
 )
+from geocontext.utilities.cache import (
+    create_cache,
+    retrieve_cache
+)
+
 from geocontext.forms import GeoContextForm
 from geocontext.serializers.cache import CacheGeoJSONSerializer, CacheSerializer
 from geocontext.serializers.collection import CollectionValueSerializer
 from geocontext.serializers.service import ServiceSerializer
 from geocontext.serializers.group import GroupValueSerializer
-from geocontext.serializers.utilities import CollectionValues, GroupValues
+from geocontext.utilities.values import CollectionValues, GroupValues
 
 
 class ServiceListAPIView(generics.ListAPIView):

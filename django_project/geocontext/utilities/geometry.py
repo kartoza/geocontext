@@ -3,32 +3,10 @@ import logging
 
 import geopy
 import geopy.distance
-from django.contrib.gis.geos import (
-    GEOSGeometry, Point, LineString, LinearRing, Polygon,
-    MultiPoint, MultiLineString, MultiPolygon
-)
+from django.contrib.gis.geos import GEOSGeometry, Point
+
 
 logger = logging.getLogger(__name__)
-
-
-class ServiceDefinitions():
-    """Class storing service definitions"""
-    WFS = 'WFS'
-    WCS = 'WCS'
-    WMS = 'WMS'
-    REST = 'REST'
-    ARCREST = 'ArcREST'
-    WIKIPEDIA = 'Wikipedia'
-    PLACENAME = 'PlaceName'
-    QUERY_TYPES = (
-        (WFS, 'WFS'),
-        (WCS, 'WCS'),
-        (WMS, 'WMS'),
-        (REST, 'REST'),
-        (ARCREST, 'ArcREST'),
-        (WIKIPEDIA, 'Wikipedia'),
-        (PLACENAME, 'PlaceName'),
-    )
 
 
 def transform_geometry(geometry: GEOSGeometry, srid_target: int) -> GEOSGeometry:
@@ -48,55 +26,23 @@ def transform_geometry(geometry: GEOSGeometry, srid_target: int) -> GEOSGeometry
     return geometry
 
 
-
-def simplify_geometry(geometry: GEOSGeometry, tolerance: float) -> GEOSGeometry:
-    """Wrapper to simplify geometry using GEOS simplify (Douglas-Peucker). 
-
-    Tolerance accepts meters (search_dist in projection of data makes sense).
-    Preserving topology is False to avoid processing overhead
-
-    :param tolerance: meters
-    :type tolerance: float
-
-    :return: transformed point
-    :rtype: Point
-    """
-    geometry.simplify(tolerance=tolerance, preserve_topology=False)
-    return geometry
-
-
 def flatten_geometry(geometry: GEOSGeometry) -> GEOSGeometry:
     """Convert 3d geometry to 2d. Ignores if already 2d.
 
     :param geometry: 3D geometry.
     :type geometry
 
+    :raises ValueError: If geometry could not be flattened
+
     :returns: 2D geometry.
     :rtype: geometry
     """
     if geometry.hasz:
-        if geometry.geom_type == 'Point':
-            geometry = Point(geometry.x, geometry.y, geometry.srid)
-        elif geometry.geom_type == 'LineString':
-            points = [flatten_geometry(Point(p)) for p in geometry]
-            geometry = LineString(points, srid=geometry.srid)
-        elif geometry.geom_type == 'LinearRing':
-            points = [flatten_geometry(Point(p)) for p in geometry]
-            geometry = LinearRing(points, srid=geometry.srid)
-        elif geometry.geom_type == 'Polygon':
-            linear_rings = [flatten_geometry(p) for p in geometry]
-            geometry = Polygon(*linear_rings, srid=geometry.srid)
-        elif geometry.geom_type == 'MultiPoint':
-            points = [flatten_geometry(p) for p in geometry]
-            geometry = MultiPoint(*points, srid=geometry.srid)
-        elif geometry.geom_type == 'MultiLineString':
-            lines = [flatten_geometry(p) for p in geometry]
-            geometry = MultiLineString(*lines, srid=geometry.srid)
-        elif geometry.geom_type == 'MultiPolygon':
-            polygons = [flatten_geometry(p) for p in geometry]
-            geometry = MultiPolygon(*polygons, srid=geometry.srid)
-        else:
-            raise Exception('Not supported geometry')
+        # We use a little Django GEOS hack - ewkt representation removes higher dimensions
+        # https://docs.djangoproject.com/en/3.0/ref/contrib/gis/geos/
+        geometry = GEOSGeometry(geometry.ewkt)
+        if geometry.hasz:
+            raise ValueError("Could not flatten 3d geometry")
     return geometry
 
 
@@ -122,7 +68,7 @@ def parse_dms(coord: str) -> tuple:
     if direction.upper() in ['N', 'E', 'W', 'S']:
         degrees = degrees * -1 if direction.upper() in ['W', 'S'] else degrees
     else:
-        raise ValueError("Could not parse DMS format input: (need dd:mm:ss:DIRECTION")
+        raise ValueError(f"Could not parse DMS format input: {coord}")
     return degrees, minutes, seconds
 
 

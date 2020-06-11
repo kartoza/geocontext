@@ -4,12 +4,29 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from geocontext.models.validators import key_validator
-from geocontext.utilities import ServiceDefinitions
 
 LOGGER = logging.getLogger(__name__)
 
 
 class Service(models.Model):
+
+    WFS = 'WFS'
+    WCS = 'WCS'
+    WMS = 'WMS'
+    REST = 'REST'
+    ARCREST = 'ArcREST'
+    WIKIPEDIA = 'Wikipedia'
+    PLACENAME = 'PlaceName'
+    QUERY_TYPES = (
+        (WFS, 'WFS'),
+        (WCS, 'WCS'),
+        (WMS, 'WMS'),
+        (REST, 'REST'),
+        (ARCREST, 'ArcREST'),
+        (WIKIPEDIA, 'Wikipedia'),
+        (PLACENAME, 'PlaceName'),
+    )
+
     key = models.CharField(
         help_text=_('Key of Service.'),
         blank=False,
@@ -74,7 +91,7 @@ class Service(models.Model):
         blank=False,
         null=False,
         max_length=200,
-        choices=ServiceDefinitions.QUERY_TYPES,
+        choices=QUERY_TYPES,
     )
 
     layer_name = models.CharField(

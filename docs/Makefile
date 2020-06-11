@@ -1,4 +1,4 @@
-export COMPOSE_FILE=deployment/docker-compose.yml
+export COMPOSE_FILE=../deployment/docker-compose.yml
 PROJECT_ID := geocontext
 PROD_SERVER := geocontext.kartoza.com
 SHELL := /bin/bash
@@ -62,7 +62,7 @@ deploy:
 	@echo "------------------------------------------------------------------"
 	@echo "Pushing image to production"
 	@echo "------------------------------------------------------------------"
-	@./deployment/production/push-production.sh
+	@../deployment/production/push-production.sh
 
 # ----------------------------------------------------------------------------
 #  Development

@@ -7,11 +7,12 @@ threads = 20
 processes = 4
 """
 from collections import namedtuple
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor  # ProcessPoolExecutor can also be used
 import json
-from django.http import QueryDict
 import requests
 import threading
+
+from django.http import QueryDict
 
 thread_local = threading.local()
 

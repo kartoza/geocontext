@@ -2,13 +2,8 @@ from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
-from geocontext.models.utilities import (
-    ServiceUtils,
-    create_cache,
-    retrieve_cache,
-    async_retrieve_service,
-    UtilArg
-)
+from geocontext.utilities.service import async_retrieve_service, ServiceUtils, UtilArg
+from geocontext.utilities.cache import create_cache, retrieve_cache
 
 
 class GroupValues(object):

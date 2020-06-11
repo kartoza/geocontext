@@ -1,16 +1,11 @@
-import os
-
 from django.contrib.gis.geos import Point
 from django.test import SimpleTestCase
-from geocontext.utilities import (
+from geocontext.utilities.geometry import (
     transform_geometry,
     dms_dd,
     get_bbox,
     parse_dms,
 )
-
-test_data_directory = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), 'data')
 
 
 class TestUtilities(SimpleTestCase):
