@@ -38,7 +38,6 @@ class TestGroup(TestCase):
         self.assertEqual(group.services.all()[0], service)
 
 
-
 class TestService(TestCase):
     """Test Service models."""
 

@@ -73,32 +73,30 @@ def parse_coord(x: str, y: str, srid: int = 4326) -> float:
     coords = {'x': x, 'y': y}
     for coord, val in coords.items():
         try:
-            coords[coord] = float(val)
+            coord_parts = re.split(r'[°\'"]+', val)
+            if len(coord_parts) >= 4:
+                raise ValueError("Could not parse DMS format input")
+            # DMS
+            elif len(coord_parts) == 3:
+                degrees = int(coord_parts[0])
+                minutes = int(coord_parts[1])
+                seconds = float(coord_parts[2])
+            # DM
+            elif len(coord_parts) == 2:
+                degrees = int(coord_parts[0])
+                minutes = float(coord_parts[1])
+                seconds = 0.0
+            # DD
+            elif len(coord_parts) == 1:
+                degrees = float(coord_parts[0])
+                minutes = 0.0
+                seconds = 0.0
+            coords[coord] = degrees + (minutes / 60.0) + (seconds / 3600.0)
         except ValueError:
-            try:
-                coord_parts = re.split(r'[°\'"\:]+', coord)
-                if len(coord_parts) >= 4:
-                    raise ValueError("Could not parse DMS format input")
-                elif len(coord_parts) == 3:
-                    degrees = int(coord_parts[0])
-                    minutes = float(coord_parts[1])
-                    seconds = float(coord_parts[2])
-                elif len(coord_parts) == 2:
-                    degrees = int(coord_parts[0])
-                    minutes = float(coord_parts[1])
-                    seconds = 0.0
+            raise ValueError(
+                f"Coord '{coords[coord]}' parse failed.")
 
-                # Convert to DD
-                if degrees >= 0:
-                    coords[coord] = degrees + (minutes / 60.0) + (seconds / 3600.0)
-                else:
-                    coords[coord] = degrees - (minutes / 60.0) - (seconds / 3600.0)
-
-            except ValueError:
-                raise ValueError(
-                    f"Coord '{coords[coord]}' parse failed.")
-
-        return Point(coords['x'], coords['y'], srid=srid)
+    return Point(coords['x'], coords['y'], srid=srid)
 
 
 def get_bbox(point: Point, min_distance: float = 10, order_latlon: bool = True) -> str:
