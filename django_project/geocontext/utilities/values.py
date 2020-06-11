@@ -8,8 +8,8 @@ from geocontext.utilities.cache import create_cache, retrieve_cache
 
 class GroupValues(object):
     """Class for holding values of context group to be serialized."""
-    def __init__(
-        self, x: str, y: str, group_key: str, srid: int = 4326, dist: float = 10.0):
+    def __init__(self, x: str, y: str, group_key: str,
+                 srid: int = 4326, dist: float = 10.0):
         self.x = x
         self.y = y
         self.srid = srid
@@ -55,8 +55,8 @@ class GroupValues(object):
 
 class CollectionValues(GroupValues):
     """Class for holding values of collection of group values to be serialized."""
-    def __init__(
-        self, x: str, y: str, collection_key: str, srid: int = 4326, dist: float = 10.0):
+    def __init__(self, x: str, y: str, collection_key: str,
+                 srid: int = 4326, dist: float = 10.0):
         """Initialize method for context collection value."""
         self.x = x
         self.y = y
@@ -98,7 +98,6 @@ class CollectionValues(GroupValues):
                         group_caches[group.key].append(cache)
                     else:
                         group_caches[group.key] = [cache]
-
 
         if len(util_arg_list) > 0:
             # Async external requests
