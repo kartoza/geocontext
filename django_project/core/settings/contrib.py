@@ -35,6 +35,7 @@ INSTALLED_APPS += (
     'rest_framework',
     'rest_framework_gis',
     'corsheaders',
+    'yet_another_django_profiler',
 )
 
 MIDDLEWARE += (

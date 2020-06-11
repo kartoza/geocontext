@@ -23,3 +23,4 @@ pytz==2020.*
 raven==6.10.*
 requests==2.23.*
 uwsgi==2.0.*
+yet-another-django-profiler==1.1.0
