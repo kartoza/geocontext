@@ -202,6 +202,7 @@ class ServiceUtils():
             pass
 
         json_response = await self.request_data(parameters)
+
         if len(json_response["features"]) > 0:
             self.value = json_response["features"][0]["properties"][self.layer_name]
         else:
@@ -218,6 +219,7 @@ class ServiceUtils():
 
             json_response = await self.request_data(parameters)
             self.value = json_response["features"][0]["properties"][self.layer_name]
+
         await self.extract_geometry(json_response["features"][0]["geometry"])
 
     async def fetch_arcrest(self):
@@ -235,6 +237,7 @@ class ServiceUtils():
 
         json_response = await self.request_data(parameters, query='identify?')
         self.value = json_response['results'][0][self.layer_name]
+
         await self.extract_geometry(json_response['results'][0]['geometry'], arc=True)
 
     async def fetch_placename(self):
@@ -276,10 +279,10 @@ class ServiceUtils():
             return await response.json(content_type=None)
 
     async def extract_geometry(self, feature: dict, arc: bool = False):
-        """Extract GEOS geometry from feature. Don't raise error if none found.
+        """Extract GEOS geometry from feature. Don't raise error if none found. Only log.
 
-        :param parameters: parameters to urlencode
-        :type parameters: dict
+        :param feature: geojson future
+        :type feature: dict
 
         :param arc: If geometry in arcgis format
         :type arc: bool
@@ -289,5 +292,5 @@ class ServiceUtils():
                 feature = arcgis2geojson(feature)
             self.geometry = GEOSGeometry(json.dumps(feature))
             self.geometry.srid = self.srid
-        except IndexError:
+        except Exception:
             LOGGER.error(f"No geometry found for: {self.key}")
