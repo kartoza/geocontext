@@ -235,7 +235,7 @@ class ServiceUtils():
 
         json_response = await self.request_data(parameters, query='identify?')
         self.value = json_response['results'][0][self.layer_name]
-        await self.extract_geometry(json_response['results'][0]['geometry'], arc = True)
+        await self.extract_geometry(json_response['results'][0]['geometry'], arc=True)
 
     async def fetch_placename(self):
         """Fetch Placename value
