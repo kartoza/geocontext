@@ -34,8 +34,7 @@ INSTALLED_APPS += (
     'rolepermissions',
     'rest_framework',
     'rest_framework_gis',
-    'corsheaders',
-    'yet_another_django_profiler',
+    'corsheaders'
 )
 
 MIDDLEWARE += (

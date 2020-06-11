@@ -11,8 +11,8 @@ export DOCKER := andretheronsa  # Default andretheronsa
 export IMAGE := geocontext  # Default geocontext
 export TAG := 2.0  # Default latest
 
-default: web
-setup-web: build web pause migrate collectstatic
+default: start-web
+setup-web: build start-web pause migrate collectstatic
 
 build:
 	@echo
@@ -39,7 +39,7 @@ uwsgi:
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) up -d uwsgi
 
-web:
+start-web:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Spin up NGINX web and DB backups"
@@ -69,7 +69,7 @@ deploy:
 # ----------------------------------------------------------------------------
 
 setup-dev: build uwsgi pause migrate collectstatic import-data build-devweb devweb
-run-dev: devweb
+start-dev: devweb
 
 devweb: db
 	@echo
@@ -205,17 +205,24 @@ nginx:
 
 rm: dbbackup rm-only
 
+stop:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Stoppping and removing containers"
+	@echo "------------------------------------------------------------------"
+	@docker-compose -p $(PROJECT_ID) down
+
 kill:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Killing"
+	@echo "Killing all containers"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) kill
 
 rm-only: kill
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Remove all containers"
+	@echo "Killing and removing all containers"
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) rm
 
@@ -320,15 +327,15 @@ dbbackup:
 help:
 	@echo "-------------------------------GEOCONTEXT--------------------------------------"
 	@echo ""
-	@echo "---------------------------------SETUP-----------------------------------------"
+	@echo "---------------------------------General---------------------------------------"
 	@echo ""
 	@echo "permissions      :Update the permissions of shared volumes. Note this will destroy any existing permissions you have in place."
 	@echo "setup-dev        :Dev shortcut - builds uwsgi + dev containers, configure & load data."
-	@echo "run-dev          :Start up dev container"
-	@echo "setup-web        :Builds, configures and runs the production containers inlcuding web server"
-	@echo "web              :Default - runs the web server."
+	@echo "start-dev        :Start up dev container"
+	@echo "setup-web        :Builds, configures and runs the production containers inlcuding web server. Does not load data."
+	@echo "start-web        :Default - runs the web server."
 	@echo "import-data      :Import geojson service data"
-	@echo ""
+	@echo "stop             :Stop and remove running containers."
 	@echo "deploy           :Extends uwsgi image with production, tag and push. Config in Makefile. Default=kartoza/geocontext:master."
 	@echo ""
 	@echo ""
@@ -349,8 +356,8 @@ help:
 	@echo "build            :Builds all required containers."
 	@echo "build-devweb     :Build the development container. See [development notes](README-dev.md)."
 	@echo "devweb           :Create an ssh container derived from uwsgi that can be used as a remote interpreter for PyCharm. See [development notes](README-dev.md)."
-	@echo "rm               :Remove all containers."
-	@echo "rm-only          :Remove any containers without trying to kill them first. "
+	@echo "rm               :Make a db backup and remove all containers."
+	@echo "rm-only          :Kills and removes all containers."
 	@echo "logs             :View the logs of all running containers. Note that you can also view individual logs in the deployment/logs directory."
 	@echo "kill             :Kills all running containers. Does not remove them."
 	@echo ""

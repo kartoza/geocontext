@@ -1,12 +1,8 @@
 import re
-import logging
 
 import geopy
 import geopy.distance
 from django.contrib.gis.geos import GEOSGeometry, Point
-
-
-logger = logging.getLogger(__name__)
 
 
 def transform(geometry: GEOSGeometry, srid_target: int) -> GEOSGeometry:
@@ -50,52 +46,59 @@ def flatten(geometry: GEOSGeometry) -> GEOSGeometry:
     return geometry
 
 
-def parse_dms(coord: str) -> tuple:
-    """Parse DMS input. (Split by °,',", or :)
+def parse_coord(x: str, y: str, srid: int = 4326) -> float:
+    """Parse string DD/DM/DMS coordinate input. Split by °,',", or ':'.
 
-    :param coord: Coord string
-    :type coord: str
+    :param x: (longitude)
+    :type x: str
+
+    :param y: Y (latitude)
+    :type y: str
+
+    :param srid: SRID (default=4326).
+    :type srid: int
 
     :raises ValueError: If string could not be parsed
 
-    :return: degrees, minutes, seconds
-    :rtype: int, int, float
+    :return: point wih srid
+    :rtype: Point
     """
-    coord_parts = re.split(r'[°\'"\:]+', coord)
-    if len(coord_parts) > 4:
-        raise ValueError("Could not parse DMS format input")
+    # Parse srid and create point in crs srid
+    try:
+        srid = int(srid)
+    except ValueError:
+        raise ValueError(f"SRID: '{srid}' not valid")
 
-    degrees = int(coord_parts[0])
-    minutes = int(coord_parts[1])
-    seconds = float(coord_parts[2])
-    direction = coord_parts[3]
-    if direction.upper() in ['N', 'E', 'W', 'S']:
-        degrees = degrees * -1 if direction.upper() in ['W', 'S'] else degrees
-    else:
-        raise ValueError(f"Could not parse DMS format input: {coord}")
-    return degrees, minutes, seconds
+    # Parse Coordinate try DD / otherwise DMS
+    coords = {'x': x, 'y': y}
+    for coord, val in coords.items():
+        try:
+            coords[coord] = float(val)
+        except ValueError:
+            try:
+                coord_parts = re.split(r'[°\'"\:]+', coord)
+                if len(coord_parts) >= 4:
+                    raise ValueError("Could not parse DMS format input")
+                elif len(coord_parts) == 3:
+                    degrees = int(coord_parts[0])
+                    minutes = float(coord_parts[1])
+                    seconds = float(coord_parts[2])
+                elif len(coord_parts) == 2:
+                    degrees = int(coord_parts[0])
+                    minutes = float(coord_parts[1])
+                    seconds = 0.0
 
+                # Convert to DD
+                if degrees >= 0:
+                    coords[coord] = degrees + (minutes / 60.0) + (seconds / 3600.0)
+                else:
+                    coords[coord] = degrees - (minutes / 60.0) - (seconds / 3600.0)
 
-def dms_to_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
-    """Convert degree minute second to decimal degree
+            except ValueError:
+                raise ValueError(
+                    f"Coord '{coords[coord]}' parse failed.")
 
-    :param degrees: degrees
-    :type degrees: int
-
-    :param minutes: minutes, defaults to 0.0
-    :type minutes: int, optional
-
-    :param seconds: seconds, defaults to 0.0
-    :type seconds: float, optional
-
-    :return: decimal degree
-    :rtype: float
-    """
-    if degrees >= 0:
-        decimal = degrees + (minutes / 60.0) + (seconds / 3600.0)
-    else:
-        decimal = degrees - (minutes / 60.0) - (seconds / 3600.0)
-    return decimal
+        return Point(coords['x'], coords['y'], srid=srid)
 
 
 def get_bbox(point: Point, min_distance: float = 10, order_latlon: bool = True) -> str:

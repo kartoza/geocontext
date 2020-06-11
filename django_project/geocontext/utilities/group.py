@@ -1,3 +1,5 @@
+from django.contrib.gis.geos import Point
+
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
 from geocontext.utilities.cache import create_cache, retrieve_cache
@@ -6,11 +8,8 @@ from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 
 class GroupValues(object):
     """Class for holding values of context group to be serialized."""
-    def __init__(self, x: str, y: str, group_key: str,
-                 srid: int = 4326, dist: float = 10.0):
-        self.x = x
-        self.y = y
-        self.srid = srid
+    def __init__(self, group_key: str, point: Point, dist: float = 10.0):
+        self.point = point
         self.dist = dist
         self.group = Group.objects.get(key=group_key)
         self.key = self.group.key
@@ -27,24 +26,22 @@ class GroupValues(object):
         """
         service_utils = []
         group_services = GroupServices.objects.filter(group=self.group).order_by('order')
-        for group_service in group_services:
+        for service in group_services:
             # Init ServiceUtil and check if it is in cache
-            service_util = ServiceUtil(
-                group_service.service.key, self.x, self.y, self.srid, self.dist)
+            service_util = ServiceUtil(service.service.key, self.point, self.dist)
             cache = retrieve_cache(service_util)
 
-            # Append all the caches found locally - add session and list values not found
-            if cache is None:
-                service_utils.append(service_util)
-            else:
+            # Append all the caches found locally - list values not found
+            if cache is not None:
                 self.service_registry_values.append(cache)
+            else:
+                service_utils.append(service_util)
 
-        # Parallel request external resources not found locally and add to cache
+        # Async request external resources not found locally and add to cache
         if len(service_utils) > 0:
-            # Async external requests
             new_service_utils = retrieve_service_value(service_utils)
 
             # Add new values to cache
             for new_service_util in new_service_utils:
-                cache = create_cache(new_service_util.service_util)
+                cache = create_cache(new_service_util)
                 self.service_registry_values.append(cache)

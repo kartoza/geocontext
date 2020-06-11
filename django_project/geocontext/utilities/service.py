@@ -1,4 +1,4 @@
-import asyncio
+from asyncio import ensure_future, gather
 import json
 import logging
 
@@ -9,7 +9,7 @@ from django.contrib.gis.geos import GEOSGeometry, Point
 from django.http import QueryDict
 
 from geocontext.models.service import Service
-from geocontext.utilities.geometry import transform, dms_to_dd, get_bbox, parse_dms
+from geocontext.utilities.geometry import transform, get_bbox
 
 
 LOGGER = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ LOGGER = logging.getLogger(__name__)
 
 @async_to_sync
 async def retrieve_service_value(service_utils: list) -> list:
-    """Fetch data and loads into ServiceUtil instance using async session.
+    """Fetch data and loads into ServiceUtil instance using async aiohttp session.
 
     :param service_utils: ServiceUtil list
     :type service_utils: list
@@ -26,34 +26,26 @@ async def retrieve_service_value(service_utils: list) -> list:
     :rtype: list
     """
     conn = aiohttp.TCPConnector(limit=100)
-    timeout = aiohttp.ClientTimeout(total=60, connect=2)
+    timeout = aiohttp.ClientTimeout(total=20, connect=2)
     async with aiohttp.ClientSession(connector=conn, timeout=timeout) as session:
         tasks = []
         for service_util in service_utils:
-            service_util.session = session
-            tasks.append(asyncio.ensure_future(service_util.retrieve_value))
-        new_service_utils = await asyncio.gather(*tasks)
-        return new_service_utils
+            tasks.append(ensure_future(service_util.retrieve_value(session)))
+        new_service_utils = await gather(*tasks)
+    return new_service_utils
 
 
 class ServiceUtil():
     """Async service methods. Init method calls ORM / blocking functions.
     """
-    def __init__(self, service_key: str, x: float, y: float,
-                 srid_in: int = 4326, dist: float = 10.0):
+    def __init__(self, service_key: str, point: Point, dist: float = 10.0):
         """Load object. Prepare geometry. This __init__ is async blocking.
 
         :param service_key: service_key
         :type service_key: str
 
-        :param x: (longitude)
-        :type x: float
-
-        :param y: Y (latitude)
-        :type y: float
-
-        :param srid: SRID (default=4326).
-        :type srid: int
+        :param point: Query coordinate
+        :type point: Point
 
         :param dist: Search distance query overide service (default=10.0).
         :type dist: int
@@ -77,42 +69,27 @@ class ServiceUtil():
         elif self.search_dist is None:
             self.search_dist = 10
 
-        # Parse Coordinate try DD / otherwise DMS
-        coords = {'x': x, 'y': y}
-        for coord, val in coords.items():
-            try:
-                coords[coord] = float(val)
-            except ValueError:
-                try:
-                    degrees, minutes, seconds = parse_dms(val)
-                    coords[coord] = dms_to_dd(degrees, minutes, seconds)
-                except ValueError:
-                    raise ValueError(
-                        f"Coord '{coords[coord]}' parse failed: {self.key}")
-
-        # Parse srid and create point in crs srid
-        try:
-            srid_in = int(srid_in)
-            self.geometry = Point(coords['x'], coords['y'], srid=srid_in)
-        except ValueError:
-            raise ValueError(f"SRID: '{srid_in}' not valid")
-
         # Default geometry is point in service SRID - all queries/bbox in native srid
-        self.geometry = transform(self.geometry, self.srid)
+        self.geometry = transform(point, self.srid)
 
-        # Calculate bbox
+        # Calculate bbox - not async so call now
         self.bbox = get_bbox(self.geometry)
 
-    async def retrieve_value(self) -> bool:
+    async def retrieve_value(self, session: aiohttp.ClientSession) -> bool:
         """Load context value and geometry from service.
         All exceptions / logging / nulls for all services handled here.
+
+        :param session: shared http session
+        :type session: aiohttp.ClientSession
+
         """
+        self.session = session
         try:
             if self.query_type == 'WMS':
                 await self.fetch_wms()
             elif self.query_type == 'WFS':
                 await self.fetch_wfs()
-            elif self.query_type == 'ARCREST':
+            elif self.query_type == 'ArcREST':
                 await self.fetch_arcrest()
             elif self.query_type == 'PLACENAME':
                 await self.fetch_placename()

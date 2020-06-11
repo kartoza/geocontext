@@ -21,6 +21,7 @@ from geocontext.serializers.service import ServiceSerializer
 from geocontext.serializers.group import GroupValueSerializer
 from geocontext.utilities.cache import create_cache, retrieve_cache
 from geocontext.utilities.collection import CollectionValues
+from geocontext.utilities.geometry import parse_coord
 from geocontext.utilities.group import GroupValues
 from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 
@@ -42,24 +43,25 @@ class CacheListAPI(views.APIView):
     """Retrieving values from cache matching: x (long), y (lat)
     """
     def get(self, request, x, y, srid=4326):
-        services = Service.objects.all()
-        service_keys = [o.key for o in services]
-        caches = []
         try:
+            point = parse_coord(x, y, srid)
+            services = Service.objects.all()
+            service_keys = [o.key for o in services]
+            caches = []
             for service_key in service_keys:
-                service_util = ServiceUtil(service_key, x, y, srid)
+                service_util = ServiceUtil(service_key, point)
                 cache = retrieve_cache(service_util)
                 caches.append(cache)
+            with_geometry = self.request.query_params.get('with-geometry', 'True')
+            if strtobool(with_geometry):
+                serializer = CacheGeoJSONSerializer(caches, many=True)
+            else:
+                serializer = CacheSerializer(caches, many=True)
+            return Response(serializer.data)
         except Exception:
             return Response("Server error", status.HTTP_400_BAD_REQUEST)
         if None in caches:
             return Response("No cache found", status.HTTP_400_BAD_REQUEST)
-        with_geometry = self.request.query_params.get('with-geometry', 'True')
-        if strtobool(with_geometry):
-            serializer = CacheGeoJSONSerializer(caches, many=True)
-        else:
-            serializer = CacheSerializer(caches, many=True)
-        return Response(serializer.data)
 
 
 class GroupAPIView(views.APIView):
@@ -67,15 +69,15 @@ class GroupAPIView(views.APIView):
     Catch any exception in populating values
     """
     def get(self, request, x, y, group_key, srid=4326):
-        group_values = GroupValues(x, y, group_key, srid)
-
         try:
+            point = parse_coord(x, y, srid)
+            group_values = GroupValues(group_key, point)
             group_values.populate_group_values()
+            group_value_serializer = GroupValueSerializer(group_values)
+            return Response(group_value_serializer.data)
         except Exception as e:
             return Response(
                 f"Could not fetch data: Server error {e}", status.HTTP_400_BAD_REQUEST)
-        group_value_serializer = GroupValueSerializer(group_values)
-        return Response(group_value_serializer.data)
 
 
 class CollectionAPIView(views.APIView):
@@ -83,14 +85,15 @@ class CollectionAPIView(views.APIView):
     Catch any exception in populating values
     """
     def get(self, request, x, y, collection_key, srid=4326):
-        collection_values = CollectionValues(x, y, collection_key, srid)
         try:
+            point = parse_coord(x, y, srid)
+            collection_values = CollectionValues(collection_key, point)
             collection_values.populate_collection_values()
+            collection_value_serializer = CollectionValueSerializer(collection_values)
+            return Response(collection_value_serializer.data)
         except Exception as e:
             return Response(
                 f"Could not fetch data: Server error {e}", status.HTTP_400_BAD_REQUEST)
-        collection_value_serializer = CollectionValueSerializer(collection_values)
-        return Response(collection_value_serializer.data)
 
 
 class RiverNameAPIView(views.APIView):
@@ -114,7 +117,8 @@ class RiverNameAPIView(views.APIView):
         except psycopg2.OperationalError:
             raise Http404()
         cursor = conn.cursor()
-        cursor.callproc('finder', [x, y])
+        point = parse_coord(x, y, 4326)
+        cursor.callproc('finder', [point.x, point.y])
         results = cursor.fetchone()
         cursor.close()
         if results:
@@ -141,7 +145,8 @@ def get_service(request):
             y = cleaned_data['y']
             srid = cleaned_data.get('srid', 4326)
             service_key = cleaned_data['service_key']
-            service_util = ServiceUtil(service_key, x, y, srid)
+            point = parse_coord(x, y, srid)
+            service_util = ServiceUtil(service_key, point, srid)
             cache = retrieve_cache(service_util)
             if cache is None:
                 new_service_util = retrieve_service_value([service_util])

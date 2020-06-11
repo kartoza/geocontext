@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-import logging
 import pytz
 
 from django.contrib.gis.measure import Distance
@@ -7,9 +6,6 @@ from django.contrib.gis.measure import Distance
 from geocontext.models.service import Service
 from geocontext.models.cache import Cache
 from geocontext.utilities.geometry import transform, flatten
-
-
-LOGGER = logging.getLogger(__name__)
 
 
 def create_cache(service_util) -> Cache:
@@ -24,24 +20,21 @@ def create_cache(service_util) -> Cache:
     :rtype: Cache
     """
     service = Service.objects.get(key=service_util.key)
-    expired_time = (datetime.utcnow() + timedelta(seconds=service.cache_duration))
+    expired_time = datetime.utcnow() + timedelta(seconds=service.cache_duration)
     expired_time = expired_time.replace(tzinfo=pytz.UTC)
     cache = Cache(
         service=service,
         name=service.key,
         value=service_util.value,
-        expired_time=expired_time
+        expired_time=expired_time,
+        source_uri=service_util.source_uri
     )
-
     if service_util.geometry:
         service_util.geometry = transform(service_util.geometry, 3857)
         service_util.geometry = flatten(service_util.geometry)
         cache.geometry = service_util.geometry
 
-    cache.source_uri = service_util.source_uri if service_util.source_uri else None
-
     cache.save()
-    cache.refresh_from_db()
     return cache
 
 
@@ -61,7 +54,7 @@ def retrieve_cache(service_util) -> Cache:
     service = Service.objects.get(key=service_util.key)
     return Cache.objects.filter(
                 service=service,
-                expired_time__lte=current_time,
+                expired_time__gte=current_time,
                 geometry__distance_lte=(
                     service_util.geometry,
                     Distance(m=service_util.search_dist))
