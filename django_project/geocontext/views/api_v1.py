@@ -13,23 +13,16 @@ from rest_framework import generics
 from rest_framework import views
 from rest_framework.response import Response
 
-from geocontext.models.service import Service
-from geocontext.utilities.service import (
-    async_retrieve_service,
-    ServiceUtil,
-    UtilArg
-)
-from geocontext.utilities.cache import (
-    create_cache,
-    retrieve_cache
-)
-
 from geocontext.forms import GeoContextForm
+from geocontext.models.service import Service
 from geocontext.serializers.cache import CacheGeoJSONSerializer, CacheSerializer
 from geocontext.serializers.collection import CollectionValueSerializer
 from geocontext.serializers.service import ServiceSerializer
 from geocontext.serializers.group import GroupValueSerializer
-from geocontext.utilities.values import CollectionValues, GroupValues
+from geocontext.utilities.cache import create_cache, retrieve_cache
+from geocontext.utilities.collection import CollectionValues
+from geocontext.utilities.group import GroupValues
+from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 
 
 class ServiceListAPIView(generics.ListAPIView):
@@ -151,10 +144,9 @@ def get_service(request):
             service_util = ServiceUtil(service_key, x, y, srid)
             cache = retrieve_cache(service_util)
             if cache is None:
-                util_arg = UtilArg(group_key=None, service_util=service_util)
-                new_util_arg = async_retrieve_service(util_arg)
-                if new_util_arg.service_util.value is not None:
-                    cache = create_cache(new_util_arg.service_util)
+                new_service_util = retrieve_service_value([service_util])
+                if new_service_util.value is not None:
+                    cache = create_cache(new_service_util)
             fields = ('value', 'key')
             if cache:
                 return HttpResponse(

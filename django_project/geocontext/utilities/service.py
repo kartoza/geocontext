@@ -16,7 +16,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @async_to_sync
-async def async_retrieve_service(service_utils: list) -> list:
+async def retrieve_service_value(service_utils: list) -> list:
     """Fetch data and loads into ServiceUtil instance using async session.
 
     :param service_utils: ServiceUtil list
@@ -37,8 +37,7 @@ async def async_retrieve_service(service_utils: list) -> list:
 
 
 class ServiceUtil():
-    """Async context service model mock object + utility methods.
-    Init method calls ORM / blocking functions so should be done before async logic
+    """Async service methods. Init method calls ORM / blocking functions.
     """
     def __init__(self, service_key: str, x: float, y: float,
                  srid_in: int = 4326, dist: float = 10.0):
