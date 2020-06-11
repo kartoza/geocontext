@@ -6,7 +6,7 @@ from django.contrib.gis.measure import Distance
 
 from geocontext.models.service import Service
 from geocontext.models.cache import Cache
-from geocontext.utilities.geometry import transform_geometry, flatten_geometry
+from geocontext.utilities.geometry import transform, flatten
 
 
 LOGGER = logging.getLogger(__name__)
@@ -34,8 +34,8 @@ def create_cache(service_util) -> Cache:
     )
 
     if service_util.geometry:
-        service_util.geometry = transform_geometry(service_util.geometry, 3857)
-        service_util.geometry = flatten_geometry(service_util.geometry)
+        service_util.geometry = transform(service_util.geometry, 3857)
+        service_util.geometry = flatten(service_util.geometry)
         cache.geometry = service_util.geometry
 
     cache.source_uri = service_util.source_uri if service_util.source_uri else None

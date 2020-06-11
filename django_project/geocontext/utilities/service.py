@@ -10,7 +10,7 @@ from django.contrib.gis.geos import GEOSGeometry, Point
 from django.http import QueryDict
 
 from geocontext.models.service import Service
-from geocontext.utilities.geometry import transform_geometry, dms_dd, get_bbox, parse_dms
+from geocontext.utilities.geometry import transform, dms_to_dd, get_bbox, parse_dms
 
 
 LOGGER = logging.getLogger(__name__)
@@ -101,7 +101,7 @@ class ServiceUtils():
             except ValueError:
                 try:
                     degrees, minutes, seconds = parse_dms(val)
-                    coords[coord] = dms_dd(degrees, minutes, seconds)
+                    coords[coord] = dms_to_dd(degrees, minutes, seconds)
                 except ValueError:
                     raise ValueError(
                         f"Coord '{coords[coord]}' parse failed: {self.key}")
@@ -114,7 +114,7 @@ class ServiceUtils():
             raise ValueError(f"SRID: '{srid_in}' not valid")
 
         # Default geometry is point in service SRID - all queries/bbox in native srid
-        self.geometry = transform_geometry(self.geometry, self.srid)
+        self.geometry = transform(self.geometry, self.srid)
 
         # Calculate bbox
         self.bbox = get_bbox(self.geometry)

@@ -9,7 +9,7 @@ from django.contrib.gis.geos import GEOSGeometry, Point
 logger = logging.getLogger(__name__)
 
 
-def transform_geometry(geometry: GEOSGeometry, srid_target: int) -> GEOSGeometry:
+def transform(geometry: GEOSGeometry, srid_target: int) -> GEOSGeometry:
     """Wrapper to transform geometry x y from srid_source to srid_target if required.
 
     :param geometry: GEOSGeometry
@@ -26,7 +26,7 @@ def transform_geometry(geometry: GEOSGeometry, srid_target: int) -> GEOSGeometry
     return geometry
 
 
-def flatten_geometry(geometry: GEOSGeometry) -> GEOSGeometry:
+def flatten(geometry: GEOSGeometry) -> GEOSGeometry:
     """Convert 3d geometry to 2d. Ignores if already 2d.
 
     :param geometry: 3D geometry.
@@ -72,7 +72,7 @@ def parse_dms(coord: str) -> tuple:
     return degrees, minutes, seconds
 
 
-def dms_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
+def dms_to_dd(degrees: int, minutes: int = 0, seconds: int = 0.0) -> float:
     """Convert degree minute second to decimal degree
 
     :param degrees: degrees
@@ -114,7 +114,7 @@ def get_bbox(point: Point, min_distance: float = 10, order_latlon: bool = True) 
     """
     # Distance calculation defaults to WGS84 - converted back if needed
     if point.srid != 4326:
-        point = transform_geometry(point, 4326)
+        point = transform(point, 4326)
 
     start_point = geopy.Point(longitude=point.x, latitude=point.y)
     distance = geopy.distance.distance(meters=min_distance)
@@ -128,8 +128,8 @@ def get_bbox(point: Point, min_distance: float = 10, order_latlon: bool = True) 
     upper_right = Point(east.longitude, north.latitude, srid=4326)
 
     if point.srid != 4326:
-        lower_left = transform_geometry(lower_left, point.srid)
-        upper_right = transform_geometry(upper_right, point.srid)
+        lower_left = transform(lower_left, point.srid)
+        upper_right = transform(upper_right, point.srid)
 
     if order_latlon:
         bbox = [lower_left.x, lower_left.y, upper_right.x, upper_right.y]
