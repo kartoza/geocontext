@@ -17,8 +17,8 @@ def create_cache(service_util) -> Cache:
 
     We use EPSG:3857 to optimise cache distance queries.
 
-    :param service_util: ServiceUtils instance
-    :type service_util: ServiceUtils
+    :param service_util: ServiceUtil instance
+    :type service_util: ServiceUtil
 
     :return: Context cache instance
     :rtype: Cache
@@ -51,8 +51,8 @@ def retrieve_cache(service_util) -> Cache:
     Filters for search distance and expiry date.
     Distance search in meter - only in 2d for now.
 
-    :param service_util: ServiceUtils instance
-    :type service_util: ServiceUtils
+    :param service_util: ServiceUtil instance
+    :type service_util: ServiceUtil
 
     :returns: cache on None
     :rtype: cache or None

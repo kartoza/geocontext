@@ -1,5 +1,4 @@
 import asyncio
-from collections import namedtuple
 import json
 import logging
 
@@ -15,46 +14,29 @@ from geocontext.utilities.geometry import transform, dms_to_dd, get_bbox, parse_
 
 LOGGER = logging.getLogger(__name__)
 
-# Data object to index service utils with associated groups for serializer utils
-UtilArg = namedtuple('UtilArgs', ['group_key', 'service_util'])
-
 
 @async_to_sync
-async def async_retrieve_service(util_arg_list: list) -> list:
-    """Fetch data and loads into ServiceUtils instance using async session.
+async def async_retrieve_service(service_utils: list) -> list:
+    """Fetch data and loads into ServiceUtil instance using async session.
 
-    :param namedtuple: (group_key, service_util)
-    :type util_arg: namedtuple(str, ServiceUtils)
+    :param service_utils: ServiceUtil list
+    :type service_utils: list
 
-    :return: (group_key and ServiceUtils)
-    :rtype: namedtuple or None
+    :return: List of ServiceUtil with values
+    :rtype: list
     """
     conn = aiohttp.TCPConnector(limit=100)
     timeout = aiohttp.ClientTimeout(total=60, connect=2)
     async with aiohttp.ClientSession(connector=conn, timeout=timeout) as session:
         tasks = []
-        for util_arg in util_arg_list:
-            util_arg.service_util.session = session
-            task = asyncio.ensure_future(async_worker(util_arg))
-            tasks.append(task)
-        new_util_arg_list = await asyncio.gather(*tasks)
-        return new_util_arg_list
+        for service_util in service_utils:
+            service_util.session = session
+            tasks.append(asyncio.ensure_future(service_util.retrieve_value()))
+        new_service_utils = await asyncio.gather(*tasks)
+        return new_service_utils
 
 
-async def async_worker(util_arg: namedtuple) -> namedtuple:
-    """Fetch data and loads into ServiceUtils instance.
-
-    :param namedtuple: (group_key, service_util)
-    :type util_arg: namedtuple(str, ServiceUtils)
-
-    :return: (group_key and ServiceUtils)
-    :rtype: namedtuple or None
-    """
-    await util_arg.service_util.retrieve_value()
-    return util_arg
-
-
-class ServiceUtils():
+class ServiceUtil():
     """Async context service model mock object + utility methods.
     Init method calls ORM / blocking functions so should be done before async logic
     """
@@ -81,6 +63,9 @@ class ServiceUtils():
         service_dict = Service.objects.filter(key=service_key).values().first()
         for key, val in service_dict.items():
             setattr(self, key, val)
+
+        # Group associated with this instance
+        self.group_key = None
 
         # Add Cache model params
         self.source_uri = None
@@ -141,6 +126,7 @@ class ServiceUtils():
         except Exception as e:
             LOGGER.error(f"{self.source_uri} failed for: {self.key} with: {e}")
             self.value = None
+        return self
 
     async def fetch_wms(self):
         """Fetch WMS value
@@ -288,8 +274,7 @@ class ServiceUtils():
         :type arc: bool
         """
         try:
-            if arc:
-                feature = arcgis2geojson(feature)
+            feature = arcgis2geojson(feature) if arc else feature
             self.geometry = GEOSGeometry(json.dumps(feature))
             self.geometry.srid = self.srid
         except Exception:

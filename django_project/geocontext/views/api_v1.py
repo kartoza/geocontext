@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from geocontext.models.service import Service
 from geocontext.utilities.service import (
     async_retrieve_service,
-    ServiceUtils,
+    ServiceUtil,
     UtilArg
 )
 from geocontext.utilities.cache import (
@@ -54,7 +54,7 @@ class CacheListAPI(views.APIView):
         caches = []
         try:
             for service_key in service_keys:
-                service_util = ServiceUtils(service_key, x, y, srid)
+                service_util = ServiceUtil(service_key, x, y, srid)
                 cache = retrieve_cache(service_util)
                 caches.append(cache)
         except Exception:
@@ -148,7 +148,7 @@ def get_service(request):
             y = cleaned_data['y']
             srid = cleaned_data.get('srid', 4326)
             service_key = cleaned_data['service_key']
-            service_util = ServiceUtils(service_key, x, y, srid)
+            service_util = ServiceUtil(service_key, x, y, srid)
             cache = retrieve_cache(service_util)
             if cache is None:
                 util_arg = UtilArg(group_key=None, service_util=service_util)
