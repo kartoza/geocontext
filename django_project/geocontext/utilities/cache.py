@@ -13,8 +13,6 @@ from geocontext.utilities.service import ServiceUtil
 def create_cache(service_util: ServiceUtil) -> Cache:
     """Add context value and projected 2d geometry to cache.
 
-    We use EPSG:3857 to optimise cache distance queries.
-
     :param service_util: ServiceUtil instance
     :type service_util: ServiceUtil
 
@@ -80,8 +78,6 @@ def retrieve_cache_geometry(geometry: GEOSGeometry, dist: float = 10) -> Cache:
     geometry = transform(geometry, 3857)
     return Cache.objects.filter(
         geometry__dwithin=(geometry, dist)
-    ).filter(
-        geometry__distance_lte=(geometry, Distance(m=dist))
     ).annotate(
         distance=Distance("geometry", geometry)
     ).order_by("distance")
