@@ -99,17 +99,18 @@ def parse_coord(x: str, y: str, srid: int = 4326) -> float:
     return Point(coords['x'], coords['y'], srid=srid)
 
 
-def get_bbox(point: Point, min_distance: float = 10, order_latlon: bool = True) -> str:
+def get_bbox(point: Point, search_distance: float = 10, order_latlon: bool = True) -> str:
     """
-    Get bbox that is guaranteed to be {min_distance} meters from point. BBOX corners will
-    be futher but the distance in cardinal directions from point will equal min_distance.
-    Lower corner specified first. Lon/lat (x,y) order can be flipped for CRS if needed.
+    Get bbox that is guaranteed to be {search_distance} meters from point. BBOX corners
+    will be futher but the distance in cardinal directions from point will equal
+    search_distance. Lower corner specified first. Lon/lat (x,y) order can be
+    flipped for CRS if needed.
 
     :param point: Point
     :type point: Point
 
-    :param min_distance: Minimum distance that the bbox should include in meter.
-    :type min_distance: float
+    :param search_distance: Minimum distance that the bbox should include in meter.
+    :type search_distance: float
 
     :param order_latlon: bbox order depends on CRS.
     :type order_latlon: bool (default True)
@@ -122,7 +123,7 @@ def get_bbox(point: Point, min_distance: float = 10, order_latlon: bool = True) 
         point = transform(point, 4326)
 
     start_point = geopy.Point(longitude=point.x, latitude=point.y)
-    distance = geopy.distance.distance(meters=min_distance)
+    distance = geopy.distance.distance(meters=search_distance)
 
     north = distance.destination(point=start_point, bearing=0)
     east = distance.destination(point=start_point, bearing=90)

@@ -4,17 +4,21 @@ from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
-from geocontext.utilities.cache import create_cache, retrieve_cache
+from geocontext.utilities.cache import (
+    create_cache,
+    retrieve_cache_geometry,
+    retrieve_cache_valid
+)
 from geocontext.utilities.group import GroupValues
 from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 
 
 class CollectionValues(GroupValues):
     """Class for holding values of collection of group values to be serialized."""
-    def __init__(self, collection_key: str, point: Point, dist: float = 10.0):
+    def __init__(self, collection_key: str, point: Point, search_dist: float = 10.0):
         """Initialize method for context collection value."""
         self.point = point
-        self.dist = dist
+        self.search_dist = search_dist
         self.collection = Collection.objects.get(key=collection_key)
         self.key = self.collection.key
         self.name = self.collection.name
@@ -33,16 +37,19 @@ class CollectionValues(GroupValues):
         collection_groups = CollectionGroups.objects.filter(
                                 collection=self.collection).order_by('order')
 
+        # Only do spatial query once on cache - we don't want to loop this
+        cache_query = retrieve_cache_geometry(self.point, self.search_dist)
+
         # We need to find CRS not in cache in all groups
         for collection_group in collection_groups:
             group = Group.objects.get(key=collection_group.group.key)
             group_services = GroupServices.objects.filter(group=group).order_by('order')
-            for service in group_services:
-                # Init ServiceUtil and check if it is in cache
-                service_util = ServiceUtil(service.service.key, self.point, self.dist)
-                cache = retrieve_cache(service_util)
 
-                # Append all the caches found locally per group - list still needed
+            # Append all the caches found locally per group - list still needed
+            for service in group_services:
+                service_util = ServiceUtil(service.service.key, self.point, self.dist)
+                cache = retrieve_cache_valid(cache_query, service_util)
+
                 if cache is not None:
                     if group.key in group_caches:
                         group_caches[group.key].append(cache)
@@ -56,8 +63,8 @@ class CollectionValues(GroupValues):
             # Async external requests
             new_service_utils = retrieve_service_value(service_utils)
 
+            # Add new values to cache
             for new_service_util in new_service_utils:
-                # Add new values to cache
                 cache = create_cache(new_service_util)
                 if new_service_util.group_key in group_caches:
                     group_caches[new_service_util.group_key].append(cache)

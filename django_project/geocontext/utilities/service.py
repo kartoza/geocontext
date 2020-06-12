@@ -73,7 +73,7 @@ class ServiceUtil():
         self.geometry = transform(point, self.srid)
 
         # Calculate bbox - not async so call now
-        self.bbox = get_bbox(self.geometry)
+        self.bbox = get_bbox(self.geometry, self.search_distance)
 
     async def retrieve_value(self, session: aiohttp.ClientSession) -> bool:
         """Load context value and geometry from service.

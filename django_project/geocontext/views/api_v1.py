@@ -19,7 +19,11 @@ from geocontext.serializers.cache import CacheGeoJSONSerializer, CacheSerializer
 from geocontext.serializers.collection import CollectionValueSerializer
 from geocontext.serializers.service import ServiceSerializer
 from geocontext.serializers.group import GroupValueSerializer
-from geocontext.utilities.cache import create_cache, retrieve_cache
+from geocontext.utilities.cache import (
+    create_cache,
+    retrieve_cache_geometry,
+    retrieve_cache_valid
+)
 from geocontext.utilities.collection import CollectionValues
 from geocontext.utilities.geometry import parse_coord
 from geocontext.utilities.group import GroupValues
@@ -42,15 +46,16 @@ class ServiceDetailAPIView(generics.RetrieveAPIView):
 class CacheListAPI(views.APIView):
     """Retrieving values from cache matching: x (long), y (lat)
     """
-    def get(self, request, x, y, srid=4326):
+    def get(self, request, x, y, srid=4326, search_dist: float = 10.0):
         try:
             point = parse_coord(x, y, srid)
+            cache_query = retrieve_cache_geometry(point, search_dist)
             services = Service.objects.all()
             service_keys = [o.key for o in services]
             caches = []
             for service_key in service_keys:
                 service_util = ServiceUtil(service_key, point)
-                cache = retrieve_cache(service_util)
+                cache = retrieve_cache_valid(cache_query, service_util)
                 caches.append(cache)
             with_geometry = self.request.query_params.get('with-geometry', 'True')
             if strtobool(with_geometry):
@@ -68,10 +73,10 @@ class GroupAPIView(views.APIView):
     """Retrieve values from context group matching:  x (long), y (lat) group key.
     Catch any exception in populating values
     """
-    def get(self, request, x, y, group_key, srid=4326):
+    def get(self, request, x, y, group_key, srid=4326, search_dist: float = 10.0):
         try:
             point = parse_coord(x, y, srid)
-            group_values = GroupValues(group_key, point)
+            group_values = GroupValues(group_key, point, search_dist)
             group_values.populate_group_values()
             group_value_serializer = GroupValueSerializer(group_values)
             return Response(group_value_serializer.data)
@@ -84,10 +89,10 @@ class CollectionAPIView(views.APIView):
     """Retrieve values from context collection matching: x (long), y (lat) collection key.
     Catch any exception in populating values
     """
-    def get(self, request, x, y, collection_key, srid=4326):
+    def get(self, request, x, y, collection_key, srid=4326, search_dist: float = 10.0):
         try:
             point = parse_coord(x, y, srid)
-            collection_values = CollectionValues(collection_key, point)
+            collection_values = CollectionValues(collection_key, point, search_dist)
             collection_values.populate_collection_values()
             collection_value_serializer = CollectionValueSerializer(collection_values)
             return Response(collection_value_serializer.data)
@@ -144,10 +149,12 @@ def get_service(request):
             x = cleaned_data['x']
             y = cleaned_data['y']
             srid = cleaned_data.get('srid', 4326)
+            search_dist = cleaned_data.get('service_key', 10.0)
             service_key = cleaned_data['service_key']
             point = parse_coord(x, y, srid)
             service_util = ServiceUtil(service_key, point, srid)
-            cache = retrieve_cache(service_util)
+            cache_query = retrieve_cache_geometry(point, search_dist)
+            cache = retrieve_cache_valid(cache_query, service_util)
             if cache is None:
                 new_service_util = retrieve_service_value([service_util])
                 if new_service_util.value is not None:

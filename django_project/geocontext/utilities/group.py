@@ -2,15 +2,19 @@ from django.contrib.gis.geos import Point
 
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
-from geocontext.utilities.cache import create_cache, retrieve_cache
+from geocontext.utilities.cache import (
+    create_cache,
+    retrieve_cache_geometry,
+    retrieve_cache_valid
+)
 from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 
 
 class GroupValues(object):
     """Class for holding values of context group to be serialized."""
-    def __init__(self, group_key: str, point: Point, dist: float = 10.0):
+    def __init__(self, group_key: str, point: Point, search_dist: float = 10.0):
         self.point = point
-        self.dist = dist
+        self.search_dist = search_dist
         self.group = Group.objects.get(key=group_key)
         self.key = self.group.key
         self.name = self.group.name
@@ -26,12 +30,15 @@ class GroupValues(object):
         """
         service_utils = []
         group_services = GroupServices.objects.filter(group=self.group).order_by('order')
-        for service in group_services:
-            # Init ServiceUtil and check if it is in cache
-            service_util = ServiceUtil(service.service.key, self.point, self.dist)
-            cache = retrieve_cache(service_util)
 
-            # Append all the caches found locally - list values not found
+        # Only do spatial query once on cache - we don't want to loop this
+        cache_query = retrieve_cache_geometry(self.point, self.search_dist)
+
+        # Append all the caches found locally - list values not found
+        for service in group_services:
+            service_util = ServiceUtil(service.service.key, self.point, self.dist)
+            cache = retrieve_cache_valid(cache_query, service_util)
+
             if cache is not None:
                 self.service_registry_values.append(cache)
             else:
