@@ -9,7 +9,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Service(models.Model):
-
     WFS = 'WFS'
     WCS = 'WCS'
     WMS = 'WMS'

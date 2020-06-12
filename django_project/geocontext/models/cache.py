@@ -6,7 +6,6 @@ from geocontext.models.service import Service
 
 class Cache(models.Model):
     """Cache Model Class."""
-
     name = models.CharField(
         help_text=_('Name of Cache.'),
         blank=False,

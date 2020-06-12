@@ -4,15 +4,24 @@ from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
-from geocontext.utilities.cache import create_cache, retrieve_cache
+from geocontext.utilities.cache import create_caches, retrieve_cache
 from geocontext.utilities.group import GroupValues
 from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 
 
 class CollectionValues(GroupValues):
     """Class for holding values of collection of group values to be serialized."""
-    def __init__(self, collection_key: str, point: Point, search_dist: float = 10.0):
-        """Initialize method for context collection value."""
+    def __init__(self, collection_key: str, point: Point, search_dist: float):
+        """Initialize method for context CollectionValues.
+
+        :param collection_key: collection_key
+        :type collection_key: str
+        :param point: Query coordinate
+        :type point: Point
+        :param search_dist: Search distance query overide service.
+        :type search_dist: int
+        """
+
         self.point = point
         self.search_dist = search_dist
         self.collection = Collection.objects.get(key=collection_key)
@@ -23,10 +32,9 @@ class CollectionValues(GroupValues):
     def populate_collection_values(self):
         """Populate CollectionValue with service values.
         First identify values not in cache.
-        Then fetch all external values using threaded ServiceUtil.
+        Then fetch all external values using async ServiceUtil.
         Finally add new values to cache and add these to a list of group instances
         to serialize.
-        Ensures ORM is not touched during async network data requests.
         """
         service_utils = []
         group_caches = {}
@@ -41,9 +49,9 @@ class CollectionValues(GroupValues):
 
             # Append all the caches found locally per group - list still needed
             for service in group_services:
-                service_util = ServiceUtil(service.service.key, self.point, self.dist)
+                service_util = ServiceUtil(
+                                service.service.key, self.point, self.search_dist)
                 cache = retrieve_cache(service_util)
-
                 if cache is not None:
                     if group.key in group_caches:
                         group_caches[group.key].append(cache)
@@ -53,13 +61,11 @@ class CollectionValues(GroupValues):
                     service_util.group_key = group.key
                     service_utils.append(service_util)
 
+        # Async external requests and add to cache
         if len(service_utils) > 0:
-            # Async external requests
             new_service_utils = retrieve_service_value(service_utils)
-
-            # Add new values to cache
             for new_service_util in new_service_utils:
-                cache = create_cache(new_service_util)
+                cache = create_caches(new_service_util)
                 if new_service_util.group_key in group_caches:
                     group_caches[new_service_util.group_key].append(cache)
                 else:
@@ -67,7 +73,7 @@ class CollectionValues(GroupValues):
 
         # Add GroupValues to be serialized
         for group_key, cache_list in group_caches.items():
-            group_values = GroupValues(group_key, self.point, self.dist)
+            group_values = GroupValues(group_key, self.point, self.search_dist)
             for cache in cache_list:
                 group_values.service_registry_values.append(cache)
             self.context_group_values.append(group_values)

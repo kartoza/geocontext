@@ -8,7 +8,6 @@ from geocontext.models.validators import key_validator
 class Group(models.Model):
     GROUP_TYPE_TEXT = 'text'
     GROUP_TYPE_GRAPH = 'graph'
-
     GROUP_TYPE_CHOICES = (
         (GROUP_TYPE_TEXT, 'Text'),
         (GROUP_TYPE_GRAPH, 'Graph')

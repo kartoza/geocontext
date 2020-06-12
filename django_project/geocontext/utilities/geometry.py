@@ -10,19 +10,16 @@ def transform(geometry: GEOSGeometry, srid_target: int) -> GEOSGeometry:
 
     :param geometry: GEOSGeometry
     :type geometry: GEOSGeometry
-
     :param srid_target: The target SRID.
     :type srid_target: int
-
     :raises ValueError: If geometry could not be transformed
-
     :return: transformed geometry
     :rtype: GEOSGeometry
     """
     if geometry.srid != srid_target:
-        geometry.transform(srid_target)
+        geometry = geometry.transform(srid_target, clone=True)
         if geometry.srid != srid_target:
-            raise ValueError("Could not transform geometry")
+            raise ValueError('Could not transform geometry')
     return geometry
 
 
@@ -31,9 +28,7 @@ def flatten(geometry: GEOSGeometry) -> GEOSGeometry:
 
     :param geometry: 3D geometry.
     :type geometry
-
     :raises ValueError: If geometry could not be flattened
-
     :returns: 2D geometry.
     :rtype: geometry
     """
@@ -42,24 +37,20 @@ def flatten(geometry: GEOSGeometry) -> GEOSGeometry:
         # https://docs.djangoproject.com/en/3.0/ref/contrib/gis/geos/
         geometry = GEOSGeometry(geometry.ewkt)
         if geometry.hasz:
-            raise ValueError("Could not flatten 3d geometry")
+            raise ValueError('Could not flatten 3d geometry')
     return geometry
 
 
-def parse_coord(x: str, y: str, srid: int = 4326) -> float:
+def parse_coord(x: str, y: str, srid: str = '4326') -> float:
     """Parse string DD/DM/DMS coordinate input. Split by °,',", or ':'.
 
     :param x: (longitude)
     :type x: str
-
     :param y: Y (latitude)
     :type y: str
-
     :param srid: SRID (default=4326).
     :type srid: int
-
     :raises ValueError: If string could not be parsed
-
     :return: point wih srid
     :rtype: Point
     """
@@ -75,7 +66,7 @@ def parse_coord(x: str, y: str, srid: int = 4326) -> float:
         try:
             coord_parts = re.split(r'[°\'"]+', val)
             if len(coord_parts) >= 4:
-                raise ValueError("Could not parse DMS format input")
+                raise ValueError('Could not parse DMS format input')
             # DMS
             elif len(coord_parts) == 3:
                 degrees = int(coord_parts[0])
@@ -108,13 +99,10 @@ def get_bbox(point: Point, search_distance: float = 10, order_latlon: bool = Tru
 
     :param point: Point
     :type point: Point
-
     :param search_distance: Minimum distance that the bbox should include in meter.
     :type search_distance: float
-
     :param order_latlon: bbox order depends on CRS.
     :type order_latlon: bool (default True)
-
     :return: BBOX string: 'lower corner x, lower corner y, upper corner x, upper corner y'
     :rtype: str
     """
