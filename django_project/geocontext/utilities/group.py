@@ -2,11 +2,7 @@ from django.contrib.gis.geos import Point
 
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
-from geocontext.utilities.cache import (
-    create_cache,
-    retrieve_cache_geometry,
-    retrieve_cache_valid
-)
+from geocontext.utilities.cache import create_cache, retrieve_cache
 from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 
 
@@ -31,13 +27,10 @@ class GroupValues(object):
         service_utils = []
         group_services = GroupServices.objects.filter(group=self.group).order_by('order')
 
-        # Only do spatial query once on cache - we don't want to loop this
-        cache_query = retrieve_cache_geometry(self.point, self.search_dist)
-
         # Append all the caches found locally - list values not found
         for service in group_services:
             service_util = ServiceUtil(service.service.key, self.point, self.dist)
-            cache = retrieve_cache_valid(cache_query, service_util)
+            cache = retrieve_cache(service_util)
 
             if cache is not None:
                 self.service_registry_values.append(cache)

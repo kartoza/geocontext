@@ -192,9 +192,10 @@ class ServiceUtil():
             'geometryType': 'esriGeometryPoint',
             'geometry': f'{{{{x: {self.geometry.x}, y: {self.geometry.y}}}}}',
             'layers': self.layer_name,
-            'imageDisplay': '581,461,96',
-            'tolerance': '10',
-            'mapExtent': self.bbox
+            'imageDisplay': '10,10,96',
+            'tolerance': '1',
+            'mapExtent': self.bbox,
+            'returnGeometry': 'true'
         }
 
         json_response = await self.request_data(parameters, query='identify?')

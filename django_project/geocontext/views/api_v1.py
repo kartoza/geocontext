@@ -19,11 +19,7 @@ from geocontext.serializers.cache import CacheGeoJSONSerializer, CacheSerializer
 from geocontext.serializers.collection import CollectionValueSerializer
 from geocontext.serializers.service import ServiceSerializer
 from geocontext.serializers.group import GroupValueSerializer
-from geocontext.utilities.cache import (
-    create_cache,
-    retrieve_cache_geometry,
-    retrieve_cache_valid
-)
+from geocontext.utilities.cache import create_cache, retrieve_cache
 from geocontext.utilities.collection import CollectionValues
 from geocontext.utilities.geometry import parse_coord
 from geocontext.utilities.group import GroupValues
@@ -49,13 +45,12 @@ class CacheListAPI(views.APIView):
     def get(self, request, x, y, srid=4326, search_dist: float = 10.0):
         try:
             point = parse_coord(x, y, srid)
-            cache_query = retrieve_cache_geometry(point, search_dist)
             services = Service.objects.all()
             service_keys = [o.key for o in services]
             caches = []
             for service_key in service_keys:
-                service_util = ServiceUtil(service_key, point)
-                cache = retrieve_cache_valid(cache_query, service_util)
+                service_util = ServiceUtil(service_key, point, search_dist)
+                cache = retrieve_cache(service_util)
                 caches.append(cache)
             with_geometry = self.request.query_params.get('with-geometry', 'True')
             if strtobool(with_geometry):
@@ -148,13 +143,12 @@ def get_service(request):
             cleaned_data = form.cleaned_data
             x = cleaned_data['x']
             y = cleaned_data['y']
+            service_key = cleaned_data['service_key']
             srid = cleaned_data.get('srid', 4326)
             search_dist = cleaned_data.get('service_key', 10.0)
-            service_key = cleaned_data['service_key']
             point = parse_coord(x, y, srid)
-            service_util = ServiceUtil(service_key, point, srid)
-            cache_query = retrieve_cache_geometry(point, search_dist)
-            cache = retrieve_cache_valid(cache_query, service_util)
+            service_util = ServiceUtil(service_key, point, search_dist)
+            cache = retrieve_cache(service_util)
             if cache is None:
                 new_service_util = retrieve_service_value([service_util])
                 if new_service_util.value is not None:

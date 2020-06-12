@@ -4,11 +4,7 @@ from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
-from geocontext.utilities.cache import (
-    create_cache,
-    retrieve_cache_geometry,
-    retrieve_cache_valid
-)
+from geocontext.utilities.cache import create_cache, retrieve_cache
 from geocontext.utilities.group import GroupValues
 from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 
@@ -29,16 +25,14 @@ class CollectionValues(GroupValues):
         First identify values not in cache.
         Then fetch all external values using threaded ServiceUtil.
         Finally add new values to cache and add these to a list of group instances
-        to serialize. 
+        to serialize.
         Ensures ORM is not touched during async network data requests.
         """
         service_utils = []
         group_caches = {}
         collection_groups = CollectionGroups.objects.filter(
-                                collection=self.collection).order_by('order')
-
-        # Only do spatial query once on cache - we don't want to loop this
-        cache_query = retrieve_cache_geometry(self.point, self.search_dist)
+                                collection=self.collection
+                            ).order_by('order')
 
         # We need to find CRS not in cache in all groups
         for collection_group in collection_groups:
@@ -48,7 +42,7 @@ class CollectionValues(GroupValues):
             # Append all the caches found locally per group - list still needed
             for service in group_services:
                 service_util = ServiceUtil(service.service.key, self.point, self.dist)
-                cache = retrieve_cache_valid(cache_query, service_util)
+                cache = retrieve_cache(service_util)
 
                 if cache is not None:
                     if group.key in group_caches:
