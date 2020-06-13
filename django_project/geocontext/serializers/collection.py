@@ -19,12 +19,8 @@ class CollectionSerializer(serializers.ModelSerializer):
         )
 
     def get_group_keys(self, obj):
-        keys = []
-        collection_groups = CollectionGroups.objects.filter(
-                                collection=obj).order_by('order')
-        for collection_group in collection_groups:
-            keys.append(collection_group.group.key)
-        return keys
+        groups = CollectionGroups.objects.filter(collection=obj).order_by('order')
+        return [group.group.key for group in groups]
 
 
 class CollectionValueSerializer(serializers.Serializer):

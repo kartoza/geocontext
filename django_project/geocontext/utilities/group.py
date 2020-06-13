@@ -23,7 +23,6 @@ class GroupValues(object):
         self.group = Group.objects.get(key=group_key)
         self.key = self.group.key
         self.name = self.group.name
-        self.graphable = self.group.graphable
         self.service_registry_values = []  # TODO Rename to 'service_values'
 
     def populate_group_values(self):

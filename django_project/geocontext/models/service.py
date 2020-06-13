@@ -94,7 +94,8 @@ class Service(models.Model):
     )
 
     layer_name = models.CharField(
-        help_text=_('Required name of the actual layer/feature to retrieve.'),
+        help_text=_(
+            'Required name of the actual layer/feature to retrieve (Property name.'),
         blank=False,
         null=False,
         max_length=200,

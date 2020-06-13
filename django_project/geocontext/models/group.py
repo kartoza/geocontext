@@ -51,14 +51,6 @@ class Group(models.Model):
         max_length=10
     )
 
-    graphable = models.BooleanField(
-        help_text=_(
-            'Indicates if this service returns data from which a graph can be drawn.'),
-        blank=True,
-        null=False,
-        default=False,
-    )
-
     class Meta:
         ordering = ['key']
 

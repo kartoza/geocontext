@@ -5,11 +5,11 @@ from django.contrib.gis.db.models.functions import Distance
 
 from geocontext.models.service import Service
 from geocontext.models.cache import Cache
-from geocontext.utilities.geometry import transform, flatten
+from geocontext.utilities.geometry import flatten, nearest, transform
 from geocontext.utilities.service import ServiceUtil
 
 
-# We use pseudo-mercator projection for cache for efficient distance queries
+# Pseudo-mercator projection for cache for efficient queries. Speed > precision
 cache_srid = 3857
 
 
@@ -35,30 +35,24 @@ def retrieve_cache(service_util: ServiceUtil) -> Cache:
 
 
 def create_caches(service_util: ServiceUtil) -> Cache:
-    """Add cache entries for all values+geometries and return closest cache to query.
+    """Find closest geometries query, add to cache and return.
 
     :param service_util: ServiceUtil instance
     :type service_util: ServiceUtil
     :return: Cache instance
     :rtype: Cache
     """
-    for result in service_util.results:
-        expired_time = datetime.utcnow() + timedelta(seconds=service_util.cache_duration)
-        cache = Cache(
-            service=Service.objects.get(key=service_util.key),
-            name=service_util.key,
-            value=result['value'],
-            expired_time=expired_time.replace(tzinfo=pytz.UTC),
-            source_uri=service_util.source_uri
-        )
-        if result['geometry'] is not None:
-            geometry = transform(result['geometry'], cache_srid)
-            geometry = flatten(geometry)
-            cache.geometry = geometry
-
-        cache.save()
-
-    if len(service_util.results) > 1:
-        return retrieve_cache(service_util)
-    else:
-        return cache
+    geometries = [i['geometry'] for i in service_util.results]
+    nearest_geom = nearest(service_util.point, geometries)
+    value = [i['value'] for i in service_util.results if i['geometry'] is nearest_geom][0]
+    expired_time = datetime.utcnow() + timedelta(seconds=service_util.cache_duration)
+    cache = Cache(
+        service=Service.objects.get(key=service_util.key),
+        name=service_util.key,
+        value=value,
+        expired_time=expired_time.replace(tzinfo=pytz.UTC),
+        source_uri=service_util.source_uri
+    )
+    cache.geometry = flatten(transform(nearest_geom, cache_srid))
+    cache.save()
+    return cache

@@ -28,9 +28,7 @@ async def retrieve_service_value(service_utils: list) -> list:
     conn = aiohttp.TCPConnector(limit=100)
     timeout = aiohttp.ClientTimeout(total=20, connect=2)
     async with aiohttp.ClientSession(connector=conn, timeout=timeout) as session:
-        tasks = []
-        for service_util in service_utils:
-            tasks.append(ensure_future(service_util.retrieve_values(session)))
+        tasks = [ensure_future(util.retrieve_values(session)) for util in service_utils]
         new_service_utils = await gather(*tasks)
     return new_service_utils
 
@@ -55,7 +53,8 @@ class ServiceUtil():
         if search_dist != 10.0:
             self.search_dist = search_dist
         elif self.search_dist is None:
-            self.search_dist = 10
+            self.search_dist = 10.0
+
         self.point = transform(point, self.srid)
         self.bbox = get_bbox(self.point, self.search_dist)
         self.results = [{'value': None, 'geometry': self.point}]
@@ -82,76 +81,89 @@ class ServiceUtil():
             elif self.query_type == 'PlaceName':
                 await self.fetch_placename()
             else:
-                LOGGER.error(f"'{self.query_type}' not implimented: {self.key}")
+                LOGGER.error(f'"{self.query_type}" not implimented: {self.key}')
         except IndexError:
-            LOGGER.error(f"'{self.source_uri}' No features found for: {self.key}")
+            LOGGER.error(f'"{self.source_uri}" No features found for: {self.key}')
         except Exception as e:
-            LOGGER.error(f"'{self.source_uri}' failed for: {self.key} with: {e}")
+            LOGGER.error(f'{self.source_uri}" failed for: {self.key} with: {e}')
         return self
 
     async def fetch_wms(self):
         """Fetch WMS value"""
-        parameters = {
+        if self.service_version in ['1.0.0', '1.1.0', '1.1.1']:
+            parameters = {
+                'REQUEST': 'feature_info',
+                'X': 50,
+                'Y': 50
+            }
+        elif self.service_version in ['1.3.0']:
+            parameters = {
+                'REQUEST': 'GetFeatureInfo',
+                'I': 50,
+                'j': 50
+            }
+        else:
+            LOGGER.error(f"'{self.service_version}' not a supported WMS service.")
+            return
+
+        parameters.update({
             'SERVICE': self.query_type,
             'INFO_FORMAT': 'application/json',
-            'FEATURE_COUNT': self.max_features,
             'LAYERS': self.layer_typename,
             'QUERY_LAYERS': self.layer_typename,
+            'FEATURE_COUNT': self.max_features,
             'BBOX': self.bbox,
             'WIDTH': 101,
             'HEIGHT': 101
-        }
-        if self.service_version in ['1.0.0', '1.1.0', '1.1.1']:
-            parameters['REQUEST'] = 'feature_info'
-            parameters['X'] = 50
-            parameters['Y'] = 50
-        elif self.service_version in ['1.3.0']:
-            parameters['REQUEST'] = 'GetFeatureInfo'
-            parameters['I'] = 50
-            parameters['j'] = 50
-        else:
-            LOGGER.error(f"'{self.service_version}' not a supported WMS service.")
+        })
 
         json_response = await self.request_data(parameters)
         await self.save_features(json_response['features'])
 
     async def fetch_wfs(self):
         """Fetch WFS value. Try intersect else buffer with search distance."""
-        layer_filter = (
-            '<Filter xmlns="http://www.opengis.net/ogc" '
-            'xmlns:gml="http://www.opengis.net/gml"> '
-            f'<Intersects><PropertyName>geom</PropertyName>'
-            f'<gml:Point srsName="EPSG:{self.point.srid}">'
-            f'<gml:coordinates>{self.point.x},{self.point.y}'
-            '</gml:coordinates></gml:Point></Intersects></Filter>'
-        )
-        parameters = {
+        if self.service_version in ['1.0.0', '1.1.0', '1.3.0']:
+            parameters = {
+                'count': self.max_features
+            }
+        elif self.service_version in ['2.0.0']:
+            parameters = {
+                'maxFeatures': self.max_features
+            }
+        else:
+            LOGGER.error(f"'{self.service_version}' not a supported WFS service.")
+            return
+
+        parameters.update({
             'SERVICE': 'WFS',
             'REQUEST': 'GetFeature',
             'OUTPUTFORMAT': 'application/json',
-            'MAXFEATURES': self.max_features,
             'VERSION': self.service_version,
             'TYPENAME': self.layer_typename,
-            'FILTER': layer_filter,
             'PROPERTYNAME': f'({self.layer_name})',
-        }
+            'FILTER': (
+                '<Filter xmlns="http://www.opengis.net/ogc" '
+                'xmlns:gml="http://www.opengis.net/gml"> '
+                f'<Intersects><PropertyName>geom</PropertyName>'
+                f'<gml:Point srsName="EPSG:{self.point.srid}">'
+                f'<gml:coordinates>{self.point.x},{self.point.y}'
+                '</gml:coordinates></gml:Point></Intersects></Filter>'
+            )
+        })
 
         json_response = await self.request_data(parameters)
         if len(json_response['features']) != 0:
-            await self.save_features(json_response['features'])
-        else:
-            LOGGER.info(f"WFS intersect filter failed: '{self.key}' - attempt bbox")
-            parameters = {
-                'SERVICE': 'WFS',
-                'REQUEST': 'GetFeature',
-                'OUTPUTFORMAT': 'application/json',
-                'MAXFEATURES': self.max_features,
-                'VERSION': self.service_version,
-                'TYPENAME': self.layer_typename,
-                'BBOX': self.bbox
-            }
-            json_response = await self.request_data(parameters)
-            await self.save_features(json_response['features'])
+            return await self.save_features(json_response['features'])
+
+        LOGGER.info(f'WFS intersect filter failed: "{self.key}" - attempt bbox')
+        parameters.pop('FILTER')
+        parameters.update({
+            'BBOX': self.bbox,
+            'SRSNAME': f'EPSG:{self.point.srid}'
+        })
+
+        json_response = await self.request_data(parameters)
+        await self.save_features(json_response['features'])
 
     async def fetch_arcrest(self):
         """Fetch ArcRest value"""
@@ -192,14 +204,11 @@ class ServiceUtil():
         """
         query_dict = QueryDict('', mutable=True)
         query_dict.update(parameters)
-        if '?' in self.url:
-            self.source_uri = f'{self.url}&{query_dict.urlencode()}'
-        else:
-            self.source_uri = f'{self.url}{query}{query_dict.urlencode()}'
+        query = '&' if '?' in self.url and query == '?' else query
+        self.source_uri = f'{self.url}{query}{query_dict.urlencode()}'
 
-        # We are using another async session context manager
+        # Async session - disable validation - some servers, like ArrcREST, send bad json.
         async with self.session.get(self.source_uri, raise_for_status=True) as response:
-            # Some servers (Arcrest...) send bad json, so disable validation
             return await response.json(content_type=None)
 
     async def save_features(self, features: list):
@@ -210,15 +219,17 @@ class ServiceUtil():
         """
         result = {}
         for feature in features:
+            # We don't want to raise error if one feature fails
             try:
                 if 'properties' in feature:
                     result['value'] = feature['properties'][self.layer_name]
                 else:
                     result['value'] = feature[self.layer_name]
             except Exception:
-                LOGGER.error(f"No value found for feature in: '{self.key}'")
+                LOGGER.error(f'No value found for feature in: "{self.key}"')
                 continue
 
+            # We don't want to raise error if no geometry found
             try:
                 if self.query_type == 'ArcREST':
                     geometry = arcgis2geojson(feature['geometry'])
@@ -227,7 +238,7 @@ class ServiceUtil():
                 result['geometry'] = GEOSGeometry(json.dumps(geometry))
                 result['geometry'].srid = self.srid
             except Exception:
-                LOGGER.error(f"No geometry found for feature in: {self.key}")
+                LOGGER.info(f'No geometry found for feature in: "{self.key}"')
                 result['geometry'] = self.point
 
             # Clear default default Null result list on the first value found

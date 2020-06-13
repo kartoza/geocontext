@@ -21,7 +21,6 @@ class CollectionValues(GroupValues):
         :param search_dist: Search distance query overide service.
         :type search_dist: int
         """
-
         self.point = point
         self.search_dist = search_dist
         self.collection = Collection.objects.get(key=collection_key)
