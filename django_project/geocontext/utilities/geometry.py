@@ -100,7 +100,8 @@ def parse_coord(x: str, y: str, srid: str = '4326') -> float:
                     if neg_cardinal in val.upper():
                         sign = -1
                 val = val.replace(direction, '')
-            coord_parts = re.split(r'[°\'"]+', val)
+            # Split and get rid of empty space
+            coord_parts = [v for v in re.split(r'[°\'"]+', val) if v]
             if len(coord_parts) >= 4:
                 raise ValueError('Could not parse DMS format input')
             # Degree, minute, decimal seconds
@@ -118,7 +119,7 @@ def parse_coord(x: str, y: str, srid: str = '4326') -> float:
                 degrees = float(coord_parts[0])
                 minutes = 0.0
                 seconds = 0.0
-            coords[coord] = (sign * degrees) + (minutes / 60.0) + (seconds / 3600.0)
+            coords[coord] = sign * (degrees + (minutes / 60.0) + (seconds / 3600.0))
         except ValueError:
             raise ValueError(
                 f"Coord '{coords[coord]}' parse failed. Only DD, DM, DMS sep=(°,',\")")
