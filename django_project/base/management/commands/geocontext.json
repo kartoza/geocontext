@@ -4467,7 +4467,7 @@
             "notes":null,
             "licensing":null,
             "cache_duration":604800,
-            "layer_name":"name",
+            "layer_name":"entity_name",
             "layer_namespace":"gml",
             "layer_typename":"hydr_lines_exp",
             "layer_workspace":"kartoza"

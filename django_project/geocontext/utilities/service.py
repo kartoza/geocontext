@@ -1,15 +1,17 @@
+import asyncio
 from asyncio import ensure_future, gather
-import json
+from concurrent.futures.process import ProcessPoolExecutor
+from functools import partial
 import logging
+import sys
 
 import aiohttp
-from arcgis2geojson import arcgis2geojson
 from asgiref.sync import async_to_sync
-from django.contrib.gis.geos import GEOSGeometry, Point
+from django.contrib.gis.geos import Point
 from django.http import QueryDict
 
 from geocontext.models.service import Service
-from geocontext.utilities.geometry import transform, get_bbox
+from geocontext.utilities.geometry import get_bbox, parse_geometry, transform
 
 
 LOGGER = logging.getLogger(__name__)
@@ -46,22 +48,25 @@ class ServiceUtil():
         :param search_dist: Search distance query overide service (default=10.0).
         :type search_dist: int
         """
+        # Load attributes from service model
         service_dict = Service.objects.filter(key=service_key).values().first()
         for key, val in service_dict.items():
             setattr(self, key, val)
 
+        # Service query configuration
         if search_dist != 10.0:
             self.search_dist = search_dist
         elif self.search_dist is None:
             self.search_dist = 10.0
-
         self.point = transform(point, self.srid)
-        self.bbox = get_bbox(self.point, self.search_dist)
-        self.results = [{'value': None, 'geometry': self.point}]
         self.max_features = 10
         self.source_uri = None
         self.group_key = None
         self.session = None
+
+        # Data that can retrieved form service - geomettry defaults to query point
+        self.value = None
+        self.geometry = self.point
 
     async def retrieve_values(self, session: aiohttp.ClientSession) -> bool:
         """Load context value and geometry from service.
@@ -86,55 +91,45 @@ class ServiceUtil():
             LOGGER.error(f'"{self.source_uri}" No features found for: {self.key}')
         except Exception as e:
             LOGGER.error(f'{self.source_uri}" failed for: {self.key} with: {e}')
+
+        # Return ServiceUtil instance with attributes loaded from service
         return self
 
     async def fetch_wms(self):
         """Fetch WMS value"""
-        if self.service_version in ['1.0.0', '1.1.0', '1.1.1']:
-            parameters = {
-                'REQUEST': 'feature_info',
-                'X': 50,
-                'Y': 50
-            }
-        elif self.service_version in ['1.3.0']:
-            parameters = {
-                'REQUEST': 'GetFeatureInfo',
-                'I': 50,
-                'j': 50
-            }
-        else:
-            LOGGER.error(f"'{self.service_version}' not a supported WMS service.")
-            return
-
-        parameters.update({
+        bbox = get_bbox(self.point, self.search_dist)
+        parameters = {
             'SERVICE': self.query_type,
             'INFO_FORMAT': 'application/json',
             'LAYERS': self.layer_typename,
             'QUERY_LAYERS': self.layer_typename,
             'FEATURE_COUNT': self.max_features,
-            'BBOX': self.bbox,
+            'BBOX': bbox,
             'WIDTH': 101,
             'HEIGHT': 101
-        })
+        }
+        if self.service_version in ['1.0.0', '1.1.0', '1.1.1']:
+            parameters.update({
+                'REQUEST': 'feature_info',
+                'X': 50,
+                'Y': 50
+            })
+        elif self.service_version in ['1.3.0']:
+            parameters.update({
+                'REQUEST': 'GetFeatureInfo',
+                'I': 50,
+                'j': 50
+            })
+        else:
+            LOGGER.error(f"'{self.service_version}' not a supported WMS service.")
+            return
 
         json_response = await self.request_data(parameters)
         await self.save_features(json_response['features'])
 
     async def fetch_wfs(self):
         """Fetch WFS value. Try intersect else buffer with search distance."""
-        if self.service_version in ['1.0.0', '1.1.0', '1.3.0']:
-            parameters = {
-                'count': self.max_features
-            }
-        elif self.service_version in ['2.0.0']:
-            parameters = {
-                'maxFeatures': self.max_features
-            }
-        else:
-            LOGGER.error(f"'{self.service_version}' not a supported WFS service.")
-            return
-
-        parameters.update({
+        parameters = {
             'SERVICE': 'WFS',
             'REQUEST': 'GetFeature',
             'OUTPUTFORMAT': 'application/json',
@@ -149,7 +144,18 @@ class ServiceUtil():
                 f'<gml:coordinates>{self.point.x},{self.point.y}'
                 '</gml:coordinates></gml:Point></Intersects></Filter>'
             )
-        })
+        }
+        if self.service_version in ['1.0.0', '1.1.0', '1.3.0']:
+            parameters.update({
+                'count': self.max_features
+            })
+        elif self.service_version in ['2.0.0']:
+            parameters.update({
+                'maxFeatures': self.max_features
+            })
+        else:
+            LOGGER.error(f"'{self.service_version}' not a supported WFS service.")
+            return
 
         json_response = await self.request_data(parameters)
         if len(json_response['features']) != 0:
@@ -157,8 +163,9 @@ class ServiceUtil():
 
         LOGGER.info(f'WFS intersect filter failed: "{self.key}" - attempt bbox')
         parameters.pop('FILTER')
+        bbox = get_bbox(self.point, self.search_dist)
         parameters.update({
-            'BBOX': self.bbox,
+            'BBOX': bbox,
             'SRSNAME': f'EPSG:{self.point.srid}'
         })
 
@@ -167,6 +174,7 @@ class ServiceUtil():
 
     async def fetch_arcrest(self):
         """Fetch ArcRest value"""
+        bbox = get_bbox(self.point, self.search_dist)
         parameters = {
             'f': 'json',
             'geometryType': 'esriGeometryPoint',
@@ -174,7 +182,7 @@ class ServiceUtil():
             'layers': self.layer_name,
             'imageDisplay': '100,100,96',
             'tolerance': '1',
-            'mapExtent': self.bbox,
+            'mapExtent': bbox,
             'returnGeometry': 'true',
             'maxRecordCount': self.max_features
         }
@@ -217,31 +225,54 @@ class ServiceUtil():
         :param feature: geojson futures list
         :type feature: dict
         """
-        result = {}
+        results = []
         for feature in features:
-            # We don't want to raise error if one feature fails
+            result = {}
+            # We don't want to raise error if one feature fails - just skip
             try:
                 if 'properties' in feature:
-                    result['value'] = feature['properties'][self.layer_name]
+                    result['val'] = feature['properties'][self.layer_name]
                 else:
-                    result['value'] = feature[self.layer_name]
+                    result['val'] = feature[self.layer_name]
             except Exception:
                 LOGGER.error(f'No value found for feature in: "{self.key}"')
                 continue
 
-            # We don't want to raise error if no geometry found
+            # We don't want to raise error if no geometry found - don't parse in async
             try:
-                if self.query_type == 'ArcREST':
-                    geometry = arcgis2geojson(feature['geometry'])
-                else:
-                    geometry = feature['geometry']
-                result['geometry'] = GEOSGeometry(json.dumps(geometry))
-                result['geometry'].srid = self.srid
+                result['geom'] = feature['geometry']
             except Exception:
                 LOGGER.info(f'No geometry found for feature in: "{self.key}"')
-                result['geometry'] = self.point
 
-            # Clear default default Null result list on the first value found
-            if self.results[0]['value'] is None and result['value'] is not None:
-                self.results = []
-            self.results.append(result)
+            results.append(result)
+
+        # Multiple value/geometry results per query possible - find nearest
+        if len(results) != 0:
+            await self.nearest_geometry_value(results)
+
+    async def nearest_geometry_value(self, results: list) -> list:
+        """Find value and geometry closest to query in service_util results list.
+        Large complex geometries block async - so spin up processes for these.
+
+        :param results: result list of val:geom dicts
+        :type results: list
+        """
+        dist = 1000000
+        self.value = results[0]['val']
+        for result in results:
+            arc = True if self.query_type == 'ArcREST' else False
+            func = partial(parse_geometry, result['geom'], arc)
+
+            # Processes are costly - only for large objects (threshold could be tweaked)
+            if sys.getsizeof(result['geom']) > 100:
+                loop = asyncio.get_running_loop()
+                exe = ProcessPoolExecutor(max_workers=1)
+                geometry = await loop.run_in_executor(exe, func)
+            else:
+                geometry = func()
+            if geometry is not None:
+                new_dist = self.point.distance(geometry)
+                if new_dist < dist:
+                    dist = new_dist
+                    self.value = result['val']
+                    self.geometry = geometry

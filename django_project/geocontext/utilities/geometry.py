@@ -1,8 +1,11 @@
+import json
 import re
 
+from arcgis2geojson import arcgis2geojson
 import geopy
 import geopy.distance
 from django.contrib.gis.geos import GEOSGeometry, Point
+from multiprocessing import current_process
 
 
 def flatten(geometry: GEOSGeometry) -> GEOSGeometry:
@@ -66,28 +69,9 @@ def get_bbox(point: Point, search_distance: float = 10, order_latlon: bool = Tru
     return ','.join([str(i) for i in bbox])
 
 
-def nearest(ref_geometry: GEOSGeometry, geometries: list) -> GEOSGeometry:
-    """Return the geometry in list that is closest to the reference geometry.
-
-    :param ref_geometry: Reference GEOSGeometry
-    :type ref_geometry: GEOSGeometry
-    :param geometries: Geometry list to search
-    :type geometries: list
-    :return: Closest geometry
-    :rtype: GEOSGeometry
-    """
-    dist = 10000
-    nearest = geometries[0]
-    for geometry in geometries:
-        new_dist = ref_geometry.distance(geometry)
-        if new_dist < dist:
-            dist = new_dist
-            nearest = geometry
-    return nearest
-
-
 def parse_coord(x: str, y: str, srid: str = '4326') -> float:
-    """Parse string DD/DM/DMS coordinate input. Split by °,',", or ':'.
+    """Parse string DD/DM/DMS coordinate input. Split by °,',".
+    Signed degrees or suffix E/W/N/S.
 
     :param x: (longitude)
     :type x: str
@@ -106,33 +90,64 @@ def parse_coord(x: str, y: str, srid: str = '4326') -> float:
         raise ValueError(f"SRID: '{srid}' not valid")
 
     # Parse Coordinate try DD / otherwise DMS
+    cardinals = ['N', 'n', 'E', 'e', 'S', 's', 'W', 'w']
     coords = {'x': x, 'y': y}
     for coord, val in coords.items():
         try:
+            sign = 1
+            for direction in cardinals:
+                for neg_cardinal in ['S', 'W']:
+                    if neg_cardinal in val.upper():
+                        sign = -1
+                val = val.replace(direction, '')
             coord_parts = re.split(r'[°\'"]+', val)
             if len(coord_parts) >= 4:
                 raise ValueError('Could not parse DMS format input')
-            # DMS
+            # Degree, minute, decimal seconds
             elif len(coord_parts) == 3:
                 degrees = int(coord_parts[0])
                 minutes = int(coord_parts[1])
                 seconds = float(coord_parts[2])
-            # DM
+            # Degree, decimal minutes
             elif len(coord_parts) == 2:
                 degrees = int(coord_parts[0])
                 minutes = float(coord_parts[1])
                 seconds = 0.0
-            # DD
+            # Decimal degree
             elif len(coord_parts) == 1:
                 degrees = float(coord_parts[0])
                 minutes = 0.0
                 seconds = 0.0
-            coords[coord] = degrees + (minutes / 60.0) + (seconds / 3600.0)
+            coords[coord] = (sign * degrees) + (minutes / 60.0) + (seconds / 3600.0)
         except ValueError:
             raise ValueError(
-                f"Coord '{coords[coord]}' parse failed.")
-
+                f"Coord '{coords[coord]}' parse failed. Only DD, DM, DMS sep=(°,',\")")
     return Point(coords['x'], coords['y'], srid=srid)
+
+
+def parse_geometry(geometry: dict, arc: bool = False) -> GEOSGeometry:
+    """Parse geometry from string or json to GEOSGeometry.
+    Large geometries parsed through arcgis could block async.
+
+    :param geometry: Geometry to parse
+    :type geometry: dict
+    :param geometry: ArcREST format
+    :type geometry: bool
+    :return: GEOSGeometry geometry
+    :rtype: GEOSGeometry
+    """
+    if isinstance(geometry, GEOSGeometry):
+        return geometry
+    try:
+        if isinstance(geometry, str):
+            geometry = json.loads(geometry)
+        if arc:
+            geos = GEOSGeometry(json.dumps(arcgis2geojson(geometry)))
+            return geos
+        else:
+            return GEOSGeometry(json.dumps(geometry))
+    except Exception:
+        return None
 
 
 def transform(geometry: GEOSGeometry, srid_target: int) -> GEOSGeometry:

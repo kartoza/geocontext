@@ -4,7 +4,7 @@ from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
-from geocontext.utilities.cache import create_caches, retrieve_cache
+from geocontext.utilities.cache import create_cache, retrieve_cache
 from geocontext.utilities.group import GroupValues
 from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 
@@ -38,8 +38,7 @@ class CollectionValues(GroupValues):
         service_utils = []
         group_caches = {}
         collection_groups = CollectionGroups.objects.filter(
-                                collection=self.collection
-                            ).order_by('order')
+                                collection=self.collection).order_by('order')
 
         # We need to find CRS not in cache in all groups
         for collection_group in collection_groups:
@@ -59,12 +58,11 @@ class CollectionValues(GroupValues):
                 else:
                     service_util.group_key = group.key
                     service_utils.append(service_util)
-
         # Async external requests and add to cache
         if len(service_utils) > 0:
             new_service_utils = retrieve_service_value(service_utils)
             for new_service_util in new_service_utils:
-                cache = create_caches(new_service_util)
+                cache = create_cache(new_service_util)
                 if new_service_util.group_key in group_caches:
                     group_caches[new_service_util.group_key].append(cache)
                 else:

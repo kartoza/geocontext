@@ -5,12 +5,8 @@ from django.contrib.gis.db.models.functions import Distance
 
 from geocontext.models.service import Service
 from geocontext.models.cache import Cache
-from geocontext.utilities.geometry import flatten, nearest, transform
+from geocontext.utilities.geometry import transform, flatten
 from geocontext.utilities.service import ServiceUtil
-
-
-# Pseudo-mercator projection for cache for efficient queries. Speed > precision
-cache_srid = 3857
 
 
 def retrieve_cache(service_util: ServiceUtil) -> Cache:
@@ -21,7 +17,7 @@ def retrieve_cache(service_util: ServiceUtil) -> Cache:
     :returns: cache on None
     :rtype: cache or None
     """
-    point = transform(service_util.point, cache_srid)
+    point = transform(service_util.point, Cache.srid)
     return Cache.objects.filter(
                         geometry__dwithin=(point, service_util.search_dist)
                     ).filter(
@@ -34,25 +30,24 @@ def retrieve_cache(service_util: ServiceUtil) -> Cache:
                     ).first()
 
 
-def create_caches(service_util: ServiceUtil) -> Cache:
-    """Find closest geometries query, add to cache and return.
+def create_cache(service_util: ServiceUtil) -> Cache:
+    """Parse and find closest geometries to query, add to cache with value and return.
 
     :param service_util: ServiceUtil instance
     :type service_util: ServiceUtil
     :return: Cache instance
     :rtype: Cache
     """
-    geometries = [i['geometry'] for i in service_util.results]
-    nearest_geom = nearest(service_util.point, geometries)
-    value = [i['value'] for i in service_util.results if i['geometry'] is nearest_geom][0]
     expired_time = datetime.utcnow() + timedelta(seconds=service_util.cache_duration)
     cache = Cache(
         service=Service.objects.get(key=service_util.key),
         name=service_util.key,
-        value=value,
+        value=service_util.value,
         expired_time=expired_time.replace(tzinfo=pytz.UTC),
         source_uri=service_util.source_uri
     )
-    cache.geometry = flatten(transform(nearest_geom, cache_srid))
+    service_util.geometry = transform(service_util.geometry, Cache.srid)
+    service_util.geometry = flatten(service_util.geometry)
+    cache.geometry = service_util.geometry
     cache.save()
     return cache

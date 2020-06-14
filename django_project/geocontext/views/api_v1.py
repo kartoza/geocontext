@@ -19,7 +19,7 @@ from geocontext.serializers.cache import CacheGeoJSONSerializer, CacheSerializer
 from geocontext.serializers.collection import CollectionValueSerializer
 from geocontext.serializers.service import ServiceSerializer
 from geocontext.serializers.group import GroupValueSerializer
-from geocontext.utilities.cache import create_caches, retrieve_cache
+from geocontext.utilities.cache import create_cache, retrieve_cache
 from geocontext.utilities.collection import CollectionValues
 from geocontext.utilities.geometry import parse_coord
 from geocontext.utilities.group import GroupValues
@@ -152,7 +152,7 @@ def get_service(request):
             if cache is None:
                 new_service_util = retrieve_service_value([service_util])
                 if new_service_util.value is not None:
-                    caches = create_caches(new_service_util)
+                    caches = create_cache(new_service_util)
             fields = ('value', 'key')
             if cache:
                 return HttpResponse(

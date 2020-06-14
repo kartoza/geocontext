@@ -6,6 +6,7 @@ from geocontext.models.service import Service
 
 class Cache(models.Model):
     """Cache Model Class."""
+    srid = 3857
     name = models.CharField(
         help_text=_('Name of Cache.'),
         blank=False,
@@ -22,7 +23,7 @@ class Cache(models.Model):
         help_text=_('2d Geometry associated with the value using EPSG:3857.'),
         blank=True,
         null=True,
-        srid=3857,
+        srid=srid,
         dim=2
     )
     service = models.ForeignKey(
