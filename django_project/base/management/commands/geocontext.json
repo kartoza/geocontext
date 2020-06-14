@@ -4603,7 +4603,7 @@
             "notes":null,
             "licensing":null,
             "cache_duration":604800,
-            "layer_name":"biome",
+            "layer_name":"dn",
             "layer_namespace":"gml",
             "layer_typename":"biomes_of_south_africa",
             "layer_workspace":"kartoza"

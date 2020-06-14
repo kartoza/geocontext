@@ -7,18 +7,15 @@ from django.core.serializers import serialize
 from django.conf import settings
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
-
-from rest_framework import status
-from rest_framework import generics
-from rest_framework import views
+from rest_framework import generics, status, views
 from rest_framework.response import Response
 
 from geocontext.forms import GeoContextForm
 from geocontext.models.service import Service
 from geocontext.serializers.cache import CacheGeoJSONSerializer, CacheSerializer
 from geocontext.serializers.collection import CollectionValueSerializer
-from geocontext.serializers.service import ServiceSerializer
 from geocontext.serializers.group import GroupValueSerializer
+from geocontext.serializers.service import ServiceSerializer
 from geocontext.utilities.cache import create_cache, retrieve_cache
 from geocontext.utilities.collection import CollectionValues
 from geocontext.utilities.geometry import parse_coord
@@ -76,8 +73,7 @@ class GroupAPIView(views.APIView):
             group_value_serializer = GroupValueSerializer(group_values)
             return Response(group_value_serializer.data)
         except Exception as e:
-            return Response(
-                f"Could not fetch data: Server error {e}", status.HTTP_400_BAD_REQUEST)
+            return Response(f"Server error {e}", status.HTTP_400_BAD_REQUEST)
 
 
 class CollectionAPIView(views.APIView):
@@ -93,7 +89,7 @@ class CollectionAPIView(views.APIView):
             return Response(collection_value_serializer.data)
         except Exception as e:
             return Response(
-                f"Could not fetch data: Server error {e}", status.HTTP_400_BAD_REQUEST)
+                f"Server error {e}", status.HTTP_400_BAD_REQUEST)
 
 
 class RiverNameAPIView(views.APIView):

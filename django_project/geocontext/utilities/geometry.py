@@ -90,15 +90,14 @@ def parse_coord(x: str, y: str, srid: str = '4326') -> float:
         raise ValueError(f"SRID: '{srid}' not valid")
 
     # Parse Coordinate try DD / otherwise DMS
-    cardinals = ['N', 'n', 'E', 'e', 'S', 's', 'W', 'w']
     coords = {'x': x, 'y': y}
     for coord, val in coords.items():
         try:
             sign = 1
-            for direction in cardinals:
-                for neg_cardinal in ['S', 'W']:
-                    if neg_cardinal in val.upper():
-                        sign = -1
+            for neg_cardinal in ['S', 'W']:
+                if neg_cardinal in val.upper():
+                    sign = -1
+            for direction in ['N', 'n', 'E', 'e', 'S', 's', 'W', 'w']:
                 val = val.replace(direction, '')
             # Split and get rid of empty space
             coord_parts = [v for v in re.split(r'[°\'"]+', val) if v]

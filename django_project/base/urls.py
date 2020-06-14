@@ -3,10 +3,9 @@ from django.views.generic import TemplateView
 from django.conf.urls import url, include
 
 from rest_framework.documentation import include_docs_urls
-
 from geocontext.urls import urlpatterns as geocontext_urls
-from geocontext.urls import urlpatterns_api_v1 as urlpatterns_api_v1
-from geocontext.urls import urlpatterns_api_v2 as urlpatterns_api_v2
+from geocontext.urls import urlpatterns_api_v1
+from geocontext.urls import urlpatterns_api_v2
 
 
 urlpatterns = [

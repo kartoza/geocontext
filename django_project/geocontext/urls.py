@@ -4,13 +4,13 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from geocontext.views.api_v1 import (
     CacheListAPI,
     CollectionAPIView,
-    ServiceListAPIView,
-    ServiceDetailAPIView,
     get_service,
     GroupAPIView,
-    RiverNameAPIView
+    ServiceDetailAPIView,
+    ServiceListAPIView,
+    RiverNameAPIView,
 )
-from geocontext.views.api_v2 import QueryView
+from geocontext.views import api_v2
 from geocontext.views.collection import CollectionListView, CollectionDetailView
 from geocontext.views.service import ServiceListView, ServiceDetailView
 from geocontext.views.group import GroupListView, GroupDetailView
@@ -80,9 +80,10 @@ urlpatterns_api_v1 = [
 urlpatterns_api_v1 = format_suffix_patterns(urlpatterns_api_v1)
 
 urlpatterns_api_v2 = [
-    url(regex=r'^$',
-        view=QueryView.as_view(),
-        name='v2_api'
-        )
+    url(regex=r'^collection$',
+        view=api_v2.CollectionViewSet.as_view(),
+        name='collection-api'
+        ),
 ]
+
 urlpatterns_api_v2 = format_suffix_patterns(urlpatterns_api_v2)
