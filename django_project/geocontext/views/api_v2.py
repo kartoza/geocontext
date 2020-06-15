@@ -49,10 +49,7 @@ class ServiceAPIView(APIView):
                 new_service_util = retrieve_service_value([service_util])
                 if new_service_util[0].value is not None:
                     cache = create_cache(new_service_util)
-            return HttpResponse(serialize(
-                                    'json',
-                                    [cache],
-                                ),
+            return HttpResponse(serialize('json', [cache]),
                                 content_type='application/json')
         except KeyError as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
