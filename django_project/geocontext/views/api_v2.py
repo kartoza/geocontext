@@ -54,7 +54,7 @@ class ServiceAPIView(APIView):
         except KeyError as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class GroupAPIView(APIView):
@@ -73,7 +73,7 @@ class GroupAPIView(APIView):
         except KeyError as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class CollectionAPIView(APIView):
@@ -92,4 +92,4 @@ class CollectionAPIView(APIView):
         except KeyError as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
