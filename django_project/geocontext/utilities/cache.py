@@ -46,8 +46,6 @@ def create_cache(service_util: ServiceUtil) -> Cache:
         expired_time=expired_time.replace(tzinfo=pytz.UTC),
         source_uri=service_util.source_uri
     )
-    service_util.geometry = transform(service_util.geometry, Cache.srid)
-    service_util.geometry = flatten(service_util.geometry)
-    cache.geometry = service_util.geometry
+    cache.geometry = flatten(transform(service_util.geometry, Cache.srid))
     cache.save()
     return cache
