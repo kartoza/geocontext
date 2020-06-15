@@ -80,8 +80,16 @@ urlpatterns_api_v1 = [
 urlpatterns_api_v1 = format_suffix_patterns(urlpatterns_api_v1)
 
 urlpatterns_api_v2 = [
+    url(regex=r'^service$',
+        view=api_v2.ServiceAPIView.as_view(),
+        name='service-api'
+        ),
+    url(regex=r'^group$',
+        view=api_v2.GroupAPIView.as_view(),
+        name='group-api'
+        ),
     url(regex=r'^collection$',
-        view=api_v2.CollectionViewSet.as_view(),
+        view=api_v2.CollectionAPIView.as_view(),
         name='collection-api'
         ),
 ]

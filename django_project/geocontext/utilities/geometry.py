@@ -5,7 +5,6 @@ from arcgis2geojson import arcgis2geojson
 import geopy
 import geopy.distance
 from django.contrib.gis.geos import GEOSGeometry, Point
-from multiprocessing import current_process
 
 
 def flatten(geometry: GEOSGeometry) -> GEOSGeometry:
@@ -88,7 +87,6 @@ def parse_coord(x: str, y: str, srid: str = '4326') -> float:
         srid = int(srid)
     except ValueError:
         raise ValueError(f"SRID: '{srid}' not valid")
-
     # Parse Coordinate try DD / otherwise DMS
     coords = {'x': x, 'y': y}
     for coord, val in coords.items():
