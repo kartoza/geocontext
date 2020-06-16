@@ -14,10 +14,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         caches = Cache.objects.all()
         num_caches = Cache.objects.all().count()
-        print(f'Deleting  cache')
+        logger.info(f'Deleting cache')
         for cache in caches:
             cache.delete()
-            print('.')
-        print(f'{num_caches} cache deleted')
+            logger.info('.')
+        logger.info(f'{num_caches} cache deleted')
         num_caches = Cache.objects.all().count()
-        print('Current number of caches: {num_caches}')
+        logger.info('Current number of caches: {num_caches}')

@@ -91,16 +91,22 @@ def parse_coord(x: str, y: str, srid: str = '4326') -> float:
     coords = {'x': x, 'y': y}
     for coord, val in coords.items():
         try:
-            sign = 1
-            for neg_cardinal in ['S', 'W']:
-                if neg_cardinal in val.upper():
-                    sign = -1
-            for direction in ['N', 'n', 'E', 'e', 'S', 's', 'W', 'w']:
+            # Determine hemisphere from cardinal direction (override signed degree)
+            sign = None
+            for direction in ['N', 'n', 'E', 'e']:
+                if direction in val.upper():
+                    sign = 1
                 val = val.replace(direction, '')
+
+            for direction in ['S', 's', 'W', 'w']:
+                if direction in val.upper():
+                    sign = -1
+                val = val.replace(direction, '')
+
             # Split and get rid of empty space
             coord_parts = [v for v in re.split(r'[°\'"]+', val) if v]
             if len(coord_parts) >= 4:
-                raise ValueError('Could not parse DMS format input')
+                raise ValueError
             # Degree, minute, decimal seconds
             elif len(coord_parts) == 3:
                 degrees = int(coord_parts[0])
@@ -116,10 +122,15 @@ def parse_coord(x: str, y: str, srid: str = '4326') -> float:
                 degrees = float(coord_parts[0])
                 minutes = 0.0
                 seconds = 0.0
-            coords[coord] = sign * (degrees + (minutes / 60.0) + (seconds / 3600.0))
+
+            # Determine hemisphere from sign if direction wasn't specified
+            if sign is None:
+                sign = -1 if degrees <= 0 else 1
+            coords[coord] = sign * (abs(degrees) + (minutes / 60.0) + (seconds / 3600.0))
+
         except ValueError:
             raise ValueError(
-                f"Coord '{coords[coord]}' parse failed. Only DD, DM, DMS sep=(°,',\")")
+                f"Coord '{coords[coord]}' parse failed. Not valid DD, DM, DMS (°,',\")")
     return Point(coords['x'], coords['y'], srid=srid)
 
 
