@@ -72,5 +72,5 @@ class CollectionValues(GroupValues):
         for group_key, cache_list in group_caches.items():
             group_values = GroupValues(group_key, self.point, self.tolerance)
             for cache in cache_list:
-                group_values.service_registry_values.append(cache)
+                group_values.service_values.append(cache)
             self.context_group_values.append(group_values)

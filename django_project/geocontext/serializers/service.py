@@ -24,9 +24,9 @@ class ServiceSerializer(serializers.ModelSerializer):
             'provenance',
             'notes',
             'licensing',
-            'tolerance'
-            'test_x'
-            'test_y'
-            'test_value'
-            'status'
+            'tolerance',
+            'test_x',
+            'test_y',
+            'test_value',
+            'status',
         )

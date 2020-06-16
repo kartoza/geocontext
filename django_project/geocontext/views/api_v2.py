@@ -1,7 +1,10 @@
+import coreapi
+
 from django.core.serializers import serialize
 from rest_framework import status
 from rest_framework.response import Response
 from django.http import HttpResponse
+from rest_framework.schemas import AutoSchema
 from rest_framework.views import APIView
 
 from geocontext.serializers.collection import CollectionValueSerializer
@@ -18,17 +21,12 @@ def get_data(request):
     """
     Generic function to parse Geocontext keyword get arguments
     """
-    x = request.GET.get('x', None)
-    y = request.GET.get('y', None)
-    key = request.GET.get('key', None)
-    srid = request.GET.get('srid', 4326)
-    tolerance = request.GET.get('tolerance', 10.0)
     data = {
-        'x': x,
-        'y': y,
-        'srid': srid,
-        'key': key,
-        'tolerance': tolerance
+        'x': request.GET.get('x', None),
+        'y': request.GET.get('y', None),
+        'srid': request.GET.get('srid', 4326),
+        'key': request.GET.get('key', None),
+        'tolerance': request.GET.get('tolerance', 10.0),
     }
     for key, val in data.items():
         if val is None:
@@ -49,7 +47,7 @@ class ServiceAPIView(APIView):
             cache = retrieve_cache(service_util)
             if cache is None:
                 new_service_util = retrieve_service_value([service_util])
-                if new_service_util[0].value is not None:
+                if new_service_util.value is not None:
                     cache = create_cache(new_service_util)
             return HttpResponse(serialize('json', [cache]),
                                 content_type='application/json')

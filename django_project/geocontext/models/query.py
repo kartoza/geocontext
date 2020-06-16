@@ -2,7 +2,7 @@ from datetime import datetime
 import pytz
 
 from django.utils.translation import ugettext_lazy as _
-from django.db import models
+from django.contrib.gis.db import models
 
 
 class Query(models.Model):
@@ -31,11 +31,11 @@ class Query(models.Model):
         null=True,
     )
     created_time = models.DateTimeField(
-        help_text=_('Date of cache entry.'),
+        help_text=_('Date of query.'),
         editable=False
     )
 
     def save(self, *args, **kwargs):
         """ On save, update created time """
-        self.created = datetime.utcnow().replace(tzinfo=pytz.UTC)
+        self.created_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
         return super(Query, self).save(*args, **kwargs)

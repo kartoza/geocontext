@@ -23,7 +23,7 @@ class GroupValues(object):
         self.group = Group.objects.get(key=group_key)
         self.key = self.group.key
         self.name = self.group.name
-        self.service_registry_values = []  # TODO Rename to 'service_values'
+        self.service_values = []
 
     def populate_group_values(self):
         """Populate GroupValue with service values.
@@ -39,7 +39,7 @@ class GroupValues(object):
             service_util = ServiceUtil(service.service.key, self.point, self.tolerance)
             cache = retrieve_cache(service_util)
             if cache is not None:
-                self.service_registry_values.append(cache)
+                self.service_values.append(cache)
             else:
                 service_utils.append(service_util)
 
@@ -48,4 +48,4 @@ class GroupValues(object):
             new_service_utils = retrieve_service_value(service_utils)
             for new_service_util in new_service_utils:
                 cache = create_cache(new_service_util)
-                self.service_registry_values.append(cache)
+                self.service_values.append(cache)

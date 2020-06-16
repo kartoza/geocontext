@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
 from geocontext.serializers.cache import CacheSerializer
@@ -27,4 +26,4 @@ class GroupValueSerializer(serializers.Serializer):
     """Serializer for Value Group class."""
     key = serializers.CharField()
     name = serializers.CharField()
-    service_registry_values = serializers.ListSerializer(child=CacheSerializer())
+    service_values = serializers.ListSerializer(child=CacheSerializer())

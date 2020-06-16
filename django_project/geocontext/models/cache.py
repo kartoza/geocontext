@@ -52,5 +52,5 @@ class Cache(models.Model):
 
     def save(self, *args, **kwargs):
         """ On save, update created time """
-        self.created = datetime.utcnow().replace(tzinfo=pytz.UTC)
+        self.created_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
         return super(Cache, self).save(*args, **kwargs)
