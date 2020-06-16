@@ -1,3 +1,6 @@
+from datetime import datetime
+import pytz
+
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.gis.db import models
 
@@ -20,7 +23,7 @@ class Cache(models.Model):
         max_length=1000,
     )
     geometry = models.GeometryField(
-        help_text=_('2d Geometry associated with the value using EPSG:3857.'),
+        help_text=_('Geometry associated with the value (2d, EPSG:3857).'),
         blank=True,
         null=True,
         srid=srid,
@@ -37,8 +40,17 @@ class Cache(models.Model):
         null=True,
         max_length=200,
     )
+    created_time = models.DateTimeField(
+        help_text=_('Date of cache entry.'),
+        editable=False
+    )
     expired_time = models.DateTimeField(
         help_text=_('Date when the cache expires.'),
         blank=False,
         null=False
     )
+
+    def save(self, *args, **kwargs):
+        """ On save, update created time """
+        self.created = datetime.utcnow().replace(tzinfo=pytz.UTC)
+        return super(Cache, self).save(*args, **kwargs)

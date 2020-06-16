@@ -11,18 +11,18 @@ from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 
 class CollectionValues(GroupValues):
     """Class for holding values of collection of group values to be serialized."""
-    def __init__(self, collection_key: str, point: Point, search_dist: float):
+    def __init__(self, collection_key: str, point: Point, tolerance: float):
         """Initialize method for context CollectionValues.
 
         :param collection_key: collection_key
         :type collection_key: str
         :param point: Query coordinate
         :type point: Point
-        :param search_dist: Search distance query overide service.
-        :type search_dist: int
+        :param tolerance: Tolerance (query overide service tolerance).
+        :type tolerance: int
         """
         self.point = point
-        self.search_dist = search_dist
+        self.tolerance = tolerance
         self.collection = Collection.objects.get(key=collection_key)
         self.key = self.collection.key
         self.name = self.collection.name
@@ -48,7 +48,7 @@ class CollectionValues(GroupValues):
             # Append all the caches found locally per group - list still needed
             for service in group_services:
                 service_util = ServiceUtil(
-                                service.service.key, self.point, self.search_dist)
+                                service.service.key, self.point, self.tolerance)
                 cache = retrieve_cache(service_util)
                 if cache is not None:
                     if group.key in group_caches:
@@ -70,7 +70,7 @@ class CollectionValues(GroupValues):
 
         # Add GroupValues to be serialized
         for group_key, cache_list in group_caches.items():
-            group_values = GroupValues(group_key, self.point, self.search_dist)
+            group_values = GroupValues(group_key, self.point, self.tolerance)
             for cache in cache_list:
                 group_values.service_registry_values.append(cache)
             self.context_group_values.append(group_values)

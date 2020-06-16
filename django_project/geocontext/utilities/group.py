@@ -8,18 +8,18 @@ from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 
 class GroupValues(object):
     """Class for holding values of context group to be serialized."""
-    def __init__(self, group_key: str, point: Point, search_dist: float):
+    def __init__(self, group_key: str, point: Point, tolerance: float):
         """Initialize method for GroupValues.
 
         :param collection_key: collection_key
         :type collection_key: str
         :param point: Query coordinate
         :type point: Point
-        :param search_dist: Search distance query overide service.
-        :type search_dist: int
+        :param tolerance: Tolerance (query overides service default).
+        :type tolerance: int
         """
         self.point = point
-        self.search_dist = search_dist
+        self.tolerance = tolerance
         self.group = Group.objects.get(key=group_key)
         self.key = self.group.key
         self.name = self.group.name
@@ -36,7 +36,7 @@ class GroupValues(object):
 
         # Append all the caches found locally - list values not found
         for service in group_services:
-            service_util = ServiceUtil(service.service.key, self.point, self.search_dist)
+            service_util = ServiceUtil(service.service.key, self.point, self.tolerance)
             cache = retrieve_cache(service_util)
             if cache is not None:
                 self.service_registry_values.append(cache)

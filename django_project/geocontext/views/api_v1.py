@@ -39,14 +39,14 @@ class ServiceDetailAPIView(generics.RetrieveAPIView):
 class CacheListAPI(views.APIView):
     """Retrieving values from cache matching: x (long), y (lat)
     """
-    def get(self, request, x, y, srid=4326, search_dist: float = 10.0):
+    def get(self, request, x, y, srid=4326, tolerance: float = 10.0):
         try:
             point = parse_coord(x, y, srid)
             services = Service.objects.all()
             service_keys = [o.key for o in services]
             caches = []
             for service_key in service_keys:
-                service_util = ServiceUtil(service_key, point, search_dist)
+                service_util = ServiceUtil(service_key, point, tolerance)
                 cache = retrieve_cache(service_util)
                 caches.append(cache)
             with_geometry = self.request.query_params.get('with-geometry', 'True')
@@ -65,10 +65,10 @@ class GroupAPIView(views.APIView):
     """Retrieve values from context group matching:  x (long), y (lat) group key.
     Catch any exception in populating values
     """
-    def get(self, request, x, y, group_key, srid=4326, search_dist: float = 10.0):
+    def get(self, request, x, y, group_key, srid=4326, tolerance: float = 10.0):
         try:
             point = parse_coord(x, y, srid)
-            group_values = GroupValues(group_key, point, search_dist)
+            group_values = GroupValues(group_key, point, tolerance)
             group_values.populate_group_values()
             group_value_serializer = GroupValueSerializer(group_values)
             return Response(group_value_serializer.data)
@@ -80,10 +80,10 @@ class CollectionAPIView(views.APIView):
     """Retrieve values from context collection matching: x (long), y (lat) collection key.
     Catch any exception in populating values
     """
-    def get(self, request, x, y, collection_key, srid=4326, search_dist: float = 10.0):
+    def get(self, request, x, y, collection_key, srid=4326, tolerance: float = 10.0):
         try:
             point = parse_coord(x, y, srid)
-            collection_values = CollectionValues(collection_key, point, search_dist)
+            collection_values = CollectionValues(collection_key, point, tolerance)
             collection_values.populate_collection_values()
             collection_value_serializer = CollectionValueSerializer(collection_values)
             return Response(collection_value_serializer.data)
@@ -141,9 +141,9 @@ def get_service(request):
             y = cleaned_data['y']
             service_key = cleaned_data['service_key']
             srid = cleaned_data.get('srid', 4326)
-            search_dist = cleaned_data.get('service_key', 10.0)
+            tolerance = cleaned_data.get('service_key', 10.0)
             point = parse_coord(x, y, srid)
-            service_util = ServiceUtil(service_key, point, search_dist)
+            service_util = ServiceUtil(service_key, point, tolerance)
             cache = retrieve_cache(service_util)
             if cache is None:
                 new_service_util = retrieve_service_value([service_util])

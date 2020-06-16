@@ -19,7 +19,7 @@ def retrieve_cache(service_util: ServiceUtil) -> Cache:
     """
     point = transform(service_util.point, Cache.srid)
     return Cache.objects.filter(
-                        geometry__dwithin=(point, service_util.search_dist)
+                        geometry__dwithin=(point, service_util.tolerance)
                     ).filter(
                         service=Service.objects.get(key=service_util.key),
                         expired_time__gte=datetime.utcnow().replace(tzinfo=pytz.UTC),
@@ -44,8 +44,8 @@ def create_cache(service_util: ServiceUtil) -> Cache:
         name=service_util.key,
         value=service_util.value,
         expired_time=expired_time.replace(tzinfo=pytz.UTC),
-        source_uri=service_util.source_uri
+        source_uri=service_util.source_uri,
+        geometry=flatten(transform(service_util.geometry, Cache.srid))
     )
-    cache.geometry = flatten(transform(service_util.geometry, Cache.srid))
     cache.save()
     return cache

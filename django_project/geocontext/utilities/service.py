@@ -38,15 +38,15 @@ async def retrieve_service_value(service_utils: list) -> list:
 class ServiceUtil():
     """Async service methods. Init method calls ORM / blocking functions.
     """
-    def __init__(self, service_key: str, point: Point, search_dist: float):
+    def __init__(self, service_key: str, point: Point, tolerance: float):
         """Load object. Prepare geometry. This __init__ is async blocking.
 
         :param service_key: service_key
         :type service_key: str
         :param point: Query coordinate
         :type point: Point
-        :param search_dist: Search distance query overide service (default=10.0).
-        :type search_dist: int
+        :param tolerance: Tolerance of query in meter (default=10.0).
+        :type tolerance: int
         """
         # Load attributes from service model
         service_dict = Service.objects.filter(key=service_key).values().first()
@@ -54,10 +54,10 @@ class ServiceUtil():
             setattr(self, key, val)
 
         # Service query configuration
-        if search_dist != 10.0:
-            self.search_dist = search_dist
-        elif self.search_dist is None:
-            self.search_dist = 10.0
+        if tolerance != 10.0:
+            self.tolerance = tolerance
+        elif self.tolerance is None:
+            self.tolerance = 10.0
         self.point = transform(point, self.srid)
         self.max_features = 10
         self.source_uri = None
@@ -97,7 +97,7 @@ class ServiceUtil():
 
     async def fetch_wms(self):
         """Fetch WMS value"""
-        bbox = get_bbox(self.point, self.search_dist)
+        bbox = get_bbox(self.point, self.tolerance)
         parameters = {
             'SERVICE': self.query_type,
             'INFO_FORMAT': 'application/json',
@@ -128,7 +128,7 @@ class ServiceUtil():
         await self.save_features(json_response['features'])
 
     async def fetch_wfs(self):
-        """Fetch WFS value. Try intersect else buffer with search distance."""
+        """Fetch WFS value. Try intersect else buffer with specified tolerance."""
         parameters = {
             'SERVICE': 'WFS',
             'REQUEST': 'GetFeature',
@@ -163,7 +163,7 @@ class ServiceUtil():
 
         LOGGER.info(f'WFS intersect filter failed: "{self.key}" - attempt bbox')
         parameters.pop('FILTER')
-        bbox = get_bbox(self.point, self.search_dist)
+        bbox = get_bbox(self.point, self.tolerance)
         parameters.update({
             'BBOX': bbox,
             'SRSNAME': f'EPSG:{self.point.srid}'
@@ -174,7 +174,7 @@ class ServiceUtil():
 
     async def fetch_arcrest(self):
         """Fetch ArcRest value"""
-        bbox = get_bbox(self.point, self.search_dist)
+        bbox = get_bbox(self.point, self.tolerance)
         parameters = {
             'f': 'json',
             'geometryType': 'esriGeometryPoint',

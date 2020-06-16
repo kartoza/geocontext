@@ -136,9 +136,9 @@ class Service(models.Model):
         default=4326
     )
 
-    search_dist = models.FloatField(
+    tolerance = models.FloatField(
         help_text=_(
-            'Search distance around query point in meters. Used for bounding box queries.'
+            'Tolerance around query point in meters. Used for bounding box queries.'
             'Also determines cache hit range for all values'),
         blank=True,
         null=True,
@@ -170,6 +170,31 @@ class Service(models.Model):
         blank=True,
         null=True,
         max_length=1000,
+    )
+
+    test_x = models.FloatField(
+        help_text=_('Longitude of known value to test service.'),
+        blank=True,
+        null=True,
+    )
+
+    test_y = models.FloatField(
+        help_text=_('Latitude of known value to test service.'),
+        blank=True,
+        null=True,
+    )
+
+    test_value = models.CharField(
+        help_text=_('Known value expected at test coordinates.'),
+        blank=True,
+        null=True,
+        max_length=1000,
+    )
+
+    status = models.BooleanField(
+        help_text=_('Status of this service (determined by test coordinate & value'),
+        blank=True,
+        null=True,
     )
 
     class Meta:

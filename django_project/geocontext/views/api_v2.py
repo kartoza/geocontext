@@ -11,6 +11,7 @@ from geocontext.utilities.geometry import parse_coord
 from geocontext.utilities.service import retrieve_service_value, ServiceUtil
 from geocontext.utilities.cache import create_cache, retrieve_cache
 from geocontext.utilities.group import GroupValues
+from geocontext.utilities.query import log_query
 
 
 def get_data(request):
@@ -21,13 +22,13 @@ def get_data(request):
     y = request.GET.get('y', None)
     key = request.GET.get('key', None)
     srid = request.GET.get('srid', 4326)
-    search_dist = request.GET.get('search_dist', 10.0)
+    tolerance = request.GET.get('tolerance', 10.0)
     data = {
         'x': x,
         'y': y,
         'srid': srid,
         'key': key,
-        'search_dist': search_dist
+        'tolerance': tolerance
     }
     for key, val in data.items():
         if val is None:
@@ -43,7 +44,8 @@ class ServiceAPIView(APIView):
         try:
             data = get_data(request)
             point = parse_coord(x=data['x'], y=data['y'], srid=data['srid'])
-            service_util = ServiceUtil(data['key'], point, data['search_dist'])
+            service_util = ServiceUtil(data['key'], point, data['tolerance'])
+            log_query("service", data['key'], point, data['tolerance'])
             cache = retrieve_cache(service_util)
             if cache is None:
                 new_service_util = retrieve_service_value([service_util])
@@ -65,7 +67,8 @@ class GroupAPIView(APIView):
         try:
             data = get_data(request)
             point = parse_coord(x=data['x'], y=data['y'], srid=data['srid'])
-            group_values = GroupValues(data['key'], point, data['search_dist'])
+            group_values = GroupValues(data['key'], point, data['tolerance'])
+            log_query("group", data['key'], point, data['tolerance'])
             group_values.populate_group_values()
             group_value_serializer = GroupValueSerializer(group_values)
             response_data = group_value_serializer.data
@@ -84,7 +87,8 @@ class CollectionAPIView(APIView):
         try:
             data = get_data(request)
             point = parse_coord(x=data['x'], y=data['y'], srid=data['srid'])
-            collection_values = CollectionValues(data['key'], point, data['search_dist'])
+            log_query("collection", data['key'], point, data['tolerance'])
+            collection_values = CollectionValues(data['key'], point, data['tolerance'])
             collection_values.populate_collection_values()
             collection_value_serializer = CollectionValueSerializer(collection_values)
             response_data = collection_value_serializer.data

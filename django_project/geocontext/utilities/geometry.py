@@ -25,17 +25,17 @@ def flatten(geometry: GEOSGeometry) -> GEOSGeometry:
     return geometry
 
 
-def get_bbox(point: Point, search_distance: float = 10, order_latlon: bool = True) -> str:
+def get_bbox(point: Point, tolerance: float = 10, order_latlon: bool = True) -> str:
     """
-    Get bbox that is guaranteed to be {search_distance} meters from point. BBOX corners
+    Get bbox that is guaranteed to be {tolerance} meters from point. BBOX corners
     will be futher but the distance in cardinal directions from point will equal
-    search_distance. Lower corner left specified first. Lon/lat (x,y) order can be
+    tolerance. Lower corner left specified first. Lon/lat (x,y) order can be
     flipped if CRS requires.
 
     :param point: Point
     :type point: Point
-    :param search_distance: Minimum distance that the bbox should include in meter.
-    :type search_distance: float
+    :param tolerance: Minimum distance that the bbox should include in meter.
+    :type tolerance: float
     :param order_latlon: bbox order depends on CRS.
     :type order_latlon: bool (default True)
     :return: BBOX string: 'lower corner x, lower corner y, upper corner x, upper corner y'
@@ -46,7 +46,7 @@ def get_bbox(point: Point, search_distance: float = 10, order_latlon: bool = Tru
         point = transform(point, 4326)
 
     start_point = geopy.Point(longitude=point.x, latitude=point.y)
-    distance = geopy.distance.distance(meters=search_distance)
+    distance = geopy.distance.distance(meters=tolerance)
 
     north = distance.destination(point=start_point, bearing=0)
     east = distance.destination(point=start_point, bearing=90)
