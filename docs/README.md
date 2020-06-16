@@ -7,21 +7,6 @@ View a running instance at [http://geocontext.kartoza.com](http://geocontext.kar
 The latest source code is available at
 [https://github.com/kartoza/geocontext](https://github.com/kartoza/geocontext).
 
-* **Developers:** See our [developer guide](README-dev.md)
-* **For production:** See our [deployment guide](README-docker.md)
-
-
-## Key features
-
-* Stateless and easy to deploy
-* Able to retrieve geo-context information of a point from several services
-* Optimized for rapid information retrieval
-* Currently supports WFS, WMS ArcREST and Placename sources
-* Using cache mechanism to retrieve context information faster
-* Three level hierarchy (service --> group --> collection) to sort services to request
-* Simple API returning json data
-
-
 ## Project activity
 
 * Current test status master: [![Build Status](https://travis-ci.org/kartoza/geocontext.svg?branch=master)](https://travis-ci.org/kartoza/geocontext) and
@@ -30,6 +15,37 @@ The latest source code is available at
 * Current test status develop: [![Build Status](https://travis-ci.org/kartoza/geocontext.svg?branch=develop)](https://travis-ci.org/kartoza/geocontext) and
 [![Code Health](https://landscape.io/github/kartoza/geocontext/develop/landscape.svg?style=flat)](https://landscape.io/github/kartoza/geocontext/develop)
 
+## Key features
+
+* Stateless and easy to deploy
+* Able to retrieve geo-context information of a point from several services
+* Optimized for rapid information retrieval
+* Currently supports WFS, WMS, ArcREST and Placename sources
+* Using cache mechanism to retrieve context frequently requested information
+* Three level hierarchy (service --> group --> collection) to sort services to request
+* Simple API returning json data
+
+
+## API
+After you have working geocontext instance, you can then check the available 
+API from the API documentation links (you can find it in the main page) or 
+see the content and the hierarchy of context service (you can also 
+find the link in the main page)
+
+### v2
+New endpoints accepting url key:val parameters.
+* `/api/v2/service?`
+* `/api/v2/group?`
+* `/api/v2/collection?`
+
+*Required parameters:*
+* `x` - Longitude in DD, DM, or DMS
+* `y` - Latitude in DD, DM, or DMS
+* `Key` - Key of service/grou/collection to query
+
+*Optional parameters:*
+* `srid` - Query EPSG Coordinate reference system code (default: Pseudo-mercator 4326)
+* `tolerance` - Search distance around query point in meters (default: specified per service)
 
 ## Quick Installation Guide
 
@@ -75,24 +91,11 @@ You can also export your context service to json file by running:
 make export-data
 ```
 
-## API
-After you have working geocontext instance, you can then check the available 
-API from the API documentation links (you can find it in the main page) or 
-see the content and the hierarchy of context service (you can also 
-find the link in the main page)
-
-### v2
-New endpoints accepting url key:val parameters.
-* `/api/v2/service?`
-* `/api/v2/group?`
-* `/api/v2/collection?`
-
-
 ## Developers quick start with Docker and VSCode
 
 An easy way to set up a locally development environment is with Docker and VSCode.
 
-1. Add any ENV variables needed to for uwsgi & dvweb to `/deployment/.env`
+1. Optional: add any ENV variables needed to for uwsgi & dvweb to `/deployment/.env`
 2. Use setup-dev to build the production and development containers, create superuser,
 and import default services.
 ```bash
