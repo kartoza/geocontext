@@ -1,10 +1,8 @@
-import coreapi
 
 from django.core.serializers import serialize
 from rest_framework import status
 from rest_framework.response import Response
 from django.http import HttpResponse
-from rest_framework.schemas import AutoSchema
 from rest_framework.views import APIView
 
 from geocontext.serializers.collection import CollectionValueSerializer

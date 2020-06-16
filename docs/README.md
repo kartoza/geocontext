@@ -18,8 +18,8 @@ The latest source code is available at
 * Optimized for rapid information retrieval
 * Currently supports WFS, WMS ArcREST and Placename sources
 * Using cache mechanism to retrieve context information faster
-* Three level hierarchy (service --> group --> collection to sort services to request
-* Simple API returning geojson data
+* Three level hierarchy (service --> group --> collection) to sort services to request
+* Simple API returning json data
 
 
 ## Project activity
@@ -81,9 +81,11 @@ API from the API documentation links (you can find it in the main page) or
 see the content and the hierarchy of context service (you can also 
 find the link in the main page)
 
-### V1
-
 ### v2
+New endpoints accepting url key:val parameters.
+* `/api/v2/service?`
+* `/api/v2/group?`
+* `/api/v2/collection?`
 
 
 ## Developers quick start with Docker and VSCode
