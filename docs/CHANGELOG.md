@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fix
 - Ensure we get geometries from requests. WFS does not reliably return geometries currently
+- Backups not working
 
 
 ## [2.0.0] - 2020-07-01

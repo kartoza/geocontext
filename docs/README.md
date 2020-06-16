@@ -55,7 +55,7 @@ some knowledge of running a django site.
 
 1. Clone the project
 ```bash
-git clone git://github.com/kartoza/geocontext.git
+git clone git://github.com/kartoza/geocontext.git && cd /docs/
 ```
 2. Ensure shared volume permissions are set
 ```bash

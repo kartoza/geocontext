@@ -308,20 +308,17 @@ db-fresh-restore:
 	@docker exec -t -i $(PROJECT_ID)-db su - postgres -c "createdb -O docker -T template_postgis gis"
 	@docker exec -t -i $(PROJECT_ID)-db su - postgres -c "psql gis -f /sql/migration.sql"
 
-# - prefix causes command to continue even if it fails
-# Explicitly don't use -it so we can call this make target over a remote ssh session
-# backups is intentionally missing from front of first clause below otherwise symlink comes out with wrong path...
-
 dbbackup:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Create `date +%d-%B-%Y`.dmp"
 	@echo "Warning: backups/latest.dmp will be replaced with a symlink to the new backup."
 	@echo "------------------------------------------------------------------"
-	-@docker exec $(PROJECT_ID)-db-backups /backups.sh \
-	&& docker exec $(PROJECT_ID)-db-backups cat /var/log/cron.log | tail -2 | head -1 | awk '{print $4}' \
-	&& if [ -f "../deployment/backups/latest.dmp" ]; then rm ../deployment/backups/latest.dmp; fi \
-	&& ln -s `date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp ../deployment/backups/latest.dmp
+	@docker exec $(PROJECT_ID)-db-backups /backups.sh
+	@docker exec $(PROJECT_ID)-db-backups cat /var/log/cron.log | tail -2 | head -1 | awk '{print $4}'
+	-@if [ -f "../deployment/backups/latest.dmp" ]; then rm ../deployment/backups/latest.dmp; fi
+	@ln -s `date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp ../deployment/backups/latest.dmp
+	@echo "Backup should be at: /deployment/backups/`date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp"
 
 # ----------------------------------------------------------------------------
 help:
