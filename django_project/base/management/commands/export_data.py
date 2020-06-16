@@ -15,12 +15,10 @@ class Command(BaseCommand):
     help = 'Export GeoContext data'
 
     def handle(self, *args, **options):
-        print('Exporting GeoContext Data...')
+        logger.info('Exporting GeoContext Data...')
         geocontext_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             'geocontext.json'
         )
-
         export_data(geocontext_file)
-
-        print('Export GeoContext data finished...')
+        logger.info('Export GeoContext data finished...')

@@ -16,9 +16,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         num_caches = Cache.objects.all().count()
-        print(f'Deleting  cache')
+        logger.info(f'Deleting  cache')
         current_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
         Cache.objects.filter(expired_time__lte=current_time).delete()
-        print(f'{num_caches} cache deleted')
+        logger.info(f'{num_caches} cache deleted')
         num_caches = Cache.objects.all().count()
-        print('Current number of caches: {num_caches}')
+        logger.info('Current number of caches: {num_caches}')
