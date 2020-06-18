@@ -171,7 +171,7 @@ flake8:
 	@flake8 ../django_project
 
 test:
-	@docker-compose -p $(PROJECT_ID) exec devweb python -W ignore manage.py test
+	@docker-compose -p $(PROJECT_ID) exec devweb pytest
 
 # ----------------------------------------------------------------------------
 # Server Administration
@@ -317,7 +317,7 @@ dbbackup:
 	@docker exec $(PROJECT_ID)-db-backups /backups.sh
 	@docker exec $(PROJECT_ID)-db-backups cat /var/log/cron.log | tail -2 | head -1 | awk '{print $4}'
 	-@if [ -f "../deployment/backups/latest.dmp" ]; then rm ../deployment/backups/latest.dmp; fi
-	@ln -s `date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp ../deployment/backups/latest.dmp
+	-@ln -s `date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp ../deployment/backups/latest.dmp
 	@echo "Backup should be at: /deployment/backups/`date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp"
 
 # ----------------------------------------------------------------------------
