@@ -1,9 +1,8 @@
-# We keep V1 api views for compatability for now
+"""Views for Geocontext V1 urls - TODO: depreciate"""
 
 from distutils.util import strtobool
 import psycopg2
 
-from django.core.serializers import serialize
 from django.conf import settings
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
@@ -12,15 +11,9 @@ from rest_framework.response import Response
 
 from geocontext.forms import GeoContextForm
 from geocontext.models.service import Service
-from geocontext.serializers.cache import CacheGeoJSONSerializer, CacheSerializer
-from geocontext.serializers.collection import CollectionValueSerializer
-from geocontext.serializers.group import GroupValueSerializer
 from geocontext.serializers.service import ServiceSerializer
-from geocontext.utilities.cache import create_cache, retrieve_cache
-from geocontext.utilities.collection import CollectionValues
 from geocontext.utilities.geometry import parse_coord
-from geocontext.utilities.group import GroupValues
-from geocontext.utilities.service import retrieve_service_value, ServiceUtil
+from geocontext.utilities.worker import Worker
 
 
 class ServiceListAPIView(generics.ListAPIView):
@@ -42,19 +35,14 @@ class CacheListAPI(views.APIView):
     def get(self, request, x, y, srid=4326, tolerance: float = 10.0):
         try:
             point = parse_coord(x, y, srid)
+            worker = Worker('', '', point, tolerance, '')
             services = Service.objects.all()
-            service_keys = [o.key for o in services]
-            caches = []
-            for service_key in service_keys:
-                service_util = ServiceUtil(service_key, point, tolerance)
-                cache = retrieve_cache(service_util)
-                caches.append(cache)
+            caches = worker.retrieve_caches(services)
+            data = worker.nest_caches(caches)
             with_geometry = self.request.query_params.get('with-geometry', 'True')
             if strtobool(with_geometry):
-                serializer = CacheGeoJSONSerializer(caches, many=True)
-            else:
-                serializer = CacheSerializer(caches, many=True)
-            return Response(serializer.data)
+                data = worker.serialize_geojson(data)
+            return Response(data)
         except Exception:
             return Response("Server error", status.HTTP_400_BAD_REQUEST)
         if None in caches:
@@ -68,10 +56,8 @@ class GroupAPIView(views.APIView):
     def get(self, request, x, y, group_key, srid=4326, tolerance: float = 10.0):
         try:
             point = parse_coord(x, y, srid)
-            group_values = GroupValues(group_key, point, tolerance)
-            group_values.populate_group_values()
-            group_value_serializer = GroupValueSerializer(group_values)
-            return Response(group_value_serializer.data)
+            worker = Worker('group', group_key, point, tolerance, 'json').retrieve_all()
+            return Response(worker)
         except Exception as e:
             return Response(f"Server error {e}", status.HTTP_400_BAD_REQUEST)
 
@@ -83,10 +69,8 @@ class CollectionAPIView(views.APIView):
     def get(self, request, x, y, collection_key, srid=4326, tolerance: float = 10.0):
         try:
             point = parse_coord(x, y, srid)
-            collection_values = CollectionValues(collection_key, point, tolerance)
-            collection_values.populate_collection_values()
-            collection_value_serializer = CollectionValueSerializer(collection_values)
-            return Response(collection_value_serializer.data)
+            worker = Worker('collection', collection_key, point, tolerance, 'json')
+            return Response(worker.retrieve_all())
         except Exception as e:
             return Response(
                 f"Server error {e}", status.HTTP_400_BAD_REQUEST)
@@ -143,26 +127,11 @@ def get_service(request):
             srid = cleaned_data.get('srid', 4326)
             tolerance = cleaned_data.get('service_key', 10.0)
             point = parse_coord(x, y, srid)
-            service_util = ServiceUtil(service_key, point, tolerance)
-            cache = retrieve_cache(service_util)
-            if cache is None:
-                new_service_util = retrieve_service_value([service_util])
-                if new_service_util.value is not None:
-                    caches = create_cache(new_service_util)
-            fields = ('value', 'key')
-            if cache:
-                return HttpResponse(
-                    serialize(
-                        'geojson',
-                        caches,
-                        geometry_field='geometry_multi_polygon',
-                        fields=fields),
-                    content_type='application/json')
-            else:
-                raise Http404('Sorry! We could not find context for your point!')
-
-    # if a GET (or any other method) we'll create a blank form
+            worker = Worker('service', service_key, point, tolerance, 'geojson')
+            data = worker.retrieve_all()
+            return HttpResponse(data, content_type='application/json')
+        else:
+            raise Http404('Sorry! We could not find context for your point!')
     else:
         form = GeoContextForm(initial={'srid': 4326})
-
-    return render(request, 'geocontext/get_service.html', {'form': form})
+        return render(request, 'geocontext/get_service.html', {'form': form})

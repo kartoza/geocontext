@@ -1,94 +1,42 @@
 
-from django.core.serializers import serialize
 from rest_framework import status
 from rest_framework.response import Response
-from django.http import HttpResponse
 from rest_framework.views import APIView
 
-from geocontext.serializers.collection import CollectionValueSerializer
-from geocontext.serializers.group import GroupValueSerializer
-from geocontext.utilities.collection import CollectionValues
+from geocontext.utilities.worker import Worker
 from geocontext.utilities.geometry import parse_coord
-from geocontext.utilities.service import retrieve_service_value, ServiceUtil
-from geocontext.utilities.cache import create_cache, retrieve_cache
-from geocontext.utilities.group import GroupValues
-from geocontext.utilities.query import log_query
 
 
-def get_data(request):
-    """
-    Generic function to parse Geocontext keyword get arguments
-    """
-    data = {
-        'x': request.GET.get('x', None),
-        'y': request.GET.get('y', None),
-        'srid': request.GET.get('srid', 4326),
-        'key': request.GET.get('key', None),
-        'tolerance': request.GET.get('tolerance', 10.0),
-    }
-    for key, val in data.items():
-        if val is None:
-            raise KeyError(f'Required request argument missing: {key}')
-    return data
-
-
-class ServiceAPIView(APIView):
-    """
-    Geocontext API v2 endpoint for service queries.
+class GenericAPIView(APIView):
+    """Geocontext API v2 endpoint for collection queries.
+    Basic query validation, log query, get data and return results.
     """
     def get(self, request):
         try:
-            data = get_data(request)
-            point = parse_coord(x=data['x'], y=data['y'], srid=data['srid'])
-            service_util = ServiceUtil(data['key'], point, data['tolerance'])
-            log_query("service", data['key'], point, data['tolerance'])
-            cache = retrieve_cache(service_util)
-            if cache is None:
-                new_service_util = retrieve_service_value([service_util])
-                if new_service_util.value is not None:
-                    cache = create_cache(new_service_util)
-            return HttpResponse(serialize('json', [cache]),
-                                content_type='application/json')
-        except KeyError as e:
-            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            key = request.GET.get('key', None)
+            x = request.GET.get('x', None)
+            y = request.GET.get('y', None)
+            if None in [key, x, y]:
+                raise KeyError('Required request argument (registry, key, x, y) missing.')
 
+            srid = request.GET.get('srid', 4326)
 
-class GroupAPIView(APIView):
-    """
-    Geocontext API v2 endpoint for group queries.
-    """
-    def get(self, request):
-        try:
-            data = get_data(request)
-            point = parse_coord(x=data['x'], y=data['y'], srid=data['srid'])
-            group_values = GroupValues(data['key'], point, data['tolerance'])
-            log_query("group", data['key'], point, data['tolerance'])
-            group_values.populate_group_values()
-            group_value_serializer = GroupValueSerializer(group_values)
-            response_data = group_value_serializer.data
-            return Response(response_data, status=status.HTTP_200_OK)
-        except KeyError as e:
-            return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            try:
+                tolerance = float(request.GET.get('tolerance', 10.0))
+            except ValueError:
+                raise ValueError('Tolerance should be a float')
 
+            registry = request.GET.get('registry', '')
+            if registry.lower() not in ['collection', 'service', 'group']:
+                raise ValueError('Registry should be "collection", "service" or "group".')
 
-class CollectionAPIView(APIView):
-    """
-    Geocontext API v2 endpoint for collection queries.
-    """
-    def get(self, request):
-        try:
-            data = get_data(request)
-            point = parse_coord(x=data['x'], y=data['y'], srid=data['srid'])
-            log_query("collection", data['key'], point, data['tolerance'])
-            collection_values = CollectionValues(data['key'], point, data['tolerance'])
-            collection_values.populate_collection_values()
-            collection_value_serializer = CollectionValueSerializer(collection_values)
-            response_data = collection_value_serializer.data
-            return Response(response_data, status=status.HTTP_200_OK)
+            outformat = request.GET.get('outformat', 'geojson').lower()
+            if outformat not in ['geojson', 'json']:
+                raise ValueError('Output format should be either json or geojson')
+
+            point = parse_coord(x, y, srid)
+            data = Worker(registry, key, point, tolerance, outformat).retrieve_all()
+            return Response(data, status=status.HTTP_200_OK)
         except KeyError as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
