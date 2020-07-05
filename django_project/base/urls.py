@@ -10,8 +10,7 @@ from geocontext.urls import urlpatterns_api_v2
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='landing_page.html')),
-    url('^getting_started/', TemplateView.as_view(
-        template_name='getting_started.html')),
+    url('^getting_started/', TemplateView.as_view(template_name='getting_started.html')),
     url('^api/v1/', include(urlpatterns_api_v1)),
     url('^api/v2/', include(urlpatterns_api_v2)),
     url('', include(geocontext_urls)),

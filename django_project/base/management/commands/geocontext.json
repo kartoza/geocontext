@@ -7287,7 +7287,7 @@
     ],
     "collection": [
         {
-            "key": "boundary",
+            "key": "boundary_collection",
             "name": "Boundary Collection",
             "description": "Collection of administrative and Cadastre boundaries",
             "group_keys": [
@@ -7296,7 +7296,7 @@
             ]
         },
         {
-            "key": "climate",
+            "key": "climate_collection",
             "name": "Climate Collection",
             "description": "Grouping of layers that depicts climate charasteristics",
             "group_keys": [
@@ -7314,7 +7314,7 @@
             ]
         },
         {
-            "key": "global_climate",
+            "key": "global_climate_collection",
             "name": "Global Climate Collection",
             "description": "Collection of world climate layers",
             "group_keys": [
@@ -7329,9 +7329,9 @@
             ]
         },
         {
-            "key": "healthy_rivers",
+            "key": "healthy_rivers_collection",
             "name": "Healthy Rivers Collection",
-            "description": "Healthy Rivers Special Collection..",
+            "description": "Healthy Rivers Special Collection.",
             "group_keys": [
                 "political_boundary_group",
                 "cadastre_group",
@@ -7351,7 +7351,7 @@
             ]
         },
         {
-            "key": "healthy_rivers_spatial",
+            "key": "healthy_rivers_spatial_collection",
             "name": "Healthy Rivers Spatial Filters",
             "description": "Collection of layers used for spatial filters",
             "group_keys": [
@@ -7368,7 +7368,7 @@
             ]
         },
         {
-            "key": "land_cover_land_use",
+            "key": "land_cover_land_use_collection",
             "name": "Land Use Collection",
             "description": "Collection of layers showing how the land is being utilised or changing",
             "group_keys": [
@@ -7378,7 +7378,7 @@
             ]
         },
         {
-            "key": "ledet",
+            "key": "ledet_collection",
             "name": "LEDET Collection",
             "description": "LEDET Special Collection..",
             "group_keys": [
@@ -7399,7 +7399,7 @@
             ]
         },
         {
-            "key": "river_ecosystem",
+            "key": "river_ecosystem_collection",
             "name": "River Collection",
             "description": "Collection of rivers layers and their ecosystems",
             "group_keys": [
