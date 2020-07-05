@@ -1,3 +1,4 @@
+"""Model with geometric helper functions"""
 import json
 import re
 
@@ -82,7 +83,6 @@ def parse_coord(x: str, y: str, srid: str = '4326') -> float:
     :return: point wih srid
     :rtype: Point
     """
-    # Parse srid and create point in crs srid
     try:
         srid = int(srid)
     except ValueError:
