@@ -10,7 +10,7 @@ from geocontext.views.api_v1 import (
     ServiceListAPIView,
     RiverNameAPIView,
 )
-from geocontext.views import api_v2
+from geocontext.views.api_v2 import GenericAPIView
 from geocontext.views.collection import CollectionListView, CollectionDetailView
 from geocontext.views.service import ServiceListView, ServiceDetailView
 from geocontext.views.group import GroupListView, GroupDetailView
@@ -80,17 +80,9 @@ urlpatterns_api_v1 = [
 urlpatterns_api_v1 = format_suffix_patterns(urlpatterns_api_v1)
 
 urlpatterns_api_v2 = [
-    url(regex=r'^service$',
-        view=api_v2.ServiceAPIView.as_view(),
+    url(regex=r'^query$',
+        view=GenericAPIView.as_view(),
         name='service-api'
-        ),
-    url(regex=r'^group$',
-        view=api_v2.GroupAPIView.as_view(),
-        name='group-api'
-        ),
-    url(regex=r'^collection$',
-        view=api_v2.CollectionAPIView.as_view(),
-        name='collection-api'
         ),
 ]
 
