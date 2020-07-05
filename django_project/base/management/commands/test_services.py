@@ -3,7 +3,7 @@ import logging
 from django.core.management.base import BaseCommand
 
 from geocontext.models.service import Service
-from geocontext.utilities.service import retrieve_service_value, ServiceUtil
+from geocontext.utilities.service import async_retrieve_services, AsyncService
 from geocontext.utilities.geometry import parse_coord
 
 logger = logging.getLogger(__name__)
@@ -18,9 +18,9 @@ class Command(BaseCommand):
         services = Service.objects.all()
         for service in services:
             point = parse_coord(x=service.x, y=service.y, srid=service.srid)
-            service_util = ServiceUtil(service.key, point, service.tolerance)
-            new_service_util = retrieve_service_value([service_util])
-            if new_service_util.value != service.test_value:
+            async_service = AsyncService(service.key, point, service.tolerance)
+            new_async_service = async_retrieve_services([async_service])
+            if new_async_service[0].value != service.test_value:
                 service.status = False
                 logger.warning(f'Service: {service.name} status offline')
             else:
