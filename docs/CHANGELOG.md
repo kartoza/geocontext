@@ -27,14 +27,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Query point saved to Cache if no geometry returned - multiple requests within `tolerance` of query points will hit the cache instead of external requests.
 - We only return the closest feature with the query tolerance found in cache - and if multiple geometries are returned from external requests we only use the closest one.
 - Added a Query model and related utilities to allow us to log all query locations, types and times.
-- Service model has new fields: `create_time`, `tolerance`, `test_x`, `test_y`, `test_val` and `status`. The test fields can be used to load known responses to allow for automated test of the service status.
+- Service model has new fields: `create_time`, `tolerance`, `test_x`, `test_y`, `test_val` and `status`. 
+- The Service model test fields can be used to load known responses to allow for automated test of the service status.
 - Cache model has new field: `create_time`
 - api v2 views - endpoints for `service`, `group` and `collection`. We can now directly query a service.
 - api v2 endpoints accept url get requests with keyword parameters: `x`, `y`, `key` and optional `srid` and `tolerance`.
 - Queries in SRIDs different than `EPSG:4326` is possible.
 - Query coordinate format now allows for DMS, DM, and DD (signed or with added direction)
 - Parse esri geometry types to GEOS from ArcREST services.
-- Pytest integration and unittests
+- Pytest testing
+- Coverage
+- Pytype checking
+- Coverage report
 - Cron jobs to clear expired cache values and check service status
 
 ### Changed
@@ -57,6 +61,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimized docker build to use fewer layers and smaller base images.
 
 ### Deprecated 
+- 'graphable' property of groups - the use case of this as a high level attribute is not
+clear. It is not expected that users will blindly be looking for data to graph and whether a dataset
+is graphable or not should therefore be up to the discretion of the user.
 - OWSlib for WMS requests - very slow initialize method
 - TravisCI in favour of Github actions
 

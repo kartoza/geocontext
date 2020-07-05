@@ -56,8 +56,10 @@ class GroupAPIView(views.APIView):
     def get(self, request, x, y, group_key, srid=4326, tolerance: float = 10.0):
         try:
             point = parse_coord(x, y, srid)
-            worker = Worker('group', group_key, point, tolerance, 'json').retrieve_all()
-            return Response(worker)
+            data = Worker('group', group_key, point, tolerance, 'json').retrieve_all()
+            # For compatibility with V1 naming conventions
+            data['service_registry_values'] = data.pop('services')
+            return Response(data)
         except Exception as e:
             return Response(f"Server error {e}", status.HTTP_400_BAD_REQUEST)
 
@@ -70,7 +72,12 @@ class CollectionAPIView(views.APIView):
         try:
             point = parse_coord(x, y, srid)
             worker = Worker('collection', collection_key, point, tolerance, 'json')
-            return Response(worker.retrieve_all())
+            data = worker.retrieve_all()
+            # For compatibility with V1 naming conventions
+            data['context_group_values'] = data.pop('groups')
+            for group in data['context_group_values']:
+                group['service_registry_values'] = group.pop('services')
+            return Response(data)
         except Exception as e:
             return Response(
                 f"Server error {e}", status.HTTP_400_BAD_REQUEST)
