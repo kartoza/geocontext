@@ -26,7 +26,7 @@ class CacheSerializer(serializers.ModelSerializer):
 
 
 class CacheGeoJSONSerializer(CacheSerializer, GeoFeatureModelSerializer):
-    """Geo JSON serializer for cache.."""
+    """GeoJSON serializer for cache."""
     geometry = GeometrySerializerMethodField()
 
     def get_geometry(self, obj):
