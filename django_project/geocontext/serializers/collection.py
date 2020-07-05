@@ -3,6 +3,7 @@ from rest_framework import serializers
 from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
 from geocontext.serializers.group import GroupValueSerializer
+from geocontext.serializers.group import NestedGroupSerializer
 
 
 class CollectionSerializer(serializers.ModelSerializer):
@@ -19,6 +20,24 @@ class CollectionSerializer(serializers.ModelSerializer):
         )
 
     def get_group_keys(self, obj):
+        groups = CollectionGroups.objects.filter(collection=obj).order_by('order')
+        return [group.group.key for group in groups]
+
+
+class NestedCollectionSerializer(serializers.ModelSerializer):
+    """Serializer class for Collection."""
+    groups = serializers.SerializerMethodField(source='group.key')
+
+    class Meta:
+        model = Collection
+        fields = (
+            'key',
+            'name',
+            'description',
+            'groups',
+        )
+
+    def get_groups(self, obj):
         groups = CollectionGroups.objects.filter(collection=obj).order_by('order')
         return [group.group.key for group in groups]
 
