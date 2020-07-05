@@ -1,6 +1,3 @@
-from datetime import datetime
-import pytz
-
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.gis.db import models
 
@@ -49,8 +46,3 @@ class Cache(models.Model):
         blank=False,
         null=False
     )
-
-    def save(self, *args, **kwargs):
-        """ On save, update created time """
-        self.created_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
-        return super(Cache, self).save(*args, **kwargs)
