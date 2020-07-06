@@ -32,20 +32,17 @@ API from the API documentation links (you can find it in the main page) or
 see the content and the hierarchy of context service (you can also 
 find the link in the main page)
 
-### v2
-New endpoints accepting url key:val parameters.
-* `/api/v2/service?`
-* `/api/v2/group?`
-* `/api/v2/collection?`
+### V2
+New query endpoint accepting GET keyword parameters: `/api/v2/query?`
 
-*Required parameters:*
-* `x` - Longitude in DD, DM, or DMS
-* `y` - Latitude in DD, DM, or DMS
-* `Key` - Key of service/grou/collection to query
-
-*Optional parameters:*
-* `srid` - Query EPSG Coordinate reference system code (default: Pseudo-mercator 4326)
-* `tolerance` - Search distance around query point in meters (default: specified per service)
+| Keyword       | Description                        | Details                   |
+| ------------- |:----------------------------------:| -------------------------:|
+| `registry`    | `service`, `group` or `collection` | *REQUIRED*                |
+| `key`         | Unique key of the registry         | *REQUIRED*                |
+| `x`           | Latitude in DD, DMS or DD          | *REQUIRED*                |
+| `y`           | Longitude in DD, DMS or DD         | *REQUIRED*                |
+| `srid`        | Coordinate reference               | *OPTIONAL*  (Default 4326)|
+| `tolerance`   | Query tolerance in m               | *OPTIONAL* (Default 10m)  |
 
 ## Quick Installation Guide
 
@@ -109,15 +106,12 @@ make setup-dev
 ```
 python manage.py runserver 8001
 ```
-7. Flake8 linting can be run with:
+9. Pytest is used for testing and and can be run with:
 ```bash
-make flake8
+make test-full
 ```
-8. Pytest is used for testing and and can be run with:
-```bash
-make test
-```
-9. See README-legacy for PyCharm and SSH access to devweb container.
+This will run unit & integration tests, flake8 linting, coverage and documentation tests.
+10. See README-legacy for PyCharm and SSH access to devweb container.
 
 ## Deployment
 

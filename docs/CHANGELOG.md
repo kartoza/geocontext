@@ -11,14 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GeoJSON serializer
 - Map view with global basemap and collections on main page
 - Sentry
-- Test value + coordinates for all services.
+- Test value + coordinates for all services. Activate cron
+- Add pytest-mypy type checking. 
 
 ### Deprecate
 - CoreAPI in favour of OpenAPI new standards (swagger etc...)
 
 ### Fix
 - Ensure we get geometries from requests. WFS does not reliably return geometries currently
-- Backups not working
+- Backups not active
 
 
 ## [2.0.0] - 2020-07-01
@@ -35,10 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Queries in SRIDs different than `EPSG:4326` is possible.
 - Query coordinate format now allows for DMS, DM, and DD (signed or with added direction)
 - Parse esri geometry types to GEOS from ArcREST services.
-- Pytest testing
+- Pytest 
 - Coverage
-- Pytype checking
-- Coverage report
 - Cron jobs to clear expired cache values and check service status
 
 ### Changed
