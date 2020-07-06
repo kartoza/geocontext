@@ -167,22 +167,24 @@ delete-cache:
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py delete_cache
 
 test-full:
-	@docker-compose -p $(PROJECT_ID) exec devweb pytest --cov --flake8 --mypy --doctest-modules
+	@docker-compose -p $(PROJECT_ID) exec devweb pytest \
+		--cov=geocontext geocontext/tests/  \
+		--doctest-modules \
+		--ignore-glob="*aiohttp/helpers.py" \
+		--ignore-glob="*__init__.py" \
+		--flake8
 
 test:
 	@docker-compose -p $(PROJECT_ID) exec devweb pytest
 
 test-coverage:
-	@docker-compose -p $(PROJECT_ID) exec devweb pytest --cov
+	@docker-compose -p $(PROJECT_ID) exec devweb pytest --cov=geocontext geocontext/tests/
 
 test-docs:
 	@docker-compose -p $(PROJECT_ID) exec devweb pytest --doctest-modules
 
 test-flake8:
 	@docker-compose -p $(PROJECT_ID) exec devweb pytest --flake8
-
-test-type:
-	@docker-compose -p $(PROJECT_ID) exec devweb pytest --mypy
 
 # ----------------------------------------------------------------------------
 # Server Administration

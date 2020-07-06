@@ -1,10 +1,10 @@
 coverage
+django-stubs
 factory_boy
-flake8
 pep8
-pytest
 pytest-coverage
 pytest-django
+pytest-flake8
 pylint
 pdbpp
 Sphinx

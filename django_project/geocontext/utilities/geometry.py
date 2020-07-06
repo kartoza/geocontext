@@ -111,15 +111,15 @@ def parse_coord(x: str, y: str, srid: str = '4326') -> float:
             elif len(coord_parts) == 3:
                 degrees = int(coord_parts[0])
                 minutes = int(coord_parts[1])
-                seconds = float(coord_parts[2])
+                seconds = float(coord_parts[2].replace(',', '.'))
             # Degree, decimal minutes
             elif len(coord_parts) == 2:
                 degrees = int(coord_parts[0])
-                minutes = float(coord_parts[1])
+                minutes = float(coord_parts[1].replace(',', '.'))
                 seconds = 0.0
             # Decimal degree
             elif len(coord_parts) == 1:
-                degrees = float(coord_parts[0])
+                degrees = float(coord_parts[0].replace(',', '.'))
                 minutes = 0.0
                 seconds = 0.0
 

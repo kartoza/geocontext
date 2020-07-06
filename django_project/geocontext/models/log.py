@@ -1,43 +1,42 @@
 from datetime import datetime
 import pytz
 
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.gis.db import models
 
 
 class Log(models.Model):
     """ Model to log queries to geocontext """
     registry = models.CharField(
-        help_text=_('Registry that was queried'),
+        help_text=('Registry that was queried'),
         blank=False,
         null=False,
         max_length=200,
     )
     key = models.CharField(
-        help_text=_('Query key'),
+        help_text=('Query key'),
         blank=False,
         null=False,
         max_length=200,
     )
     geometry = models.GeometryField(
-        help_text=_('Queried point.'),
+        help_text=('Queried point.'),
         blank=False,
         null=False,
         dim=2
     )
     tolerance = models.FloatField(
-        help_text=_('Query tolerance.'),
+        help_text=('Query tolerance.'),
         blank=True,
         null=True,
     )
     output_format = models.CharField(
-        help_text=_('Format requested'),
+        help_text=('Format requested'),
         blank=False,
         null=False,
         max_length=200,
     )
     created_time = models.DateTimeField(
-        help_text=_('Date of query.'),
+        help_text=('Date of query.'),
         editable=False
     )
 
