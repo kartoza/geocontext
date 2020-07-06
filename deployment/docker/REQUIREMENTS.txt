@@ -17,8 +17,6 @@ djangorestframework==3.11.*
 geopy==1.22.*
 markdown==3.2.*
 psycopg2-binary==2.8.*
-pytest==5.4.3
-pytest-django==3.9.*
 pytz==2020.*
 raven==6.10.*
 requests==2.23.*

@@ -3,7 +3,7 @@ import logging
 from django.core.management.base import BaseCommand
 
 from geocontext.models.service import Service
-from geocontext.utilities.service import async_retrieve_services, AsyncService
+from geocontext.utilities.async_service import async_retrieve_services, AsyncService
 from geocontext.utilities.geometry import parse_coord
 
 logger = logging.getLogger(__name__)

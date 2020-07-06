@@ -166,12 +166,23 @@ delete-cache:
 	@echo "------------------------------------------------------------------"
 	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py delete_cache
 
-flake8:
-	@echo "Check flake 8"
-	@flake8 ../django_project
+test-full:
+	@docker-compose -p $(PROJECT_ID) exec devweb pytest --cov --flake8 --mypy --doctest-modules
 
 test:
 	@docker-compose -p $(PROJECT_ID) exec devweb pytest
+
+test-coverage:
+	@docker-compose -p $(PROJECT_ID) exec devweb pytest --cov
+
+test-docs:
+	@docker-compose -p $(PROJECT_ID) exec devweb pytest --doctest-modules
+
+test-flake8:
+	@docker-compose -p $(PROJECT_ID) exec devweb pytest --flake8
+
+test-type:
+	@docker-compose -p $(PROJECT_ID) exec devweb pytest --mypy
 
 # ----------------------------------------------------------------------------
 # Server Administration
