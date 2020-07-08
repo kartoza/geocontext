@@ -8,11 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [TO DO]
 
 ### Add
-- GeoJSON serializer
 - Map view with global basemap and collections on main page
 - Sentry
 - Test value + coordinates for all services. Activate cron
-- Add pytest-mypy type checking. 
 
 ### Deprecate
 - CoreAPI in favour of OpenAPI new standards (swagger etc...)
