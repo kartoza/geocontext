@@ -9,11 +9,12 @@ The latest source code is available at
 
 ## Project activity
 
-* Current test status master: [![Build Status](https://travis-ci.org/kartoza/geocontext.svg?branch=master)](https://travis-ci.org/kartoza/geocontext) and
-[![Code Health](https://landscape.io/github/kartoza/geocontext/master/landscape.svg?style=flat)](https://landscape.io/github/kartoza/geocontext/master)
+* Current test status master: [![Build Status](https://travis-ci.org/kartoza/geocontext.svg?branch=master)](https://travis-ci.org/kartoza/geocontext) |
+[![Code Health](https://landscape.io/github/kartoza/geocontext/master/landscape.svg?style=flat)](https://landscape.io/github/kartoza/geocontext/master) | Coverage
 
-* Current test status develop: [![Build Status](https://travis-ci.org/kartoza/geocontext.svg?branch=develop)](https://travis-ci.org/kartoza/geocontext) and
-[![Code Health](https://landscape.io/github/kartoza/geocontext/develop/landscape.svg?style=flat)](https://landscape.io/github/kartoza/geocontext/develop)
+* Current test status develop: [![Build Status](https://travis-ci.org/kartoza/geocontext.svg?branch=develop)](https://travis-ci.org/kartoza/geocontext) |
+[![Code Health](https://landscape.io/github/kartoza/geocontext/develop/landscape.svg?style=flat)](https://landscape.io/github/kartoza/geocontext/develop) | Coverage
+
 
 ## Key features
 
@@ -106,11 +107,10 @@ make setup-dev
 ```
 python manage.py runserver 8001
 ```
-9. Pytest is used for testing and and can be run with:
+9. Pytest is used for testing. Unit & integration tests, flake8 linting, coverage and documentation can be run with:
 ```bash
 make test-full
 ```
-This will run unit & integration tests, flake8 linting, coverage and documentation tests.
 10. See README-legacy for PyCharm and SSH access to devweb container.
 
 ## Deployment
