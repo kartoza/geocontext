@@ -21,7 +21,6 @@ services:
       context: ./docker
       dockerfile: Dockerfile
     hostname: uwsgi
-    env_file: .env
     environment:
       - DATABASE_NAME=gis
       - DATABASE_USERNAME=docker
@@ -48,7 +47,6 @@ services:
       context: ./docker
       dockerfile: Dockerfile-dev
     hostname: uwsgi
-    env_file: .env
     environment:
       - DATABASE_NAME=gis
       - DATABASE_USERNAME=docker
