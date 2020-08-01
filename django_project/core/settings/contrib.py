@@ -79,3 +79,7 @@ RIVER_DATABASE = {
     'HOST': os.environ.get('RIVER_DATABASE_HOST'),
     'PORT': 5432,
 }
+
+# Configure Django App for Heroku.
+import django_heroku
+django_heroku.settings(locals())

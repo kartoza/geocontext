@@ -22,3 +22,4 @@ pytz==2020.*
 raven==6.10.*
 requests==2.23.*
 uwsgi==2.0.*
+django-heroku==0.3.1
