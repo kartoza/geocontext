@@ -2,7 +2,7 @@ aiohttp[speedups]==3.6.*
 arcgis2geojson==2.0.*
 coreapi==2.3.*
 Django==3.0.*
-django-allauth==0.41.*
+django-allauth==0.42.*
 django-braces==1.14.*
 django-cors-headers==3.2.*
 django-easy-audit==1.2.*
