@@ -9,17 +9,6 @@ Map Playground
     {% leaflet_js %}
     {% leaflet_css %}
     <div class='container'>
-        <div class='row'>
-            <div class='col-12'>
-                <div id='overview' class='row'>
-                    <div class='col-sm-12'>
-                        <div class='h2'>
-                            Map Playground
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         {% leaflet_map "main" callback="main_map_init" %}
     </div>
     <script type="text/javascript">
