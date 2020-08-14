@@ -57,6 +57,15 @@ DJANGO_EASY_AUDIT_UNREGISTERED_CLASSES_EXTRA = (
     'geocontext.Cache',
 )
 
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (-25, 25),
+    'DEFAULT_ZOOM': 3,
+    'MIN_ZOOM': 3,
+    'MAX_ZOOM': 18,
+    'DEFAULT_PRECISION': 6,
+    'MINIMAP': True,
+}
+
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
         'SCOPE': ['user:email', 'public_repo', 'read:org']

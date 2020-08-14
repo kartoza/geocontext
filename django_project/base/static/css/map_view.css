@@ -1,0 +1,12 @@
+.leaflet-container {
+    width:  100%;
+    height: 500px;
+}
+
+#specialbigmap {
+    height: 800px;
+}
+
+.django-leaflet-raw-textarea {
+    width: 100%;
+}
