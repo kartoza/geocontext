@@ -66,7 +66,6 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    absolute_path('core', 'base_static'),
     absolute_path('base', 'static'),
 )
 
@@ -113,6 +112,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'geocontext.views.context_processors.add_variable_to_context',
 
                 # `allauth` needs this from django
                 'django.template.context_processors.request',

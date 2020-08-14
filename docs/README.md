@@ -36,14 +36,15 @@ find the link in the main page)
 ### V2
 New query endpoint accepting GET keyword parameters: `/api/v2/query?`
 
-| Keyword       | Description                        | Details                   |
-| ------------- |:----------------------------------:| -------------------------:|
-| `registry`    | `service`, `group` or `collection` | *REQUIRED*                |
-| `key`         | Unique key of the registry         | *REQUIRED*                |
-| `x`           | Longitude in DD, DMS or DD         | *REQUIRED*                |
-| `y`           | Latitude in DD, DMS or DD          | *REQUIRED*                |
-| `srid`        | Coordinate reference               | *OPTIONAL* (Default 4326) |
-| `tolerance`   | Query tolerance in m               | *OPTIONAL* (Default 10m)  |
+| Keyword       | Description                        | Details                     |
+| ------------- |:----------------------------------:| ---------------------------:|
+| `registry`    | `service`, `group` or `collection` | *REQUIRED*                  |
+| `key`         | Unique key of the registry         | *REQUIRED*                  |
+| `x`           | Longitude in DD, DMS or DD         | *REQUIRED*                  |
+| `y`           | Latitude in DD, DMS or DD          | *REQUIRED*                  |
+| `srid`        | Coordinate reference               | *OPTIONAL* (Default 4326)   |
+| `tolerance`   | Query tolerance in m               | *OPTIONAL* (Default 10m)    |
+| `outformat`   | Output format (geojson / json)     | *OPTIONAL* (Default geojson)|
 
 ## Quick Installation Guide
 
