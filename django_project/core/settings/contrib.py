@@ -64,6 +64,13 @@ LEAFLET_CONFIG = {
     'MAX_ZOOM': 18,
     'DEFAULT_PRECISION': 6,
     'MINIMAP': True,
+    'PLUGINS': {
+        'MousePosition': {
+            'css': 'css/leafletMousePosition.css',
+            'js': 'js/leafletMousePosition.js',
+            'auto-include': True,
+        }
+    }
 }
 
 SOCIALACCOUNT_PROVIDERS = {

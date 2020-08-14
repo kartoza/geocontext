@@ -1,5 +1,5 @@
 {% extends 'main_base.html' %}
-
+{% load static %}
 {% block title %}
     Home
 {% endblock %}
@@ -55,11 +55,11 @@
         </div>
     </div>
     <div style="height: 10vh;"></div>
-    <img src="../static/img/landing_map.png" class="landing_map"/>
+    <img src="{% static "img/landing_map.png" %}" class="landing_map"/>
     <img class="landing_waypoint"
          data-aos="zoom-out-down"
          data-aos-anchor="#trigger-waypoint"
-         src="../static/img/favicon.png"
+         src="{% static "img/favicon.png" %}"
          data-aos-anchor-placement="top-top"
          data-aos-mirror="true"
          data-aos-once="false"
@@ -67,14 +67,14 @@
     <img class="landing_terminal"
          data-aos="fade-left"
          data-aos-anchor="#trigger-terminal"
-         src="../static/img/landing_terminal.png"
+         src="{% static "img/landing_terminal.png" %}"
          data-aos-anchor-placement="top-top"
     />
     <hr class="my-4">
     <img class="landing_diagram"
          data-aos="fade-right"
          data-aos-anchor="#trigger-diagram"
-         src="../static/img/landing_diagram.png"
+         src="{% static "img/landing_diagram.png" %}"
          data-aos-anchor-placement="top-top"
     />
 {% endblock %}
