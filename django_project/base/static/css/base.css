@@ -64,6 +64,16 @@ h6 {
   box-shadow: 0 0 0 0.2rem rgba(240, 95, 64, 0.5) !important;
 }
 
+.dropdown-menu {
+  position: relative;
+  z-index: 1000;
+}
+
+.dropdown-content {
+  position: relative;
+  z-index: 1000;
+}
+
 #mainNav {
   border-bottom: 1px solid rgba(33, 37, 41, 0.1);
   background-color: #aad993;

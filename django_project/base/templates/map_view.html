@@ -6,11 +6,32 @@ Map Playground
 {% endblock %}
 
 {% block body_content %}
-    <div class='container'>
+    <!-- Load context variables-->
+    <script>
+        var services = {{ services|safe }};
+        var groups = {{ groups|safe }};
+        var collections = {{ collections|safe }};
+    </script>
+    <div id="map-view" class='container'>
         {% load leaflet_tags %}
         {% leaflet_js plugins="ALL" %}
         {% leaflet_css plugins="ALL" %}
-        {% leaflet_map "main" callback="main_map_init" %}
+        {% leaflet_map "main" %}
     </div>
+    <div id="sidebar" class="leaflet-sidebar collapsed">
+        <div class="leaflet-sidebar-tabs">
+            <ul role="tablist">
+                <li><a href="#services" role="tab"><i class="fa fa-bars active"></i></a></li>
+            </ul>
+            <ul role="tablist">
+                <li><a href="#groups" role="tab"><i class="fa fa-bars active"></i></a></li>
+            </ul>
+            <ul role="tablist">
+                <li><a href="#collections" role="tab"><i class="fa fa-bars active"></i></a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- Load After leaflet css-->
+    <link rel="stylesheet" href="{% static "css/map_view.css" %}">
     <script type="text/javascript", src="{% static "js/map_view.js" %}"></script>
 {% endblock %}

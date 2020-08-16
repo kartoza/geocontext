@@ -1,12 +1,22 @@
+.map-container {
+    top:4rem;
+    max-height:80vh;
+    min-width:100%;
+    z-index: 1;
+}
 .leaflet-container {
     width:  100%;
-    height: 500px;
+    height: 80vh;
+    z-index: 1;
 }
-
-#specialbigmap {
-    height: 800px;
-}
-
 .django-leaflet-raw-textarea {
     width: 100%;
+}
+.leaflet-control-layers { 
+    height: 10;
+    min-height: 10;
+    max-height: 600px;
+}
+.service-select {
+    max-width: 10px;
 }
