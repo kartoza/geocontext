@@ -18,20 +18,6 @@ ALLOWED_HOSTS = [
     'geocontext.kartoza.com'
 ]
 
-INSTALLED_APPS += (
-    'pipeline',
-)
-
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
-
-STATICFILES_FINDERS += (
-    'pipeline.finders.PipelineFinder',
-)
-
-PIPELINE = {
-    'PIPELINE_ENABLED': True,
-}
-
 # Comment if you are not running behind proxy
 USE_X_FORWARDED_HOST = True
 

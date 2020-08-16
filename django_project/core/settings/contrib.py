@@ -58,16 +58,74 @@ DJANGO_EASY_AUDIT_UNREGISTERED_CLASSES_EXTRA = (
 )
 
 LEAFLET_CONFIG = {
-    'DEFAULT_CENTER': (-25, 25),
-    'DEFAULT_ZOOM': 3,
+    'DEFAULT_CENTER': (0, 10),
+    'DEFAULT_ZOOM': 4,
     'MIN_ZOOM': 3,
     'MAX_ZOOM': 18,
     'DEFAULT_PRECISION': 6,
     'MINIMAP': True,
+    'TILES': [
+        (
+            'Basemap',
+            'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=Bik82wXesk2w368QAo9R',
+            {
+                'attribution': '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
+                'crossOrigin': 'true'
+            }
+        ),
+        (
+            'Open street map',
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            {
+                'attribution': '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
+                'crossOrigin': 'true'
+            }
+        ),
+        (
+            'Google streets',
+            'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+            {
+                'maxZoom': 18,
+                'subdomains': ['mt0', 'mt1', 'mt2', 'mt3'],
+                'attribution': 'Google &copy; Contributors',
+                'crossOrigin': 'true'
+            }
+        ),
+        (
+            'Google hybrid',
+            'http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',
+            {
+                'maxZoom': 18,
+                'subdomains': ['mt0', 'mt1', 'mt2', 'mt3'],
+                'attribution': 'Google &copy; Contributors',
+                'crossOrigin': 'true'
+            }
+        ),
+        (
+            'Google satellite',
+            'http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+            {
+                'maxZoom': 18,
+                'subdomains': ['mt0', 'mt1', 'mt2', 'mt3'],
+                'attribution': 'Google &copy; Contributors',
+                'crossOrigin': 'true'
+            }
+        ),
+        (
+            'Google terrain',
+            'http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
+            {
+                'maxZoom': 18,
+                'subdomains': ['mt0', 'mt1', 'mt2', 'mt3'],
+                'attribution': 'Google, &copy; Contributors',
+                'crossOrigin': 'true'
+            }
+        )
+    ],
     'PLUGINS': {
-        'MousePosition': {
-            'css': 'css/leafletMousePosition.css',
-            'js': 'js/leafletMousePosition.js',
+        'leaflet-sidebar-v2': {
+            'css': 'css/leaflet-sidebar-v2.css',
+            'js': 'js/leaflet-sidebar-v2.js',
             'auto-include': True,
         }
     }
