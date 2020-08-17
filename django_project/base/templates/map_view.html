@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Map Playground
+Map Viewer
 {% endblock %}
 
 {% block body_content %}
@@ -17,19 +17,6 @@ Map Playground
         {% leaflet_js plugins="ALL" %}
         {% leaflet_css plugins="ALL" %}
         {% leaflet_map "main" %}
-    </div>
-    <div id="sidebar" class="leaflet-sidebar collapsed">
-        <div class="leaflet-sidebar-tabs">
-            <ul role="tablist">
-                <li><a href="#services" role="tab"><i class="fa fa-bars active"></i></a></li>
-            </ul>
-            <ul role="tablist">
-                <li><a href="#groups" role="tab"><i class="fa fa-bars active"></i></a></li>
-            </ul>
-            <ul role="tablist">
-                <li><a href="#collections" role="tab"><i class="fa fa-bars active"></i></a></li>
-            </ul>
-        </div>
     </div>
     <!-- Load After leaflet css-->
     <link rel="stylesheet" href="{% static "css/map_view.css" %}">

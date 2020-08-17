@@ -1,108 +1,142 @@
+// Globals
+var marker = false;
+var startFetchTime = 0;
+var currentTab = ''; // Contains str of current registry (service, group, collection)
+
+// Listen to map click
 window.addEventListener("map:init", function (e) {
     var detail = e.detail;
-    window.map = detail.map
+    window.map = detail.map;
     detail.map.on('click', function(e) {        
         let coord = e.latlng;
         let lat = coord.lat;
         let lon = coord.lng;
-        let service_lat = document.getElementById("service-lat-box")
-        service_lat.value = lat.toFixed(6)
-        let service_lon = document.getElementById("service-lon-box")
-        service_lon.value = lon.toFixed(6)
-        fetch(lat, lon)
+        if (currentTab.length != 0) {
+            let key = document.getElementById(currentTab + "-select").value;
+            fetch(currentTab, key, lat, lon);
+        }
     });
-document.addEventListener('click',function(e){
-    if(e.target && e.target.id== 'service-button'){
-        let lat = document.getElementById("service-lat-box").value
-        let lon = document.getElementById("service-lon-box").value
-        fetch(lat, lon)
+    // Dynamically create HTML for sidebar panels 
+    let registries = {'service': services, 'group': groups, 'collection': collections};
+    let html = {};
+    for (const registry in registries) {
+        let timer = '<div id="' + registry + '-timer"></div>';
+        let lat= '<label>Latitude: </label><input class=input-field type="number" step=0.0001 id="' + registry + '-lat-box" value="0.0000"/>';
+        let lng = '<label>Longitude: </label><input class=input-field type="number" step=0.0001 id="' + registry + '-lon-box" value="0.0000"/>';
+        let button = '<button class="fetch-button" type="button" id=' + registry + '-button>Fetch</button>';
+        let options = '<label> '+ registry.charAt(0).toUpperCase() + registry.slice(1) + 's: </label><select class="select-dropdown" name="' + registry + '" id="' + registry + '-select">';
+        registries[registry].forEach(function (value) {
+            options += '<option value='+ value.key + '>' + value.name + '</option>';
+        })
+        options += '</select></div>';
+        let table = '<div class="result-table" id="' + registry + '-table"></div>';
+        let url = '<div class="url-query" id="' + registry + '-url"></div>';
+        html[registry] = lat + lng + button + options + timer + table + url;
+    };
+    // create the sidebar instance and add it to the map
+    L.control.sidebar({ container: 'sidebar' })
+    .addTo(detail.map)
+    .addPanel({
+            id: 'service',
+            tab: '<i class="fa fa-square-o"></i>',
+            title: 'Services',
+            pane: html['service']
+        }).addPanel({
+            id: 'group',
+            tab: '<i class="fa fa-object-ungroup"></i>',
+            title: 'Groups',
+            pane: html['group']
+        }).addPanel({
+            id: 'collection',
+            tab: '<i class="fa fa-object-group"></i>',
+            title: 'Collections',
+            pane: html['collection']
+        })
+    .on('content', function(e) {
+        currentTab = e.id;
+    })
+    .open('service');
+    // Load styles
+    var styles = document.createElement('link');
+    styles.href = 'css/map_view.css';
+    document.getElementsByTagName('head')[0].appendChild(styles);
+},false);
+// Listen for sidebar Fetch button 
+document.addEventListener('click',function(e) {
+    if (currentTab.length != 0) {
+        if (e.target && e.target.id== currentTab + "-button") {
+            var lat = document.getElementById(currentTab + "-lat-box").value;
+            var lon = document.getElementById(currentTab + "-lon-box").value;
+            var key = document.getElementById(currentTab + "-select").value;
+            fetch(currentTab, key, lat, lon);
+        }
     }
 });
-var marker = false
-function fetch (lat, lon){
+// Functions
+function fetch (registry, key, lat, lon){
+    // We update all coord boxes on all tabs
+    updateCoordBoxes(lat, lon);
+    // We remove existing markers
     if (marker) {marker.remove()};
     marker = L.marker([lat, lon]).addTo(window.map);
-    let key = document.getElementById("service-select").value
-    let registry = "service"
     let baseUrl = window.location.origin;
-    let url = encodeURI(baseUrl + '/api/v2/query?registry='+registry+'&key='+key+'&x='+lon+'&y='+lat+'&outformat=json')
+    let url = encodeURI(baseUrl + '/api/v2/query?registry='+registry+'&key='+key+'&x='+lon+'&y='+lat+'&outformat=json');
+    let urlEl = document.getElementById(currentTab + "-url");
+    urlEl.innerHTML = 'Geocontext API query: ' + url;
+    document.getElementById(currentTab + "-table").innerHTML = '<div class="loader"></div>'
     startFetchTime = (new Date()).getTime();
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.onload = requestListener;
     request.open("GET", url)
     request.send();
 }
+function updateCoordBoxes(lat, lon) {
+    document.getElementById("service-lat-box").value = parseFloat(lat).toFixed(6);
+    document.getElementById("service-lon-box").value = parseFloat(lon).toFixed(6);
+    document.getElementById("group-lat-box").value = parseFloat(lat).toFixed(6);
+    document.getElementById("group-lon-box").value = parseFloat(lon).toFixed(6);
+    document.getElementById("collection-lat-box").value = parseFloat(lat).toFixed(6);
+    document.getElementById("collection-lon-box").value = parseFloat(lon).toFixed(6);
+}
 function requestListener () {
     let endFetchTime = (new Date()).getTime();
-    let endTime = endFetchTime - startFetchTime
-    let timeEl = document.getElementById("service-timer");
+    let endTime = endFetchTime - startFetchTime;
+    let timeEl = document.getElementById(currentTab + "-timer");
     timeEl.innerHTML = 'Request time:  ' + endTime + 'ms';
-    let resultObj = JSON.parse(this.responseText)
-    txt = "<table border='1'>"
-    for (x in resultObj) {
-        txt += "<tr><td>" + x + "</td><td>" + resultObj[x] + "</td></tr>";
+    let data = JSON.parse(this.responseText);
+    buildTable(data);
+ }
+ function buildTable (data) {
+    let info_table = "<table border='1'><caption>" + currentTab.charAt(0).toUpperCase() + currentTab.slice(1) + " details</caption>";
+    let data_table = ''
+    for (row in data) {
+        if (row != 'groups' && row != 'services') {
+            info_table += "<tr><td>" + row + "</td><td>" + roundAny(data[row]) + "</td></tr>";
+        }
     }
-    txt += "</table>"
-    document.getElementById("service-table").innerHTML = txt;
+    info_table += "</table>";
+    if ('groups' in data) {
+        data['groups'].sort().forEach(function (group) {
+            new_table = "<table border='1'><caption>" + group['name'] + " group service values</caption>";
+            group['services'].sort().forEach(function (service) {
+                new_table += "<tr><td>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
+            });
+            new_table += "</table></div>";
+            data_table += new_table;
+        });
+    } else if ('services' in data) {
+        data_table += "<div><table border='1'><caption>Service values</caption>";
+        data['services'].sort().forEach(function (service) {
+            data_table += "<tr><td>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
+        });
+        data_table += "</table>";
     }
-// create the sidebar instance and add it to the map
-var sidebar = L.control.sidebar({ container: 'sidebar' })
-.addTo(detail.map);
-
-// Services tab
-let service_timer = '<div id="service-timer"></div>'
-let service_lat= '<div id="service-lat"><label>Latitude: </label><input type="number" step=0.0001 id="service-lat-box" value="0.0000" /></div>'
-let service_lng = '<div id="service-lng"><label>Longitude: </label><input type="number" step=0.0001 id="service-lon-box" value="0.0000" /></div>'
-let service_button = '<div id="service-button-div"><button type="button" id=service-button>Fetch</button></div>'
-let service_options = '<div id="service-select-container"><label>Services: </label><select name="services" id="service-select">'
-services.forEach(function (service) {
-    service_options += '<option value='+ service.key + '>' + service.name + '</option>'
-})
-service_options += '</select></div>'
-let service_table = '<div id="service-table"></div>'
-let service_html = service_lat + service_lng + service_button + service_options + service_timer + service_table
-
-// Groups tab
-let group_timer = '<div id="service-timer"></div>'
-let group_lat= '<div id="group-lat"><label>Latitude: </label><input type="number" step=0.0001 id="group-lat-box" value="0.0000" /></div>'
-let group_lng = '<div id="group-lng"><label>Longitude: </label><input type="number" step=0.0001 id="group-lon-box" value="0.0000" /></div>'
-let group_options = '<div id="group-select-container"><label>Groups: </label><select name="groups" id="groups-select">'
-groups.forEach(function (group) {
-    group_options += '<option value='+ group.key + '>' + group.name + '</option>'
-})
-group_options += '</select></div>'
-let group_result = '<div id="service-result"></div>'
-let group_html = group_lat + group_lng + group_options + group_timer + group_result
-
-// Collection tab
-let collection_timer = '<div id="service-timer"></div>'
-let collection_lat= '<div id="collection-lat"><label>Latitude: </label><input type="number" step=0.0001 id="collection-lat-box" value="0.0000" /></div>'
-let collection_lng = '<div id="collection-lng"><label>Longitude: </label><input type="number" step=0.0001 id="collection-lon-box" value="0.0000" /></div>'
-let collection_options = '<div id="collection-select-container"><label>Collections: </label><select name="collections" id="collection-select">'
-collections.forEach(function(collection) {
-    collection_options += '<option value='+ collection.key + '>' + collection.name + '</option>'
-})
-collection_options  += '</select></div>'
-let collection_result = '<div id="service-result"></div>'
-let collection_html = collection_lat + collection_lng + collection_options + collection_timer + collection_result
-
-// add panels dynamically to the sidebar
-sidebar.addPanel({
-        id: 'services',
-        tab: '<i class="fa fa-square-o"></i>',
-        title: 'Services',
-        pane: service_html
-    }).addPanel({
-        id: 'groups',
-        tab: '<i class="fa fa-object-ungroup"></i>',
-        title: 'Groups',
-        pane: group_html
-    }).addPanel({
-        id: 'collections',
-        tab: '<i class="fa fa-object-group"></i>',
-        title: 'Collections',
-        pane: collection_html
-    })
-.open('services');
-},
-false);
+    document.getElementById(currentTab + "-table").innerHTML = info_table + data_table;
+};
+function roundAny (value) {
+    // Round value if number - else ignore
+    if (!Number.isNaN(parseFloat(value))) {
+        value = parseFloat(value).toFixed(2)
+    }
+    return value
+}
