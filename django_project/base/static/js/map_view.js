@@ -1,5 +1,6 @@
 window.addEventListener("map:init", function (e) {
     var detail = e.detail;
+    window.map = detail.map
     detail.map.on('click', function(e) {        
         let coord = e.latlng;
         let lat = coord.lat;
@@ -17,7 +18,10 @@ document.addEventListener('click',function(e){
         fetch(lat, lon)
     }
 });
+var marker = false
 function fetch (lat, lon){
+    if (marker) {marker.remove()};
+    marker = L.marker([lat, lon]).addTo(window.map);
     let key = document.getElementById("service-select").value
     let registry = "service"
     let baseUrl = window.location.origin;
@@ -50,7 +54,7 @@ let service_timer = '<div id="service-timer"></div>'
 let service_lat= '<div id="service-lat"><label>Latitude: </label><input type="number" step=0.0001 id="service-lat-box" value="0.0000" /></div>'
 let service_lng = '<div id="service-lng"><label>Longitude: </label><input type="number" step=0.0001 id="service-lon-box" value="0.0000" /></div>'
 let service_button = '<div id="service-button-div"><button type="button" id=service-button>Fetch</button></div>'
-let service_options = '<div id="service-select-container"><label>Collections: </label><select name="services" id="service-select">'
+let service_options = '<div id="service-select-container"><label>Services: </label><select name="services" id="service-select">'
 services.forEach(function (service) {
     service_options += '<option value='+ service.key + '>' + service.name + '</option>'
 })
