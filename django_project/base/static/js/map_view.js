@@ -82,7 +82,7 @@ function fetch (registry, key, lat, lon){
     let baseUrl = window.location.origin;
     let url = encodeURI(baseUrl + '/api/v2/query?registry='+registry+'&key='+key+'&x='+lon+'&y='+lat+'&outformat=json');
     let urlEl = document.getElementById(currentTab + "-url");
-    urlEl.innerHTML = 'Geocontext API query: ' + url;
+    urlEl.innerHTML = '<h5>Geocontext API query</H5>' + url;
     document.getElementById(currentTab + "-table").innerHTML = '<div class="loader"></div>'
     startFetchTime = (new Date()).getTime();
     let request = new XMLHttpRequest();
@@ -102,7 +102,7 @@ function requestListener () {
     let endFetchTime = (new Date()).getTime();
     let endTime = endFetchTime - startFetchTime;
     let timeEl = document.getElementById(currentTab + "-timer");
-    timeEl.innerHTML = 'Request time:  ' + endTime + 'ms';
+    timeEl.innerHTML = '<h5>Results</H5> Request time:  ' + endTime + 'ms';
     let data = JSON.parse(this.responseText);
     buildTable(data);
  }

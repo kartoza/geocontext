@@ -47,7 +47,6 @@
     overflow: auto;
 }
 .fetch-button {
-    top: 10px;
     width: 100%;
 }
 .input-field {
@@ -56,4 +55,7 @@
 .url-query {
     width: 100%;
     overflow: auto;
+}
+.result-table {
+    text-align: center
 }
