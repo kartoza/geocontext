@@ -24,3 +24,4 @@ EXPOSE 8080
 WORKDIR /usr/src/geocontext
 COPY uwsgi.conf /etc/geocontext/uwsgi.conf
 CMD ["uwsgi", "--ini", "/etc/geocontext/uwsgi.conf"]
+#CMD ["gunicorn", "-w 4", "-k uvicorn.workers.UvicornWorker", "core.asgi:application"]
