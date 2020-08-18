@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group as AuthGroup
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -49,6 +50,12 @@ class Group(models.Model):
         default=GROUP_TYPE_TEXT,
         choices=GROUP_TYPE_CHOICES,
         max_length=10
+    )
+
+    permission_groups = models.ManyToManyField(
+        AuthGroup,
+        help_text=_('List of auth groups with access to this group.'),
+        blank=True,
     )
 
     class Meta:

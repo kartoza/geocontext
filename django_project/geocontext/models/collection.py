@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group as AuthGroup
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -30,6 +31,11 @@ class Collection(models.Model):
         Group,
         help_text=_('List of group in this collection.'),
         through='CollectionGroups',
+        blank=True,
+    )
+    permission_groups = models.ManyToManyField(
+        AuthGroup,
+        help_text=_('List of auth groups with access to this collection.'),
         blank=True,
     )
 

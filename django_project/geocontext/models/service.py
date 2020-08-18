@@ -1,5 +1,6 @@
 import logging
 
+from django.contrib.auth.models import Group as AuthGroup
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -195,6 +196,12 @@ class Service(models.Model):
         help_text=_('Status of this service (determined by test coordinate & value'),
         blank=True,
         null=True,
+    )
+
+    permission_groups = models.ManyToManyField(
+        AuthGroup,
+        help_text=_('List of auth groups with access to this service.'),
+        blank=True,
     )
 
     class Meta:

@@ -3,6 +3,7 @@ import json
 import requests
 
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import Group as AuthGroup
 
 from geocontext.models.service import Service
 from geocontext.models.group import Group
@@ -60,6 +61,7 @@ def import_data(file_uri):
         service, created = Service.objects.get_or_create(key=service_data['key'])
         # Change to load from dictionary
         for k, v in service_data.items():
+            
             setattr(service, k, v)
         service.save()
 
