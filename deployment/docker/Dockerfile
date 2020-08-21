@@ -16,12 +16,13 @@ RUN DEBIAN_FRONTEND=noninteractive \
     python3-setuptools \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /etc/geocontext/requirements.txt
+COPY deployment/docker/requirements.txt /etc/geocontext/requirements.txt
 RUN pip3 install --upgrade pip setuptools \
     && pip3 install --no-cache-dir -r /etc/geocontext/requirements.txt
 
 EXPOSE 8080
+COPY django_project /usr/src/geocontext
 WORKDIR /usr/src/geocontext
-COPY uwsgi.conf /etc/geocontext/uwsgi.conf
+COPY deployment/docker/uwsgi.conf /etc/geocontext/uwsgi.conf
 CMD ["uwsgi", "--ini", "/etc/geocontext/uwsgi.conf"]
 #CMD ["gunicorn", "-w 4", "-k uvicorn.workers.UvicornWorker", "core.asgi:application"]

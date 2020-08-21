@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --out k8s
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: web
+  name: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: web
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --out k8s
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: web
+    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: ""
+        name: geocontext-web
+        ports:
+        - containerPort: 8080
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+          name: nginx-conf-volume
+        - mountPath: /home/web/static
+          name: static-volume
+        - mountPath: /home/web/media
+          name: media-volume
+      hostname: nginx
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: nginx-conf-volume
+        configMap:
+          name: geocontext-config
+      - name: static-volume
+        persistentVolumeClaim:
+          claimName: static-volume
+      - name: media-volume
+        persistentVolumeClaim:
+          claimName: media-volume
+status: {}
