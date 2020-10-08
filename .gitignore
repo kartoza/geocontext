@@ -87,6 +87,7 @@ venv
 
 # .env file used for secrets during dev
 deployment/.env
+docker-compose.override.yml
 
 # Node
 django_project/static
