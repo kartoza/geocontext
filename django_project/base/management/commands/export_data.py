@@ -2,7 +2,6 @@ import os
 import logging
 
 from django.core.management.base import BaseCommand
-from django.db import transaction
 
 from .utilities import export_data
 
@@ -15,7 +14,6 @@ class Command(BaseCommand):
 
     help = 'Export GeoContext data'
 
-    @transaction.atomic
     def handle(self, *args, **options):
         logger.info('Exporting GeoContext Data...')
         geocontext_file = os.path.join(

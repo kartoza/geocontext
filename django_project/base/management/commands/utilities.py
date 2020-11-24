@@ -29,7 +29,6 @@ def export_data(file_path):
     collections = Collection.objects.all()
     collection_serializer = CollectionSerializer(collections, many=True)
 
-    # Aggregate Data
     data = {
         'service': service_serializer.data,
         'group': group_serializer.data,
@@ -46,7 +45,6 @@ def import_data(file_uri):
     :param file_uri: Path to json resource.
     :type file_uri: str
     """
-    # Read json file
     if os.path.exists(file_uri):
         with open(file_uri) as f:
             data = json.load(f)
@@ -54,10 +52,8 @@ def import_data(file_uri):
         r = requests.get(file_uri)
         data = r.json()
 
-    # Load Services
     for service_data in data['service']:
         service, created = Service.objects.get_or_create(key=service_data['key'])
-        # Change to load from dictionary
         for k, v in service_data.items():
             setattr(service, k, v)
         service.save()
@@ -69,11 +65,9 @@ def import_data(file_uri):
             print(f'Service {service.name} is not clean because {e} ')
             service.delete()
 
-    # Load Groups
     for group_data in data['group']:
         group, created = Group.objects. \
             get_or_create(key=group_data['key'])
-        # Change to load from dictionary
         for k, v in group_data.items():
             if k == 'service_keys':
                 service_keys = v
@@ -96,10 +90,8 @@ def import_data(file_uri):
             print(f'Group {group.name} is not clean because {e} ')
             group.delete()
 
-    # Load Collections
     for collection_data in data['collection']:
         collection, created = Collection.objects.get_or_create(key=collection_data['key'])
-        # Change to load from dictionary
         for k, v in collection_data.items():
             if k == 'group_keys':
                 group_keys = v
@@ -137,7 +129,6 @@ def import_v1_data(file_uri):
     :param file_uri: Path to json resource.
     :type file_uri: str
     """
-    # Read json file
     if os.path.exists(file_uri):
         with open(file_uri) as f:
             data = json.load(f)
@@ -145,15 +136,13 @@ def import_v1_data(file_uri):
         r = requests.get(file_uri)
         data = r.json()
 
-    # Load Services
     for service_data in data['context_service_registry']:
         service, created = Service.objects.get_or_create(key=service_data['key'])
-        # Change to load from dictionary
         for k, v in service_data.items():
+            if k in ['result_regex', 'layer_typename'] and ':' in v:
+                v = v.split(':')[-1]
             if k == 'result_regex':
                 k = 'layer_name'
-            if k == ('result_regex' or 'layer_typename') and ':' in k:
-                v = v.split(':')[-1]
             setattr(service, k, v)
         service.save()
 
@@ -164,10 +153,8 @@ def import_v1_data(file_uri):
             print(f'Service {service.name} is not clean because {e} ')
             service.delete()
 
-    # Load Groups
     for group_data in data['context_group']:
         group, created = Group.objects.get_or_create(key=group_data['key'])
-        # Change to load from dictionary
         for k, v in group_data.items():
             k = 'service_keys' if k == 'context_service_registry_keys' else k
             if k == 'service_keys':
@@ -191,10 +178,8 @@ def import_v1_data(file_uri):
             print(f'Group {group.name} is not clean because {e} ')
             group.delete()
 
-    # Load Collections
     for collection_data in data['context_collection']:
         collection, created = Collection.objects.get_or_create(key=collection_data['key'])
-        # Change to load from dictionary
         for k, v in collection_data.items():
             k = 'group_keys' if k == 'context_group_keys' else k
             if k == 'group_keys':

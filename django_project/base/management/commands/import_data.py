@@ -3,7 +3,6 @@ from datetime import datetime
 import logging
 
 from django.core.management.base import BaseCommand
-from django.db import transaction
 
 from .utilities import import_data, import_v1_data, export_data, delete_data
 
@@ -23,7 +22,6 @@ class Command(BaseCommand):
         parser.add_argument('--file_uri', dest='file_uri', default=default_file_uri)
         parser.add_argument('--v1', dest='v1', action='store_true')
 
-    @transaction.atomic
     def handle(self, *args, **options):
         logger.info(f"Importing GeoContext Data from {options['file_uri']} ...")       
         backup_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'backups')

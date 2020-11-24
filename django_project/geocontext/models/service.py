@@ -88,7 +88,7 @@ class Service(models.Model):
     layer_name = models.CharField(
         help_text=_(
             'Required name of the actual layer/feature to retrieve (Property name).'
-            'Geocontext v1 used "Result regex"'
+            ' Geocontext v1 used "Result regex"'
         ),
         blank=False,
         null=False,
@@ -96,14 +96,17 @@ class Service(models.Model):
     )
 
     layer_typename = models.CharField(
-        help_text=_('Optional layer type name to get from the service (WMS/WFS).'),
+        help_text=_('Layer type name to get from the service (WMS/WFS).'),
         blank=True,
         null=True,
         max_length=200,
     )
 
     cache_duration = models.IntegerField(
-        help_text=_('Service refresh time in seconds - determines Cache persistence'),
+        help_text=_(
+            'Service refresh time in seconds - determines Cache persistence.'
+            ' Default is one week.'
+        ),
         blank=True,
         null=True,
         default=604800  # 7 days
@@ -119,7 +122,7 @@ class Service(models.Model):
     tolerance = models.FloatField(
         help_text=_(
             'Tolerance around query point in meters. Used for bounding box queries.'
-            'Also determines cache hit range for all values'),
+            ' Also determines cache hit range for all values'),
         blank=True,
         null=True,
         default=10
