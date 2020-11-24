@@ -15,7 +15,6 @@ class Service(models.Model):
     WMS = 'WMS'
     REST = 'REST'
     ARCREST = 'ArcREST'
-    WIKIPEDIA = 'Wikipedia'
     PLACENAME = 'PlaceName'
     QUERY_TYPES = (
         (WFS, 'WFS'),
@@ -23,7 +22,6 @@ class Service(models.Model):
         (WMS, 'WMS'),
         (REST, 'REST'),
         (ARCREST, 'ArcREST'),
-        (WIKIPEDIA, 'Wikipedia'),
         (PLACENAME, 'PlaceName'),
     )
 
@@ -77,13 +75,6 @@ class Service(models.Model):
         blank=True,
         null=True,
         max_length=200,
-    )
-
-    query_url = models.CharField(
-        help_text=_('Query URL for accessing Service.'),
-        blank=True,
-        null=True,
-        max_length=1000,
     )
 
     query_type = models.CharField(

@@ -36,17 +36,14 @@ class CacheListAPI(views.APIView):
         try:
             point = parse_coord(x, y, srid)
             worker = Worker('', '', point, tolerance, '')
-            services = Service.objects.all()
-            caches = worker.retrieve_caches(services)
+            caches = worker.retrieve_caches(Service.objects.all())
             data = worker.nest_caches(caches)
             with_geometry = self.request.query_params.get('with-geometry', 'True')
             if strtobool(with_geometry):
                 data = worker.serialize_geojson(data)
             return Response(data)
         except Exception:
-            return Response("Server error", status.HTTP_400_BAD_REQUEST)
-        if None in caches:
-            return Response("No cache found", status.HTTP_400_BAD_REQUEST)
+            return Response("Server error", status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class GroupAPIView(views.APIView):
@@ -61,7 +58,7 @@ class GroupAPIView(views.APIView):
             data['service_registry_values'] = data.pop('services')
             return Response(data)
         except Exception as e:
-            return Response(f"Server error {e}", status.HTTP_400_BAD_REQUEST)
+            return Response(f"Server error {e}", status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class CollectionAPIView(views.APIView):
@@ -80,7 +77,7 @@ class CollectionAPIView(views.APIView):
             return Response(data)
         except Exception as e:
             return Response(
-                f"Server error {e}", status.HTTP_400_BAD_REQUEST)
+                f"Server error {e}", status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class RiverNameAPIView(views.APIView):

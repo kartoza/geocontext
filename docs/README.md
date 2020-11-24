@@ -60,14 +60,21 @@ git clone git://github.com/kartoza/geocontext.git && cd /docs/
 ```bash
 make permissions
 ```
-3. Setup and run the web service: available on `http://localhost/`
+3. Copy the `sample.env` file as `.env` and change the values inside if necessary.
+
+4. Copy `docker-compose.override.sample.yml` as `docker-compose.override.yml` and  change 
+the values inside if necessary.
+
+5. Setup and run the web service: available on `http://localhost/`
 ```bash
 make setup-web
 ```
-4. If needed, create a superuser for Django admin access on `http://localhost/admin/` - here you can manually modify data
+6. If needed, create a superuser for Django admin access on `http://localhost/admin/` - 
+here you can manually modify data
 ```bash
 make superuser
 ```
+
 
 **Loading Data**
 GeoContext use a json file to populate the context service and its 
@@ -87,7 +94,7 @@ data to a new json file.
 
 You can also export your context service to json file by running:
 ```bash
-make export-data
+make data-export
 ```
 
 ## Developers quick start with Docker and VSCode
@@ -168,3 +175,5 @@ Thank you to the individual contributors who have helped to build GeoContext:
 dimas@kartoza.com
 * Andre Theron ([@andretheronsa](https://github.com/andretheronsa)) : 
 andre.theron@kartoza.com
+* Rizky Maulana Nugraha ([@lucernae](https://github.com/lucernae)) : 
+lana.pcfre@gmail.com)

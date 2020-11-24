@@ -39,8 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cron jobs to clear expired cache values and check service status
 
 ### Changed
-- `result_regex` service model attribute split into `layer_namespace` & `layer_name`. `layer_name` is the base feature name and used for service with a more simple request format than geoserver (such as placename)
-- `layer_typename` service model attribute split into `layer_workspace` & `layer_typename`
+- `result_regex` service model attribute renamed to `layer_name`. `layer_name` is the layer containing the value and is used for service with a more simple request format than geoserver (such as placename)
 - `service_registry_values` in response now `service_values`
 - External request and cache query and update logic split from model instance. The cache is now queried first, services not found in cache collected and sent for async fetching, new values is then added to cache. Async http requests provide a major speed boost but the ORM is a blocker to the event loop.
 - Minimal round trips done for external requests - we no longer do a WFS `getCapabilities` request - just query straight. We no longer ask for the geometry type before attempting a WFS intersect filter - we try the filter and if no response then we fall back to BBOX query. This means polygon intersects only require single requests.
@@ -67,9 +66,9 @@ is graphable or not should therefore be up to the discretion of the user.
 ### Upgraded 
 - Debian stretch to Buster
 - Python 3.6 to 3.8
-- Django 1.8 to 3.0
+- Django 1.8 to 3.1
 - PostGis 2 to 3
-- Postgresql 9 to 12
+- Postgresql 9 to 13
 - requests to aioHTTP[speedups]
 
 ### Removed

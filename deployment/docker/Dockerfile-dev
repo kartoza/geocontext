@@ -1,7 +1,5 @@
-#--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
-# Note this base image is based on debian
 FROM geocontext_uwsgi
-MAINTAINER Dimas Ciputra<dimas@kartoza.com>
+LABEL maintainer="Andre Theron<andre.theron@kartoza.com>"
 
 # This section taken on 2 July 2015 from
 # https://docs.docker.com/examples/running_ssh_service/
