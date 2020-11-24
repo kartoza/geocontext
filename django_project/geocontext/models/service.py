@@ -96,28 +96,16 @@ class Service(models.Model):
 
     layer_name = models.CharField(
         help_text=_(
-            'Required name of the actual layer/feature to retrieve (Property name.'),
+            'Required name of the actual layer/feature to retrieve (Property name).'
+            'Geocontext v1 used "Result regex"'
+        ),
         blank=False,
         null=False,
         max_length=200,
     )
 
-    layer_namespace = models.CharField(
-        help_text=_('Optional namespace containing the typename to query (WMS/WFS).'),
-        blank=True,
-        null=True,
-        max_length=200,
-    )
-
     layer_typename = models.CharField(
         help_text=_('Optional layer type name to get from the service (WMS/WFS).'),
-        blank=True,
-        null=True,
-        max_length=200,
-    )
-
-    layer_workspace = models.CharField(
-        help_text=_('Optional workspace containing the typename to query (WMS/WFS).'),
         blank=True,
         null=True,
         max_length=200,

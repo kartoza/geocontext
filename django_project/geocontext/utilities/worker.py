@@ -144,6 +144,7 @@ class Worker():
         :return: json with nested services
         :rtype: dict
         """
+        serial = {}
         if self.registry == 'service':
             serial = CacheSerializer(caches[0]).data
         elif self.registry == 'group':
