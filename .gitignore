@@ -100,9 +100,9 @@ scrap.html
 .sudo_as_admin_successful
 
 # Pg cluster for docker
-deployment/pg/postgres_data/12.1
-deployment/pg/postgres_staging_data/12.1
-deployment/pg/postgres_dev_data/12.1
+deployment/pg/postgres_data/13.0
+deployment/pg/postgres_staging_data/13.0
+deployment/pg/postgres_dev_data/13.0
 # Template for apt-cacher
 # static and media dirs
 deployment/static
