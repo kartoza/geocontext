@@ -1,13 +1,9 @@
+{% include 'main_base.html' %}
 {% load static %}
 {% load i18n %}
 {% load account socialaccount %}
 
 {% block css_head %}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css" rel="stylesheet" type="text/css" media="screen, projection" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
     <!-- Chosen library -->
     <link rel="stylesheet" href="{% static 'chosen/chosen.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/form.css' %}">
@@ -24,16 +20,14 @@
     <script src="{% static 'chosen/chosen.jquery.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/form.js' %}"></script>
-
 {% endblock %}
 
-{% block container %}
+{% block body_content %}
     <div class="content">
         {% block content %}
 
             {% csrf_token %}
             <div class="container">
-
                 <div class="custom-form-container">
                     <h1>{% trans "Sign Up" %}</h1>
                     <form class="signup" id="signup_form" method="POST" action="{% url 'account_signup' %}">{% csrf_token %}
