@@ -20,7 +20,7 @@ from django.http import QueryDict
 from geocontext.models.cache import Cache
 from geocontext.models.service import Service
 from geocontext.utilities.geometry import get_bbox, parse_geometry, transform
-
+from geocontext.utilities.strings import strip_whitespace
 
 LOGGER = logging.getLogger(__name__)
 
@@ -47,6 +47,7 @@ class AsyncService():
     """
     Async service methods to collect external data.
     """
+
     def __init__(self, service: Service, point: Point, tolerance: float):
         """Load object
 
@@ -119,7 +120,15 @@ class AsyncService():
             'WIDTH': 101,
             'HEIGHT': 101
         }
-        if self.service_version in ['1.0.0', '1.1.0', '1.1.1']:
+        if self.service.key == 'river_name':
+            parameters.update({
+                'REQUEST': 'GetMap',
+                'srs': 'EPSG:3857',
+                'BBOX': '1831085.1652849577,-4139213.1300405697,3657706.640180942,-2526627.791405775',
+                'format': 'geojson',
+                'viewparams': 'latitude:{};longitude:{}'.format(self.point.x, self.point.y)
+            })
+        elif self.service_version in ['1.0.0', '1.1.0', '1.1.1']:
             parameters.update({
                 'REQUEST': 'feature_info',
                 'X': 50,
@@ -136,6 +145,7 @@ class AsyncService():
             return
 
         json_response = await self.request_data(parameters)
+
         await self.save_features(json_response['features'])
 
     async def fetch_wfs(self):
@@ -242,9 +252,9 @@ class AsyncService():
             # We don't want to raise error if one feature fails - just skip
             try:
                 if 'properties' in feature:
-                    result['val'] = feature['properties'][self.layer_name]
+                    result['val'] = strip_whitespace(feature['properties'][self.layer_name])
                 else:
-                    result['val'] = feature[self.layer_name]
+                    result['val'] = strip_whitespace(feature[self.layer_name])
             except Exception:
                 LOGGER.error(f'No value found for feature in: "{self.key}"')
                 continue
