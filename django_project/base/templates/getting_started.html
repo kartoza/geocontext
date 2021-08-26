@@ -92,16 +92,16 @@
                             browser
                             <br>
                             <a href=
-                                       'https://geocontext.kartoza.com/api/v1/geocontext/value/group/19.14/-32.32/rainfall_group/?format=api'>
-                                https://geocontext.kartoza.com/api/v1/geocontext/value/group/19.14/-32.32/rainfall_group/?format=api
+                                       'https://staging.geocontext.kartoza.com/api/v2/query?registry=group&key=rainfall_group&x=24.0380859375&y=-29.375038630898835&outformat=json'>
+                                https://staging.geocontext.kartoza.com/api/v2/query?registry=group&key=rainfall_group&x=24.0380859375&y=-29.375038630898835&outformat=json
                             </a>
                         </p>
                         <p>
-                            Or for convenience as <b>JSON</b>:
+                            Or for convenience as <b>GeoJSON</b>:
                             <br>
                             <a href=
-                                       'https://geocontext.kartoza.com/api/v1/geocontext/value/group/19.14/-32.32/rainfall_group/?format=json'>
-                                https://geocontext.kartoza.com/api/v1/geocontext/value/group/19.14/-32.32/rainfall_group/?format=api
+                                       'https://staging.geocontext.kartoza.com/api/v2/query?registry=group&key=rainfall_group&x=24.0380859375&y=-29.375038630898835&outformat=geojson'>
+                                https://staging.geocontext.kartoza.com/api/v2/query?registry=group&key=rainfall_group&x=24.0380859375&y=-29.375038630898835&outformat=geojson
                             </a>
                         </p>
 
@@ -126,10 +126,10 @@
                                 Context Service
                             </li>
                             <li>
-                                Context Service Group
+                                Context Group
                             </li>
                             <li>
-                                Context Service Collection
+                                Context Collection
                             </li>
                         </ul>
                         <div class="row">
@@ -195,8 +195,8 @@
         var my_data = '';
         $('#btn').click(function () {
             $('.text').text('loading . . .');
-            $.get('https://geocontext.kartoza.com/api/v1/geocontext/value/'+
-                'group/19.14/-32.32/rainfall_group/?format=json',
+            $.get('https://staging.geocontext.kartoza.com/api/v2/query?registry=group&key=rainfall_group&'+
+                'x=24.0380859375&y=-29.375038630898835&outformat=json',
                 function (data) {
                     console.log(data);
                     my_data = JSON.stringify(data, null, 2);
@@ -311,30 +311,31 @@
                         padding-bottom: 0">
                                 <code>
    var my_data = '';
-   var data_object = null;
-   var values = [];
-   var keys = [];
-   $('#btn').click(function () {
-       $('.text').text('loading . . .');
+        var data_object = null;
+        var values = [];
+        var keys = [];
+        $('#btn').click(function () {
+            $('.text').text('loading . . .');
 
-       $.get(
-           'https://geocontext.kartoza.com/api/v1/geocontext/value/' +
-           'group/19.14/-32.32/rainfall_group/?format=json',
-           function (data) {
-               console.log(data);
-               my_data = JSON.stringify(data, null, 2);
-               data_object = data;
-           })
-           .done(function () {
-               $('.text').text(my_data);
-               $.each(data_object.service_values, function (index) {
-                   values.push(this.value + 0);
-                   keys.push(this.key);
-               });
-               var data_heading = data_object.key;
-               drawGraph(values, keys, data_heading);
+            $.get(
+                'https://staging.geocontext.kartoza.com/api/v2/query?registry=group&key=rainfall_group&'+
+                 'x=24.0380859375&y=-29.375038630898835&outformat=json',
+                function (data) {
+                    console.log(data);
+                    my_data = JSON.stringify(data, null, 2);
+                    data_object = data;
+                })
+                .done(function () {
+                    $('.text').text(my_data);
+                    $.each(data_object.services, function (index) {
+                        values.push(this.value + 0);
+                        keys.push(this.key);
+                    });
+                    var data_heading = data_object.key;
+                    drawGraph(values, keys, data_heading);
 
-           })
+                })
+        })
                                 </code>
                             </pre>
                         </ol>
