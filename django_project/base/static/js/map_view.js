@@ -125,6 +125,7 @@ function requestListener () {
             data_table += new_table;
         });
     } else if ('services' in data) {
+        sortByMonth(data['services'])
         data_table += "<div><table border='1'><caption>Service values</caption>";
         data['services'].sort().forEach(function (service) {
             data_table += "<tr><td>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
@@ -139,4 +140,14 @@ function roundAny (value) {
         value = parseFloat(value).toFixed(2)
     }
     return value
+}
+
+function sortByMonth(services){
+    const months = ["january", "february", "march", "april", "may", "june",
+        "july", "august", "september", "october", "november", "december"];
+    const last = services[0].key.split('_').length - 1
+    services.sort(function(a, b){
+        return months.indexOf(a.key.split('_')[last])
+           > months.indexOf(b.key.split('_')[last]);
+    });
 }
