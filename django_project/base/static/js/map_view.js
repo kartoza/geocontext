@@ -111,6 +111,7 @@ function requestListener () {
     let data_table = ''
     for (row in data) {
         if (row != 'groups' && row != 'services') {
+
             info_table += "<tr><td>" + row + "</td><td>" + roundAny(data[row]) + "</td></tr>";
         }
     }
@@ -118,6 +119,7 @@ function requestListener () {
     if ('groups' in data) {
         data['groups'].sort().forEach(function (group) {
             new_table = "<table border='1'><caption>" + group['name'] + " group service values</caption>";
+            sortByMonth(group['services'])
             group['services'].sort().forEach(function (service) {
                 new_table += "<tr><td>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
             });
