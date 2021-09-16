@@ -150,6 +150,7 @@ class AsyncService():
 
     async def fetch_wfs(self):
         """Fetch WFS value. Try intersect else buffer with specified tolerance."""
+        geometry = self.layer_geometry_field if self.layer_geometry_field is not None else 'geom'
         parameters = {
             'SERVICE': 'WFS',
             'REQUEST': 'GetFeature',
@@ -160,12 +161,13 @@ class AsyncService():
             'FILTER': (
                 '<Filter xmlns="http://www.opengis.net/ogc" '
                 'xmlns:gml="http://www.opengis.net/gml"> '
-                f'<Intersects><PropertyName>geom</PropertyName>'
+                f'<Intersects><PropertyName>{geometry}</PropertyName>'
                 f'<gml:Point srsName="EPSG:{self.point.srid}">'
                 f'<gml:coordinates>{self.point.x},{self.point.y}'
                 '</gml:coordinates></gml:Point></Intersects></Filter>'
             )
         }
+        LOGGER.error('testttss', parameters)
         if self.service_version in ['1.0.0', '1.1.0', '1.3.0']:
             parameters.update({
                 'count': self.max_features
