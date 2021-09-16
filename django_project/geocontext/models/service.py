@@ -180,6 +180,13 @@ class Service(models.Model):
         null=True,
     )
 
+    layer_geometry_field = models.CharField(
+        help_text=_('Geometry field of the sercive if needed.'),
+        blank=True,
+        null=True,
+        max_length=1000,
+    )
+
     permission_groups = models.ManyToManyField(
         AuthGroup,
         help_text=_('List of auth groups with access to this service.'),
