@@ -120,20 +120,22 @@ class AsyncService():
             'WIDTH': 101,
             'HEIGHT': 101
         }
-        if self.service.key == 'river_name':
-            parameters.update({
-                'REQUEST': 'GetMap',
-                'srs': 'EPSG:3857',
-                'BBOX': '1831085.1652849577,-4139213.1300405697,3657706.640180942,-2526627.791405775',
-                'format': 'geojson',
-                'viewparams': 'latitude:{};longitude:{}'.format(self.point.x, self.point.y)
-            })
-        elif self.service_version in ['1.0.0', '1.1.0', '1.1.1']:
-            parameters.update({
-                'REQUEST': 'feature_info',
-                'X': 50,
-                'Y': 50
-            })
+
+        if self.service_version in ['1.0.0', '1.1.0', '1.1.1']:
+            if self.service.key == 'river_name':
+                parameters.update({
+                    'REQUEST': 'GetMap',
+                    'srs': 'EPSG:3857',
+                    'BBOX': '1831085.1652849577,-4139213.1300405697,3657706.640180942,-2526627.791405775',
+                    'format': 'geojson',
+                    'viewparams': 'latitude:{};longitude:{}'.format(self.point.x, self.point.y)
+                })
+            else:
+                parameters.update({
+                    'REQUEST': 'feature_info',
+                    'X': 50,
+                    'Y': 50
+                })
         elif self.service_version in ['1.3.0']:
             parameters.update({
                 'REQUEST': 'GetFeatureInfo',
@@ -150,6 +152,7 @@ class AsyncService():
 
     async def fetch_wfs(self):
         """Fetch WFS value. Try intersect else buffer with specified tolerance."""
+        geometry = self.layer_geometry_field if self.layer_geometry_field is not None else 'geom'
         parameters = {
             'SERVICE': 'WFS',
             'REQUEST': 'GetFeature',
@@ -160,12 +163,13 @@ class AsyncService():
             'FILTER': (
                 '<Filter xmlns="http://www.opengis.net/ogc" '
                 'xmlns:gml="http://www.opengis.net/gml"> '
-                f'<Intersects><PropertyName>geom</PropertyName>'
+                f'<Intersects><PropertyName>{geometry}</PropertyName>'
                 f'<gml:Point srsName="EPSG:{self.point.srid}">'
                 f'<gml:coordinates>{self.point.x},{self.point.y}'
                 '</gml:coordinates></gml:Point></Intersects></Filter>'
             )
         }
+        LOGGER.error('testttss', parameters)
         if self.service_version in ['1.0.0', '1.1.0', '1.3.0']:
             parameters.update({
                 'count': self.max_features

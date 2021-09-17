@@ -196,7 +196,7 @@
         $('#btn').click(function () {
             $('.text').text('loading . . .');
             $.get('https://staging.geocontext.kartoza.com/api/v2/query?registry=group&key=rainfall_group&'+
-                'x=24.0380859375&y=-29.375038630898835&outformat=json'
+                'x=24.0380859375&y=-29.375038630898835&outformat=json',
                 function (data) {
                     console.log(data);
                     my_data = JSON.stringify(data, null, 2);
@@ -319,7 +319,7 @@
 
             $.get(
                 'https://staging.geocontext.kartoza.com/api/v2/query?registry=group&key=rainfall_group&'+
-                 'x=24.0380859375&y=-29.375038630898835&outformat=json'
+                 'x=24.0380859375&y=-29.375038630898835&outformat=json',
                 function (data) {
                     console.log(data);
                     my_data = JSON.stringify(data, null, 2);

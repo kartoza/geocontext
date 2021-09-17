@@ -51,12 +51,14 @@ class CacheAdmin(OSMGeoAdmin):
 class GroupAdmin(admin.ModelAdmin):
     """Group admin model."""
     list_display = ('key', 'name', 'group_type', 'description')
+    search_fields = ('key', 'name')
     inlines = [GroupServicesInLine]
 
 
 class CollectionAdmin(admin.ModelAdmin):
     """Collection admin model."""
     list_display = ('key', 'name', 'description')
+    search_fields = ('key', 'name')
     inlines = [CollectionGroupsInLine]
 
 
