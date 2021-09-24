@@ -130,6 +130,14 @@ class AsyncService():
                     'format': 'geojson',
                     'viewparams': 'latitude:{};longitude:{}'.format(self.point.x, self.point.y)
                 })
+            elif self.service.key == 'geonames_find_nearby_placename':
+                parameters.update({
+                    'REQUEST': 'GetMap',
+                    'srs': 'EPSG:4326',
+                    'BBOX': '-180.0,-90.0,180.0,90.0',
+                    'format': 'geojson',
+                    'viewparams': 'latitude:{};longitude:{}'.format(self.point.x, self.point.y)
+                })
             else:
                 parameters.update({
                     'REQUEST': 'feature_info',
@@ -169,7 +177,6 @@ class AsyncService():
                 '</gml:coordinates></gml:Point></Intersects></Filter>'
             )
         }
-        LOGGER.error('testttss', parameters)
         if self.service_version in ['1.0.0', '1.1.0', '1.3.0']:
             parameters.update({
                 'count': self.max_features
