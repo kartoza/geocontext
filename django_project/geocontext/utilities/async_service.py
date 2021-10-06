@@ -10,7 +10,7 @@ from functools import partial
 import logging
 from pytz import UTC
 import sys
-
+import requests
 import aiohttp
 from asgiref.sync import async_to_sync
 from django.contrib.gis.geos import Point
@@ -21,6 +21,7 @@ from geocontext.models.cache import Cache
 from geocontext.models.service import Service
 from geocontext.utilities.geometry import get_bbox, parse_geometry, transform
 from geocontext.utilities.strings import strip_whitespace
+from geocontext.utilities.xml import get_bounding_box_srs
 
 LOGGER = logging.getLogger(__name__)
 
@@ -102,7 +103,10 @@ class AsyncService():
         except IndexError:
             LOGGER.error(f'"{self.source_uri}" No features found for: {self.key}')
         except Exception as e:
-            LOGGER.error(f'{self.source_uri}" failed for: {self.key} with: {e}')
+            try:
+                await self.fetch_sql_view()
+            except Exception as e:
+                LOGGER.error(f'{self.source_uri}" failed for: {self.key} with: {e}')
 
         # Return AsyncService instance with attributes loaded from service
         return self
@@ -122,28 +126,11 @@ class AsyncService():
         }
 
         if self.service_version in ['1.0.0', '1.1.0', '1.1.1']:
-            if self.service.key == 'river_name':
-                parameters.update({
-                    'REQUEST': 'GetMap',
-                    'srs': 'EPSG:3857',
-                    'BBOX': '1831085.1652849577,-4139213.1300405697,3657706.640180942,-2526627.791405775',
-                    'format': 'geojson',
-                    'viewparams': 'latitude:{};longitude:{}'.format(self.point.x, self.point.y)
-                })
-            elif self.service.key == 'geonames_find_nearby_placename':
-                parameters.update({
-                    'REQUEST': 'GetMap',
-                    'srs': 'EPSG:4326',
-                    'BBOX': '-180.0,-90.0,180.0,90.0',
-                    'format': 'geojson',
-                    'viewparams': 'latitude:{};longitude:{}'.format(self.point.x, self.point.y)
-                })
-            else:
-                parameters.update({
-                    'REQUEST': 'feature_info',
-                    'X': 50,
-                    'Y': 50
-                })
+            parameters.update({
+                'REQUEST': 'feature_info',
+                'X': 50,
+                'Y': 50
+            })
         elif self.service_version in ['1.3.0']:
             parameters.update({
                 'REQUEST': 'GetFeatureInfo',
@@ -249,7 +236,10 @@ class AsyncService():
 
         # Async session - disable validation - some servers, like ArrcREST, send bad json.
         async with self.session.get(self.source_uri, raise_for_status=True) as response:
-            return await response.json(content_type=None)
+            try:
+                return await response.json(content_type=None)
+            except Exception:
+                return requests.get(self.source_uri)
 
     async def save_features(self, features: list):
         """Find and store results: {value:geometry} attribute.
@@ -308,3 +298,52 @@ class AsyncService():
                     dist = new_dist
                     self.value = result['val']
                     self.geometry = geometry
+
+    async def get_capabilities(self):
+
+        parameters = {
+            'SERVICE': self.query_type,
+            'version': '2.0.1',
+            'REQUEST': 'GetCapabilities'
+        }
+        xml_response = await self.request_data(parameters)
+        return xml_response.content
+
+    async def fetch_sql_view(self):
+
+        xml = await self.get_capabilities()
+        bbox_srs = get_bounding_box_srs(self.layer_typename, xml)
+
+        parameters = {
+            'REQUEST': 'GetMap',
+            'SERVICE': self.query_type,
+            'INFO_FORMAT': 'application/json',
+            'LAYERS': self.layer_typename,
+            'format': 'geojson',
+            'viewparams': 'latitude:{};longitude:{}'.format(self.point.x, self.point.y),
+            'WIDTH': 101,
+            'HEIGHT': 101,
+            # 'BBOX': '-2.0037508342789244E7,-2.00489661040146E7,2.0037508342789244E7,2.0048966104014594E7',
+            # 'srs': 'EPSG:3857',
+            'BBOX': bbox_srs['bbox'],
+            'srs': bbox_srs['srs']
+
+        }
+
+        # if self.service.key == 'river_name':
+        #     parameters.update({
+        #         'REQUEST': 'GetMap',
+        #         'srs': 'EPSG:3857',
+        #         # 'BBOX': '1831085.1652849577,-4139213.1300405697,3657706.640180942,-2526627.791405775',
+        #         'BBOX': '-2.0037508342789244E7,-2.00489661040146E7,2.0037508342789244E7,2.0048966104014594E7',
+        #
+        #     })
+        # elif self.service.key == 'geonames_find_nearby_placename':
+        #     parameters.update({
+        #         'REQUEST': 'GetMap',
+        #         'srs': 'EPSG:4326',
+        #         'BBOX': '-180.0,-90.0,180.0,90.0',
+        #     })
+
+        json_response = await self.request_data(parameters)
+        await self.save_features(json_response['features'])
