@@ -29,3 +29,4 @@ def get_bounding_box_srs(service, content):
                 layer.find(bound_tag).get('maxx'),
                 layer.find(bound_tag).get('maxy'),
             )
+        return out
