@@ -323,27 +323,9 @@ class AsyncService():
             'viewparams': 'latitude:{};longitude:{}'.format(self.point.x, self.point.y),
             'WIDTH': 101,
             'HEIGHT': 101,
-            # 'BBOX': '-2.0037508342789244E7,-2.00489661040146E7,2.0037508342789244E7,2.0048966104014594E7',
-            # 'srs': 'EPSG:3857',
             'BBOX': bbox_srs['bbox'],
             'srs': bbox_srs['srs']
 
         }
-
-        # if self.service.key == 'river_name':
-        #     parameters.update({
-        #         'REQUEST': 'GetMap',
-        #         'srs': 'EPSG:3857',
-        #         # 'BBOX': '1831085.1652849577,-4139213.1300405697,3657706.640180942,-2526627.791405775',
-        #         'BBOX': '-2.0037508342789244E7,-2.00489661040146E7,2.0037508342789244E7,2.0048966104014594E7',
-        #
-        #     })
-        # elif self.service.key == 'geonames_find_nearby_placename':
-        #     parameters.update({
-        #         'REQUEST': 'GetMap',
-        #         'srs': 'EPSG:4326',
-        #         'BBOX': '-180.0,-90.0,180.0,90.0',
-        #     })
-
         json_response = await self.request_data(parameters)
         await self.save_features(json_response['features'])
