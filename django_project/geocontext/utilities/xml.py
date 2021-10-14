@@ -17,11 +17,12 @@ def get_bounding_box_srs(service, content):
 
     layers = root.iter(layer_tag)
     out = {}
+    layer_name = service.split(':')[1] if len(service.split(':')) > 1 else service
 
     for layer in layers:
         if layer.find(name_tag) is None:
             continue
-        if layer.find(name_tag).text == service:
+        if layer.find(name_tag).text == layer_name or layer.find(name_tag).text == service:
             out['srs'] = layer.find(bound_tag).get('CRS')
             out['bbox'] = '{},{},{},{}'.format(
                 layer.find(bound_tag).get('minx'),
@@ -29,4 +30,4 @@ def get_bounding_box_srs(service, content):
                 layer.find(bound_tag).get('maxx'),
                 layer.find(bound_tag).get('maxy'),
             )
-        return out
+            return out
