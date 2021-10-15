@@ -26,6 +26,9 @@ window.addEventListener("map:init", function (e) {
         let button = '<button class="fetch-button" type="button" id=' + registry + '-button>Fetch</button>';
         let options = '<label> '+ registry.charAt(0).toUpperCase() + registry.slice(1) + 's: </label><select class="select-dropdown" name="' + registry + '" id="' + registry + '-select">';
         registries[registry].forEach(function (value) {
+            if (registry == 'service' && value.key=='altitude'){
+                options += '<option value='+ value.key + ' selected>' + value.name + '</option>';
+            }
             options += '<option value='+ value.key + '>' + value.name + '</option>';
         })
         options += '</select></div>';
