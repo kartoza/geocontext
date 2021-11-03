@@ -4,7 +4,8 @@
 {% load account socialaccount %}	
 
 {% block css_head %}
-    <!-- Chosen library -->	
+    <!-- Chosen library -->
+     <title>Logout </title>
     <link rel="stylesheet" href="{% static 'chosen/chosen.min.css' %}">	
     <link rel="stylesheet" href="{% static 'css/form.css' %}">	
     <link rel="stylesheet" href="{% static 'css/account.css' %}">	
@@ -42,4 +43,9 @@
             </div> <!-- /container -->	
             </div>	
         {% endblock %}	
-{% endblock %} 	
+{% endblock %}
+{% block footer_scripts %}
+    <script>
+        document.title = 'Logout'
+    </script>
+{% endblock footer_scripts %}

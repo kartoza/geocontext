@@ -1,15 +1,17 @@
 {% include 'main_base.html' %}
 {% load i18n %}
-{% load account socialaccount %}	
 {% load static %}
-{% block css_head %}	
-    <!-- Chosen library -->
+
+{% block css_head %}
+        <!-- Chosen library -->
+    <title> Login </title>
     <link rel="stylesheet" href="{% static 'chosen/chosen.min.css' %}">	
     <link rel="stylesheet" href="{% static 'css/form.css' %}">	
-    <link rel="stylesheet" href="{% static 'css/account.css' %}">	
+    <link rel="stylesheet" href="{% static 'css/account.css' %}">
+
 {% endblock %}	
 
-{% block js_head %}	
+{% block js_head %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -19,8 +21,10 @@
     <script src="{% static 'chosen/chosen.jquery.min.js' %}"></script>	
     <script src="{% static 'js/account.js' %}"></script>	
     <script src="{% static 'js/form.js' %}"></script>	
-    <script type="text/javascript">	
-        $(document).ready(function () {	
+    <script type="text/javascript">
+         document.title = 'Log In'
+        $(document).ready(function () {
+
             $('a.google').html($('.google-button'));	
             $('a.github').html($('.github-button'));	
         });	
@@ -37,39 +41,9 @@
                 <div class="custom-form-container">	
                     <h1>{% trans "Log In" %}</h1>	
 
-                    {% get_providers as socialaccount_providers %}	
 
-                    {% if socialaccount_providers %}	
-                        <p>{% blocktrans with site.name as site_name %}Please sign in with one	
-                            of your existing third party accounts.{% endblocktrans %}</p>	
-
-                        <div class="socialaccount_ballot">	
-
-                                {% include "socialaccount/snippets/provider_list.html" with process="login" %}	
-                        </div>	
-
-                        <div class="login-or">	
-                            {% blocktrans %}Or, <a href="{{ signup_url }}">sign up</a>	
-                                for a {{ site_name }} account and sign in below:{% endblocktrans %}	
-                        </div>	
-
-                        <div class="github-button" hidden>	
-                            <img src="{% static "img/github.png" %}" />	
-                            <div class="text-button">Sign in with GitHub</div>	
-                        </div>	
-                        <div class="google-button" hidden>	
-                            <img src="{% static "img/google.png" %}" />	
-                            <div class="text-button">Sign in with Google</div>	
-                        </div>	
-                        <hr>	
-
-                        {% include "socialaccount/snippets/login_extra.html" %}	
-
-                    {% else %}	
                         <p>{% blocktrans %}If you have not created an account yet, then please	
-                            <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>	
-                    {% endif %}	
-
+                            <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
                     <form class="login" method="POST" action="{% url 'account_login' %}">{% csrf_token %}	
                         {{ form.as_p }}	
                         {% if redirect_field_value %}	
