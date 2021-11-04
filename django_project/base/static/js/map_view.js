@@ -33,7 +33,7 @@ window.addEventListener("map:init", function (e) {
         })
         options += '</select></div>';
         let table = '<div class="result-table" id="' + registry + '-table"></div>';
-        let url = '<div class="url-query" id="' + registry + '-url"></div>';
+        let url = '<div class="url-query" id="' + registry + '-url" style="margin-top: 15px;"></div>';
         html[registry] = lat + lng + button + options + timer + table + url;
     };
     // create the sidebar instance and add it to the map
@@ -85,7 +85,7 @@ function fetch (registry, key, lat, lon){
     let baseUrl = window.location.origin;
     let url = encodeURI(baseUrl + '/api/v2/query?registry='+registry+'&key='+key+'&x='+lon+'&y='+lat+'&outformat=json');
     let urlEl = document.getElementById(currentTab + "-url");
-    urlEl.innerHTML = '<h5>Geocontext API query</H5>' + url;
+    urlEl.innerHTML = '<h5>Geocontext API query</h5>' + url;
     document.getElementById(currentTab + "-table").innerHTML = '<div class="loader"></div>'
     startFetchTime = (new Date()).getTime();
     let request = new XMLHttpRequest();
@@ -105,12 +105,13 @@ function requestListener () {
     let endFetchTime = (new Date()).getTime();
     let endTime = endFetchTime - startFetchTime;
     let timeEl = document.getElementById(currentTab + "-timer");
+    timeEl.style.margin = "15px 0 0 0";
     timeEl.innerHTML = '<h5>Results</H5> Request time:  ' + endTime + 'ms';
     let data = JSON.parse(this.responseText);
     buildTable(data);
  }
  function buildTable (data) {
-    let info_table = "<table border='1'><caption>" + currentTab.charAt(0).toUpperCase() + currentTab.slice(1) + " details</caption>";
+    let info_table = `<table border='1'><caption style="caption-side:top">`+ currentTab.charAt(0).toUpperCase() + currentTab.slice(1) + ` details</caption>`;
     let data_table = ''
     for (row in data) {
         if (row != 'groups' && row != 'services') {
@@ -121,17 +122,17 @@ function requestListener () {
     info_table += "</table>";
     if ('groups' in data) {
         data['groups'].sort().forEach(function (group) {
-            new_table = "<table border='1'><caption>" + group['name'] + " group service values</caption>";
+            new_table = `<table border='1'><caption style="caption-side:top">` + group['name'] + ` group service values</caption>`;
             sortByMonth(group['services'])
             group['services'].sort().forEach(function (service) {
                 new_table += "<tr><td>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
             });
-            new_table += "</table></div>";
+            new_table += "</table>";
             data_table += new_table;
         });
     } else if ('services' in data) {
         sortByMonth(data['services'])
-        data_table += "<div><table border='1'><caption>Service values</caption>";
+        data_table += `<table border='1'><caption style="caption-side:top">Service values</caption>`;
         data['services'].sort().forEach(function (service) {
             data_table += "<tr><td>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
         });
