@@ -116,7 +116,7 @@ function requestListener () {
     for (row in data) {
         if (row != 'groups' && row != 'services') {
 
-            info_table += "<tr><td>" + row + "</td><td>" + roundAny(data[row]) + "</td></tr>";
+            info_table += "<tr><td class='first-column'>" + row + "</td><td>" + roundAny(data[row]) + "</td></tr>";
         }
     }
     info_table += "</table>";
@@ -125,7 +125,7 @@ function requestListener () {
             new_table = `<table border='1'><caption style="caption-side:top">` + group['name'] + ` group service values</caption>`;
             sortByMonth(group['services'])
             group['services'].sort().forEach(function (service) {
-                new_table += "<tr><td>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
+                new_table += "<tr><td class='first-column'>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
             });
             new_table += "</table>";
             data_table += new_table;
@@ -134,7 +134,7 @@ function requestListener () {
         sortByMonth(data['services'])
         data_table += `<table border='1'><caption style="caption-side:top">Service values</caption>`;
         data['services'].sort().forEach(function (service) {
-            data_table += "<tr><td>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
+            data_table += "<tr><td class='first-column'>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
         });
         data_table += "</table>";
     }
