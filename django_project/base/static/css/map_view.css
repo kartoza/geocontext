@@ -60,3 +60,11 @@
     text-align: center;
     margin-bottom: 15px;
 }
+
+.result-table table {
+    width: 100%;
+}
+
+.first-column {
+    width: 40%;
+}
