@@ -66,7 +66,7 @@ class Worker():
         services = self.get_services()
         caches = self.retrieve_caches(services)
         req_s = services.exclude(key__in=[cache.service.key for cache in caches])
-        req_s = sorted(req_s, key=lambda service: self.get_order(service))
+        req_s = sorted(req_s, key=lambda service: self.get_order(service.id))
 
         if len(req_s) > 0:
             async_services = [AsyncService(s, self.point, self.tolerance) for s in req_s]
@@ -122,7 +122,7 @@ class Worker():
         :return: List of caches
         :rtype: list
         """
-        return list(Cache.objects.filter(
+        caches = Cache.objects.filter(
             geometry__dwithin=(self.point, self.tolerance),
             service__in=services,
             expired_time__gte=dt.utcnow().replace(tzinfo=UTC)
@@ -130,7 +130,8 @@ class Worker():
             distance=Distance('geometry', self.point),
             last_subsrt=Right('service__key', StrIndex(Reverse('service__key'), Value('_')) - 1,
                               output_field=CharField()),
-        ))
+        )
+        return sorted(caches, key=lambda cache: self.get_order(cache.service.id))
 
     def bulk_create_caches(self, new_async_services: list) -> list:
         """Bulk update cache with new AsyncService values.
@@ -193,9 +194,9 @@ class Worker():
     def get_order(self, service):
 
         if self.registry == 'group':
-            group_service = GroupServices.objects.get(group__key=self.key, service=service.id)
+            group_service = GroupServices.objects.get(group__key=self.key, service=service)
         elif self.registry == 'collection':
-            group_service = GroupServices.objects.get(group__collection__key=self.key, service=service.id)
+            group_service = GroupServices.objects.get(group__collection__key=self.key, service=service)
         else:
             return 0
 
