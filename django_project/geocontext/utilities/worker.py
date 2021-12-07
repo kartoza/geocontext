@@ -17,6 +17,7 @@ from geocontext.models.collection import Collection
 from geocontext.models.group import Group
 from geocontext.models.log import Log
 from geocontext.models.service import Service
+from geocontext.models.group_services import GroupServices
 from geocontext.serializers.cache import CacheSerializer
 from geocontext.serializers.collection import NestedCollectionSerializer
 from geocontext.serializers.group import NestedGroupSerializer
@@ -65,9 +66,11 @@ class Worker():
         services = self.get_services()
         caches = self.retrieve_caches(services)
         req_s = services.exclude(key__in=[cache.service.key for cache in caches])
+        req_s = sorted(req_s, key=lambda service: self.get_order(service))
 
         if len(req_s) > 0:
             async_services = [AsyncService(s, self.point, self.tolerance) for s in req_s]
+            logger.info('test', async_services)
             new_async_services = async_retrieve_services(async_services)
             caches.extend(self.bulk_create_caches(new_async_services))
 
@@ -97,13 +100,14 @@ class Worker():
         if self.registry == 'service':
             return Service.objects.filter(key=self.key)
         elif self.registry == 'group':
-            services = Service.objects.filter(group__key=self.key)
-            return self.order_by_month(services)
+            group_service = GroupServices.objects.filter(group__key=self.key).order_by(
+                "order").values("service")
+            services = Service.objects.filter(id__in=group_service)
+            return services
 
         elif self.registry == 'collection':
             services = Service.objects.filter(group__collection__key=self.key)
-            return self.order_by_month(services)
-            # return services
+            return services
         else:
             raise ValueError(f'Registry "{self.registry}" not supported')
 
@@ -126,91 +130,6 @@ class Worker():
             distance=Distance('geometry', self.point),
             last_subsrt=Right('service__key', StrIndex(Reverse('service__key'), Value('_')) - 1,
                               output_field=CharField()),
-        ).annotate(
-            key_formatted=Case(
-                When(last_subsrt=MONTHS[0],
-                     then=Replace('service__key',
-                                  Right('service__key', StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('01'),
-                                  output_field=CharField()
-                                  )),
-                When(last_subsrt=MONTHS[1],
-                     then=Replace('service__key',
-                                  Right('service__key',
-                                        StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('02'),
-                                  output_field=CharField())),
-                When(last_subsrt=MONTHS[2],
-                     then=Replace('service__key',
-                                  Right('service__key',
-                                        StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('03'),
-                                  output_field=CharField())),
-                When(last_subsrt=MONTHS[3],
-                     then=Replace('service__key',
-                                  Right('service__key',
-                                        StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('04'),
-                                  output_field=CharField())),
-                When(last_subsrt=MONTHS[4],
-                     then=Replace('service__key',
-                                  Right('service__key',
-                                        StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('05'),
-                                  output_field=CharField())),
-                When(last_subsrt=MONTHS[5],
-                     then=Replace('service__key',
-                                  Right('service__key',
-                                        StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('06'),
-                                  output_field=CharField())),
-                When(last_subsrt=MONTHS[6],
-                     then=Replace('service__key',
-                                  Right('service__key',
-                                        StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('07'),
-                                  output_field=CharField())),
-                When(last_subsrt=MONTHS[7],
-                     then=Replace('service__key',
-                                  Right('service__key',
-                                        StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('08'),
-                                  output_field=CharField())),
-                When(last_subsrt=MONTHS[8],
-                     then=Replace('service__key',
-                                  Right('service__key',
-                                        StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('09'),
-                                  output_field=CharField())),
-                When(last_subsrt=MONTHS[9],
-                     then=Replace('service__key',
-                                  Right('service__key',
-                                        StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('10'),
-                                  output_field=CharField())),
-                When(last_subsrt=MONTHS[10],
-                     then=Replace('service__key',
-                                  Right('service__key',
-                                        StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('11'),
-                                  output_field=CharField())),
-                When(last_subsrt=MONTHS[11],
-                     then=Replace('service__key',
-                                  Right('service__key',
-                                        StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                  Value('12'),
-                                  output_field=CharField())),
-                default=Replace('service__key',
-                                Right('service__key', StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                Right('service__key', StrIndex(Reverse('service__key'), Value('_')) - 1),
-                                output_field=CharField()),
-                output_field=CharField()
-
-            )
-        ).order_by(
-            'key_formatted', 'distance'
-        ).distinct(
-            'key_formatted',
         ))
 
     def bulk_create_caches(self, new_async_services: list) -> list:
@@ -271,69 +190,13 @@ class Worker():
             'geometry': loads(self.point.json)
         }
 
-    def order_by_month(self, services):
-        """
-        Ordering services by month
-        """
-        # filters = Q()
-        return services.annotate(
-            last_subsrt=Right('key', StrIndex(Reverse('key'), Value('_')) - 1, output_field=CharField()),
-        ).annotate(
-            key_formatted=Case(
-                When(last_subsrt=MONTHS[0], then=Replace('key',
-                                                         Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                         Value('01'),
-                                                         output_field=CharField()
-                                                         )),
-                When(last_subsrt=MONTHS[1], then=Replace('key',
-                                                         Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                         Value('02'),
-                                                         output_field=CharField())),
-                When(last_subsrt=MONTHS[2], then=Replace('key',
-                                                         Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                         Value('03'),
-                                                         output_field=CharField())),
-                When(last_subsrt=MONTHS[3], then=Replace('key',
-                                                         Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                         Value('04'),
-                                                         output_field=CharField())),
-                When(last_subsrt=MONTHS[4], then=Replace('key',
-                                                         Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                         Value('05'),
-                                                         output_field=CharField())),
-                When(last_subsrt=MONTHS[5], then=Replace('key',
-                                                         Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                         Value('06'),
-                                                         output_field=CharField())),
-                When(last_subsrt=MONTHS[6], then=Replace('key',
-                                                         Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                         Value('07'),
-                                                         output_field=CharField())),
-                When(last_subsrt=MONTHS[7], then=Replace('key',
-                                                         Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                         Value('08'),
-                                                         output_field=CharField())),
-                When(last_subsrt=MONTHS[8], then=Replace('key',
-                                                         Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                         Value('09'),
-                                                         output_field=CharField())),
-                When(last_subsrt=MONTHS[9], then=Replace('key',
-                                                         Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                         Value('10'),
-                                                         output_field=CharField())),
-                When(last_subsrt=MONTHS[10], then=Replace('key',
-                                                          Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                          Value('11'),
-                                                          output_field=CharField())),
-                When(last_subsrt=MONTHS[11], then=Replace('key',
-                                                          Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                                          Value('12'),
-                                                          output_field=CharField())),
-                default=Replace('key',
-                                Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                Right('key', StrIndex(Reverse('key'), Value('_')) - 1),
-                                output_field=CharField()),
-                output_field=CharField()
+    def get_order(self, service):
 
-            )
-        ).order_by('key_formatted')
+        if self.registry == 'group':
+            group_service = GroupServices.objects.get(group__key=self.key, service=service.id)
+        elif self.registry == 'collection':
+            group_service = GroupServices.objects.get(group__collection__key=self.key, service=service.id)
+        else:
+            return 0
+
+        return group_service.order
