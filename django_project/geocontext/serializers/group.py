@@ -32,6 +32,7 @@ class NestedGroupSerializer(serializers.ModelSerializer):
             'key',
             'name',
             'description',
+            'group_type',
             'services',
         )
 
