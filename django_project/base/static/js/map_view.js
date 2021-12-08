@@ -34,7 +34,8 @@ window.addEventListener("map:init", function (e) {
         options += '</select></div>';
         let table = '<div class="result-table" id="' + registry + '-table"></div>';
         let url = '<div class="url-query" id="' + registry + '-url" style="margin-top: 15px;"></div>';
-        html[registry] = lat + lng + button + options + timer + table + url;
+        let output = '<div class="output" id="' + registry + '-output" style="display: none"><button class="output-text">Text</button><button class="output-chart">Chart</button></div>';
+        html[registry] = lat + lng + button + options + output + timer + table + url;
     };
     // create the sidebar instance and add it to the map
     L.control.sidebar({ container: 'sidebar' })
@@ -63,10 +64,15 @@ window.addEventListener("map:init", function (e) {
     var styles = document.createElement('link');
     styles.href = 'css/map_view.css';
     document.getElementsByTagName('head')[0].appendChild(styles);
+
 },false);
 // Listen for sidebar Fetch button 
 document.addEventListener('click',function(e) {
     if (currentTab.length != 0) {
+        document.getElementById(currentTab + "-select").onchange = function (){
+            document.getElementById(currentTab + "-output").style.display= "none";
+            console.log(document.getElementById(currentTab + "-output").style.display)
+        }
         if (e.target && e.target.id== currentTab + "-button") {
             var lat = document.getElementById(currentTab + "-lat-box").value;
             var lon = document.getElementById(currentTab + "-lon-box").value;
@@ -75,6 +81,8 @@ document.addEventListener('click',function(e) {
         }
     }
 });
+
+
 // Functions
 function fetch (registry, key, lat, lon){
     // We update all coord boxes on all tabs
@@ -110,18 +118,27 @@ function requestListener () {
     let data = JSON.parse(this.responseText);
     buildTable(data);
  }
- function buildTable (data) {
+
+ function buildInfoTable(data){
     let info_table = `<table border='1'><caption style="caption-side:top">`+ currentTab.charAt(0).toUpperCase() + currentTab.slice(1) + ` details</caption>`;
-    let data_table = ''
     for (row in data) {
-        if (row != 'groups' && row != 'services') {
+        if (row != 'groups' && row != 'services' && row != 'group_type') {
 
             info_table += "<tr><td class='first-column'>" + row + "</td><td>" + roundAny(data[row]) + "</td></tr>";
         }
     }
-    info_table += "</table>";
+    info_table += "</table>"
+     return info_table
+ };
+
+ function buildTable (data) {
+     let data_table = ''
+    let info_table = buildInfoTable(data);
     if ('groups' in data) {
         data['groups'].sort().forEach(function (group) {
+            if(group['group_type'] == 'graph'){
+                document.getElementById(currentTab + "-output").style.display= "block";
+            }
             new_table = `<table border='1'><caption style="caption-side:top">` + group['name'] + ` group service values</caption>`;
             group['services'].sort().forEach(function (service) {
                 new_table += "<tr><td class='first-column'>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
@@ -130,6 +147,9 @@ function requestListener () {
             data_table += new_table;
         });
     } else if ('services' in data) {
+        if(data['group_type'] == 'graph'){
+            document.getElementById(currentTab + "-output").style.display= "block";
+        }
         data_table += `<table border='1'><caption style="caption-side:top">Service values</caption>`;
         data['services'].sort().forEach(function (service) {
             data_table += "<tr><td class='first-column'>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
@@ -144,4 +164,26 @@ function roundAny (value) {
         value = parseFloat(value).toFixed(2)
     }
     return value
+}
+
+function buildChart(data){
+    let chart_container = ''
+    let info_table = buildInfoTable(data);
+    if ('groups' in data) {
+        data['groups'].sort().forEach(function (group) {
+            new_table = `<table border='1'><caption style="caption-side:top">` + group['name'] + ` group service values</caption>`;
+            group['services'].sort().forEach(function (service) {
+                new_table += "<tr style='border: none' id="+service['key']+"></tr>";
+            });
+            new_table += "</table>";
+            chart_container += new_table;
+        });
+    } else if ('services' in data) {
+        chart_container += `<table border='1'><caption style="caption-side:top">Service values</caption>`;
+        data['services'].sort().forEach(function (service) {
+            chart_container += "<tr style='border: none' id="+service['key']+"></tr>";;
+        });
+        chart_container += "</table>";
+    }
+    document.getElementById(currentTab + "-table").innerHTML = info_table + chart_container;
 }
