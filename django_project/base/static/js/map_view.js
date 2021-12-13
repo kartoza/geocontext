@@ -2,6 +2,7 @@
 var marker = false;
 var startFetchTime = 0;
 var currentTab = ''; // Contains str of current registry (service, group, collection)
+var outputText = true;
 
 // Listen to map click
 window.addEventListener("map:init", function (e) {
@@ -13,7 +14,7 @@ window.addEventListener("map:init", function (e) {
         let lon = coord.lng;
         if (currentTab.length != 0) {
             let key = document.getElementById(currentTab + "-select").value;
-            fetch(currentTab, key, lat, lon);
+            fetch(currentTab, key, lat, lon, outputText);
         }
     });
     // Dynamically create HTML for sidebar panels 
@@ -34,7 +35,9 @@ window.addEventListener("map:init", function (e) {
         options += '</select></div>';
         let table = '<div class="result-table" id="' + registry + '-table"></div>';
         let url = '<div class="url-query" id="' + registry + '-url" style="margin-top: 15px;"></div>';
-        let output = '<div class="output" id="' + registry + '-output" style="display: none"><button class="output-text">Text</button><button class="output-chart">Chart</button></div>';
+        let output = '<div class="output" id="' + registry + '-output" style="display: none">' +
+            '<button class="output-text" disabled id="' + registry + '-text">Text</button>' +
+            '<button class="output-chart" id="' + registry + '-chart">Chart</button></div>';
         html[registry] = lat + lng + button + options + output + timer + table + url;
     };
     // create the sidebar instance and add it to the map
@@ -68,17 +71,21 @@ window.addEventListener("map:init", function (e) {
 },false);
 // Listen for sidebar Fetch button 
 document.addEventListener('click',function(e) {
+
     if (currentTab.length != 0) {
         document.getElementById(currentTab + "-select").onchange = function (){
             document.getElementById(currentTab + "-output").style.display= "none";
-            console.log(document.getElementById(currentTab + "-output").style.display)
         }
-        if (e.target && e.target.id== currentTab + "-button") {
+
+    if (e.target && e.target.id== currentTab + "-button") {
             var lat = document.getElementById(currentTab + "-lat-box").value;
             var lon = document.getElementById(currentTab + "-lon-box").value;
             var key = document.getElementById(currentTab + "-select").value;
-            fetch(currentTab, key, lat, lon);
         }
+    }
+    document.getElementById(currentTab + "-chart").onclick = function (){
+        outputText = false;
+        document.getElementById(currentTab + "-text").disabled = false;
     }
 });
 
@@ -116,7 +123,13 @@ function requestListener () {
     timeEl.style.margin = "15px 0 0 0";
     timeEl.innerHTML = '<h5>Results</H5> Request time:  ' + endTime + 'ms';
     let data = JSON.parse(this.responseText);
-    buildTable(data);
+    console.log(outputText)
+    if(outputText){
+            buildTable(data);
+    }
+    else{
+        buildChart(data)
+    }
  }
 
  function buildInfoTable(data){
