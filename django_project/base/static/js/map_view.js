@@ -195,46 +195,44 @@ function buildChart(data){
     let chart_name = '';
     let chart_categories = []
     if ('groups' in data) {
-        data['groups'].sort().forEach(function (group) {
-            new_table = `<table border='1'><caption style="caption-side:top">` + group['name'] + ` group service values</caption>`;
+
+        data['groups'].sort().forEach(function (group, index, array) {
             chart_id = group['key'];
             chart_name = data['name'];
-
             var chart_collection_data = {};
             chart_collection_data['data'] = [];
             chart_collection_data['name'] = group['name'];
 
             if(group['group_type'] == 'graph') {
-                new_table = "<tr style='border: none' id=" + chart_id + "></tr>";
+                chart_container = `<table border='1'><caption style="caption-side:top">` + data['name'] + ` Chart</caption> <tr style='border: none' id=`+chart_id+`></tr>`;
                 group['services'].sort().forEach(function (service) {
-                    chart_collection_data['data'].push(roundAny(service['value'])).map(Number);
+                    chart_collection_data['data'].push(parseFloat(roundAny(service['value'])));
                     let split = service['key'].split("_")
                     chart_categories.push(split[split.length - 1]);
                 });
                 chart_data.push(chart_collection_data);
             }
             else {
+                chart_container = `<table border='1'><caption style="caption-side:top">` + group['name'] + ` group service values</caption>`
                 group['services'].sort().forEach(function (service) {
-                    new_table += "<tr><td class='first-column'>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
+                    chart_container += "<tr><td class='first-column'>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
                 });
             }
 
-            chart_container += new_table;
             chart_container += "</table>";
         });
 
     } else if ('services' in data) {
-        chart_container += `<table border='1'><caption style="caption-side:top">Service values</caption>`;
-        chart_container += "<tr style='border: none' id="+data['key']+"></tr>";
         chart_id = data['key'];
         chart_name = data['name'];
-
+        chart_container += `<table border='1'><caption style="caption-side:top">Service chart</caption>`;
+        chart_container += "<tr style='border: none' id="+chart_id+"></tr>";
         var chart_group_data = {};
         chart_group_data['data'] = [];
         chart_group_data['name'] = data['name'];
 
         data['services'].sort().forEach(function (service) {
-           chart_group_data['data'].push(roundAny(service['value']));
+           chart_group_data['data'].push(parseFloat(roundAny(service['value'])));
            let split = service['key'].split("_")
            chart_categories.push(split[split.length -1]);
         });
@@ -243,13 +241,6 @@ function buildChart(data){
 
     }
     document.getElementById(currentTab + "-table").innerHTML = info_table + chart_container;
-    // var data_val = [{
-    //       name: 'Tokyo',
-    //       data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-    //     }, {
-    //       name: 'London',
-    //       data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-    // }];
     console.log(chart_data)
 
     Highcharts.chart(chart_id, {
