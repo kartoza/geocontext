@@ -68,3 +68,12 @@
 .first-column {
     width: 40%;
 }
+
+.output {
+    width: 100%;
+    padding: 10px 0px;
+}
+
+.output button{
+    width: 50%;
+}
