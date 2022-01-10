@@ -2,7 +2,7 @@
 var marker = false;
 var startFetchTime = 0;
 var currentTab = ''; // Contains str of current registry (service, group, collection)
-var outputText = true;
+let outputText = true;
 
 // Listen to map click
 window.addEventListener("map:init", function (e) {
@@ -17,6 +17,7 @@ window.addEventListener("map:init", function (e) {
             fetch(currentTab, key, lat, lon, outputText);
         }
     });
+
     // Dynamically create HTML for sidebar panels 
     let registries = {'service': services, 'group': groups, 'collection': collections};
     let html = {};
@@ -76,17 +77,24 @@ document.addEventListener('click',function(e) {
         document.getElementById(currentTab + "-select").onchange = function (){
             document.getElementById(currentTab + "-output").style.display= "none";
         }
-
-    if (e.target && e.target.id== currentTab + "-button") {
+        if (e.target && e.target.id== currentTab + "-button" || e.target.id== currentTab + "-text") {
             var lat = document.getElementById(currentTab + "-lat-box").value;
             var lon = document.getElementById(currentTab + "-lon-box").value;
             var key = document.getElementById(currentTab + "-select").value;
+            outputText = true;
+            fetch(currentTab, key, lat, lon);
         }
+        if (e.target && e.target.id== currentTab + "-chart") {
+            var lat = document.getElementById(currentTab + "-lat-box").value;
+            var lon = document.getElementById(currentTab + "-lon-box").value;
+            var key = document.getElementById(currentTab + "-select").value;
+            outputText = false;
+            document.getElementById(currentTab + "-text").disabled = false;
+            fetch(currentTab, key, lat, lon);
+        }
+
     }
-    document.getElementById(currentTab + "-chart").onclick = function (){
-        outputText = false;
-        document.getElementById(currentTab + "-text").disabled = false;
-    }
+
 });
 
 
@@ -123,7 +131,7 @@ function requestListener () {
     timeEl.style.margin = "15px 0 0 0";
     timeEl.innerHTML = '<h5>Results</H5> Request time:  ' + endTime + 'ms';
     let data = JSON.parse(this.responseText);
-    console.log(outputText)
+    buildTable(data);
     if(outputText){
             buildTable(data);
     }
@@ -182,21 +190,111 @@ function roundAny (value) {
 function buildChart(data){
     let chart_container = ''
     let info_table = buildInfoTable(data);
+    let chart_data = [];
+    let chart_id = '';
+    let chart_name = '';
+    let chart_categories = []
     if ('groups' in data) {
         data['groups'].sort().forEach(function (group) {
             new_table = `<table border='1'><caption style="caption-side:top">` + group['name'] + ` group service values</caption>`;
-            group['services'].sort().forEach(function (service) {
-                new_table += "<tr style='border: none' id="+service['key']+"></tr>";
-            });
-            new_table += "</table>";
+            chart_id = group['key'];
+            chart_name = data['name'];
+
+            var chart_collection_data = {};
+            chart_collection_data['data'] = [];
+            chart_collection_data['name'] = group['name'];
+
+            if(group['group_type'] == 'graph') {
+                new_table = "<tr style='border: none' id=" + chart_id + "></tr>";
+                group['services'].sort().forEach(function (service) {
+                    chart_collection_data['data'].push(roundAny(service['value'])).map(Number);
+                    let split = service['key'].split("_")
+                    chart_categories.push(split[split.length - 1]);
+                });
+                chart_data.push(chart_collection_data);
+            }
+            else {
+                group['services'].sort().forEach(function (service) {
+                    new_table += "<tr><td class='first-column'>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
+                });
+            }
+
             chart_container += new_table;
+            chart_container += "</table>";
         });
+
     } else if ('services' in data) {
         chart_container += `<table border='1'><caption style="caption-side:top">Service values</caption>`;
+        chart_container += "<tr style='border: none' id="+data['key']+"></tr>";
+        chart_id = data['key'];
+        chart_name = data['name'];
+
+        var chart_group_data = {};
+        chart_group_data['data'] = [];
+        chart_group_data['name'] = data['name'];
+
         data['services'].sort().forEach(function (service) {
-            chart_container += "<tr style='border: none' id="+service['key']+"></tr>";;
+           chart_group_data['data'].push(roundAny(service['value']));
+           let split = service['key'].split("_")
+           chart_categories.push(split[split.length -1]);
         });
+        chart_data.push(chart_group_data);
         chart_container += "</table>";
+
     }
     document.getElementById(currentTab + "-table").innerHTML = info_table + chart_container;
+    // var data_val = [{
+    //       name: 'Tokyo',
+    //       data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+    //     }, {
+    //       name: 'London',
+    //       data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+    // }];
+    console.log(chart_data)
+
+    Highcharts.chart(chart_id, {
+        chart: {
+                type: 'spline'
+            },
+            title: {
+                text: chart_name
+            },
+            xAxis: {
+                categories: data['categories']
+            },
+            yAxis: {
+                title: {
+                    text: chart_name
+                }
+            },
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: false
+                }
+            },
+             legend: {
+                layout: 'horizontal',
+                enabled: true,
+                verticalAlign: 'top'
+            },
+            exporting: {
+                buttons: {
+                    contextButton: {
+                        menuItems: ["printChart",
+                            "separator",
+                            "downloadPNG",
+                            "downloadJPEG",
+                            "downloadPDF",
+                            "downloadSVG",
+                            "separator",
+                            "downloadCSV",
+                            "downloadXLS"]
+                    }
+                }
+            },
+            series: chart_data
+    });
 }
