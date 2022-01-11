@@ -208,11 +208,11 @@ function buildChart(data){
                 group['services'].sort().forEach(function (service) {
                     chart_collection_data['data'].push(parseFloat(roundAny(service['value'])));
                     let split = service['key'].split("_")
-                    chart_categories.push(split[split.length - 1]);
+                    chart_categories.push(split[split.length -1].substring(0,3).replace(/(^\w|\s\w)/g, m => m.toUpperCase()));
                 });
                 chart_data.push(chart_collection_data);
             }
-            
+
             chart_container += "</table>";
         });
 
@@ -228,7 +228,7 @@ function buildChart(data){
         data['services'].sort().forEach(function (service) {
            chart_group_data['data'].push(parseFloat(roundAny(service['value'])));
            let split = service['key'].split("_")
-           chart_categories.push(split[split.length -1]);
+           chart_categories.push(split[split.length -1].substring(0,3).replace(/(^\w|\s\w)/g, m => m.toUpperCase()));
         });
         chart_data.push(chart_group_data);
         chart_container += "</table>";
@@ -245,7 +245,8 @@ function buildChart(data){
                 text: chart_name
             },
             xAxis: {
-                categories: data['categories']
+                categories: chart_categories,
+                tickInterval: 3
             },
             yAxis: {
                 title: {
