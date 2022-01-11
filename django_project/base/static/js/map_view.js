@@ -212,13 +212,7 @@ function buildChart(data){
                 });
                 chart_data.push(chart_collection_data);
             }
-            else {
-                chart_container = `<table border='1'><caption style="caption-side:top">` + group['name'] + ` group service values</caption>`
-                group['services'].sort().forEach(function (service) {
-                    chart_container += "<tr><td class='first-column'>" + service['name'] + "</td><td>" + roundAny(service['value']) + "</td></tr>";
-                });
-            }
-
+            
             chart_container += "</table>";
         });
 
