@@ -124,7 +124,12 @@ TEMPLATES = [
 # Rest Upgrade - https://github.com/encode/django-rest-framework/issues/6809
 # django-rest-framework.org/community/3.10-announcement/#continuing-to-use-coreapi
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
 
 # Allow unlimited persistent DB connections - required for multithreading.

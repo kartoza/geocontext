@@ -2,15 +2,20 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from geocontext.utilities.worker import Worker
 from geocontext.utilities.geometry import parse_coord
+from geocontext.authentication import CustomTokenAuthentication
 
 
 class GenericAPIView(APIView):
     """Geocontext API v2 endpoint for collection queries.
     Basic query validation, log query, get data and return results.
     """
+    authentication_classes = [CustomTokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             key = request.GET.get('key', None)
