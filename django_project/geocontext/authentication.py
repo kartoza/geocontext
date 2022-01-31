@@ -1,4 +1,5 @@
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import exceptions
@@ -16,6 +17,8 @@ class CustomTokenAuthentication(TokenAuthentication):
 
     def authenticate(self, request):
         token = request.GET.get('token', '')
+        if not settings.ENABLE_API_TOKEN:
+            return None, None
 
         if not token:
             msg = _('Invalid token header. No credentials provided.')

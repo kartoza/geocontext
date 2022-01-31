@@ -14,7 +14,6 @@ class GenericAPIView(APIView):
     Basic query validation, log query, get data and return results.
     """
     authentication_classes = [CustomTokenAuthentication]
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
