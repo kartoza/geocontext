@@ -10,7 +10,7 @@ from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
 
 
-class UserF(factory.DjangoModelFactory):
+class UserF(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
@@ -37,7 +37,7 @@ class UserF(factory.DjangoModelFactory):
         return user
 
 
-class ServiceF(factory.DjangoModelFactory):
+class ServiceF(factory.django.DjangoModelFactory):
     class Meta:
         model = Service
 
@@ -49,12 +49,12 @@ class ServiceF(factory.DjangoModelFactory):
         lambda n: f'Test Service description {n}')
 
 
-class GroupServicesF(factory.DjangoModelFactory):
+class GroupServicesF(factory.django.DjangoModelFactory):
     class Meta:
         model = GroupServices
 
 
-class GroupF(factory.DjangoModelFactory):
+class GroupF(factory.django.DjangoModelFactory):
     class Meta:
         model = Group
 
@@ -64,12 +64,12 @@ class GroupF(factory.DjangoModelFactory):
         lambda n: f'Test Group name {n}')
 
 
-class CollectionGroupsF(factory.DjangoModelFactory):
+class CollectionGroupsF(factory.django.DjangoModelFactory):
     class Meta:
         model = CollectionGroups
 
 
-class CollectionF(factory.DjangoModelFactory):
+class CollectionF(factory.django.DjangoModelFactory):
     class Meta:
         model = Collection
 
