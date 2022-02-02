@@ -10,7 +10,7 @@ ALLOWED_HOSTS = ['*']
 
 ADMINS = (
     ('Dimas Ciputra', 'dimas@kartoza.com'),
-    ('Christiaan', 'christiaan@kartoza.com '),
+    ('Andre Theron', 'andre.theron@kartoza.com '),
 )
 
 DATABASES = {
@@ -24,18 +24,3 @@ DATABASES = {
         'TEST_NAME': 'unittests',
     }
 }
-
-
-# See fig.yml file for postfix container definition
-#
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# Host for sending e-mail.
-EMAIL_HOST = 'smtp'
-# Port for sending e-mail.
-EMAIL_PORT = 25
-# SMTP authentication information for EMAIL_HOST.
-# See fig.yml for where these are defined
-EMAIL_HOST_USER = 'noreply@kartoza.com'
-EMAIL_HOST_PASSWORD = 'docker'
-EMAIL_USE_TLS = False
-EMAIL_SUBJECT_PREFIX = '[FRESHWATER]'

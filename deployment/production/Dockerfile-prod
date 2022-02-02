@@ -1,0 +1,11 @@
+FROM geocontext_uwsgi
+
+ARG GIT
+ARG REPO
+ARG BRANCH
+RUN git clone --depth=1 git://github.com/${GIT}/${REPO}.git --branch ${BRANCH} /usr/src/geocontext
+
+RUN mkdir -p /home/web/media
+COPY entry-point.sh /etc/geocontext/entry-point.sh
+RUN chmod +x /etc/geocontext/entry-point.sh
+ENTRYPOINT ["/etc/geocontext/entry-point.sh"]

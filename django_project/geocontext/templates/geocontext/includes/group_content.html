@@ -1,0 +1,36 @@
+<h3>{{ group.name }}</h3>
+<table class="table table-borderless table-striped">
+    <tbody>
+        <tr>
+            <th scope="row">Key</th>
+            <td>{{ group.key }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Description</th>
+            {# Create cusstom tag for this #}
+            {% if group.description %}
+                <td>{{ group.description }}</td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th scope="row">Geocontext Services</th>
+            {% if group.get_ordered_service_list %}
+                <td>
+                    <ol>
+                        {% for group_service in group.get_ordered_service_list %}
+                        <li>
+                            <a href="{% url "service-detail" group_service.service.key %}">
+                                {{ group_service.service.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+    </tbody>
+</table>

@@ -1,10 +1,7 @@
-# coding=utf-8
-"""Management command to export GeoContext data to JSON file."""
-
 import os
+import logging
 
 from django.core.management.base import BaseCommand
-import logging
 
 from .utilities import export_data
 
@@ -18,12 +15,10 @@ class Command(BaseCommand):
     help = 'Export GeoContext data'
 
     def handle(self, *args, **options):
-        print('Exporting GeoContext Data...')
+        logger.info('Exporting GeoContext Data...')
         geocontext_file = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             'geocontext.json'
         )
-
         export_data(geocontext_file)
-
-        print('Export GeoContext data finished...')
+        logger.info('Export GeoContext data finished...')

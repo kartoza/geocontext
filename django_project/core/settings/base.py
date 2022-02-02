@@ -1,8 +1,4 @@
-# coding=utf-8
-"""
-core.settings.base
-"""
-# Django settings for projecta project.
+# Django settings for geocontext project.
 
 from .utils import absolute_path
 import os
@@ -11,8 +7,7 @@ ADMINS = (
     ('Dimas Ciputra', 'dimas@kartoza.com'),
     ('Irwan Fathurrahman', 'irwan@kartoza.com'),
     ('Anita Nilam', 'anita@kartoza.com'),
-    ('Yarjuna Rohmat', 'rohmat@kartoza.com'),
-    ('Ismail Sunni', 'ismail@kartoza.com'),
+    ('Andre Theron', 'andre.theron@kartoza.com'),
 )
 
 MANAGERS = ADMINS
@@ -27,8 +22,6 @@ TIME_ZONE = 'Africa/Johannesburg'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
-SITE_ID = 1
-
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
@@ -40,7 +33,7 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-# Base directory, refers to /home/web/django_project/core
+# Base directory, refers to django_project/core
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
@@ -64,12 +57,15 @@ STATIC_ROOT = '/home/web/static'
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
 
+# To avoid easyaudit migrate warning:
+# stackoverflow.com/questions/23925726/django-relation-django-site-does-not-exist
+SITE_ID = 1
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    absolute_path('core', 'base_static'),
     absolute_path('base', 'static'),
 )
 
@@ -116,6 +112,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'geocontext.views.context_processors.add_variable_to_context',
 
                 # `allauth` needs this from django
                 'django.template.context_processors.request',
@@ -123,6 +120,20 @@ TEMPLATES = [
         },
     },
 ]
+
+# Rest Upgrade - https://github.com/encode/django-rest-framework/issues/6809
+# django-rest-framework.org/community/3.10-announcement/#continuing-to-use-coreapi
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
+
+# Allow unlimited persistent DB connections - required for multithreading.
+CONN_MAX_AGE = 60
 
 MIDDLEWARE = (
     'corsheaders.middleware.CorsMiddleware',
@@ -132,7 +143,7 @@ MIDDLEWARE = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 )
 
 ROOT_URLCONF = 'core.urls'

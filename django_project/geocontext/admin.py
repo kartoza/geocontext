@@ -1,22 +1,21 @@
-# coding=utf-8
-"""Model admin class definitions."""
-
 from django.contrib import admin
 from django.contrib.gis.admin import OSMGeoAdmin
 
-from geocontext.models.context_service_registry import ContextServiceRegistry
-from geocontext.models.context_cache import ContextCache
-from geocontext.models.context_group import ContextGroup
-from geocontext.models.context_collection import ContextCollection
-from geocontext.models.context_group_services import ContextGroupServices
+from django.urls import reverse
+from django.utils.safestring import mark_safe
+from geocontext.models.cache import Cache
+from geocontext.models.collection import Collection
 from geocontext.models.collection_groups import CollectionGroups
+from geocontext.models.service import Service
+from geocontext.models.group import Group
+from geocontext.models.group_services import GroupServices
 
 
-class ContextGroupServicesInLine(admin.TabularInline):
-    """Inline Admin for ContextGroupServices"""
-    model = ContextGroupServices
+class GroupServicesInLine(admin.TabularInline):
+    """Inline Admin for GroupServices"""
+    model = GroupServices
     sortable_field_name = 'order'
-    ordering = ('order', )
+    ordering = ('order',)
     extra = 0
 
 
@@ -28,29 +27,42 @@ class CollectionGroupsInLine(admin.TabularInline):
     extra = 0
 
 
-class ContextServiceRegistryAdmin(admin.ModelAdmin):
-    """Context Service Registry admin model."""
-    list_display = ('key', 'name', 'query_type', 'url')
+class ServiceAdmin(admin.ModelAdmin):
+    """Service admin model."""
+    list_display = ('key', 'name', 'query_type', 'url', 'groups')
+    search_fields = ('key', 'name')
+
+    def groups(self, service):
+        groups = Group.objects.filter(services=service)
+        html = ''
+        for group in groups:
+            html += '<li><a href="{}">{}</a></li>'.format(
+                reverse("admin:geocontext_group_change", args=(group.pk,)),
+                group.key
+            )
+        return mark_safe('<ul style="list-style-type:none">{}</ul>'.format(html))
 
 
-class ContextCacheAdmin(OSMGeoAdmin):
-    """Context Cache admin model."""
-    list_display = ('name', 'service_registry', 'value', 'expired_time')
+class CacheAdmin(OSMGeoAdmin):
+    """Cache admin model."""
+    list_display = ('name', 'service', 'value', 'expired_time')
 
 
-class ContextGroupAdmin(admin.ModelAdmin):
-    """Context Group admin model."""
+class GroupAdmin(admin.ModelAdmin):
+    """Group admin model."""
     list_display = ('key', 'name', 'group_type', 'description')
-    inlines = [ContextGroupServicesInLine]
+    search_fields = ('key', 'name')
+    inlines = [GroupServicesInLine]
 
 
-class ContextCollectionAdmin(admin.ModelAdmin):
-    """Context Collection admin model."""
+class CollectionAdmin(admin.ModelAdmin):
+    """Collection admin model."""
     list_display = ('key', 'name', 'description')
+    search_fields = ('key', 'name')
     inlines = [CollectionGroupsInLine]
 
 
-admin.site.register(ContextServiceRegistry, ContextServiceRegistryAdmin)
-admin.site.register(ContextCache, ContextCacheAdmin)
-admin.site.register(ContextGroup, ContextGroupAdmin)
-admin.site.register(ContextCollection, ContextCollectionAdmin)
+admin.site.register(Service, ServiceAdmin)
+admin.site.register(Cache, CacheAdmin)
+admin.site.register(Group, GroupAdmin)
+admin.site.register(Collection, CollectionAdmin)

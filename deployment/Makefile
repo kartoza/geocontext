@@ -1,214 +1,296 @@
-PROJECT_ID := geocontext
 PROD_SERVER := geocontext.kartoza.com
-
+PROJECT_ID := geocontext
 SHELL := /bin/bash
 
-# ----------------------------------------------------------------------------
-#    P R O D U C T I O N     C O M M A N D S
-# ----------------------------------------------------------------------------
-default: web
-run: build permissions web migrate collectstatic
+# DEPLOY CONFIG HERE
+export GIT := andretheronsa  # Default kartoza
+export REPO := geocontext  # Default geocontext
+export BRANCH := 2.0  # Default master
+export DOCKER := andretheronsa  # Default andretheronsa
+export IMAGE := geocontext  # Default geocontext
+export TAG := 2.0  # Default latest
 
-deploy: run
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Bringing up fresh instance "
-	@echo "You can access it on http://localhost:65200"
-	@echo "------------------------------------------------------------------"
+default: start-web
+setup-web: build start-web pause migrate collectstatic
+
+generate-k8s-manifests:
+	@kompose convert --out k8s
 
 build:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Building in production mode"
+	@echo "Building uwsgi"
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) build uwsgi
-
-web:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Running in production mode"
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) up -d web
-	@# Dont confuse this with the dbbackup make command below
-	@# This one runs the postgis-backup cron container
-	@# We add --no-recreate so that it does not destroy & recreate the db container
-	@docker-compose -p $(PROJECT_ID) up --no-recreate --no-deps -d dbbackups
+	@docker-compose build uwsgi
 
 permissions:
-	# Probably we want something more granular here....
-	# Your sudo password will be needed to set the file permissions
-	# on logs, media, static and pg dirs
 	@if [ ! -d "logs" ]; then mkdir logs; fi
 	@if [ ! -d "media" ]; then mkdir media; fi
 	@if [ ! -d "static" ]; then mkdir static; fi
 	@if [ ! -d "backups" ]; then mkdir backups; fi
+	@mkdir -p reports
+	@mkdir -p sql
 	@if [ -d "logs" ]; then sudo chmod -R a+rwx logs; fi
 	@if [ -d "media" ]; then sudo chmod -R a+rwx media; fi
 	@if [ -d "static" ]; then sudo chmod -R a+rwx static; fi
 	@if [ -d "pg" ]; then sudo chmod -R a+rwx pg; fi
 	@if [ -d "backups" ]; then sudo chmod -R a+rwx backups; fi
+	@sudo chmod -R a+rwx reports sql
 
-db:
+uwsgi:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running db in production mode"
+	@echo "Spin up UWSGI container"
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) up -d db
+	@docker-compose up -d uwsgi
 
-mediasync:
+start-web:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Syncing media files and secret.py from live server"
+	@echo "Spin up NGINX web and DB backups"
 	@echo "------------------------------------------------------------------"
-	@rsync -av --progress $(PROD_SERVER):/home/$(PROJECT_ID)/deployment/media/ media
-	@rsync -av --progress $(PROD_SERVER):/home/$(PROJECT_ID)/django_project/core/settings/secret.py ../django_project/core/settings/
-#	@rsync -av --progress $(PROD_SERVER):/home/$(PROJECT_ID)/deployment/btsync-db.env btsync-db.env.PRODUCTION
-#	@rsync -av --progress $(PROD_SERVER):/home/$(PROJECT_ID)/deployment/btsync-media.env btsync-media.env.PRODUCTION
+	@docker-compose up -d web
+	@# Dont confuse this with the dbbackup make command below
+	@# This one runs the postgis-backup cron container
+	@# We add --no-recreate so that it does not destroy & recreate the db container
+	@docker-compose up --no-recreate --no-deps -d dbbackups
 
-nginx:
+pause:
+	@echo "Allow 10s for db to start up"
+	@sleep 10
+
+# ----------------------------------------------------------------------------
+# Production 
+# ----------------------------------------------------------------------------
+deploy:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running nginx in production mode"
-	@echo "Normally you should use this only for testing"
-	@echo "In a production environment you will typically use nginx running"
-	@echo "on the host rather if you have a multi-site host."
+	@echo "Pushing image to production"
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) up -d nginx
-	@echo "Site should now be available at http://localhost"
+	@production/push-production.sh
+
+# ----------------------------------------------------------------------------
+#  Development
+# ----------------------------------------------------------------------------
+
+setup-dev: build uwsgi pause migrate collectstatic import-data build-devweb devweb
+start-dev: devweb
+
+devweb: db
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running in DEVELOPMENT mode"
+	@echo "------------------------------------------------------------------"
+	@docker-compose up --no-deps -d devweb
+
+build-devweb: db
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Building devweb"
+	@echo "------------------------------------------------------------------"
+	@docker-compose build devweb
+
+# ----------------------------------------------------------------------------
+# Django administration
+# ----------------------------------------------------------------------------
+
+shell:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Shelling in uwsgi"
+	@echo "------------------------------------------------------------------"
+	@docker-compose exec uwsgi /bin/bash
+
+pyshell:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running Python Django interpreter"
+	@echo "------------------------------------------------------------------"
+	@docker-compose exec uwsgi python manage.py shell
+
+superuser:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Creating a superuser"
+	@echo "------------------------------------------------------------------"
+	@docker-compose exec uwsgi python manage.py createsuperuser
 
 migrate:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running migrate static in production mode"
+	@echo "Running migrate"
 	@echo "------------------------------------------------------------------"
-	@#http://stackoverflow.com/questions/29689365/auth-user-error-with-django-1-8-and-syncdb-migrate
-	@#and
-	@#http://stackoverflow.com/questions/3143635/how-to-ignore-mv-error
-	@# We add the '-' prefix to the next line as the migration may fail
-	@# but we want to continue anyway.
-	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py migrate
+	@docker-compose exec uwsgi python manage.py migrate
 
-export-data:
+makemigrations:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running update migrations"
+	@echo "------------------------------------------------------------------"
+	@docker-compose exec uwsgi python manage.py makemigrations
+
+collectstatic:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Collecting static"
+	@echo "------------------------------------------------------------------"
+	@docker-compose exec uwsgi python manage.py collectstatic --noinput
+
+data-export:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Exporting GeoContext Data."
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py export_data
+	@docker-compose exec uwsgi python manage.py export_data
 
 import-data:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Importing GeoContext Data."
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py import_data $(FILE_URI)
+	@docker-compose exec uwsgi python manage.py import_data
 
-delete-data:
+import-v1-data:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Importing GeoContext Data."
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py delete_data
+	@docker-compose exec uwsgi python manage.py import_data --v1
 
-delete-context-cache:
+delete-data:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Delete context cache."
+	@echo "Deleting all GeoContext Data."
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py delete_context_cache
+	@docker-compose exec uwsgi python manage.py delete_data
 
-update-migrations:
+delete-cache:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Running update migrations in production mode"
+	@echo "Delete cache."
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py makemigrations
+	@docker-compose exec uwsgi python manage.py delete_cache
 
-collectstatic:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Collecting static in production mode"
-	@echo "------------------------------------------------------------------"
-	#@docker-compose -p $(PROJECT_ID) run uwsgi python manage.py collectstatic --noinput
-	#We need to run collect static in the same context as the running
-	# uwsgi container it seems so I use docker exec here
-	# no -it flag so we can run over remote shell
-	@docker exec $(PROJECT_ID)-uwsgi python manage.py collectstatic --noinput
+test-full:
+	@docker-compose exec devweb pytest \
+		--cov=geocontext geocontext/tests/  \
+		--doctest-modules \
+		--ignore-glob="*aiohttp/helpers.py" \
+		--ignore-glob="*__init__.py" \
+		--flake8
+
+test:
+	@docker-compose exec devweb pytest
+
+test-coverage:
+	@docker-compose exec devweb pytest --cov=geocontext geocontext/tests/
+
+test-docs:
+	@docker-compose exec devweb pytest --doctest-modules
+
+test-flake8:
+	@docker-compose exec devweb pytest --flake8
+
+# ----------------------------------------------------------------------------
+# Server Administration
+# ----------------------------------------------------------------------------
 
 reload:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Reload django project in production mode"
+	@echo "Reload Django"
 	@echo "------------------------------------------------------------------"
-	# no -it flag so we can run over remote shell
-	@docker exec $(PROJECT_ID)-uwsgi uwsgi --reload  /tmp/django.pid
-
-kill:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Killing in production mode"
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) kill
-
-rm: dbbackup rm-only
-
-
-rm-only: kill
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Removing production instance!!! "
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) rm
+	@docker-compose exec uwsgi uwsgi --reload  /tmp/django.pid
 
 logs:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Showing uwsgi logs in production mode"
+	@echo "Showing uwsgi logs"
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) logs uwsgi
+	@docker-compose logs uwsgi
+
+nginx:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running nginx"
+	@echo "------------------------------------------------------------------"
+	@docker-compose up -d nginx
+	@echo "Site should now be available at http://localhost"
+
+# ----------------------------------------------------------------------------
+# Docker administration
+# ----------------------------------------------------------------------------
+
+rm: dbbackup rm-only
+
+stop:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Stoppping and removing containers"
+	@echo "------------------------------------------------------------------"
+	@docker-compose down
+
+kill:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Killing all containers"
+	@echo "------------------------------------------------------------------"
+	@docker-compose kill
+
+rm-only: kill
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Killing and removing all containers"
+	@echo "------------------------------------------------------------------"
+	@docker-compose rm
+
+status:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Show status for all containers"
+	@echo "------------------------------------------------------------------"
+	@docker-compose ps
+
+# ----------------------------------------------------------------------------
+# Database administration
+# ----------------------------------------------------------------------------
+
+db:
+	@echo
+	@echo "------------------------------------------------------------------"
+	@echo "Running db"
+	@echo "------------------------------------------------------------------"
+	@docker-compose up -d db
 
 dblogs:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Showing db logs in production mode"
+	@echo "Showing db logs"
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) logs db
+	@docker-compose logs db
 
 nginxlogs:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Showing nginx logs in production mode"
+	@echo "Showing nginx logs"
 	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) logs web
-
-shell:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Shelling in in production mode"
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) exec uwsgi /bin/bash
-
-superuser:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Creating a superuser in production mode"
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) exec uwsgi python manage.py createsuperuser
+	@docker-compose logs web
 
 dbbash:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Bashing in to production database"
 	@echo "------------------------------------------------------------------"
-	@docker exec -t -i $(PROJECT_ID)-db /bin/bash
+	@docker-compose exec db /bin/bash
 
 dbsnapshot:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Grab a quick snapshot of the database and place in the host filesystem"
 	@echo "------------------------------------------------------------------"
-	@docker exec -t -i $(PROJECT_ID)-db /bin/bash -c "PGPASSWORD=docker pg_dump -Fc -h localhost -U docker -f /tmp/$(PROJECT_ID)-snapshot.dmp gis"
-	@docker cp $(PROJECT_ID)-db:/tmp/$(PROJECT_ID)-snapshot.dmp .
-	@docker exec -t -i $(PROJECT_ID)-db /bin/bash -c "rm /tmp/$(PROJECT_ID)-snapshot.dmp"
+	@docker-compose exec db /bin/bash -c "PGPASSWORD=docker pg_dump -Fc -h localhost -U docker -f /tmp/$(PROJECT_ID)-snapshot.dmp gis"
+	@docker cp $(PROJECT_ID)_db_1:/tmp/$(PROJECT_ID)-snapshot.dmp .
+	@docker-compose exec db /bin/bash -c "rm /tmp/$(PROJECT_ID)-snapshot.dmp"
 	@ls -lahtr *.dmp
 
 dbschema:
@@ -216,164 +298,97 @@ dbschema:
 	@echo "------------------------------------------------------------------"
 	@echo "Print the database schema to stdio"
 	@echo "------------------------------------------------------------------"
-	@docker exec -t -i $(PROJECT_ID)-db /bin/bash -c "PGPASSWORD=docker pg_dump -s -h localhost -U docker gis"
+	@docker-compose exec db /bin/bash -c "PGPASSWORD=docker pg_dump -s -h localhost -U docker gis"
 
 dbshell:
 	@echo
 	@echo "------------------------------------------------------------------"
 	@echo "Shelling in in production database"
 	@echo "------------------------------------------------------------------"
-	@docker exec -t -i $(PROJECT_ID)-db psql -U docker -h localhost gis
+	@docker-compose exec db psql -U docker -h localhost gis
 
 dbrestore:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Restore dump from backups/latest.dmp in production mode"
+	@echo "Restore dump from backups/latest.dmp"
 	@echo "------------------------------------------------------------------"
 	@# - prefix causes command to continue even if it fails
-	-@docker exec -t -i $(PROJECT_ID)-db su - postgres -c "dropdb gis"
-	@docker exec -t -i $(PROJECT_ID)-db su - postgres -c "createdb -O docker -T template_postgis gis"
-	@docker exec -t -i $(PROJECT_ID)-db pg_restore /backups/latest.dmp | docker exec -i $(PROJECT_ID)-db su - postgres -c "psql gis"
+	-@docker-compose exec db su - postgres -c "dropdb gis"
+	@docker-compose exec db su - postgres -c "createdb -O docker -T template_postgis gis"
+	@docker-compose exec db pg_restore backups/latest.dmp | docker-compose exec -i db su - postgres -c "psql gis"
 
 db-fresh-restore:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Restore dump from backups/latest.dmp in production mode"
+	@echo "Restore dump from backups/latest.dmp"
 	@echo "------------------------------------------------------------------"
-	-@docker exec -t -i $(PROJECT_ID)-db su - postgres -c "dropdb gis"
-	@docker exec -t -i $(PROJECT_ID)-db su - postgres -c "createdb -O docker -T template_postgis gis"
-	@docker exec -t -i $(PROJECT_ID)-db su - postgres -c "psql gis -f /sql/migration.sql"
-
+	-@docker-compose exec db su - postgres -c "dropdb gis"
+	@docker-compose exec db su - postgres -c "createdb -O docker -T template_postgis gis"
+	@docker-compose exec db su - postgres -c "psql gis -f /sql/migration.sql"
 
 dbbackup:
 	@echo
 	@echo "------------------------------------------------------------------"
-	@echo "Create `date +%d-%B-%Y`.dmp in production mode"
-	@echo "Warning: backups/latest.dmp will be replaced with a symlink to "
-	@echo "the new backup."
+	@echo "Create `date +%d-%B-%Y`.dmp"
+	@echo "Warning: backups/latest.dmp will be replaced with a symlink to the new backup."
 	@echo "------------------------------------------------------------------"
-	@# - prefix causes command to continue even if it fails
-	@# Explicitly don't use -it so we can call this make target over a remote ssh session
-	@docker exec $(PROJECT_ID)-db-backups /backups.sh
-	@docker exec $(PROJECT_ID)-db-backups cat /var/log/cron.log | tail -2 | head -1 | awk '{print $4}'
-	-@if [ -f "backups/latest.dmp" ]; then rm backups/latest.dmp; fi
-	# backups is intentionally missing from front of first clause below otherwise symlink comes
-	# out with wrong path...
-	@ln -s `date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp backups/latest.dmp
-	@echo "Backup should be at: backups/`date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp"
-
-sentry:
-	@echo
-	@echo "--------------------------"
-	@echo "Running sentry production mode"
-	@echo "--------------------------"
-	@docker-compose  -p $(PROJECT_ID) up -d sentry
-
-maillogs:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Showing smtp logs in production mode"
-	@echo "------------------------------------------------------------------"
-	@docker exec -t -i $(PROJECT_ID)-smtp tail -f /var/log/mail.log
-
-mailerrorlogs:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Showing smtp error logs in production mode"
-	@echo "------------------------------------------------------------------"
-	@docker exec -t -i $(PROJECT_ID)-smtp tail -f /var/log/mail.err
-
-create-machine:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Creating a docker machine."
-	@echo "------------------------------------------------------------------"
-	@docker-machine create -d virtualbox $(PROJECT_ID)
-
-enable-machine:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Enabling docker machine."
-	@echo "------------------------------------------------------------------"
-	@echo "eval \"$(docker-machine env freshwater)\""
+	@docker-compose exec dbbackups /backups.sh
+	@docker-compose exec dbbackups cat /var/log/cron.log | tail -2 | head -1 | awk '{print $4}'
+	-@if [ -f "/deployment/backups/latest.dmp" ]; then rm /deployment/backups/latest.dmp; fi
+	-@ln -s `date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp backups/latest.dmp
+	@echo "Backup should be at: /deployment/backups/`date +%Y`/`date +%B`/PG_$(PROJECT_ID)_gis.`date +%d-%B-%Y`.dmp"
 
 # ----------------------------------------------------------------------------
-#    DEVELOPMENT C O M M A N D S
-# --no-deps will attach to prod deps if running
-# after running you will have ssh and web ports open (see dockerfile for no's)
-# and you can set your pycharm to use the python in the container
-# Note that pycharm will copy in resources to the /root/ user folder
-# for pydevd etc. If they dont get copied, restart pycharm...
-# ----------------------------------------------------------------------------
-
-devweb: db
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Running in DEVELOPMENT mode"
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) up --no-deps -d devweb
-
-build-devweb: db
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Building devweb"
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) build devweb
-
-import-web-data:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Importing GeoContext Data."
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) exec dev-web python manage.py import_data $(FILE_URI)
-status:
-	@echo
-	@echo "------------------------------------------------------------------"
-	@echo "Show status for all containers"
-	@echo "------------------------------------------------------------------"
-	@docker-compose -p $(PROJECT_ID) ps
-
-flake8:
-	@echo "Check flake 8"
-	@flake8 ../django_project
-
-
-# --------------- help --------------------------------
-
 help:
-	@echo "* **build** - builds all required containers."
-	@echo "* **build-devweb** - build the development container. See [development notes](README-dev.md)."
-	@echo "* **collectstatic** - run the django collectstatic command."
-	@echo "* **create-machine** ."
-	@echo "* **db** - build and run the db container."
-	@echo "* **dbbackup** - make a snapshot of the database, saving it to deployments/backups/YYYY/MM/project-DDMMYYYY.dmp. It also creates a symlink to backups/latest.dmp for the latest backup."
-	@echo "* **dbbash** - open a bash shell inside the database container."
-	@echo "* **dblogs** - view the database logs."
-	@echo "* **dbrestore** - restore deployment/backups/latest.dmp over the active database. Will delete any existing data in your database and replace with the restore, so **use with caution**."
-	@echo "* **dbschema** - dump the current db schema (without data) to stdio. Useful if you want to compare changes between instances."
-	@echo "* **dbshell** - get a psql prompt into the db container. "
-	@echo "* **dbsnapshot** - as above but makes the backup as deployment/snapshot.smp - replacing any pre-existing snapshot."
-	@echo "* **dbsync** - use this from a development or offsite machine. It will rsync all database backups from deployment/backups to your offsite machine."
-	@echo "* **default** ."
-	@echo "* **deploy** ."
-	@echo "* **devweb** - create an ssh container derived from uwsgi that can be used as a remote interpreter for PyCharm. See [development notes](README-dev.md)."
-	@echo "* **enable-machine** - "
-	@echo "* **kill** - kills all running containers. Does not remove them."
-	@echo "* **logs** - view the logs of all running containers. Note that you can also view individual logs in the deployment/logs directory."
-	@echo "* **mailerrorlogs** - View the error logs from the mail server."
-	@echo "* **maillogs** - view the transaction logs from the mail server."
-	@echo "* **mediasync** - use this from a development or offsite machine. It will rsync all media backups from deployment/media to your offsite machine."
-	@echo "* **migrate** - run any pending migrations. "
-	@echo "* **nginx** - builds and runs the nginx container."
-	@echo "* **nginxlogs** - view just the nginx activity logs."
-	@echo "* **permissions** - Update the permissions of shared volumes. Note this will destroy any existing permissions you have in place."
-	@echo "* **reload** - reload the uwsgi process. Useful when you need django to pick up any changes you may have deployed."
-	@echo "* **rm** - remove all containers."
-	@echo "* **rm-only** - remove any containers without trying to kill them first. "
-	@echo "* **run** - builds and runs the complete orchestrated set of containers."
-	@echo "* **sentry** - **currently not working I think.** The idea is to spin up a sentry instance together with your app for fault reporting."
-	@echo "* **shell** - open a bash shell in the uwsgi (where django runs) container."
-	@echo "* **superuser** - create a django superuser account."
-	@echo "* **update-migrations** - freshen all migration definitions to match the current code base."
-	@echo "* **web** - same as **run** - runs the production site."
-	@echo "* **flake8** - Check flake 8"
+	@echo "-------------------------------GEOCONTEXT--------------------------------------"
+	@echo ""
+	@echo "---------------------------------General---------------------------------------"
+	@echo ""
+	@echo "permissions      :Update the permissions of shared volumes. Note this will destroy any existing permissions you have in place."
+	@echo "setup-dev        :Dev shortcut - builds uwsgi + dev containers, configure & load data."
+	@echo "start-dev        :Start up dev container"
+	@echo "setup-web        :Builds, configures and runs the production containers inlcuding web server. Does not load data."
+	@echo "start-web        :Default - runs the web server."
+	@echo "import-data      :Import geojson service data"
+	@echo "stop             :Stop and remove running containers."
+	@echo "deploy           :Extends uwsgi image with production, tag and push. Config in Makefile. Default=kartoza/geocontext:master."
+	@echo ""
+	@echo ""
+	@echo "-----------------------------Django Administration-----------------------------"
+	@echo ""
+	@echo "superuser        :Create a django superuser account."
+	@echo "shell            :Open a bash shell in the uwsgi container."
+	@echo "pyshell          :Open a Python Django session in the uwsgi container."
+	@echo "test             :Run tests on development."
+	@echo "flake8           :Check flake8."
+	@echo "collectstatic    :Run the django collectstatic command."
+	@echo "makemigrations   :Freshen all migration definitions to match the current code base."
+	@echo "migrate          :Run any pending migrations. "
+	@echo ""
+	@echo "-----------------------------Docker Administration-----------------------------"
+	@echo ""
+	@echo "reload           :Reload the uwsgi process. Useful when you need django to pick up any changes you may have deployed."
+	@echo "build            :Builds all required containers."
+	@echo "build-devweb     :Build the development container. See [development notes](README-dev.md)."
+	@echo "devweb           :Create an ssh container derived from uwsgi that can be used as a remote interpreter for PyCharm. See [development notes](README-dev.md)."
+	@echo "rm               :Make a db backup and remove all containers."
+	@echo "rm-only          :Kills and removes all containers."
+	@echo "logs             :View the logs of all running containers. Note that you can also view individual logs in the deployment/logs directory."
+	@echo "kill             :Kills all running containers. Does not remove them."
+	@echo ""
+	@echo "-----------------------------Server Administration-----------------------------"
+	@echo ""
+	@echo "nginx            :Builds and runs the nginx container."
+	@echo "logs             :View the uwsgi activity logs."
+	@echo "nginxlogs        :View the nginx activity logs."
+	@echo ""
+	@echo "-----------------------------Database------------------------------------------"
+	@echo ""
+	@echo "db               :Build and run the db container."
+	@echo "dbbackup         :Make a snapshot of the database, saving it to deployments/backups/YYYY/MM/project-DDMMYYYY.dmp. It also creates a symlink to backups/latest.dmp for the latest backup."
+	@echo "dbbash           :Open a bash shell inside the database container."
+	@echo "dblogs           :View the database logs."
+	@echo "dbrestore        :Restore deployment/backups/latest.dmp over the active database. Will delete any existing data in your database and replace with the restore, so **use with caution**."
+	@echo "dbschema         :Dump the current db schema (without data) to stdio. Useful if you want to compare changes between instances."
+	@echo "dbshell          :Get a psql prompt into the db container. "
+	@echo "dbsnapshot       :As above but makes the backup as deployment/snapshot.smp - replacing any pre-existing snapshot."

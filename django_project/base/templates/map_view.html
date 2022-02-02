@@ -1,0 +1,24 @@
+{% extends 'main_base.html' %}
+{% load static %}
+
+{% block title %}
+Map Viewer
+{% endblock %}
+
+{% block body_content %}
+    <!-- Load context variables-->
+    <script>
+        var services = {{ services|safe }};
+        var groups = {{ groups|safe }};
+        var collections = {{ collections|safe }};
+    </script>
+    <div id="map-view" class='container'>
+        {% load leaflet_tags %}
+        {% leaflet_js plugins="ALL" %}
+        {% leaflet_css plugins="ALL" %}
+        {% leaflet_map "main" %}
+    </div>
+    <!-- Load After leaflet css-->
+    <link rel="stylesheet" href="{% static "css/map_view.css" %}">
+    <script type="text/javascript", src="{% static "js/map_view.js" %}"></script>
+{% endblock %}

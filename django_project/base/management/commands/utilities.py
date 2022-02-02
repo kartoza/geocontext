@@ -1,200 +1,232 @@
-# coding=utf-8
-"""Utilities for commands."""
-
 import os
 import json
 import requests
 
 from django.core.exceptions import ValidationError
 
-from geocontext.models.context_service_registry import ContextServiceRegistry
-from geocontext.models.context_group import ContextGroup
-from geocontext.models.context_collection import ContextCollection
-
-from geocontext.models.context_group_services import ContextGroupServices
+from geocontext.models.service import Service
+from geocontext.models.group import Group
+from geocontext.models.collection import Collection
+from geocontext.models.group_services import GroupServices
 from geocontext.models.collection_groups import CollectionGroups
-
-from geocontext.serializers.context_service_registry import (
-    ContextServiceRegistrySerializer)
-from geocontext.serializers.context_group import ContextGroupSerializer
-from geocontext.serializers.context_collection import (
-    ContextCollectionSerializer)
+from geocontext.serializers.service import ServiceSerializer
+from geocontext.serializers.group import GroupSerializer
+from geocontext.serializers.collection import CollectionSerializer
 
 
 def export_data(file_path):
-    """Export context service data to file_path as json file.
+    """Export service data to file_path as json file.
 
     :param file_path: Path to json file.
     :type file_path: str
     """
-    # Context Service Registries
-    context_service_registries = ContextServiceRegistry.objects.all()
-    csr_serializer = ContextServiceRegistrySerializer(
-        context_service_registries, many=True)
+    services = Service.objects.all()
+    service_serializer = ServiceSerializer(services, many=True)
 
-    # Context Groups
-    context_groups = ContextGroup.objects.all()
-    context_group_serializer = ContextGroupSerializer(
-        context_groups, many=True)
+    groups = Group.objects.all()
+    group_serializer = GroupSerializer(groups, many=True)
 
-    # Context Collection
-    context_collections = ContextCollection.objects.all()
-    context_collection_serializer = ContextCollectionSerializer(
-        context_collections, many=True)
+    collections = Collection.objects.all()
+    collection_serializer = CollectionSerializer(collections, many=True)
 
-    # Aggregate Data
     data = {
-        'context_service_registry': csr_serializer.data,
-        'context_group': context_group_serializer.data,
-        'context_collection': context_collection_serializer.data
+        'service': service_serializer.data,
+        'group': group_serializer.data,
+        'collection': collection_serializer.data
     }
 
     with open(file_path, 'w') as outfile:
-        json.dump(
-            data,
-            outfile,
-            indent=4,
-            ensure_ascii=False)
+        json.dump(data, outfile, indent=4, ensure_ascii=False)
 
 
 def import_data(file_uri):
-    """Import context service data from file_path.
+    """Import service data from file_path.
 
     :param file_uri: Path to json resource.
     :type file_uri: str
     """
-    print('=========================')
-    # Read json file
     if os.path.exists(file_uri):
-        print('Read from local file')
         with open(file_uri) as f:
             data = json.load(f)
     else:
-        print('Read from URL')
         r = requests.get(file_uri)
         data = r.json()
 
-    # Load Context Service Registries
-    print('Load Context Service Registry....')
-    context_service_registries = data['context_service_registry']
-    for csr_data in context_service_registries:
-        service_registry, created = ContextServiceRegistry.objects. \
-            get_or_create(key=csr_data['key'])
-        # Change to load from dictionary
-        for k, v in csr_data.items():
-            setattr(service_registry, k, v)
-        service_registry.save()
-        print('   id = %s, CSR %s is loaded' % (
-            service_registry.id, service_registry.name))
+    for service_data in data['service']:
+        service, created = Service.objects.get_or_create(key=service_data['key'])
+        for k, v in service_data.items():
+            setattr(service, k, v)
+        service.save()
 
         try:
-            service_registry.full_clean()
-            service_registry.save()
-            print('   id = %s, CSR %s is loaded' % (
-                service_registry.id, service_registry.name))
+            service.full_clean()
+            service.save()
         except ValidationError as e:
-            print('   >>> CSR %s is not clean because %s ' % (
-                service_registry.name, e))
-            service_registry.delete()
+            print(f'Service {service.name} is not clean because {e} ')
+            service.delete()
 
-    # Load Context Groups
-    print('Load Context Groups....')
-    context_groups = data['context_group']
-    for context_group_data in context_groups:
-        context_group, created = ContextGroup.objects. \
-            get_or_create(key=context_group_data['key'])
-        # Change to load from dictionary
-        for k, v in context_group_data.items():
-            if k == 'context_service_registry_keys':
-                context_service_registry_keys = v
+    for group_data in data['group']:
+        group, created = Group.objects. \
+            get_or_create(key=group_data['key'])
+        for k, v in group_data.items():
+            if k == 'service_keys':
+                service_keys = v
                 i = 0
-                for csr_key in context_service_registry_keys:
+                for service_key in service_keys:
                     try:
-                        context_service_registry = \
-                            ContextServiceRegistry.objects.get(key=csr_key)
-                    except ContextServiceRegistry.DoesNotExist as e:
-                        print('No CSR registered for %s' % csr_key)
+                        service = Service.objects.get(key=service_key)
+                    except Service.DoesNotExist:
+                        print(f'No service registered for {service_key}')
                         continue
 
-                    context_group_service = ContextGroupServices(
-                        context_group=context_group,
-                        context_service_registry=context_service_registry,
-                        order=i
-                    )
-                    context_group_service.save()
+                    group_service = GroupServices(group=group, service=service, order=i)
+                    group_service.save()
                     i += 1
-            setattr(context_group, k, v)
+            setattr(group, k, v)
         try:
-            context_group.full_clean()
-            context_group.save()
-            print(
-                '   Context Group %s is loaded' % context_group.name)
+            group.full_clean()
+            group.save()
         except ValidationError as e:
-            print('   >>> Context Group %s is not clean because %s ' % (
-                context_group.name, e))
-            context_group.delete()
+            print(f'Group {group.name} is not clean because {e} ')
+            group.delete()
 
-    # Load Context Collections
-    print('Load Context Collection....')
-    context_collections = data['context_collection']
-    for context_collection_data in context_collections:
-        context_collection, created = ContextCollection.objects. \
-            get_or_create(key=context_collection_data['key'])
-        # Change to load from dictionary
-        for k, v in context_collection_data.items():
-            if k == 'context_group_keys':
-                context_group_keys = v
+    for collection_data in data['collection']:
+        collection, created = Collection.objects.get_or_create(key=collection_data['key'])
+        for k, v in collection_data.items():
+            if k == 'group_keys':
+                group_keys = v
                 i = 0
-                for context_group_key in context_group_keys:
-                    context_group = ContextGroup.objects.get(
-                        key=context_group_key)
+                for group_key in group_keys:
+                    group = Group.objects.get(key=group_key)
                     collection_group = CollectionGroups(
-                        context_collection=context_collection,
-                        context_group=context_group,
+                        collection=collection,
+                        group=group,
                         order=i
                     )
                     collection_group.save()
                     i += 1
-            setattr(context_collection, k, v)
+            setattr(collection, k, v)
         try:
-            context_collection.full_clean()
-            context_collection.save()
-            print(
-                '   Context Collection %s is loaded' % context_collection.name)
+            collection.full_clean()
+            collection.save()
         except ValidationError as e:
-            print('   >>> Context Collection %s is not clean because %s ' % (
-                context_collection.name, e))
-            context_collection.delete()
+            print(f'Collection {collection.name} is not clean because: {e}')
+            collection.delete()
 
-    print('After import data process...')
-    print('   Number of CSR %s' % ContextServiceRegistry.objects.count())
-    print('   Number of Context Group %s' % ContextGroup.objects.count())
-    print('   Number of Context Collection %s' %
-          ContextCollection.objects.count())
+    print('After data import:')
+    print(f'Service count: {Service.objects.count()}')
+    print(f'Group count: {Group.objects.count()}')
+    print(f'Collection count {Collection.objects.count()}')
+
+
+def import_v1_data(file_uri):
+    """Import service data from file_path.
+
+    This function is aware of the Geocontext v1 service keys.
+    eg. result_regex, context_service_registry_keys, context_group_keys etc.
+    It also splits regex/typenames and only grabs the second part as it is all we need.
+
+    :param file_uri: Path to json resource.
+    :type file_uri: str
+    """
+    if os.path.exists(file_uri):
+        with open(file_uri) as f:
+            data = json.load(f)
+    else:
+        r = requests.get(file_uri)
+        data = r.json()
+
+    for service_data in data['context_service_registry']:
+        service, created = Service.objects.get_or_create(key=service_data['key'])
+        for k, v in service_data.items():
+            if k in ['result_regex', 'layer_typename'] and ':' in v:
+                v = v.split(':')[-1]
+            if k == 'result_regex':
+                k = 'layer_name'
+            setattr(service, k, v)
+        service.save()
+
+        try:
+            service.full_clean()
+            service.save()
+        except ValidationError as e:
+            print(f'Service {service.name} is not clean because {e} ')
+            service.delete()
+
+    for group_data in data['context_group']:
+        group, created = Group.objects.get_or_create(key=group_data['key'])
+        for k, v in group_data.items():
+            k = 'service_keys' if k == 'context_service_registry_keys' else k
+            if k == 'service_keys':
+                service_keys = v
+                i = 0
+                for service_key in service_keys:
+                    try:
+                        service = Service.objects.get(key=service_key)
+                    except Service.DoesNotExist:
+                        print(f'No service registered for {service_key}')
+                        continue
+
+                    group_service = GroupServices(group=group, service=service, order=i)
+                    group_service.save()
+                    i += 1
+            setattr(group, k, v)
+        try:
+            group.full_clean()
+            group.save()
+        except ValidationError as e:
+            print(f'Group {group.name} is not clean because {e} ')
+            group.delete()
+
+    for collection_data in data['context_collection']:
+        collection, created = Collection.objects.get_or_create(key=collection_data['key'])
+        for k, v in collection_data.items():
+            k = 'group_keys' if k == 'context_group_keys' else k
+            if k == 'group_keys':
+                group_keys = v
+                i = 0
+                for group_key in group_keys:
+                    group = Group.objects.get(key=group_key)
+                    collection_group = CollectionGroups(
+                        collection=collection,
+                        group=group,
+                        order=i
+                    )
+                    collection_group.save()
+                    i += 1
+            setattr(collection, k, v)
+        try:
+            collection.full_clean()
+            collection.save()
+        except ValidationError as e:
+            print(f'Collection {collection.name} is not clean because: {e}')
+            collection.delete()
+
+    print('After data import:')
+    print(f'Service count: {Service.objects.count()}')
+    print(f'Group count: {Group.objects.count()}')
+    print(f'Collection count {Collection.objects.count()}')
 
 
 def delete_data():
-    """Delete geocontext data utilities method."""
-    print('Before delete process...')
-    print('   Number of CSR %s' % ContextServiceRegistry.objects.count())
-    print('   Number of Context Group %s' % ContextGroup.objects.count())
-    print('   Number of Context Collection %s' %
-          ContextCollection.objects.count())
+    print('Before delete:')
+    print(f'Service count: {Service.objects.count()}')
+    print(f'Group count: {Group.objects.count()}')
+    print(f'Collection count {Collection.objects.count()}')
 
-    context_service_registries = ContextServiceRegistry.objects.all()
-    for context_service_registry in context_service_registries:
-        context_service_registry.delete()
+    services = Service.objects.all()
+    for service in services:
+        service.delete()
 
-    context_groups = ContextGroup.objects.all()
-    for context_group in context_groups:
-        context_group.delete()
+    groups = Group.objects.all()
+    for group in groups:
+        group.delete()
 
-    context_collections = ContextCollection.objects.all()
-    for context_collection in context_collections:
-        context_collection.delete()
+    collections = Collection.objects.all()
+    for collection in collections:
+        collection.delete()
 
-    print('After delete process...')
-    print('   Number of CSR %s' % ContextServiceRegistry.objects.count())
-    print('   Number of Context Group %s' % ContextGroup.objects.count())
-    print('   Number of Context Collection %s' %
-          ContextCollection.objects.count())
+    print('After deleting:')
+    print(f'Service count: {Service.objects.count()}')
+    print(f'Group count: {Group.objects.count()}')
+    print(f'Collection count {Collection.objects.count()}')

@@ -1,29 +1,28 @@
-#--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
-# Note this base image is based on debian
-FROM python:3.6.8
-MAINTAINER Dimas Ciputra<dimas@kartoza.com>
+FROM python:3.8-slim-buster
 
-RUN export DEBIAN_FRONTEND=noninteractive
-ENV DEBIAN_FRONTEND noninteractive
-RUN dpkg-divert --local --rename --add /sbin/initctl
+LABEL maintainer="Andre Theron<andre.theron@kartoza.com>"
 
-RUN apt-get update -y
+RUN DEBIAN_FRONTEND=noninteractive \
+    && apt-get update -y \
+    && apt-get install -y --no-install-recommends \
+    binutils \
+    gcc \
+    gdal-bin \
+    git \
+    libproj-dev \
+    libgdal-dev \
+    python3-gdal \
+    python3-geoip \
+    python3-setuptools \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get install -y python3-pip \
-    python-gdal \
-    python-geoip \
-    python3-setuptools
+COPY deployment/docker/requirements.txt /etc/geocontext/requirements.txt
+RUN pip3 install --upgrade pip setuptools \
+    && pip3 install --no-cache-dir -r /etc/geocontext/requirements.txt
 
-ADD REQUIREMENTS.txt /REQUIREMENTS.txt
-RUN pip install -r /REQUIREMENTS.txt
-RUN pip install uwsgi
-
-ADD uwsgi.conf /uwsgi.conf
-
-# Open port 8080 as we will be running our uwsgi socket on that
 EXPOSE 8080
-
-#USER www-data
-WORKDIR /home/web/django_project
-
-CMD ["uwsgi", "--ini", "/uwsgi.conf"]
+COPY django_project /usr/src/geocontext
+WORKDIR /usr/src/geocontext
+COPY deployment/docker/uwsgi.conf /etc/geocontext/uwsgi.conf
+CMD ["uwsgi", "--ini", "/etc/geocontext/uwsgi.conf"]
+#CMD ["gunicorn", "-w 4", "-k uvicorn.workers.UvicornWorker", "core.asgi:application"]

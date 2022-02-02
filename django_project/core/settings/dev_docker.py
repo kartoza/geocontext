@@ -2,8 +2,7 @@
 """Settings for when running under docker in development mode."""
 from .dev import *  # noqa
 
-ALLOWED_HOSTS = ['*',
-                 u'0.0.0.0']
+ALLOWED_HOSTS = ['*', '0.0.0.0']
 
 ADMINS = ()
 

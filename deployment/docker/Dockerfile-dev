@@ -1,7 +1,5 @@
-#--------- Generic stuff all our Dockerfiles should start with so we get caching ------------
-# Note this base image is based on debian
 FROM geocontext_uwsgi
-MAINTAINER Dimas Ciputra<dimas@kartoza.com>
+LABEL maintainer="Andre Theron<andre.theron@kartoza.com>"
 
 # This section taken on 2 July 2015 from
 # https://docs.docker.com/examples/running_ssh_service/
@@ -22,8 +20,8 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 # End of cut & paste section
 
-ADD REQUIREMENTS-dev.txt /REQUIREMENTS-dev.txt
-RUN pip install -r /REQUIREMENTS-dev.txt
+ADD requirements-dev.txt /etc/geocontext/requirements-dev.txt
+RUN pip install -r /etc/geocontext/requirements-dev.txt
 ADD bashrc /root/.bashrc
 
 # --------------------------------------------------------

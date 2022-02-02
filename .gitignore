@@ -31,7 +31,6 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-build/
 develop-eggs/
 dist/
 downloads/
@@ -61,7 +60,7 @@ htmlcov/
 .tox/
 .coverage
 .cache
-nosetests.xml
+django_project/.pytest_cache
 coverage.xml
 
 # Translations
@@ -80,8 +79,15 @@ target/
 #PyCharm
 .idea
 
+#Vscode
+.vscode
+
 # Virtual env
 venv
+
+# .env file used for secrets during dev
+deployment/.env
+docker-compose.override.yml
 
 # Node
 django_project/static
@@ -94,9 +100,9 @@ scrap.html
 .sudo_as_admin_successful
 
 # Pg cluster for docker
-deployment/pg/postgres_data/9.3
-deployment/pg/postgres_staging_data/9.3
-deployment/pg/postgres_dev_data/9.3
+deployment/pg/postgres_data/13.0
+deployment/pg/postgres_staging_data/13.0
+deployment/pg/postgres_dev_data/13.0
 # Template for apt-cacher
 # static and media dirs
 deployment/static
@@ -114,16 +120,6 @@ django_project/media
 # Backups
 *.dmp
 deployment/backups
-
-# We should never version the btsync keys
-deployment/btsync-media.env
-deployment/btsync-db.env
-deployment/btsync-db.env.PRODUCTION
-deployment/btsync-media.env.PRODUCTION
-.sync/
-# These don't get versioned since they are generated on the fly 
-deployment/docker/Dockerfile-prod
-deployment/docker/projecta.tar.gz
 
 # GeoContext data backup directory
 django_project/base/management/commands/backups/
