@@ -4,6 +4,8 @@ from geocontext.models.group_services import *
 from geocontext.models.collection_groups import *
 from geocontext.models.group import *
 from geocontext.models.collection import *
+from geocontext.models.user_tier import *
+from geocontext.models.user_profile import *
 
 from django.conf import settings
 from django.db.models.signals import post_save

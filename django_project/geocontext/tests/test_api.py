@@ -52,3 +52,34 @@ class TestAPI(TestCase):
         response = view(request)
 
         self.assertEqual(response.status_code, 200)
+
+
+    @override_settings(ENABLE_API_TOKEN=True)
+    def test_api_throttling(self):
+        view = GenericAPIView.as_view()
+        api_factory = APIRequestFactory()
+
+        user = UserF.create()
+        token = user.auth_token.key
+
+        user_tier = UserTierF.create(
+            request_limit='1/day'
+        )
+
+        UserProfileF.create(
+            user=user,
+            user_tier=user_tier
+        )
+
+        api_url_with_token = self.api_url + '&token=' + token
+
+        request = api_factory.get(api_url_with_token)
+        response = view(request)
+
+        self.assertEqual(response.status_code, 200)
+
+        request = api_factory.get(api_url_with_token)
+        response = view(request)
+
+        self.assertEqual(response.status_code, 429) # throttled
+
