@@ -1,0 +1,63 @@
+{% extends 'main_base.html' %}
+
+{% load static %}
+{% block title %}
+    Pricing Plan
+{% endblock %}
+
+{% block body_content %}
+
+    <style>
+        .pricing-plan-container {
+            margin-top: 2em;
+            text-align: center;
+        }
+        .pricing-plan-container .card {
+            border-width: 2px;
+            border-radius: 1em;
+            padding-top: 2em;
+            padding-bottom: 2em;
+            transition: 0.5s;
+        }
+        .pricing-plan-container .card:hover {
+            border: 2px solid #d91269;
+            box-shadow: 0 0 8px #5e5e5e;
+        }
+        .card-title {
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .price {
+            font-size: 3em;
+        }
+        .btn-purchase {
+            margin-top: 1.5em;
+            border-radius: 15px;
+            font-size: 0.9em;
+            padding-left: 2em;
+            padding-right: 2em;
+        }
+        .card-body p {
+            line-height: 2em;
+        }
+    </style>
+
+    <div class="container pricing-plan-container">
+        <div class="row">
+            {% for user_tier in user_tiers %}
+                <div class="col-lg-4">
+                    <div class="card" style="width: 100%;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ user_tier.name }}</h5>
+                            <h4 class="price">${{ user_tier.price_amount|floatformat:"0" }}</h4>
+                            {{ user_tier.description | linebreaks }}
+                            <a href="#" class="btn btn-primary btn-purchase">Purchase</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
