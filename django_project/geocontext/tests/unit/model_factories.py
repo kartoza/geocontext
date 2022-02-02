@@ -3,6 +3,7 @@ import factory
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+from geocontext.models import UserProfile, UserTier
 from geocontext.models.service import Service
 from geocontext.models.group import Group
 from geocontext.models.group_services import GroupServices
@@ -35,6 +36,22 @@ class UserF(factory.django.DjangoModelFactory):
             if create:
                 user.save()
         return user
+
+
+class UserTierF(factory.django.DjangoModelFactory):
+    class Meta:
+        model = UserTier
+
+    name = factory.Sequence(lambda n: f"name{n}")
+    request_limit = '10/day'
+
+
+class UserProfileF(factory.django.DjangoModelFactory):
+    class Meta:
+        model = UserProfile
+
+    user = factory.SubFactory(UserF)
+    user_tier = factory.SubFactory(UserTierF)
 
 
 class ServiceF(factory.django.DjangoModelFactory):
