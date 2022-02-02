@@ -1,0 +1,36 @@
+<h3>{{ collection.name }}</h3>
+<table class="table table-borderless table-striped">
+    <tbody>
+        <tr>
+            <th scope="row">Key</th>
+            <td>{{ collection.key }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Description</th>
+            {# Create cusstom tag for this #}
+            {% if collection.description %}
+                <td>{{ collection.description }}</td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th scope="row">Geocontext Groups</th>
+            {% if collection.get_ordered_groups %}
+                <td>
+                    <ol>
+                        {% for collection_group_service in collection.get_ordered_groups %}
+                            <li>
+                                <a href="{% url "group-detail" collection_group_service.group.key %}">
+                                    {{ collection_group_service.group.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+    </tbody>
+</table>

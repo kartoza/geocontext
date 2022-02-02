@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: db
+  name: db
+spec:
+  selector:
+    matchLabels:
+      io.kompose.service: db
+  template:
+    metadata:
+      labels:
+        io.kompose.service: db
+    spec:
+      containers:
+        - env:
+          - name: ALLOW_IP_RANGE
+            value: 0.0.0.0/0
+          - name: POSTGRES_DB
+            value: gis
+          - name: POSTGRES_PASS
+            value: docker
+          - name: POSTGRES_USER
+            value: docker
+          image: kartoza/postgis:13.0
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - "PGPASSWORD=docker pg_isready -h localhost -d gis -U gis"
+          name: geocontext-db
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              subPath: data
+              name: db-volume
+            - mountPath: /backups
+              name: db-backup-volume
+            - mountPath: /sql
+              name: db-sql-volume
+
+  serviceName: db
+  volumeClaimTemplates:
+  - metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: db-volume
+      name: db-volume
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 8Gi
+    status: {}
+  - metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: db-backup-volume
+      name: db-backup-volume
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 8Gi
+  - metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: db-sql-volume
+      name: db-sql-volume
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Mi
+    status: {}

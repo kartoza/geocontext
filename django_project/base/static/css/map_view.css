@@ -1,0 +1,79 @@
+.map-container {
+    top:4rem;
+    max-height:80vh;
+    min-width:100%;
+    z-index: 1;
+}
+.leaflet-container {
+    width:  100%;
+    height: 80vh;
+    z-index: 1;
+    cursor: crosshair;
+}
+.django-leaflet-raw-textarea {
+    width: 100%;
+}
+.leaflet-control-layers { 
+    height: 10;
+    min-height: 10;
+    max-height: 600px;
+}
+.leaflet-dragging .leaflet-grab {
+	cursor: -webkit-grab;
+	cursor:    -moz-grab;
+	cursor:         grab;
+}
+.leaflet-control-scale {
+    position: relative
+}
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #00BFFF; /* Blue */
+    border-left: 16px solid grey;
+    border-right: 16px solid grey;
+    border-bottom: 16px solid #FFFF99;
+    border-radius: 50%;
+    width: 10vh;
+    height: 10vh;
+    animation: spin 2s linear infinite;
+    margin: auto;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+.select-dropdown {
+    width: 100%;
+    overflow: auto;
+}
+.fetch-button {
+    width: 100%;
+}
+.input-field {
+    width: 100%;
+}
+.url-query {
+    width: 100%;
+    overflow: auto;
+}
+.result-table {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.result-table table {
+    width: 100%;
+}
+
+.first-column {
+    width: 40%;
+}
+
+.output {
+    width: 100%;
+    padding: 10px 0px;
+}
+
+.output button{
+    width: 50%;
+}

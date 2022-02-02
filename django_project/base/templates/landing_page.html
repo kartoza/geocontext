@@ -1,0 +1,80 @@
+{% extends 'main_base.html' %}
+{% load static %}
+{% block title %}
+    Home
+{% endblock %}
+
+{% block body_content %}
+    <div class="container">
+        <div class="jumbotron landing_header">
+            <h2 class="display-4 my-carousel-header" id="trigger-waypoint">Welcome to GeoContext!</h2>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row" style="margin-bottom: 5rem;">
+            <div class="col-sm-8">
+                <div class="jumbotron" id="trigger-diagram">
+                    <h3 class="text-center">
+                        GeoContext is a service that will fetch data for a geographic position.
+                        It is an API that you can use to integrate this information into your own web site.
+                    </h3>
+                </div>
+            </div>
+            <div class="col-sm"></div>
+            <div class="col-sm"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row" style="margin-bottom: 5rem;">
+            <div class="col-sm"></div>
+            <div class="col-sm"></div>
+            <div class="col-sm-8">
+                <div class="jumbotron" id="trigger-terminal">
+                    <h3 class="text-center">
+                        GeoContext can connect to various different types of services such as WMS and WFS to collate
+                        the point information. You can configure more services as needed and collate a number of
+                        services into a group. A number of groups can be combined into a collection.
+                    </h3></div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row" style="margin-bottom: 5rem;">
+            <div class="col-sm-8">
+                <div class="jumbotron" style="z-index:3">
+                    <h3 class="text-center">
+                        The API returns JSON documents which enumerate any information found for the point you specify.
+                        Currently, the service is free to use and the code is open-source!
+                    </h3>
+                </div>
+            </div>
+            <div class="col-sm"></div>
+
+            <div class="col-sm">
+            </div>
+        </div>
+    </div>
+    <div style="height: 10vh;"></div>
+    <img src="{% static "img/landing_map.png" %}" class="landing_map"/>
+    <img class="landing_waypoint"
+         data-aos="zoom-out-down"
+         data-aos-anchor="#trigger-waypoint"
+         src="{% static "img/favicon.png" %}"
+         data-aos-anchor-placement="top-top"
+         data-aos-mirror="true"
+         data-aos-once="false"
+    />
+    <img class="landing_terminal"
+         data-aos="fade-left"
+         data-aos-anchor="#trigger-terminal"
+         src="{% static "img/landing_terminal.png" %}"
+         data-aos-anchor-placement="top-top"
+    />
+    <hr class="my-4">
+    <img class="landing_diagram"
+         data-aos="fade-right"
+         data-aos-anchor="#trigger-diagram"
+         src="{% static "img/landing_diagram.png" %}"
+         data-aos-anchor-placement="top-top"
+    />
+{% endblock %}

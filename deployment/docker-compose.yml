@@ -1,0 +1,75 @@
+version: '3'
+volumes:
+  nginx-conf-volume:
+  static-volume:
+  media-volume:
+  reports-volume:
+  db-backup-volume:
+  db-sql-volume:
+services:
+  web:
+    image: nginx
+    hostname: nginx
+    volumes:
+      - nginx-conf-volume:/etc/nginx/conf.d:ro
+      - static-volume:/home/web/static:ro
+      - media-volume:/home/web/media:ro
+    links:
+      - uwsgi:uwsgi
+    ports:
+      - "${HTTP_PORT}:8080"
+    restart: unless-stopped
+
+  uwsgi:
+    build: 
+      context: ../
+      dockerfile: deployment/docker/Dockerfile
+    hostname: uwsgi
+    environment:
+      - DATABASE_NAME=gis
+      - DATABASE_USERNAME=docker
+      - DATABASE_PASSWORD=docker
+      - DATABASE_HOST=db
+      - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
+      - PYTHONPATH=/usr/src/geocontext
+      - VIRTUAL_HOST=geocontext.kartoza.com
+      - VIRTUAL_PORT=8080
+    volumes:
+      - static-volume:/home/web/static:rw
+      - media-volume:/home/web/media:rw
+      - reports-volume:/home/web/reports
+    links:
+      - db:db
+    user: root
+
+  db:
+    image: kartoza/postgis:13.0
+    volumes:
+      - db-backup-volume:/backups
+      - db-sql-volume:/sql
+    environment:
+      - ALLOW_IP_RANGE=0.0.0.0/0
+      - POSTGRES_USER=docker
+      - POSTGRES_PASS=docker
+      - POSTGRES_DB=gis
+    restart: on-failure
+    healthcheck:
+      test: "PGPASSWORD=docker pg_isready -d gis -h localhost -U docker"
+
+  dbbackups:
+    image: kartoza/pg-backup:13.0
+    hostname: pg-backups
+    volumes:
+      - db-backup-volume:/backups
+    links:
+      - db:db
+    environment:
+      - DUMPPREFIX=PG_geocontext
+      - POSTGRES_USER=docker
+      - POSTGRES_PASS=docker
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=db
+      - POSTGRES_DBNAME=gis
+    restart: unless-stopped
+    depends_on:
+      - db

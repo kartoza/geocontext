@@ -1,0 +1,54 @@
+<h3>{{ service.name }}</h3>
+<table class="table table-borderless table-striped">
+    <tbody>
+        <tr>
+            <th scope="row">Key</th>
+            <td>{{ service.key }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Description</th>
+            {# Create cusstom tag for this #}
+            {% if service.description %}
+                <td>{{ service.description }}</td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th scope="row">URL</th>
+            <td><a href="{{ service.url }}">{{ service.url }}</a></td>
+        </tr>
+        <tr>
+            <th scope="row">Query Type</th>
+            <td>{{ service.query_type }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Service version</th>
+            <td>{{ service.service_version }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Provenance</th>
+            {% if service.provenance %}
+                <td>{{ service.provenance }}</td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th scope="row">Notes</th>
+            {% if service.notes %}
+                <td>{{ service.notes }}</td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <th scope="row">Licensing</th>
+            {% if service.licensing %}
+                <td>{{ service.licensing }}</td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+    </tbody>
+</table>

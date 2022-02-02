@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Django project dev bashrc
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+export PYTHONPATH=/usr/src/geocontext:$PYTHONPATH
+export DJANGO_SETTINGS_MODULE=core.settings.dev_docker
+cd /usr/src/geocontext
