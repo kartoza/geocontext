@@ -12,6 +12,7 @@ from geocontext.views.api_v1 import (
 )
 from geocontext.views.api_v2 import GenericAPIView
 from geocontext.views.collection import CollectionListView, CollectionDetailView
+from geocontext.views.pricing_plan import PricingPlanTemplateView
 from geocontext.views.service import ServiceListView, ServiceDetailView
 from geocontext.views.group import GroupListView, GroupDetailView
 
@@ -37,6 +38,9 @@ urlpatterns = [
         name='collection-list'),
     url(regex=r'^geocontext/collection/(?P<slug>[\w-]+)/$',
         view=CollectionDetailView.as_view(),
+        name='collection-detail'),
+    url(r'^pricing-plan/$',
+        PricingPlanTemplateView.as_view(),
         name='collection-detail'),
 ]
 
