@@ -12,6 +12,7 @@ TEMPLATE_DEBUG = DEBUG
 LOGGING_OUTPUT_ENABLED = DEBUG
 LOGGING_LOG_SQL = DEBUG
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
@@ -20,6 +21,8 @@ DATABASES = {
         'PASSWORD': 'docker',
         'HOST': 'db',
         'PORT': 5432,
-        'TEST_NAME': 'unittests',
+        'TEST': {
+            'NAME': 'unittests'
+        },
     }
 }

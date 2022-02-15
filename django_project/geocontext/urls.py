@@ -1,5 +1,8 @@
 from django.conf.urls import url
 from rest_framework.urlpatterns import format_suffix_patterns
+from django.contrib.auth.decorators import login_required
+from django.views.generic import RedirectView
+from django.urls import reverse_lazy
 
 from geocontext.views.api_v1 import (
     CacheListAPI,
@@ -12,6 +15,7 @@ from geocontext.views.api_v1 import (
 )
 from geocontext.views.api_v2 import GenericAPIView
 from geocontext.views.collection import CollectionListView, CollectionDetailView
+from geocontext.views.profile import ProfileView
 from geocontext.views.service import ServiceListView, ServiceDetailView
 from geocontext.views.group import GroupListView, GroupDetailView
 
@@ -38,6 +42,9 @@ urlpatterns = [
     url(regex=r'^geocontext/collection/(?P<slug>[\w-]+)/$',
         view=CollectionDetailView.as_view(),
         name='collection-detail'),
+    url(regex=r'^profile/(?P<slug>[\w-]+)/$',
+        view=ProfileView.as_view(),
+        name='profile'),
 ]
 
 urlpatterns_api_v1 = [
