@@ -1,0 +1,113 @@
+{% extends 'main_base.html' %}
+{% load static %}
+
+{% block body_content %}
+     <div class="container">
+     <div id="layoutSidenav_content">
+     <main>
+<!-- Pricing section-->
+        <section class="bg-light py-5 border-bottom">
+            <div class="container px-5 my-5">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bolder">Pricing plans</h2>
+                </div>
+                <div class="row gx-5 justify-content-center">
+                    <!-- Pricing card free-->
+                    <div class="col-lg-6 col-xl-4">
+                        <div class="card mb-5 mb-xl-0">
+                            <div class="card-body p-5">
+                                <div class="small text-uppercase fw-bold text-muted">Open Tier</div>
+                                <div class="mb-3">
+                                    <span class="display-4 fw-bold">$0</span>
+                                    <span class="text-muted">/ mo.</span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2">
+                                        <i class="fa fa-check text-primary"></i>
+                                        <strong>1000 Requester per month</strong>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fa fa-remove text-muted"></i>
+                                        User Support
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fa fa-remove text-muted"></i>
+                                        Define your own services
+                                    </li>
+                                </ul>
+                                <div class="d-grid"><a class="btn btn-outline-primary" onclick="choosePlan(1)"  href="#!">Choose plan</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pricing card pro-->
+                    <div class="col-lg-6 col-xl-4">
+                        <div class="card mb-5 mb-xl-0">
+                            <div class="card-body p-5">
+                                <div class="small text-uppercase fw-bold">
+                                    <i class="fa fa-star-fill text-warning"></i>
+                                    Small Tier
+                                </div>
+                                <div class="mb-3">
+                                    <span class="display-4 fw-bold">$100</span>
+                                    <span class="text-muted">/ mo.</span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2">
+                                        <i class="fa fa-check text-primary"></i>
+                                        <strong>10000 Requester per month</strong>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fa fa-check text-primary"></i>
+                                        <strong>User Support</strong>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fa fa-remove text-muted"></i>
+                                        Define your own services
+                                    </li>
+                                </ul>
+                                <div class="d-grid"><a class="btn btn-primary" onclick="choosePlan(2)" href="#!">Choose plan</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pricing card enterprise-->
+                    <div class="col-lg-6 col-xl-4">
+                        <div class="card">
+                            <div class="card-body p-5">
+                                <div class="small text-uppercase fw-bold text-muted">Medium</div>
+                                <div class="mb-3">
+                                    <span class="display-4 fw-bold">$500</span>
+                                    <span class="text-muted">/ mo.</span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2">
+                                        <i class="fa fa-check text-primary"></i>
+                                        <strong>100000 Requester per month</strong>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fa fa-check text-primary"></i>
+                                        <strong>User Support</strong>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fa fa-check text-primary"></i>
+                                        <strong>Define your own services</strong>
+                                    </li>
+                                </ul>
+                                <div class="d-grid"><a class="btn btn-outline-primary" onclick="choosePlan(3)"  href="#!">Choose plan</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+                </main>
+     </div>
+     </div>
+    <script>
+    function choosePlan(tierId){
+        const url = `/geocontext/change-plan/?user_tier=${tierId}`
+        let request = new XMLHttpRequest();
+        request.open("GET", url)
+        request.send();
+    }
+    </script>
+{% endblock %}

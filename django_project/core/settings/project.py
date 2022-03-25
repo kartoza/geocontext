@@ -28,5 +28,5 @@ VALID_DOMAIN = [
 ]
 
 ENABLE_API_TOKEN = ast.literal_eval(
-    os.environ.get('ENABLE_API_TOKEN', 'False')
+    os.environ.get('ENABLE_API_TOKEN', 'True')
 )

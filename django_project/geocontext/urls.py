@@ -13,12 +13,12 @@ from geocontext.views.api_v1 import (
     ServiceListAPIView,
     RiverNameAPIView,
 )
-from geocontext.views.api_v2 import GenericAPIView
+from geocontext.views.api_v2 import GenericAPIView, RegistryAPIView
 from geocontext.views.collection import CollectionListView, CollectionDetailView
 from geocontext.views.profile import ProfileView
+from geocontext.views.plan import PlanListView, UpdatePlanApiView
 from geocontext.views.service import ServiceListView, ServiceDetailView
 from geocontext.views.group import GroupListView, GroupDetailView
-
 
 urlpatterns = [
     url(regex=r'^geocontext/$',
@@ -45,6 +45,12 @@ urlpatterns = [
     url(regex=r'^profile/(?P<slug>[\w-]+)/$',
         view=ProfileView.as_view(),
         name='profile'),
+    url(regex=r'^geocontext/plans/$',
+        view=PlanListView.as_view(),
+        name='plans'),
+    url(regex=r'^geocontext/change-plan/$',
+        view=UpdatePlanApiView.as_view(),
+        name='update-plan'),
 ]
 
 urlpatterns_api_v1 = [
@@ -91,6 +97,10 @@ urlpatterns_api_v2 = [
         view=GenericAPIView.as_view(),
         name='service-api'
         ),
+    url(regex=r'^registries$',
+        view=RegistryAPIView.as_view(),
+        name='registries-api'
+        )
 ]
 
 urlpatterns_api_v2 = format_suffix_patterns(urlpatterns_api_v2)

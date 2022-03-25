@@ -32,13 +32,13 @@
                                     <div class="text-muted">{{ object.username }}</div>
                                     </div>
                                     <div class="mb-4">
-                                        <h4 class="fw-bolder">Plane</h4>
-                                        <div class="text-muted">Your plan
-                                           <a href="" class="pull-right btn btn-sm btn-primary-soft">Upgrade</a>
+                                        <h4 class="fw-bolder">Plan</h4>
+                                        <div class="text-muted">{{ plan.name }}
+                                           <a href="{% url 'plans' %}" class="pull-right btn btn-sm btn-primary-soft">Upgrade</a>
                                         </div>
                                     </div>
                                     <div class="mb-4">
-                                        <a href="">View pricing plans</a>
+                                        <a href="{% url 'plans' %}">View pricing plans</a>
                                     </div>
                                 </div>
                             </div>
@@ -55,7 +55,16 @@
                                             <i class="ms-1" data-feather="arrow-right"></i>
                                         </a>
                                     </div>
+
                                 </div>
+                                <hr>
+                                <div class="col">
+                                    <h5>Your Token</h5>
+                                    <div class="relative clearfix bg-darken5 round" style="background-color: rgba(31, 51, 73, 0.05) !important; height: 50px; padding: 15px">
+                                    <code class="copy">{{ token }} <a href="#" id="copy"><i class="fa fa-clipboard pull-right" aria-hidden="true"></i></a></code>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                             </div>
