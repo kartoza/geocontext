@@ -81,6 +81,10 @@
                            id="dropdown01" data-toggle="dropdown"
                            aria-haspopup="true" aria-expanded="false">{{ user.username }}</a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
+                            {% if user.is_authenticated %}
+                            <a class="dropdown-item" href="{% url 'profile' user.username %}">Profile</a>
+                            {% endif %}
+
                             {% if user.is_staff or user.is_superuser %}
                                 <a class="dropdown-item" href="/admin/">Admin Page</a>
                             <div class="dropdown-divider"></div>

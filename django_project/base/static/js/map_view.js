@@ -14,7 +14,8 @@ window.addEventListener("map:init", function (e) {
         let lon = coord.lng;
         if (currentTab.length != 0) {
             let key = document.getElementById(currentTab + "-select").value;
-            fetch(currentTab, key, lat, lon, outputText);
+            let token = document.getElementById(currentTab + "-token").value;
+            fetch(currentTab, key, lat, lon, token);
         }
     });
 
@@ -25,6 +26,7 @@ window.addEventListener("map:init", function (e) {
         let timer = '<div id="' + registry + '-timer"></div>';
         let lat= '<label>Latitude: </label><input class=input-field type="number" step=0.0001 id="' + registry + '-lat-box" value="0.0000"/>';
         let lng = '<label>Longitude: </label><input class=input-field type="number" step=0.0001 id="' + registry + '-lon-box" value="0.0000"/>';
+        let token = '<label>Token: </label><input class=input-field type="text" id="' + registry + '-token" value=""/>';
         let button = '<button class="fetch-button" type="button" id=' + registry + '-button>Fetch</button>';
         let options = '<label> '+ registry.charAt(0).toUpperCase() + registry.slice(1) + 's: </label><select class="select-dropdown" name="' + registry + '" id="' + registry + '-select">';
         registries[registry].forEach(function (value) {
@@ -39,7 +41,7 @@ window.addEventListener("map:init", function (e) {
         let output = '<div class="output" id="' + registry + '-output" style="display: none">' +
             '<button class="output-text" disabled id="' + registry + '-text">Text</button>' +
             '<button class="output-chart" id="' + registry + '-chart">Chart</button></div>';
-        html[registry] = lat + lng + button + options + output + timer + table + url;
+        html[registry] = lat + lng + token + button + options + output + timer + table + url;
     };
     // create the sidebar instance and add it to the map
     L.control.sidebar({ container: 'sidebar' })
@@ -81,16 +83,18 @@ document.addEventListener('click',function(e) {
             var lat = document.getElementById(currentTab + "-lat-box").value;
             var lon = document.getElementById(currentTab + "-lon-box").value;
             var key = document.getElementById(currentTab + "-select").value;
+            var token = document.getElementById(currentTab + "-token").value;
             outputText = true;
-            fetch(currentTab, key, lat, lon);
+            fetch(currentTab, key, lat, lon, token);
         }
         if (e.target && e.target.id== currentTab + "-chart") {
             var lat = document.getElementById(currentTab + "-lat-box").value;
             var lon = document.getElementById(currentTab + "-lon-box").value;
             var key = document.getElementById(currentTab + "-select").value;
+            var token = document.getElementById(currentTab + "-token").value;
             outputText = false;
             document.getElementById(currentTab + "-text").disabled = false;
-            fetch(currentTab, key, lat, lon);
+            fetch(currentTab, key, lat, lon, token);
         }
 
     }
@@ -99,14 +103,14 @@ document.addEventListener('click',function(e) {
 
 
 // Functions
-function fetch (registry, key, lat, lon){
+function fetch (registry, key, lat, lon, token){
     // We update all coord boxes on all tabs
     updateCoordBoxes(lat, lon);
     // We remove existing markers
     if (marker) {marker.remove()};
     marker = L.marker([lat, lon]).addTo(window.map);
     let baseUrl = window.location.origin;
-    let url = encodeURI(baseUrl + '/api/v2/query?registry='+registry+'&key='+key+'&x='+lon+'&y='+lat+'&outformat=json');
+    let url = encodeURI(baseUrl + '/api/v2/query?registry='+registry+'&key='+key+'&x='+lon+'&y='+lat+'&token='+token+'&outformat=json');
     let urlEl = document.getElementById(currentTab + "-url");
     urlEl.innerHTML = '<h5>Geocontext API query</h5>' + url;
     document.getElementById(currentTab + "-table").innerHTML = '<div class="loader"></div>'
