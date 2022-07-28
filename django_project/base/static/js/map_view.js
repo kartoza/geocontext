@@ -82,6 +82,8 @@ document.addEventListener('click',function(e) {
             var lon = document.getElementById(currentTab + "-lon-box").value;
             var key = document.getElementById(currentTab + "-select").value;
             outputText = true;
+            document.getElementById(currentTab + "-text").disabled = true;
+            document.getElementById(currentTab + "-chart").disabled = false;
             fetch(currentTab, key, lat, lon);
         }
         if (e.target && e.target.id== currentTab + "-chart") {
@@ -90,6 +92,7 @@ document.addEventListener('click',function(e) {
             var key = document.getElementById(currentTab + "-select").value;
             outputText = false;
             document.getElementById(currentTab + "-text").disabled = false;
+            document.getElementById(currentTab + "-chart").disabled = true;
             fetch(currentTab, key, lat, lon);
         }
 
