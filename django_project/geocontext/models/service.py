@@ -129,7 +129,7 @@ class Service(models.Model):
     )
 
     service_version = models.CharField(
-        help_text=_('Version of the service (e.g. WMS 1.1.0, WFS 2.0.0).'),
+        help_text=_('Version of the service (e.g. WMS 1.3.0, WFS 1.0.0).'),
         blank=False,
         null=False,
         max_length=200,
