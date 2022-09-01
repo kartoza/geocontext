@@ -20,7 +20,7 @@ from django.http import QueryDict
 from geocontext.models.cache import Cache
 from geocontext.models.service import Service
 from geocontext.utilities.geometry import get_bbox, parse_geometry, transform
-from geocontext.utilities.strings import strip_whitespace
+from geocontext.utilities.value import format_value
 from geocontext.utilities.xml import get_bounding_box_srs
 
 LOGGER = logging.getLogger(__name__)
@@ -253,9 +253,9 @@ class AsyncService():
             # We don't want to raise error if one feature fails - just skip
             try:
                 if 'properties' in feature:
-                    result['val'] = strip_whitespace(feature['properties'][self.layer_name])
+                    result['val'] = format_value(feature['properties'][self.layer_name])
                 else:
-                    result['val'] = strip_whitespace(feature[self.layer_name])
+                    result['val'] = format_value(feature[self.layer_name])
             except Exception:
                 LOGGER.error(f'No value found for feature in: "{self.key}"')
                 continue
