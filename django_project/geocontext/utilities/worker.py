@@ -70,7 +70,6 @@ class Worker():
 
         if len(req_s) > 0:
             async_services = [AsyncService(s, self.point, self.tolerance) for s in req_s]
-            logger.info('test', async_services)
             new_async_services = async_retrieve_services(async_services)
             caches.extend(self.bulk_create_caches(new_async_services))
 
