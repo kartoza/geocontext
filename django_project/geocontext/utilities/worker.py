@@ -130,7 +130,7 @@ class Worker():
             last_subsrt=Right('service__key', StrIndex(Reverse('service__key'), Value('_')) - 1,
                               output_field=CharField()),
         )
-        return sorted(Cache.objects.none(), key=lambda cache: self.get_order(cache.service.id))
+        return sorted(caches, key=lambda cache: self.get_order(cache.service.id))
 
     def bulk_create_caches(self, new_async_services: list) -> list:
         """Bulk update cache with new AsyncService values.
