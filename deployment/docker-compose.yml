@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 volumes:
   nginx-conf-volume:
   static-volume:
@@ -6,6 +6,30 @@ volumes:
   reports-volume:
   db-backup-volume:
   db-sql-volume:
+
+x-common-django:
+  &default-common-django
+  build:
+    context: ../
+    dockerfile: deployment/docker/Dockerfile
+  environment:
+    - REDIS_HOST=${REDIS_HOST:-redis}
+    - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
+    - DATABASE_NAME=gis
+    - DATABASE_USERNAME=docker
+    - DATABASE_PASSWORD=docker
+    - DATABASE_HOST=db
+    - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
+    - PYTHONPATH=/usr/src/geocontext
+    - VIRTUAL_HOST=geocontext.kartoza.com
+    - VIRTUAL_PORT=8080
+  volumes:
+    - static-volume:/home/web/static:rw
+    - media-volume:/home/web/media:rw
+    - reports-volume:/home/web/reports
+  links:
+    - db:db
+
 services:
   web:
     image: nginx
@@ -21,29 +45,24 @@ services:
     restart: unless-stopped
 
   uwsgi:
-    build: 
-      context: ../
-      dockerfile: deployment/docker/Dockerfile
-    hostname: uwsgi
-    environment:
-      - DATABASE_NAME=gis
-      - DATABASE_USERNAME=docker
-      - DATABASE_PASSWORD=docker
-      - DATABASE_HOST=db
-      - DJANGO_SETTINGS_MODULE=core.settings.prod_docker
-      - PYTHONPATH=/usr/src/geocontext
-      - VIRTUAL_HOST=geocontext.kartoza.com
-      - VIRTUAL_PORT=8080
-    volumes:
-      - static-volume:/home/web/static:rw
-      - media-volume:/home/web/media:rw
-      - reports-volume:/home/web/reports
-    links:
-      - db:db
+    <<: *default-common-django
     user: root
 
+  redis:
+    image: bitnami/redis:7.0.2
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-redis_password}
+
+  worker:
+    <<: *default-common-django
+    entrypoint: []
+    command: 'celery -A geocontext worker -l info'
+    links:
+      - db
+      - redis
+
   db:
-    image: kartoza/postgis:13.0
+    image: kartoza/postgis:15-3.3
     volumes:
       - db-backup-volume:/backups
       - db-sql-volume:/sql

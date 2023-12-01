@@ -69,7 +69,7 @@ def get_bbox(point: Point, tolerance: float = 10, order_latlon: bool = True) -> 
     return ','.join([str(i) for i in bbox])
 
 
-def parse_coord(x: str, y: str, srid: str = '4326') -> float:
+def parse_coord(x: str, y: str, srid: str = '4326') -> Point:
     """Parse string DD/DM/DMS coordinate input. Split by °,',".
     Signed degrees or suffix E/W/N/S.
 

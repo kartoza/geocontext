@@ -70,7 +70,6 @@ class Worker():
 
         if len(req_s) > 0:
             async_services = [AsyncService(s, self.point, self.tolerance) for s in req_s]
-            logger.info('test', async_services)
             new_async_services = async_retrieve_services(async_services)
             caches.extend(self.bulk_create_caches(new_async_services))
 
@@ -131,7 +130,7 @@ class Worker():
             last_subsrt=Right('service__key', StrIndex(Reverse('service__key'), Value('_')) - 1,
                               output_field=CharField()),
         )
-        return sorted(caches, key=lambda cache: self.get_order(cache.service.id))
+        return sorted(Cache.objects.none(), key=lambda cache: self.get_order(cache.service.id))
 
     def bulk_create_caches(self, new_async_services: list) -> list:
         """Bulk update cache with new AsyncService values.

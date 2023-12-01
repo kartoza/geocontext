@@ -36,7 +36,8 @@ INSTALLED_APPS += (
     'rest_framework_gis',
     'rest_framework.authtoken',
     'corsheaders',
-    'leaflet'
+    'leaflet',
+    'django_celery_results'
 )
 
 MIDDLEWARE += (

@@ -179,3 +179,13 @@ LOGGING = {
         },
     }
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': (
+            f'redis://default:{os.environ.get("REDIS_PASSWORD", "")}'
+            f'@{os.environ.get("REDIS_HOST", "")}',
+        ),
+    }
+}
